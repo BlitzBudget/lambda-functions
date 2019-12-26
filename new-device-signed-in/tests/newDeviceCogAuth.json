@@ -1,0 +1,26 @@
+{
+  "version": "1",
+  "region": "eu-west-1",
+  "userPoolId": "eu-west-1_cjfC8qNiB",
+  "userName": "narjun.1465@gmail.com",
+  "callerContext": {
+    "awsSdkVersion": "aws-sdk-js-2.6.4",
+    "clientId": "l7nmpavlqp3jcfjbr237prqae"
+  },
+  "triggerSource": "PostAuthentication_Authentication",
+  "request": {
+    "userAttributes": {
+      "sub": "ff234f96-36bf-44b8-88f0-7818823c4de8",
+      "email_verified": "true",
+      "cognito:user_status": "CONFIRMED",
+      "custom:financialPortfolioId": "11112019195729223",
+      "custom:currency": "$",
+      "name": "Nagarjun",
+      "locale": "en-US",
+      "family_name": "Nagesh",
+      "email": "nagarjun_nagesh@outlook.com"
+    },
+    "newDeviceUsed": true
+  },
+  "response": {}
+}
