@@ -1,11 +1,12 @@
 const http = require('http');
 exports.handler =  async function(event, context) {
-    // Concurrently call multiple APIs and wait for the response
+   // Concurrently call multiple APIs and wait for the response
    let events = [];
    events.push(deleteAllTransactions(event));
    events.push(deleteAllBudget(event));
    events.push(deleteAllAccount(event));
    let result = await Promise.all(events);
+   console.log('The reset account for ' + event.params.querystring.financialPortfolioId + ' was ' + JSON.stringify(result));
    return Object.assign({ result });
 }
 
@@ -13,8 +14,8 @@ function deleteAllTransactions(event) {
 
     return new Promise((resolve, reject) => {
         const options = {
-            host: 'REPLACE HOST INSTANCE',
-            path: '/api/transactions/' + event['body-json'].financialPortfolioId,
+            host: 'ec2-****************.compute.amazonaws.com',
+            path: '/api/transactions/' + event.params.querystring.financialPortfolioId,
             method: 'DELETE',
             headers: {
               'Content-Type': 'application/json'
@@ -23,7 +24,7 @@ function deleteAllTransactions(event) {
         };
 
         const req = http.request(options, (res) => {
-          resolve('Success');
+          resolve('Transaction Success');
         });
 
         req.on('error', (e) => {
@@ -40,8 +41,8 @@ function deleteAllBudget(event) {
     
     return new Promise((resolve, reject) => {
         const options = {
-            host: 'REPLACE HOST INSTANCE',
-            path: '/api/transactions/?financialPortfolioId=' + event['body-json'].financialPortfolioId,
+            host: 'ec2-****************.compute.amazonaws.com',
+            path: '/api/budget/?financialPortfolioId=' + event.params.querystring.financialPortfolioId,
             method: 'DELETE',
             headers: {
               'Content-Type': 'application/json'
@@ -50,7 +51,7 @@ function deleteAllBudget(event) {
         };
 
         const req = http.request(options, (res) => {
-          resolve('Success');
+          resolve('Budget Success');
         });
 
         req.on('error', (e) => {
@@ -67,8 +68,8 @@ function deleteAllAccount(event) {
     
     return new Promise((resolve, reject) => {
         const options = {
-            host: 'REPLACE HOST INSTANCE',
-            path: '/api/bankaccount/?financialPortfolioId=' + event['body-json'].financialPortfolioId,
+            host: 'ec2-****************.compute.amazonaws.com',
+            path: '/api/bankaccount/?financialPortfolioId=' + event.params.querystring.financialPortfolioId,
             method: 'DELETE',
             headers: {
               'Content-Type': 'application/json'
@@ -77,7 +78,7 @@ function deleteAllAccount(event) {
         };
 
         const req = http.request(options, (res) => {
-          resolve('Success');
+          resolve('Account Success');
         });
 
         req.on('error', (e) => {

@@ -1,10 +1,8 @@
 {
-  "body-json": {
-    "financialPortfolioId": "2"
-  },
+  "body-json": {},
   "params": {
     "path": {},
-    "querystring": {},
+    "querystring": { "financialPortfolioId": "2" },
     "header": {
       "Accept": "*/*",
       "Accept-Encoding": "gzip, deflate, br",
