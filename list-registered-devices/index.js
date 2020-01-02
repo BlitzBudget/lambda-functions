@@ -40,7 +40,7 @@ exports.handler = async (event) => {
 };
 
 function listDevices(params, event) {
-  params.Username = event.params.querystring.userName;; /* required */
+  params.Username = event.params.querystring.userName; /* required */
      
   return new Promise((resolve, reject) => {
        cognitoIdServiceProvider.adminListDevices(params, function(err, data) {
@@ -71,7 +71,7 @@ function invokeLambda(event) {
                    }
                    
                    let emailFromJWTToken = JSON.parse(data.Payload).email;
-                   if(emailFromJWTToken == event['body-json'].userName) {
+                   if(emailFromJWTToken == event.params.querystring.userName) {
                       resolve({ "email" : emailFromJWTToken});
                    } else {
                       console.log(" Entered Email address - " + event['body-json'].userName + ' is not equal to JWT Token Email - ' + emailFromJWTToken);
