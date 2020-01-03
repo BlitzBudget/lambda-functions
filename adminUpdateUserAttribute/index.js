@@ -21,7 +21,7 @@ exports.handler = async (event) => {
     await updateUserName(event, lamEmail.email).then(function(result) {
        // Success function
     }, function(err) {
-       throw new Error("Username is not updated " + err);
+       throw new Error("Email cannot be updated. " + err);
     });
     
     return event;
