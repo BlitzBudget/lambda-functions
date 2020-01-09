@@ -10,6 +10,7 @@ let paramsLam = {
 };
 
 exports.handler = async (event) => {
+    console.log("event - " + JSON.stringify(event));
     // Waits for the first call to be satisfied
     let lamEmail = '';
     await invokeLambda(event).then(function(result) {
@@ -18,7 +19,7 @@ exports.handler = async (event) => {
        throw new Error("Error authenticating JWT token " + err);
     });
     
-    await updateUserName(event, lamEmail.email).then(function(result) {
+    await updateAttributes(event, lamEmail.email).then(function(result) {
        // Success function
     }, function(err) {
        throw new Error("Email cannot be updated. " + err);
@@ -53,23 +54,10 @@ function invokeLambda(event) {
        }); 
 }
 
-// Update User Name
-function updateUserName(event, email) {
+// Update User Attributes
+function updateAttributes(event, email) {
     
-    let params = {
-      UserAttributes: [ /* required */
-        {
-          Name: 'name', /* required */
-          Value: event['body-json'].name
-        },
-        {
-          Name: 'family_name',
-          Value: event['body-json']['family_name'],
-        }
-      ],
-      UserPoolId: userPoolId, /* required */
-      Username: email, /* required */
-    };
+    let params = buildParams(event, email);
     
     return new Promise((resolve, reject) => {
         cognitoIdServiceProvider.adminUpdateUserAttributes(params, function(err, data) {
@@ -77,4 +65,49 @@ function updateUserName(event, email) {
           else     resolve(data);           // successful response
         });
     });
+}
+
+// Build parameter
+function buildParams(event, email) {
+    let params =  {
+      UserPoolId: userPoolId, /* required */
+      Username: email, /* required */
+    };
+    
+    params.UserAttributes = [];
+    let attrCt = 0;
+    
+    // If the name attribute is present
+    if(event['body-json'].name) {
+        params.UserAttributes[attrCt++] = {
+          Name: 'name', /* required */
+          Value: event['body-json'].name
+        };
+    }
+    
+    // If the family name is present
+    if(event['body-json']['family_name']) {
+        params.UserAttributes[attrCt++] = {
+              Name: 'family_name',
+              Value: event['body-json']['family_name'],
+        };
+    }
+    
+    // If locale is present
+    if(event['body-json'].locale) {
+        params.UserAttributes[attrCt++] = {
+              Name: 'locale',
+              Value: event['body-json'].locale,
+        };
+    }
+    
+    // If currency is present
+    if(event['body-json'].currency) {
+         params.UserAttributes[attrCt++] = {
+              Name: 'custom:currency',
+              Value: event['body-json'].currency,
+        };
+    }
+    
+    return params;
 }
