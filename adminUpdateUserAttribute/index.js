@@ -108,6 +108,14 @@ function buildParams(event, email) {
               Value: event['body-json'].currency,
         };
     }
+
+    // If exportFileFormat is present
+    if(event['body-json'].exportFileFormat) {
+         params.UserAttributes[attrCt++] = {
+              Name: 'custom:exportFileFormat',
+              Value: event['body-json'].exportFileFormat,
+        };
+    }
     
     return params;
 }
