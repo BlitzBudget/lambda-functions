@@ -1,4 +1,7 @@
 'use strict';
+const headerCacheControl = 'Cache-Control';
+const defaultTimeToLive = 31536000;
+
 exports.handler = async function(event, context) {
   const response = event.Records[0].cf.response;
   const headers = response.headers;
@@ -8,6 +11,11 @@ exports.handler = async function(event, context) {
     key: 'Strict-Transport-Security',
     value: 'max-age=63072000; includeSubDomains; preload'
   }];
+  
+  // Cache Control headers
+  if (!headers[headerCacheControl.toLowerCase()]) {
+    headers[headerCacheControl.toLowerCase()] = [{key: headerCacheControl, value: `public, max-age=${defaultTimeToLive}`}];
+  }
   
   // Add XSS protection mode block (If XSS is detected do not render the site)
   headers['x-xss-protection'] = [{key: 'X-XSS-Protection', value: '1; mode=block'}]; 
@@ -20,7 +28,7 @@ exports.handler = async function(event, context) {
   //headers['content-security-policy'] = [{key: 'Content-Security-Policy', value: "default-src https://www.blitzbudget.com/; img-src 'self'; script-src 'strict-dynamic' 'nonce-2726d7e26r' https:; style-src https://www.blitzbudget.com/  https://blitzbudget.com/ https://fonts.googleapis.com 'sha256-+7g9GIVwIQyRW5AWmV3tOknRu/VejUoNtGLu4+COYXU='; object-src 'none'; connect-src 'self'; font-src 'self' https://fonts.gstatic.com; style-src-elem 'nonce-2726f7e26d' https://www.blitzbudget.com/ https://blitzbudget.com/ https://fonts.googleapis.com 'sha256-+7g9GIVwIQyRW5AWmV3tOknRu/VejUoNtGLu4+COYXU=';"}];
   
   // HELP.BLITZBUDGET.COM
-  headers['content-security-policy'] = [{key: 'Content-Security-Policy', value: "default-src https://help.blitzbudget.com/; img-src 'self'; script-src 'strict-dynamic' 'nonce-2726d7e26r' https:; style-src https://help.blitzbudget.com/  https://fonts.googleapis.com https:; object-src 'none'; connect-src https://api.blitzbudget.com/ https://help.blitzbudget.com/; font-src 'self' https://fonts.gstatic.com; style-src-elem 'nonce-2726f7e26d' https://help.blitzbudget.com/ https://fonts.googleapis.com 'sha256-47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=' 'sha256-cd59ztWBgjmAWjjdPZ8n02WYLeMktmBrmAn5loyS+wM=';"}];
+  headers['content-security-policy'] = [{key: 'Content-Security-Policy', value: "default-src https://help.blitzbudget.com/; img-src 'self'; script-src 'strict-dynamic' 'nonce-2726d7e26r' https:; style-src https://help.blitzbudget.com/  https://fonts.googleapis.com https: 'nonce-2726f7e26d' 'sha256-47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=' 'sha256-cd59ztWBgjmAWjjdPZ8n02WYLeMktmBrmAn5loyS+wM='; object-src 'none'; connect-src https://api.blitzbudget.com/ https://help.blitzbudget.com/; font-src 'self' https://fonts.gstatic.com; style-src-elem 'nonce-2726f7e26d' https://help.blitzbudget.com/ https://fonts.googleapis.com 'sha256-47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=' 'sha256-cd59ztWBgjmAWjjdPZ8n02WYLeMktmBrmAn5loyS+wM=';"}];
   
   // Prevents MIME types security risk
   headers['x-content-type-options'] = [{key: 'X-Content-Type-Options', value: 'nosniff'}];
@@ -30,6 +38,7 @@ exports.handler = async function(event, context) {
  
   // Refered will be sent only by the origin site
   headers['referrer-policy'] = [{key: 'Referrer-Policy', value: 'same-origin'}]; 
+  
   
   return response;
 };
