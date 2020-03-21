@@ -36,7 +36,7 @@ exports.handler =  async function(event) {
    events.push(deleteAllTransactions(event));
    events.push(deleteAllBudget(event));
    events.push(deleteAllAccount(event));
-   if(event.params.querystring.deleteAccount) {
+   if(event.params.querystring.deleteAccount == 'true') {
         events.push(deleteCognitoAccount());   
    }
    let result = await Promise.all(events);
@@ -161,7 +161,7 @@ function deleteCognitoAccount() {
     return new Promise((resolve, reject) => {
         cognitoIdServiceProvider.adminDeleteUser(paramsDelete, function(err, data) {
             if (err) reject(err); // an error occurred
-            else     resolve(data);           // successful response
+            else     resolve('Delete Account Success');           // successful response
         });
     });
 }
