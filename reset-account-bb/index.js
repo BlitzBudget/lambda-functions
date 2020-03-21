@@ -36,7 +36,9 @@ exports.handler =  async function(event) {
    events.push(deleteAllTransactions(event));
    events.push(deleteAllBudget(event));
    events.push(deleteAllAccount(event));
-   events.push(deleteCognitoAccount());
+   if(event.params.querystring.deleteAccount) {
+        events.push(deleteCognitoAccount());   
+   }
    let result = await Promise.all(events);
    console.log('The reset account for ' + event.params.querystring.financialPortfolioId + ' was ' + JSON.stringify(result));
     
