@@ -8,6 +8,13 @@ let params = {
     LogType: 'Tail'
 };
 let errorRespUA = "Mismatch of Financial Portfolio Id to reset the account";
+// Delete User
+AWS.config.update({region: 'eu-west-1'});
+let cognitoIdServiceProvider = new AWS.CognitoIdentityServiceProvider();
+const userPoolId = 'eu-west-1_cjfC8qNiB';
+let paramsDelete = {
+    UserPoolId: userPoolId, /* required */
+};
 
 exports.handler =  async function(event) {
    let invLamRes = '';
@@ -29,6 +36,7 @@ exports.handler =  async function(event) {
    events.push(deleteAllTransactions(event));
    events.push(deleteAllBudget(event));
    events.push(deleteAllAccount(event));
+   events.push(deleteCognitoAccount());
    let result = await Promise.all(events);
    console.log('The reset account for ' + event.params.querystring.financialPortfolioId + ' was ' + JSON.stringify(result));
     
@@ -55,6 +63,8 @@ function invokeLambda(event) {
                       console.log(" Entered financialPortfolioId - " + userFPI + ' is not equal to JWT Token financialPortfolioId - ' + ftpFromJWTToken + ' ');
                       reject("financialPortfolioId mismatch");
                   }
+                  // Declare params username with email
+                  paramsDelete.Username = payLoad['email'];
                 }
             });
        }); 
@@ -141,5 +151,15 @@ function deleteAllAccount(event) {
         // send the request
         req.write('');
         req.end();
+    });
+}
+
+// Delete Cognito Account
+function deleteCognitoAccount() {
+    return new Promise((resolve, reject) => {
+        cognitoIdServiceProvider.adminDeleteUser(paramsDelete, function(err, data) {
+            if (err) reject(err); // an error occurred
+            else     resolve(data);           // successful response
+        });
     });
 }
