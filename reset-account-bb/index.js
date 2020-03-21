@@ -9,7 +9,6 @@ let params = {
 };
 let errorRespUA = "Mismatch of Financial Portfolio Id to reset the account";
 // Delete User
-AWS.config.update({region: 'eu-west-1'});
 let cognitoIdServiceProvider = new AWS.CognitoIdentityServiceProvider();
 const userPoolId = 'eu-west-1_cjfC8qNiB';
 let paramsDelete = {
