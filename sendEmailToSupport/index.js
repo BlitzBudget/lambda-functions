@@ -18,7 +18,7 @@ exports.handler = async (event) => {
                 
             },
             Subject: { 
-                Data: "Customer Support: Requesting More Information"
+                Data: event['body-json'].support
             }
         },
         Source: event['body-json'].email
