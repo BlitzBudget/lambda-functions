@@ -1,8 +1,8 @@
 {
   "body-json": {
-    "name": "Nagarju",
-    "family_name" : "Nagesh",
-    "userName": "nagarjun_nagesh@outlook.com"
+    "financialPortfolioId": 1234567890,
+    "currency": "£",
+    "readOnly": true
   },
   "params": {
     "path": {},
@@ -11,13 +11,13 @@
       "Accept": "*/*",
       "Accept-Encoding": "gzip, deflate, br",
       "Accept-Language": "en-ES,en;q=0.9",
-      "Authorization": "eyJraWQiOiJtNkhwVHRYQVNweE96MU5rS2JHT2xYSzA2b3RNNlVkak5RUkRidXJ5SXJrPSIsImFsZyI6IlJTMjU2In0.eyJzdWIiOiJkYzRkYzNhYy0zNmViLTQwODctYjk4MS1kNDcyNDNjZmI3MjkiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiY3VzdG9tOmZpbmFuY2lhbFBvcnRmb2xpb0lkIjoiMjAyMDIwMTMzNTMzMTMiLCJpc3MiOiJodHRwczpcL1wvY29nbml0by1pZHAuZXUtd2VzdC0xLmFtYXpvbmF3cy5jb21cL2V1LXdlc3QtMV9jamZDOHFOaUIiLCJjb2duaXRvOnVzZXJuYW1lIjoibmFnYXJqdW5fbmFnZXNoQG91dGxvb2suY29tIiwibG9jYWxlIjoiZXMtRVMiLCJhdWQiOiJsN25tcGF2bHFwM2pjZmpicjIzN3BycWFlIiwiZXZlbnRfaWQiOiI2Y2NiYTNmYS1iNWRjLTQ4OGUtYTRkMC04MWY4ZGNkNWE2YzMiLCJ0b2tlbl91c2UiOiJpZCIsImN1c3RvbTpjdXJyZW5jeSI6Ilx1MjBBQyIsImF1dGhfdGltZSI6MTU3ODA3MDYxNywibmFtZSI6Ik5hZ2FyanVuIiwiZXhwIjoxNTc4MDc0MjE3LCJpYXQiOjE1NzgwNzA2MTcsImZhbWlseV9uYW1lIjoiTmFnZXNoIiwiZW1haWwiOiJuYWdhcmp1bl9uYWdlc2hAb3V0bG9vay5jb20ifQ.l2QXEOATgd1yNeAD5dISk9lJpp8WBsvSmLvvBfsdzqg4k7mm5xxQsh2eqyTlU8n-Jr4zclGzo5fA7drMsDp1fTVf167EKI_w0i6ijTfSLMku7E8RpcOX3upbmnurIv4bx2MhY36q4QT8gIZ1Hg6njToj-e04zjZVgjggx_Ob0piSdU5gdbPpIHvsU34njmJYK70ZHL9DQWv5oYnnQVoNXiDUw7vIlENJ5-t1d5FMpW9MTGoDIc72xSb0V0jwEBN115qtrnuSCaPf0EU3fG4uydCDHsJPx0iJ3a0q0wee6NUssxuNW4zIHFYhqg9mYya2UE8-2s-gxZwErE67X8q56g",
+      "Authorization": "eyJraWQiOiJtNkhwVHRYQVNweE96MU5rS2JHT2xYSzA2b3RNNlVkak5RUkRidXJ5SXJrPSIsImFsZyI6IlJTMjU2In0.eyJzdWIiOiJiNjZkN2U5MC1jMTg1LTRhMWItOTA2ZS01ZjE0NWY2NWI1MzAiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiY3VzdG9tOmZpbmFuY2lhbFBvcnRmb2xpb0lkIjoiMjIxMTIwMTkxNzEzMzExMSIsImlzcyI6Imh0dHBzOlwvXC9jb2duaXRvLWlkcC5ldS13ZXN0LTEuYW1hem9uYXdzLmNvbVwvZXUtd2VzdC0xX2NqZkM4cU5pQiIsImNvZ25pdG86dXNlcm5hbWUiOiJuYXJqdW4uMTQ2NUBnbWFpbC5jb20iLCJsb2NhbGUiOiJlbi1VUyIsImF1ZCI6Imw3bm1wYXZscXAzamNmamJyMjM3cHJxYWUiLCJldmVudF9pZCI6ImNkNGQ1ZTQzLWUwYjEtNDI1OC05OTBmLWU5OTU0NzAyYTVjMCIsInRva2VuX3VzZSI6ImlkIiwiY3VzdG9tOmN1cnJlbmN5IjoiJCIsImF1dGhfdGltZSI6MTU3NzAzNDc5NCwibmFtZSI6Ik5hcmp1biIsImV4cCI6MTU3NzAzODM5NCwiaWF0IjoxNTc3MDM0Nzk0LCJmYW1pbHlfbmFtZSI6IjE0NjUiLCJlbWFpbCI6Im5hcmp1bi4xNDY1QGdtYWlsLmNvbSJ9.f2CX5wg0nsRWONCx8LgmUZSOrz_8-vvg9HEnuu8W_TqKyJ_j3pBkS8At7N_F9KiduO7gn-SM7vacYtkwz45OylY1F-sy4tijCFili8P2nwlUQZWYRzZTYtB8JN5z0pW04DlgZHiXSZWMbc0HEJSJ6N-rdk9lgOlYCsOL6_2qQALYBWZzD36-IxPImo_yIjqQ8nQP3lrDLyjjWQqbOvJcGYHVuyXdLY0RoQq6nk57yuyzUASxCqUgDu23MU_sRO_qbgu6-cwHKiAp-SP7gj9Hg5-RAOk-Bp-hQ4CHekFiKpLJYjlQHlQ94GheGIvJzGIYbAj2o9hUNEAMx6wjkf11hQ",
       "CloudFront-Forwarded-Proto": "https",
       "CloudFront-Is-Desktop-Viewer": "true",
       "CloudFront-Is-Mobile-Viewer": "false",
       "CloudFront-Is-SmartTV-Viewer": "false",
       "CloudFront-Is-Tablet-Viewer": "false",
-      "CloudFront-Viewer-Country": "ES",
+      "CloudFront-Viewer-Country": "ZZ",
       "Host": "api.blitzbudget.com",
       "origin": "https://app.blitzbudget.com",
       "sec-fetch-mode": "cors",
@@ -50,6 +50,6 @@
     "user-arn": "",
     "request-id": "92231855-49fd-41da-87ed-dfa4fc0d0a01",
     "resource-id": "7ftbxq",
-    "resource-path": "/update-user-attribute"
+    "resource-path": "/wallet"
   }
 }

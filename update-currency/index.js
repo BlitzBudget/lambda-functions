@@ -1,28 +1,10 @@
 const AWS = require('aws-sdk')
 AWS.config.update({region: 'eu-west-1'});
 let cognitoIdServiceProvider = new AWS.CognitoIdentityServiceProvider();
-let lambda = new AWS.Lambda();
-let params = {
-    FunctionName: 'retrieveClaimsWithAuthHead', // the lambda function we are going to invoke
-    InvocationType: 'RequestResponse',
-    LogType: 'Tail'
-};
 // Create the DynamoDB service object
 let ddb = new AWS.DynamoDB({apiVersion: '2012-08-10'});
 
 exports.handler = async function(event, context) {
-    
-    // Waits for the first call to be satisfied
-    let lamErr = '';
-    await invokeLambda(event).then(function(result) {
-       console.log("The Email ID matches.");
-       lamErr = result;
-    }, function(err) {
-       throw new Error("Error Authenticating JWT token and Matching the given Email ID's " + err);
-    });
-    
-    // If Email ID is populated then execute the update currency
-    if(lamErr != '' && lamErr.email) {
         let currency = '';
         await getItem(event).then(function(result) {
            currency = result;
@@ -34,34 +16,9 @@ exports.handler = async function(event, context) {
         if(currency != '' && currency.currency) {
             await updateCogItem(currency.currency, event);
         }
-    }
     
     return event;
 };
-
-// Invoke Lambda retrieveClaim function
-function invokeLambda(event) {
-    // Authorization 
-      params.Payload = JSON.stringify({ "Authorization" :  event.params.header.Authorization});
-    
-      return new Promise((resolve, reject) => {
-           lambda.invoke(params, function(err, data) {
-               let payLoad = JSON.parse(data.Payload);
-                if (err || payLoad.status == '401') {
-                  console.log("Error occurred while authenticating JWT Token - " + data.Payload);
-                  reject(err);
-                } else {
-                   let emailFromJWTToken = JSON.parse(data.Payload).email;
-                   if(emailFromJWTToken == event['body-json'].userName) {
-                      resolve({ "email" : emailFromJWTToken});
-                   } else {
-                      console.log(" Entered Email address - " + event['body-json'].userName + ' is not equal to JWT Token Email - ' + emailFromJWTToken);
-                      reject("email address mismatch");
-                   }
-                }
-            });
-       }); 
-}
 
 function getItem(event, context) {
         let cty = event.params.header['CloudFront-Viewer-Country'];
