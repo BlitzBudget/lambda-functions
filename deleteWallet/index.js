@@ -7,7 +7,7 @@ AWS.config.update({region: 'eu-west-1'});
 var DB = new AWS.DynamoDB.DocumentClient();
 
 exports.handler = async (event) => {
-    
+    console.log( 'event ' + JSON.stringify(event));
     await deleteWallet(event).then(function(result) {
        console.log("successfully deleted the wallet");
     }, function(err) {
@@ -19,12 +19,12 @@ exports.handler = async (event) => {
 
 
 function deleteWallet(event) {
-    console.log('financial Portfolio Id selectedt for deletion is ' + event.params.querystring.financialPortfolioId);
+    console.log('financial Portfolio Id selected for deletion is ' + event.Records[0].Sns.Message);
     
     var params = {
             "TableName": 'wallet', 
             "Key" : {
-                "financial_portfolio_id": event.params.querystring.financialPortfolioId
+                "financial_portfolio_id": parseInt(event.Records[0].Sns.Message)
             }
         }
         

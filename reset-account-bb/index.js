@@ -127,7 +127,7 @@ function deleteWalletThroughSNS(event) {
     console.log("Publishing to DeleteWallet SNS");
     
     var params = {
-        Message: JSON.stringify(event.params.querystring.financialPortfolioId),
+        Message: event.params.querystring.financialPortfolioId,
         TopicArn: 'arn:aws:sns:eu-west-1:064559090307:DeleteWallet'
     };
     
@@ -137,7 +137,7 @@ function deleteWalletThroughSNS(event) {
                 console.log("Error ", err);
                 reject(err);
             } else {
-                resolve({ "success" : data});
+                resolve( "Delete Wallet successful");
             }
         }); 
     });
