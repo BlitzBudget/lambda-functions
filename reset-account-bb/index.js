@@ -8,6 +8,8 @@ let paramsDelete = {
     UserPoolId: userPoolId, /* required */
 };
 
+var sns = new AWS.SNS();
+
 exports.handler =  async function(event) {
    
    // Concurrently call multiple APIs and wait for the response 
@@ -15,8 +17,9 @@ exports.handler =  async function(event) {
    events.push(deleteAllTransactions(event));
    events.push(deleteAllBudget(event));
    events.push(deleteAllAccount(event));
+   events.push(deleteWalletThroughSNS(event));
    if(event.params.querystring.deleteAccount == 'true') {
-        events.push(deleteCognitoAccount());   
+        events.push(deleteCognitoAccount(event));   
    }
    let result = await Promise.all(events);
    console.log('The reset account for ' + event.params.querystring.financialPortfolioId + ' was ' + JSON.stringify(result));
@@ -109,11 +112,33 @@ function deleteAllAccount(event) {
 }
 
 // Delete Cognito Account
-function deleteCognitoAccount() {
+function deleteCognitoAccount(event) {
+    paramsDelete.Username = event.params.querystring.userName;
+    
     return new Promise((resolve, reject) => {
         cognitoIdServiceProvider.adminDeleteUser(paramsDelete, function(err, data) {
             if (err) reject(err); // an error occurred
             else     resolve('Delete Account Success');           // successful response
         });
+    });
+}
+
+function deleteWalletThroughSNS(event) {
+    console.log("Publishing to DeleteWallet SNS");
+    
+    var params = {
+        Message: JSON.stringify(event.params.querystring.financialPortfolioId),
+        TopicArn: 'arn:aws:sns:eu-west-1:064559090307:DeleteWallet'
+    };
+    
+    return new Promise((resolve, reject) => {
+        sns.publish(params,  function(err, data) {
+            if (err) {
+                console.log("Error ", err);
+                reject(err);
+            } else {
+                resolve({ "success" : data});
+            }
+        }); 
     });
 }

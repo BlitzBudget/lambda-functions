@@ -3,7 +3,7 @@
     "params": {
         "path": {},
         "querystring": {
-            "deleteAccount": "true",
+            "deleteAccount": "false",
             "financialPortfolioId": "2212020113431339"
         },
         "header": {
