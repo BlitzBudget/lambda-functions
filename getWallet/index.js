@@ -24,11 +24,11 @@ function fetchWalletItemFromResult(result) {
   let walletData = [];
   
   // Return empty object if no items are present
-  if(isEmpty(result.success)) return walletData;
+  if(isEmpty(result)) return walletData;
   
   try {
-    let walletResult = AWS.DynamoDB.Converter.unmarshall(result.success.Item);
-       
+    let walletResult = result.Item;
+    
     Object.keys ( walletResult.wallets ). forEach (k => { 
      if(typeof walletResult.wallets[k] == 'object'){
        Object.keys ( walletResult.wallets[k] ). forEach (l => { 
@@ -66,7 +66,7 @@ function getWalletItem(financialPortfolioId) {
             console.log("Error ", err);
             reject(err);
           } else {
-            resolve({ "success" : data});
+            resolve(data);
           }
         });
     });

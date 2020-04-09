@@ -14,7 +14,6 @@ exports.handler = async (event) => {
        throw new Error("Unable to add the wallet " + err);
     });
         
-
     return event;
 };
 
