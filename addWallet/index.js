@@ -4,7 +4,6 @@ var AWS = require('aws-sdk');
 AWS.config.update({region: 'eu-west-1'});
 
 // Create the DynamoDB service object
-var ddb = new AWS.DynamoDB({apiVersion: '2012-08-10'});
 var DB = new AWS.DynamoDB.DocumentClient();
 
 exports.handler = async (event) => {
@@ -24,9 +23,9 @@ function addNewWallet(event) {
     let randomValue = today.getUTCDate().toString() + today.getUTCMonth().toString() + today.getUTCFullYear().toString() + today.getUTCHours().toString() + today.getUTCMinutes().toString() + today.getUTCSeconds().toString() + today.getUTCMilliseconds().toString(); 
         
     var walletToAdd = JSON.stringify({
-            'id' : {N: randomValue},
-            'currency' : {S: event['body-json'].currency},
-            'read_only' : {BOOL: event['body-json'].readOnly}   
+            'id' : randomValue,
+            'currency' : event['body-json'].currency,
+            'read_only' : event['body-json'].readOnly   
           })
           
     var params = {

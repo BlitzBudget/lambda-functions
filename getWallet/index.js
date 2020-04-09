@@ -5,14 +5,15 @@ AWS.config.update({region: 'eu-west-1'});
 
 // Create the DynamoDB service object
 var ddb = new AWS.DynamoDB({apiVersion: '2012-08-10'});
+var docClient = new AWS.DynamoDB.DocumentClient({region: 'eu-west-1'});
+
 
 exports.handler = async (event) => {
   
-  let walletData = '';
+  let walletData = [];
   
     await getWalletItem(event.params.querystring.financialPortfolioId).then(function(result) {
-       console.log("successfully fetched the new wallet " + JSON.stringify(result));
-       walletData = isEmpty(result.success) ? result.success : result.success.Item.wallets.SS;
+       walletData = fetchWalletItemFromResult(result);
     }, function(err) {
        throw new Error("Unable to fetch the wallet " + err);
     });
@@ -20,19 +21,48 @@ exports.handler = async (event) => {
     return walletData;
 };
 
+function fetchWalletItemFromResult(result) {
+  let walletData = [];
+  
+  // Return empty object if no items are present
+  if(isEmpty(result.success)) return walletData;
+  
+  try {
+    let walletResult = AWS.DynamoDB.Converter.unmarshall(result.success.Item);
+       
+    Object.keys ( walletResult.wallets ). forEach (k => { 
+     if(typeof walletResult.wallets[k] == 'object'){
+       Object.keys ( walletResult.wallets[k] ). forEach (l => { 
+         let stringSet = walletResult.wallets[k][l];
+         stringSet = JSON.parse(stringSet);
+         console.log(stringSet);
+         walletData.push(stringSet);
+         
+       });
+      }
+    });
+    console.log("successfully fetched the new wallet ");
+  } catch(event) {
+    console.log(event);
+    throw new Error(" Unexpected error occured while retrieving your wallet information");
+  }
+   
+   return walletData;
+}
 
+// Get wallet Item
 function getWalletItem(financialPortfolioId) {
     var params = {
       TableName: 'wallet',
       Key: {
-        'financial_portfolio_id': {N: financialPortfolioId}
+        'financial_portfolio_id': financialPortfolioId
       },
       ProjectionExpression: 'wallets'
     };
     
     // Call DynamoDB to read the item from the table
     return new Promise((resolve, reject) => {
-        ddb.getItem(params, function(err, data) {
+        docClient.get(params, function(err, data) {
           if (err) {
             console.log("Error ", err);
             reject(err);
