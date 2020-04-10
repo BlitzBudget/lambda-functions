@@ -42,6 +42,7 @@ function addNewWallet(event) {
             reject(err);
           } else {
             resolve({ "success" : true});
+            event['body-json'].id= randomValue;
           }
         });
     });
