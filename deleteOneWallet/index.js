@@ -8,9 +8,10 @@ var docClient = new AWS.DynamoDB.DocumentClient({region: 'eu-west-1'});
 
 
 exports.handler = async (event) => {
-  
-  let walletData = [];
-    let financialPortfolioId = event.params.querystring.financialPortfolioId;
+    console.log("Triggered delete one wallet for the event - " + JSON.stringify(event));
+    
+    let walletData = [];
+    let financialPortfolioId = parseInt(event.Records[0].Sns.Subject);
     
     await getWalletItem(financialPortfolioId).then(function(result) {
        walletData = fetchWalletItemFromResult(result, event);
@@ -45,7 +46,7 @@ function fetchWalletItemFromResult(result, event) {
          let stringSet = walletResult.wallets[k][l];
          stringSet = JSON.parse(stringSet);
          
-         if(stringSet.id == event.params.querystring.walletId) {
+         if(stringSet.id == event.Records[0].Sns.Message) {
            walletData = stringSet
          }
          console.log(stringSet);
@@ -86,7 +87,7 @@ function getWalletItem(financialPortfolioId) {
 }
 
 function deleteWalletItem(walletData, financialPortfolioId) {
-          
+    console.log("Deleting wallet item - " + JSON.stringify(walletData))
     var params = {
       TableName: "wallet",
       Key: { 'financial_portfolio_id' : financialPortfolioId },
@@ -124,8 +125,3 @@ function  isEmpty(obj) {
       
   return true;
 }
-
-function  isNotEmpty(obj) {
-	return !isEmpty(obj);
-}
-
