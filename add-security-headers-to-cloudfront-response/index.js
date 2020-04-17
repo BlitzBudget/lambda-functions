@@ -24,7 +24,7 @@ exports.handler = async function(event, context) {
   // APP.BLITZBUDGET.COM
   headers['content-security-policy'] = [{
     key: 'Content-Security-Policy', 
-    value: "default-src https://app.blitzbudget.com/; img-src https://app.blitzbudget.com https://help.blitzbudget.com; script-src 'nonce-2726d7e2654esd' 'sha256-BAYPuEcMQuniS8boybGesF/Pbm7j5LxaLT8XMx9G7Ng=' 'sha256-LFKpUxrkMymnlRHNLdCTQj1jBfYKQwNGzdZzuM+SkAU=' 'sha256-6j48gsspRhzqGhLOdJgPabVNfrPr0iqgXhYR24lyzCM=' 'sha256-fo0z1TK4Ei06l/LQ0hEDZOeuLvh1kajNINswvtz34oc=' 'sha256-V6pV/4E/MgAJin8ciaEgE4jJbhHCqPQToJ29m3cZxKE='; style-src 'unsafe-inline' https://app.blitzbudget.com/  https://fonts.googleapis.com; object-src 'none'; connect-src https://app.blitzbudget.com/ https://cognito-idp.eu-west-1.amazonaws.com/ https://api.blitzbudget.com/ https://help.blitzbudget.com; font-src 'self' https://fonts.gstatic.com; style-src-elem  'sha256-w4cc42PyW4waV+7R+d/QM9PjYXwHKTk7J1/JcT8MAyw=' 'sha256-47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=' 'nonce-2726f7e26d' https://app.blitzbudget.com/ https://fonts.googleapis.com; base-uri 'none';"
+    value: "default-src https://app.blitzbudget.com/; img-src https://app.blitzbudget.com https://help.blitzbudget.com; script-src 'nonce-2726d7e2654esd' 'sha256-BAYPuEcMQuniS8boybGesF/Pbm7j5LxaLT8XMx9G7Ng=' 'sha256-LFKpUxrkMymnlRHNLdCTQj1jBfYKQwNGzdZzuM+SkAU=' 'sha256-6j48gsspRhzqGhLOdJgPabVNfrPr0iqgXhYR24lyzCM=' 'sha256-fo0z1TK4Ei06l/LQ0hEDZOeuLvh1kajNINswvtz34oc=' 'sha256-uNO/ue/gWH+PiAUWYUQ1QE3GNtFZtEMcvDLQp+Ikn8E=' 'sha256-WG3/So3xLnVV9gV454Fa7BEFth6+hxTzG2ZUWFUSjKw=' 'sha256-0PMn1emWrgrrgzYnWu2zk9dry5odz1CQV+ZKPxWMRec='; style-src 'unsafe-inline' https://app.blitzbudget.com/  https://fonts.googleapis.com; object-src 'none'; connect-src https://app.blitzbudget.com/ https://cognito-idp.eu-west-1.amazonaws.com/ https://api.blitzbudget.com/ https://help.blitzbudget.com; font-src 'self' https://fonts.gstatic.com; style-src-elem  'sha256-w4cc42PyW4waV+7R+d/QM9PjYXwHKTk7J1/JcT8MAyw=' 'sha256-47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=' 'nonce-2726f7e26d' https://app.blitzbudget.com/ https://fonts.googleapis.com; base-uri 'none';"
   }];
   
   // WWW.BLITZBUDGET.COM
@@ -62,4 +62,10 @@ exports.handler = async function(event, context) {
   //'sha256-fo0z1TK4Ei06l/LQ0hEDZOeuLvh1kajNINswvtz34oc='
 
   // Settings Script SHA 256 (app.blitzbudget.com) 
-  //'sha256-V6pV/4E/MgAJin8ciaEgE4jJbhHCqPQToJ29m3cZxKE='
+  //'sha256-uNO/ue/gWH+PiAUWYUQ1QE3GNtFZtEMcvDLQp+Ikn8E='
+
+  // Support Script SHA 256 (app.blitzbudget.com)  
+  //'sha256-WG3/So3xLnVV9gV454Fa7BEFth6+hxTzG2ZUWFUSjKw='
+
+  // Export XLS Script SHA 256 (app.blitzbudget.com)  
+  //'sha256-0PMn1emWrgrrgzYnWu2zk9dry5odz1CQV+ZKPxWMRec='
