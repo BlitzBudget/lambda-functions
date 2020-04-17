@@ -58,7 +58,14 @@ errorRespUA = {
 def lambda_handler(event, context):
     print(str(event))
     request = event['Records'][0]['cf']['request']
-    token = request['headers']['authorization'][0]['value']
+    headerReq = request['headers']
+    if 'Authorization' not in str(headerReq):
+        print('Authorization is empty')
+        return errorRespUA
+    token = headerReq['authorization'][0]['value']
+    if str(token) == 'null':
+        print('Authorization is null')
+        return errorRespUA
     # get the kid from the headers prior to verification
     headers = jwt.get_unverified_headers(token)
     kid = headers['kid']
@@ -95,10 +102,10 @@ def lambda_handler(event, context):
         print('Token was not issued for this audience')
         return errorRespUA
     # Check if the financial portfolio id is equal to query param
-    if f_p_i_s in str(request['querystring']):
-        if claims['custom:financialPortfolioId'] not in str(request['querystring']): 
-            print('Financial portfolio id did not match')
-            return errorRespUA
+    #if f_p_i_s in str(request['querystring']):
+    #    if claims['custom:financialPortfolioId'] not in str(request['querystring']): 
+    #        print('Financial portfolio id did not match')
+    #        return errorRespUA
     # now we can use the claims
     print(claims)
     return request
