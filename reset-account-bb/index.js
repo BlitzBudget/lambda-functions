@@ -174,10 +174,12 @@ function deleteOneWalletThroughSNS(event) {
 }
 
 function deleteGoalsThroughSNS(event) {
-    console.log("Publishing to DeleteOneWallet SNS or wallet id - " + event.params.querystring.financialPortfolioId);
+    
+    let financialPortfolioId = isEmpty(event.params.querystring.referenceNumber) ? event.params.querystring.financialPortfolioId : event.params.querystring.referenceNumber;
+    console.log("Publishing to DeleteGoals SNS - " + financialPortfolioId);
     
     var params = {
-        Message: event.params.querystring.financialPortfolioId,
+        Message: financialPortfolioId,
         TopicArn: 'arn:aws:sns:eu-west-1:064559090307:DeleteGoals'
     };
     
@@ -187,8 +189,26 @@ function deleteGoalsThroughSNS(event) {
                 console.log("Error ", err);
                 reject(err);
             } else {
-                resolve( "Delete One Wallet successful");
+                resolve( "Delete Goals successful");
             }
         }); 
     });
+}
+
+function  isEmpty(obj) {
+  // Check if objext is a number or a boolean
+  if(typeof(obj) == 'number' || typeof(obj) == 'boolean') return false; 
+  
+  // Check if obj is null or undefined
+  if (obj == null || obj === undefined) return true;
+  
+  // Check if the length of the obj is defined
+  if(typeof(obj.length) != 'undefined') return obj.length == 0;
+   
+  // check if obj is a custom obj
+  for(let key in obj) {
+        if(obj.hasOwnProperty(key))return false;
+    }
+      
+  return true;
 }
