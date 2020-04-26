@@ -4,154 +4,83 @@ var AWS = require('aws-sdk');
 AWS.config.update({region: 'eu-west-1'});
 
 // Create the DynamoDB service object
-var docClient = new AWS.DynamoDB.DocumentClient({region: 'eu-west-1'});
-
+var docClient = new AWS.DynamoDB.DocumentClient();
 
 exports.handler = async (event) => {
-  
-    let goalData = '';
-    let financialPortfolioId = event['body-json'].financialPortfolioId;
-    console.log("financial portfolio id to patch the goal " + JSON.stringify(financialPortfolioId));
-    
-    // GET ITEM
-    await getGoalItem(financialPortfolioId).then(function(result) {
-       goalData = fetchGoalItemFromResult(result, event);
+    console.log("updating goals for ", JSON.stringify(event['body-json']));
+    await updatingGoals(event).then(function(result) {
+       console.log("successfully saved the new goals");
     }, function(err) {
-       throw new Error("Unexpected error occured while fetching the goal " + err);
+       throw new Error("Unable to add the goals " + err);
     });
-    
-    if(isEmpty(goalData) || isEmpty(financialPortfolioId)) {
-      console.log("goal data is empty while doing an update.");
-      return goalData;
-    }
-    
-    // DELETE ITEM
-    await deleteGoalItem(goalData, financialPortfolioId).then(function(result) {
-       
-    }, function(err) {
-       throw new Error("Unexpected error occured while deleting the goal " + err);
-    });
-
-    // ADD ITEM
-    await putGoalItem(goalData, financialPortfolioId, event).then(function(result) {
-    }, function(err) {
-       throw new Error("Unexpected error occured while adding the goal " + err);
-    });
-    
-    return goalData;
+        
+    return event;
 };
 
-/*
-* Fetch goal Item
-*/
-function fetchGoalItemFromResult(result, event) {
-  let goalData = '';
+function updatingGoals(event) {
   
-  // Return empty object if no items are present
-  if(isEmpty(result)) return goalData;
-  
-  try {
-    let goalResult = result.Item;
+    let updateExp = "set";
+    let expAttrVal = {};
+    let expAttrNames = {};
     
-    Object.keys ( goalResult.goals ). forEach (k => { 
-     if(typeof goalResult.goals[k] == 'object'){
-       Object.keys ( goalResult.goals[k] ). forEach (l => { 
-         let stringSet = goalResult.goals[k][l];
-         stringSet = JSON.parse(stringSet);
-         
-         if(stringSet.id == event['body-json'].goalId) {
-              goalData = stringSet;
-              console.log("successfully fetched the matching goal " +  stringSet.id);
-         }
-       });
-      }
-    });
-  } catch(event) {
-    console.log(event);
-    throw new Error(" Unexpected error occured while retrieving your goal information");
-  }
-   
-   return goalData;
-}
-
-// Get goal Item
-function getGoalItem(financialPortfolioId) {
+    if(isEmpty(event['body-json'])) {
+      return;
+    }
+  
+    // Set Goal Type
+    if(isNotEmpty(event['body-json'].goalType)) {
+      updateExp += ' #variable1 = :v1';
+      expAttrVal[':v1'] = "goal_type";
+      expAttrNames['#variable1'] = event['body-json'].goalType;
+    }
+    
+    // Set Final Amount
+    if(isNotEmpty(event['body-json'].targetAmount)) {
+      updateExp += ' #variable2 = :v2';
+      expAttrVal[':v2'] = "final_amount";
+      expAttrNames['#variable2'] = event['body-json'].targetAmount;
+    }
+    
+    // Set Target Date
+    if(isNotEmpty(event['body-json'].targetId)) {
+      updateExp += ' #variable3 = :v3';
+      expAttrVal[':v3'] = "target_id";
+      expAttrNames['#variable3'] = event['body-json'].targetId;
+    }
+    
+    // Set Target Date
+    if(isNotEmpty(event['body-json'].targetId)) {
+      updateExp += ' #variable4 = :v4';
+      expAttrVal[':v4'] = "target_type";
+      expAttrNames['#variable4'] = event['body-json'].targetType;
+    }
+    
+        
     var params = {
-      TableName: 'goals',
+      TableName:'goals',
       Key: {
-        'financial_portfolio_id': parseInt(financialPortfolioId)
+        "financial_portfolio_id": event['body-json'].financialPortfolioId,
+        "goal_timestamp": event['body-json'].goalId,
       },
-      ProjectionExpression: 'goals'
+      UpdateExpression: updateExp,
+      ExpressionAttributeNames: expAttrVal,
+      ExpressionAttributeValues: expAttrNames
     };
     
-    // Call DynamoDB to read the item from the table
+    console.log("Updating an item...");
     return new Promise((resolve, reject) => {
-        docClient.get(params, function(err, data) {
+      docClient.update(params, function(err, data) {
           if (err) {
             console.log("Error ", err);
             reject(err);
           } else {
-            resolve(data);
+            resolve({ "success" : data});
+            event['body-json'].id= randomValue;
           }
-        });
+      });
     });
-}
-
-function deleteGoalItem(goalData, financialPortfolioId) {
     
-    let params = {
-      TableName: "goals",
-      Key: { 'financial_portfolio_id' : financialPortfolioId },
-      UpdateExpression: "DELETE #goals :goal",
-      ExpressionAttributeNames: { "#goals" : "goals" },
-      ExpressionAttributeValues: { ":goal": docClient.createSet(JSON.stringify(goalData)) }
-    };
-    
-    return new Promise((resolve, reject) => {
-        docClient.update(params, function(err, data) {
-          if (err) {
-            console.log("Error ", err);
-            reject(err);
-          } else {
-            resolve({ "success" : true});
-          }
-        });
-    });
 }
-
-function putGoalItem(goalData, financialPortfolioId, event) {
-  
-  // Update the currency
-   let goalCurrency = event['body-json'].currency;
-   if(isNotEmpty(goalCurrency)) {
-      goalData.currency = goalCurrency; 
-   }
-   // Update the goal name
-   let goalName = event['body-json'].name;
-   if(isNotEmpty(goalName)) {
-      goalData.name = goalName; 
-   }
-   
-   var params = {
-      TableName: "goals",
-      Key: { 'financial_portfolio_id' : event['body-json'].financialPortfolioId },
-      UpdateExpression: "ADD #goals :goal",
-      ExpressionAttributeNames: { "#goals" : "goals" },
-      ExpressionAttributeValues: { ":goal": docClient.createSet([JSON.stringify(goalData)]) }
-    };
-    
-    return new Promise((resolve, reject) => {
-        docClient.update(params, function(err, data) {
-          if (err) {
-            console.log("Error ", err);
-            reject(err);
-          } else {
-            resolve({ "success" : true});
-          }
-        });
-    });
-}
-
 
 function  isEmpty(obj) {
   // Check if objext is a number or a boolean
@@ -166,11 +95,14 @@ function  isEmpty(obj) {
   // check if obj is a custom obj
   for(let key in obj) {
         if(obj.hasOwnProperty(key))return false;
-  }
+    }
+
+    // Check if obj is an element
+    if(obj instanceof Element) return false;
       
   return true;
 }
 
 function  isNotEmpty(obj) {
-	return !isEmpty(obj);
+  return !isEmpty(obj);
 }
