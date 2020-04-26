@@ -45,6 +45,11 @@ function updatingGoals(event) {
       expAttrVal[':v' + i] = parameters[prm];
       expAttrNames['#variable' + i] = prm;
     }
+
+    // If the attributes are empty
+    if(isEmpty(expAttrVal)) {
+      continue;
+    }
   
     var params = {
       TableName:'goals',
