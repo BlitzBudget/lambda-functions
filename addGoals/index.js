@@ -4,10 +4,10 @@ var AWS = require('aws-sdk');
 AWS.config.update({region: 'eu-west-1'});
 
 // Create the DynamoDB service object
-var DB = new AWS.DynamoDB.DocumentClient();
+var docClient = new AWS.DynamoDB.DocumentClient();
 
 exports.handler = async (event) => {
-    
+    console.log("adding goals for ", JSON.stringify(event['body-json']));
     await addNewGoals(event).then(function(result) {
        console.log("successfully saved the new goals");
     }, function(err) {
@@ -19,32 +19,32 @@ exports.handler = async (event) => {
 
 function addNewGoals(event) {
     let today = new Date();
-    let randomValue = today.getUTCDate().toString() + today.getUTCMonth().toString() + today.getUTCFullYear().toString() + today.getUTCHours().toString() + today.getUTCMinutes().toString() + today.getUTCSeconds().toString() + today.getUTCMilliseconds().toString(); 
+    let randomValue = parseInt(today.getUTCDate().toString() + today.getUTCMonth().toString() + today.getUTCFullYear().toString() + today.getUTCHours().toString() + today.getUTCMinutes().toString() + today.getUTCSeconds().toString() + today.getUTCMilliseconds().toString()); 
         
-    var goalsToAdd = JSON.stringify({
-            'id' : randomValue,
-            'currency' : event['body-json'].currency,
-            'read_only' : event['body-json'].readOnly   
-          })
-          
     var params = {
-      TableName: "goals",
-      Key: { 'financial_portfolio_id' : event['body-json'].financialPortfolioId },
-      UpdateExpression: "ADD #goals :goal",
-      ExpressionAttributeNames: { "#goals" : "goals" },
-      ExpressionAttributeValues: { ":goal": DB.createSet([goalsToAdd]) }
+      TableName:'goals',
+      Item:{
+            "financial_portfolio_id": event['body-json'].financialPortfolioId,
+            "goal_timestamp": randomValue,
+            "goal_type": event['body-json'].goalType,
+            "final_amount": event['body-json'].targetAmount,
+            "preferable_target_date": event['body-json'].targetDate,
+            "target_id": event['body-json'].targetId,
+            "target_type": event['body-json'].targetType
+      }
     };
     
+    console.log("Adding a new item...");
     return new Promise((resolve, reject) => {
-        DB.update(params, function(err, data) {
+      docClient.put(params, function(err, data) {
           if (err) {
             console.log("Error ", err);
             reject(err);
           } else {
-            resolve({ "success" : true});
+            resolve({ "success" : data});
             event['body-json'].id= randomValue;
           }
-        });
+      });
     });
     
 }

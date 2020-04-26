@@ -4,124 +4,40 @@ var AWS = require('aws-sdk');
 AWS.config.update({region: 'eu-west-1'});
 
 // Create the DynamoDB service object
-var docClient = new AWS.DynamoDB.DocumentClient({region: 'eu-west-1'});
-
+var DB = new AWS.DynamoDB.DocumentClient();
 
 exports.handler = async (event) => {
-    console.log("Triggered delete one goal for the event - " + JSON.stringify(event));
-    
-    let goalData = [];
-    let financialPortfolioId = parseInt(event.Records[0].Sns.Subject);
-    
-    await getGoalItem(financialPortfolioId).then(function(result) {
-       goalData = fetchGoalItemFromResult(result, event);
+    console.log( 'event ' + JSON.stringify(event.params.querystring));
+    await deleteOneGoal(event).then(function(result) {
+       console.log("successfully deleted the goals");
     }, function(err) {
-       throw new Error("Unexpected error occured while fetching the goal " + err);
+       throw new Error("Unable to delete the goals " + err);
     });
-    
-    await deleteGoalItem(goalData, financialPortfolioId).then(function(result) {
-       
-    }, function(err) {
-       throw new Error("Unexpected error occured while fetching the goal " + err);
-    });
-
-    return "success";
+        
+    return event;
 };
 
-/*
-* Fetch goal Item
-*/
-function fetchGoalItemFromResult(result, event) {
-  let goalData = '';
-  
-  // Return empty object if no items are present
-  if(isEmpty(result)) return goalData;
-  
-  try {
-    let goalResult = result.Item;
-    
-    Object.keys ( goalResult.goals ). forEach (k => { 
-     if(typeof goalResult.goals[k] == 'object'){
-       Object.keys ( goalResult.goals[k] ). forEach (l => { 
-         let stringSet = goalResult.goals[k][l];
-         stringSet = JSON.parse(stringSet);
-         
-         if(stringSet.id == event.Records[0].Sns.Message) {
-           goalData = stringSet
-         }
-         console.log(stringSet);
-         
-       });
-      }
-    });
-    console.log("successfully fetched the new goal ");
-  } catch(event) {
-    console.log(event);
-    throw new Error(" Unexpected error occured while retrieving your goal information");
-  }
-   
-   return goalData;
-}
 
-// Get goal Item
-function getGoalItem(financialPortfolioId) {
-    var params = {
-      TableName: 'goals',
-      Key: {
-        'financial_portfolio_id': parseInt(financialPortfolioId)
-      },
-      ProjectionExpression: 'goals'
-    };
+function deleteOneGoal(event) {
+    console.log('financial Portfolio Id selected for deletion is ' + event.params.querystring.financialPortfolioId);
     
-    // Call DynamoDB to read the item from the table
+    var params = {
+        "TableName": 'goals', 
+        "Key" : {
+            "financial_portfolio_id": parseInt(event.params.querystring.financialPortfolioId),
+            "goal_timestamp": parseInt(event.params.querystring.goalId)
+
+        }
+    }
+        
     return new Promise((resolve, reject) => {
-        docClient.get(params, function(err, data) {
+        DB.delete(params, function(err, data) {
           if (err) {
             console.log("Error ", err);
             reject(err);
           } else {
-            resolve(data);
+            resolve({ "success" : data});
           }
         });
     });
-}
-
-function deleteGoalItem(goalData, financialPortfolioId) {
-    console.log("Deleting goal item - " + JSON.stringify(goalData))
-    var params = {
-      TableName: "goals",
-      Key: { 'financial_portfolio_id' : financialPortfolioId },
-      UpdateExpression: "DELETE #goals :goal",
-      ExpressionAttributeNames: { "#goals" : "goals" },
-      ExpressionAttributeValues: { ":goal": docClient.createSet(JSON.stringify(goalData)) }
-    };
-    
-    return new Promise((resolve, reject) => {
-        docClient.update(params, function(err, data) {
-          if (err) {
-            console.log("Error ", err);
-            reject(err);
-          } else {
-            resolve({ "success" : true});
-          }
-        });
-    });
-}
-
-function  isEmpty(obj) {
-  // Check if objext is a number or a boolean
-  if(typeof(obj) == 'number' || typeof(obj) == 'boolean') return false; 
-  
-  // Check if obj is null or undefined
-  if (obj == null || obj === undefined) return true;
-  
-  // Check if the length of the obj is defined
-  if(typeof(obj.length) != 'undefined') return obj.length == 0;
-   
-  // check if obj is a custom obj
-  for(let key in obj) {
-        if(obj.hasOwnProperty(key))return false;
-  }
-      
-  return true;
 }
