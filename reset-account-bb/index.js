@@ -17,6 +17,8 @@ exports.handler =  async function(event) {
    events.push(deleteAllTransactions(event));
    events.push(deleteAllBudget(event));
    events.push(deleteAllAccount(event));
+   events.push(deleteGoalsThroughSNS(event));
+   
    if(event.params.querystring.deleteAccount == 'true') {
         events.push(deleteCognitoAccount(event));   
    }
@@ -157,6 +159,26 @@ function deleteOneWalletThroughSNS(event) {
         Message: event.params.querystring.financialPortfolioId,
         Subject: event.params.querystring.referenceNumber,
         TopicArn: 'arn:aws:sns:eu-west-1:064559090307:DeleteOneWallet'
+    };
+    
+    return new Promise((resolve, reject) => {
+        sns.publish(params,  function(err, data) {
+            if (err) {
+                console.log("Error ", err);
+                reject(err);
+            } else {
+                resolve( "Delete One Wallet successful");
+            }
+        }); 
+    });
+}
+
+function deleteGoalsThroughSNS(event) {
+    console.log("Publishing to DeleteOneWallet SNS or wallet id - " + event.params.querystring.financialPortfolioId);
+    
+    var params = {
+        Message: event.params.querystring.financialPortfolioId,
+        TopicArn: 'arn:aws:sns:eu-west-1:064559090307:DeleteGoals'
     };
     
     return new Promise((resolve, reject) => {
