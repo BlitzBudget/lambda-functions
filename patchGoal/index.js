@@ -5,12 +5,23 @@ AWS.config.update({region: 'eu-west-1'});
 
 // Create the DynamoDB service object
 var docClient = new AWS.DynamoDB.DocumentClient();
-const parameters = {
-  'goalType' : 'goal_type',
-  'finalAmount' : 'final_amount',
-  'targetId' : 'target_id',
-  'targetType' : 'target_type'
+const parameters = [{
+  "prmName" : "goalType",
+  "prmValue" : 'goal_type'
+},
+{
+  "prmName" : "finalAmount",
+  "prmValue" : 'final_amount'
+},
+{
+  "prmName" : 'targetId',
+  "prmValue" : 'target_id'
+},
+{
+  "prmName" : 'targetType',
+  "prmValue" : 'target_type'
 }
+]
 
 exports.handler = async (event) => {
     console.log("updating goals for ", JSON.stringify(event['body-json']));
@@ -33,17 +44,32 @@ function updatingGoals(event) {
       return;
     }
     
-    for(let i=0, len = event['body-json'].length; i < len; i++) {
-      let prm = event['body-json'][i];
+    
+    for(let i=0, len = parameters.length; i < len; i++) {
+      
+      let prm = parameters[i];
+      
       
       // If the parameter is not found then do not save
-      if(isEmpty(parameters[prm])) {
+      if(isEmpty(event['body-json'][prm.prmName])) {
         continue;
       }
       
+      // Add a comma to update expression
+      if(i > 0 && i < len) {
+        updateExp += ',';
+      }
+      
+      console.log('param name - ' + event['body-json'][prm.prmName]);
+      
       updateExp += ' #variable' + i + ' = :v' + i;
-      expAttrVal[':v' + i] = parameters[prm];
-      expAttrNames['#variable' + i] = prm;
+      expAttrVal[':v' + i] = event['body-json'][prm.prmName];
+      expAttrNames['#variable' + i] = prm.prmValue;
+    }
+    
+    console.log(" update expression ", JSON.stringify(updateExp), " expression attribute value ", JSON.stringify(expAttrVal), ' expression Attribute Names ', JSON.stringify(expAttrNames));
+    if(isEmpty(expAttrVal)) {
+      return;
     }
   
     var params = {
@@ -53,8 +79,8 @@ function updatingGoals(event) {
         "goal_timestamp": event['body-json'].goalId,
       },
       UpdateExpression: updateExp,
-      ExpressionAttributeNames: expAttrVal,
-      ExpressionAttributeValues: expAttrNames
+      ExpressionAttributeNames: expAttrNames,
+      ExpressionAttributeValues: expAttrVal
     };
     
     console.log("Updating an item...");
