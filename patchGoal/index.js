@@ -5,6 +5,12 @@ AWS.config.update({region: 'eu-west-1'});
 
 // Create the DynamoDB service object
 var docClient = new AWS.DynamoDB.DocumentClient();
+const parameters = {
+  'goalType' : 'goal_type',
+  'finalAmount' : 'final_amount',
+  'targetId' : 'target_id',
+  'targetType' : 'target_type'
+}
 
 exports.handler = async (event) => {
     console.log("updating goals for ", JSON.stringify(event['body-json']));
@@ -26,36 +32,20 @@ function updatingGoals(event) {
     if(isEmpty(event['body-json'])) {
       return;
     }
+    
+    for(let i=0, len = event['body-json'].length; i < len; i++) {
+      let prm = event['body-json'][i];
+      
+      // If the parameter is not found then do not save
+      if(isEmpty(parameters[prm])) {
+        continue;
+      }
+      
+      updateExp += ' #variable' + i + ' = :v' + i;
+      expAttrVal[':v' + i] = parameters[prm];
+      expAttrNames['#variable' + i] = prm;
+    }
   
-    // Set Goal Type
-    if(isNotEmpty(event['body-json'].goalType)) {
-      updateExp += ' #variable1 = :v1';
-      expAttrVal[':v1'] = "goal_type";
-      expAttrNames['#variable1'] = event['body-json'].goalType;
-    }
-    
-    // Set Final Amount
-    if(isNotEmpty(event['body-json'].targetAmount)) {
-      updateExp += ' #variable2 = :v2';
-      expAttrVal[':v2'] = "final_amount";
-      expAttrNames['#variable2'] = event['body-json'].targetAmount;
-    }
-    
-    // Set Target Date
-    if(isNotEmpty(event['body-json'].targetId)) {
-      updateExp += ' #variable3 = :v3';
-      expAttrVal[':v3'] = "target_id";
-      expAttrNames['#variable3'] = event['body-json'].targetId;
-    }
-    
-    // Set Target Date
-    if(isNotEmpty(event['body-json'].targetId)) {
-      updateExp += ' #variable4 = :v4';
-      expAttrVal[':v4'] = "target_type";
-      expAttrNames['#variable4'] = event['body-json'].targetType;
-    }
-    
-        
     var params = {
       TableName:'goals',
       Key: {
@@ -75,7 +65,6 @@ function updatingGoals(event) {
             reject(err);
           } else {
             resolve({ "success" : data});
-            event['body-json'].id= randomValue;
           }
       });
     });
