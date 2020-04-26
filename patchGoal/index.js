@@ -88,7 +88,3 @@ function  isEmpty(obj) {
       
   return true;
 }
-
-function  isNotEmpty(obj) {
-  return !isEmpty(obj);
-}
