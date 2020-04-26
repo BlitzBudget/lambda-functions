@@ -45,11 +45,6 @@ function updatingGoals(event) {
       expAttrVal[':v' + i] = parameters[prm];
       expAttrNames['#variable' + i] = prm;
     }
-
-    // If the attributes are empty
-    if(isEmpty(expAttrVal)) {
-      continue;
-    }
   
     var params = {
       TableName:'goals',
@@ -90,9 +85,6 @@ function  isEmpty(obj) {
   for(let key in obj) {
         if(obj.hasOwnProperty(key))return false;
     }
-
-    // Check if obj is an element
-    if(obj instanceof Element) return false;
       
   return true;
 }
