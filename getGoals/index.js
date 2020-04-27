@@ -24,11 +24,13 @@ exports.handler = async (event) => {
 // Get goal Item
 function getGoalItem(financialPortfolioId) {
     var params = {
-      TableName: 'goals',
-      KeyConditionExpression   : "financial_portfolio_id = :financialPortfolioId",
+      TableName: 'blitzbudget',
+      KeyConditionExpression   : "pk = :financialPortfolioId and begins_with(sk, :items)",
       ExpressionAttributeValues: {
-          ":financialPortfolioId": parseInt(financialPortfolioId)
-      }
+          ":financialPortfolioId": financialPortfolioId,
+          ":items": "Goals#"
+      },
+      ProjectionExpression: "preferable_target_date, target_id, target_type, goal_type, sk, pk, final_amount"
     };
     
     // Call DynamoDB to read the item from the table

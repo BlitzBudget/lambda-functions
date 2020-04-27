@@ -22,11 +22,10 @@ function deleteOneGoal(event) {
     console.log('financial Portfolio Id selected for deletion is ' + event.params.querystring.financialPortfolioId);
     
     var params = {
-        "TableName": 'goals', 
+        "TableName": 'blitzbudget', 
         "Key" : {
-            "financial_portfolio_id": parseInt(event.params.querystring.financialPortfolioId),
-            "goal_timestamp": parseInt(event.params.querystring.goalId)
-
+            "pk": event.params.querystring.financialPortfolioId,
+            "sk": event.params.querystring.goalId
         }
     }
         

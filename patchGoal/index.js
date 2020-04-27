@@ -73,10 +73,10 @@ function updatingGoals(event) {
     }
   
     var params = {
-      TableName:'goals',
+      TableName:'blitzbudget',
       Key: {
-        "financial_portfolio_id": event['body-json'].financialPortfolioId,
-        "goal_timestamp": event['body-json'].goalId,
+        "pk": event['body-json'].financialPortfolioId,
+        "sk": event['body-json'].goalId,
       },
       UpdateExpression: updateExp,
       ExpressionAttributeNames: expAttrNames,

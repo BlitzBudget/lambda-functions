@@ -3,8 +3,8 @@
   "params": {
     "path": {},
     "querystring": {
-      "financialPortfolioId": 93202082911265,
-      "goalId": 26
+      "financialPortfolioId": "Wallets#93202082911265",
+      "goalId": "Goals#2020-04-27T12:30:54.089Z"
     },
     "header": {
       "Accept": "*/*",

@@ -8,7 +8,7 @@ var DB = new AWS.DynamoDB.DocumentClient();
 
 exports.handler = async (event) => {
     console.log( 'event ' + JSON.stringify(event.Records[0]));
-    let financialPortfolioId = isEmpty(event.Records[0].Sns.Subject) ? parseInt(event.Records[0].Sns.Message) : parseInt(event.Records[0].Sns.Subject);
+    let financialPortfolioId = isEmpty(event.Records[0].Sns.Subject) ? event.Records[0].Sns.Message : event.Records[0].Sns.Subject;
     let deleteParams = {};
     
     await getAllGoals(financialPortfolioId).then(function(result) {
@@ -38,15 +38,15 @@ function buildParamsForDelete(result, financialPortfolioId) {
     
     let params = {};
     params.RequestItems = {};
-    params.RequestItems.goals = [];
+    params.RequestItems.blitzbudget = [];
     
     for(let i = 0, len = result.Items.length; i < len; i++) {
         let item = result.Items[i];
-        params.RequestItems.goals[i] = { 
+        params.RequestItems.blitzbudget[i] = { 
                     "DeleteRequest": { 
                        "Key": {
-                           "financial_portfolio_id": financialPortfolioId,
-                           "goal_timestamp": item['goal_timestamp']
+                           "pk": financialPortfolioId,
+                           "sk": item['sk']
                        }
                     }
                  };
@@ -59,12 +59,13 @@ function buildParamsForDelete(result, financialPortfolioId) {
 // Get goal Item
 function getAllGoals(financialPortfolioId) {
     var params = {
-      TableName: 'goals',
-      KeyConditionExpression   : "financial_portfolio_id = :financialPortfolioId",
+      TableName: 'blitzbudget',
+      KeyConditionExpression   : "pk = :financialPortfolioId and begins_with(sk, :items)",
       ExpressionAttributeValues: {
-          ":financialPortfolioId": parseInt(financialPortfolioId)
+          ":financialPortfolioId": financialPortfolioId,
+          ":items": "Goals#"
       },
-      ProjectionExpression: "goal_timestamp"
+      ProjectionExpression: "sk"
     };
     
     // Call DynamoDB to read the item from the table

@@ -19,13 +19,13 @@ exports.handler = async (event) => {
 
 function addNewGoals(event) {
     let today = new Date();
-    let randomValue = parseInt(today.getUTCDate().toString() + today.getUTCMonth().toString() + today.getUTCFullYear().toString() + today.getUTCHours().toString() + today.getUTCMinutes().toString() + today.getUTCSeconds().toString() + today.getUTCMilliseconds().toString()); 
+    let randomValue = "Goals#" + today.toUTCString(); 
         
     var params = {
-      TableName:'goals',
+      TableName:'blitzbudget',
       Item:{
-            "financial_portfolio_id": event['body-json'].financialPortfolioId,
-            "goal_timestamp": randomValue,
+            "pk": event['body-json'].financialPortfolioId,
+            "sk": randomValue,
             "goal_type": event['body-json'].goalType,
             "final_amount": event['body-json'].targetAmount,
             "preferable_target_date": event['body-json'].targetDate,
