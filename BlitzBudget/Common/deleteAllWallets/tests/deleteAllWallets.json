@@ -1,0 +1,22 @@
+{
+  "Records": [
+    {
+      "EventSource": "aws:sns",
+      "EventVersion": "1.0",
+      "EventSubscriptionArn": "arn:aws:sns:eu-west-1:064559090307:DeleteWallet:ebf81054-7845-4c8d-917f-4d423af8e745",
+      "Sns": {
+        "Type": "Notification",
+        "MessageId": "de6043a3-21a0-544a-8a3c-14ab2cb4dcb0",
+        "TopicArn": "arn:aws:sns:eu-west-1:064559090307:DeleteWallet",
+        "Subject": null,
+        "Message": "PrimaryWallet#93202082911265",
+        "Timestamp": "2020-04-08T17:33:08.656Z",
+        "SignatureVersion": "1",
+        "Signature": "dPt52Fud/OBdVs0b62j7LwflVDCEtezntUYN275QPi7S8IC/68iHNUVQXYu2SlQzMn69FEDjyqDaoU9Ihkjz0gsFZ2GEl9D7rjX0kKRKSwOWPC5wII3N9OxKrLleM7+KeA3I4KWWfUdSbm7j3wK7lX8rNI1xYmsXUL7Bpx6EaSbY0izwCt3uq5/4UGVi3pCCxUGedag8OAlITmBldur61dSg4UpllE/JLD6jgxWnBVxa0YfgniisTxDgoxEChq8OjmFf/1TpNLHg2n662Jg/oukQFxyjNJ0a89SOAFeZfQ/oNXuIETgAIGY6nHN4kcU4mXJytSCzty7FhBrlAzqkeg==",
+        "SigningCertUrl": "https://sns.eu-west-1.amazonaws.com/SimpleNotificationService-a86cb10b4e1f29c941702d737128f7b6.pem",
+        "UnsubscribeUrl": "https://sns.eu-west-1.amazonaws.com/?Action=Unsubscribe&SubscriptionArn=arn:aws:sns:eu-west-1:064559090307:DeleteWallet:ebf81054-7845-4c8d-917f-4d423af8e745",
+        "MessageAttributes": {}
+      }
+    }
+  ]
+}

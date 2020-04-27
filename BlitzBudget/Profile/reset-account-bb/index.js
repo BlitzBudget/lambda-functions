@@ -127,13 +127,12 @@ function deleteCognitoAccount(event) {
 
 function resetAccountSubscriberThroughSNS(event) {
     console.log("Publishing to ResetAccountListener SNS or wallet id - " + event.params.querystring.financialPortfolioId);
-    let deleteOneWallet = isNotEmpty(event.params.querystring.referenceNumber);
-    let subject = deleteOneWallet ? event.params.querystring.referenceNumber : null;
-    let deleteOneWalletAttribute = deleteOneWallet ? "execute" : "donotexecute";
+    let financialPortfolioId = isNotEmpty(event.params.querystring.referenceNumber) ? event.params.querystring.referenceNumber : event.params.querystring.financialPortfolioId;
+    let deleteOneWalletAttribute = isNotEmpty(event.params.querystring.referenceNumber) ? "execute" : "donotexecute";
     
     var params = {
-        Message: event.params.querystring.financialPortfolioId,
-        Subject: subject,
+        Message: financialPortfolioId,
+        Subject: event.params.querystring.financialPortfolioId,
         MessageAttributes: {
             "delete_one_wallet": {
                 "DataType": "String",

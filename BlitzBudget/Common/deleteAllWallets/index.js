@@ -2,17 +2,21 @@
 var AWS = require('aws-sdk');
 // Set the region 
 AWS.config.update({region: 'eu-west-1'});
+var sns = new AWS.SNS();
 
 // Create the DynamoDB service object
 var DB = new AWS.DynamoDB.DocumentClient();
+// Concurrently call multiple APIs and wait for the response 
+let events = [];
+  
 
 exports.handler = async (event) => {
     console.log( 'event ' + JSON.stringify(event.Records[0]));
-    let financialPortfolioId = isEmpty(event.Records[0].Sns.Subject) ? event.Records[0].Sns.Message : event.Records[0].Sns.Subject;
+    let financialPortfolioId = event.Records[0].Sns.Message;
     let deleteParams = {};
     
-    await getAllGoals(financialPortfolioId).then(function(result) {
-       console.log("successfully fetched all the goals ", result);
+    await getAllItems(financialPortfolioId).then(function(result) {
+       console.log("successfully fetched all the wallets ", result);
        deleteParams = buildParamsForDelete(result, financialPortfolioId);
     }, function(err) {
        throw new Error("Unable to delete the goals " + err);
@@ -22,7 +26,9 @@ exports.handler = async (event) => {
         return event;
     }
     
-    await deleteGoals(deleteParams).then(function(result) {
+    // Publish to SNS and delete all financial portfolio entries
+    events.push(deleteItems(deleteParams));
+    await Promise.all(events).then(function(result) {
        console.log("successfully deleted the goals");
     }, function(err) {
        throw new Error("Unable to delete the goals " + err);
@@ -40,30 +46,35 @@ function buildParamsForDelete(result, financialPortfolioId) {
     params.RequestItems = {};
     params.RequestItems.blitzbudget = [];
     
+    
     for(let i = 0, len = result.Items.length; i < len; i++) {
         let item = result.Items[i];
+        let sk = item['sk'];
         params.RequestItems.blitzbudget[i] = { 
                     "DeleteRequest": { 
                        "Key": {
                            "pk": financialPortfolioId,
-                           "sk": item['sk']
+                           "sk": sk
                        }
                     }
                  };
-        
+                 
+        // If wallet item  then push to SNS
+        if(includesStr(sk, 'Wallet#')) {
+            events.push(publishToResetAccountsSNS(sk));   
+        }
     }
     
     return params;
 }
 
 // Get goal Item
-function getAllGoals(financialPortfolioId) {
+function getAllItems(financialPortfolioId) {
     var params = {
       TableName: 'blitzbudget',
-      KeyConditionExpression   : "pk = :financialPortfolioId and begins_with(sk, :items)",
+      KeyConditionExpression   : "pk = :financialPortfolioId",
       ExpressionAttributeValues: {
-          ":financialPortfolioId": financialPortfolioId,
-          ":items": "Goals#"
+          ":financialPortfolioId": financialPortfolioId
       },
       ProjectionExpression: "sk"
     };
@@ -83,7 +94,7 @@ function getAllGoals(financialPortfolioId) {
 }
 
 
-function deleteGoals(params) {
+function deleteItems(params) {
    
     return new Promise((resolve, reject) => {
         DB.batchWrite(params, function(err, data) {
@@ -113,4 +124,33 @@ function  isEmpty(obj) {
     }
 
   return true;
+}
+
+
+function includesStr(arr, val){
+  return isEmpty(arr) ? null : arr.includes(val); 
+}
+
+function publishToResetAccountsSNS(item) {
+    var params = {
+        Message: item,
+        MessageAttributes: {
+            "delete_one_wallet": {
+                "DataType": "String",
+                "StringValue": "execute"
+            }
+        },
+        TopicArn: 'arn:aws:sns:eu-west-1:064559090307:ResetAccountSubscriber'
+    };
+    
+    return new Promise((resolve, reject) => {
+        sns.publish(params,  function(err, data) {
+            if (err) {
+                console.log("Error ", err);
+                reject(err);
+            } else {
+                resolve( "Reset account to SNS published");
+            }
+        }); 
+    });
 }

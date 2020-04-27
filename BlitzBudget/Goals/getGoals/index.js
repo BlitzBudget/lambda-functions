@@ -14,7 +14,7 @@ exports.handler = async (event) => {
     await getGoalItem(event.params.querystring.financialPortfolioId).then(function(result) {
        goalData = result;
     }, function(err) {
-       throw new Error("Unexpected error occured while fetching the goal " + err);
+       throw new Error("Unable error occured while fetching the goal " + err);
     });
 
     return goalData;
