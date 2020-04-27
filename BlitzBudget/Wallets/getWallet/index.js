@@ -8,84 +8,41 @@ var docClient = new AWS.DynamoDB.DocumentClient({region: 'eu-west-1'});
 
 
 exports.handler = async (event) => {
+  console.log("fetching item for the financialPortfolioId ", event.params.querystring.financialPortfolioId);
+  let goalData = [];
   
-  let walletData = [];
-  
-    await getWalletItem(event.params.querystring.financialPortfolioId).then(function(result) {
-       walletData = fetchWalletItemFromResult(result);
+    await getGoalItem(event.params.querystring.financialPortfolioId).then(function(result) {
+       goalData = result;
     }, function(err) {
-       throw new Error("Unable to fetch the wallet " + err);
+       throw new Error("Unexpected error occured while fetching the goal " + err);
     });
 
-    return walletData;
+    return goalData;
 };
 
-function fetchWalletItemFromResult(result) {
-  let walletData = [];
-  
-  // Return empty object if no items are present
-  if(isEmpty(result)) return walletData;
-  
-  try {
-    let walletResult = result.Item;
-    
-    Object.keys ( walletResult.wallets ). forEach (k => { 
-     if(typeof walletResult.wallets[k] == 'object'){
-       Object.keys ( walletResult.wallets[k] ). forEach (l => { 
-         let stringSet = walletResult.wallets[k][l];
-         stringSet = JSON.parse(stringSet);
-         console.log(stringSet);
-         walletData.push(stringSet);
-         
-       });
-      }
-    });
-    console.log("successfully fetched the new wallet ");
-  } catch(event) {
-    console.log(event);
-    throw new Error(" Unexpected error occured while retrieving your wallet information");
-  }
-   
-   return walletData;
-}
 
-// Get wallet Item
-function getWalletItem(financialPortfolioId) {
+// Get goal Item
+function getGoalItem(financialPortfolioId) {
     var params = {
-      TableName: 'wallet',
-      Key: {
-        'financial_portfolio_id': financialPortfolioId
+      TableName: 'blitzbudget',
+      KeyConditionExpression   : "pk = :financialPortfolioId and begins_with(sk, :items)",
+      ExpressionAttributeValues: {
+          ":financialPortfolioId": financialPortfolioId,
+          ":items": "Wallet#"
       },
-      ProjectionExpression: 'wallets'
+      ProjectionExpression: "currency, pk, sk, read_only"
     };
     
     // Call DynamoDB to read the item from the table
     return new Promise((resolve, reject) => {
-        docClient.get(params, function(err, data) {
+        docClient.query(params, function(err, data) {
           if (err) {
             console.log("Error ", err);
             reject(err);
           } else {
+            console.log("data retrieved ", JSON.stringify(data.Items));
             resolve(data);
           }
         });
     });
-}
-
-function  isEmpty(obj) {
-  // Check if objext is a number or a boolean
-  if(typeof(obj) == 'number' || typeof(obj) == 'boolean') return false; 
-  
-  // Check if obj is null or undefined
-  if (obj == null || obj === undefined) return true;
-  
-  // Check if the length of the obj is defined
-  if(typeof(obj.length) != 'undefined') return obj.length == 0;
-   
-  // check if obj is a custom obj
-  for(let key in obj) {
-        if(obj.hasOwnProperty(key))return false;
-  }
-      
-  return true;
 }

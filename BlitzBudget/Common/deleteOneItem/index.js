@@ -8,7 +8,7 @@ var DB = new AWS.DynamoDB.DocumentClient();
 
 exports.handler = async (event) => {
     console.log( 'event ' + JSON.stringify(event.params.querystring));
-    await deleteOneGoal(event).then(function(result) {
+    await deleteOneItem(event).then(function(result) {
        console.log("successfully deleted the goals");
     }, function(err) {
        throw new Error("Unable to delete the goals " + err);
@@ -18,14 +18,14 @@ exports.handler = async (event) => {
 };
 
 
-function deleteOneGoal(event) {
+function deleteOneItem(event) {
     console.log('financial Portfolio Id selected for deletion is ' + event.params.querystring.financialPortfolioId);
     
     var params = {
         "TableName": 'blitzbudget', 
         "Key" : {
             "pk": event.params.querystring.financialPortfolioId,
-            "sk": event.params.querystring.goalId
+            "sk": event.params.querystring.itemId
         }
     }
         
