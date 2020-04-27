@@ -8,10 +8,10 @@ var DB = new AWS.DynamoDB.DocumentClient();
 
 exports.handler = async (event) => {
     console.log( 'event ' + JSON.stringify(event.Records[0]));
-    let financialPortfolioId = parseInt(event.Records[0].Sns.Message);
+    let financialPortfolioId = isEmpty(event.Records[0].Sns.Subject) ? parseInt(event.Records[0].Sns.Message) : parseInt(event.Records[0].Sns.Subject);
     let deleteParams = {};
     
-    await getAllGoals(event.Records[0].Sns.Message).then(function(result) {
+    await getAllGoals(financialPortfolioId).then(function(result) {
        console.log("successfully fetched all the goals ", result);
        deleteParams = buildParamsForDelete(result, financialPortfolioId);
     }, function(err) {
