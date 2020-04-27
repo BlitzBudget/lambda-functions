@@ -17,18 +17,12 @@ exports.handler =  async function(event) {
    events.push(deleteAllTransactions(event));
    events.push(deleteAllBudget(event));
    events.push(deleteAllAccount(event));
-   events.push(deleteGoalsThroughSNS(event));
    
    if(event.params.querystring.deleteAccount == 'true') {
         events.push(deleteCognitoAccount(event));   
    }
-   // Delete One Wallet if reference number is present
-   // Else delete all wallets
-   if(event.params.querystring.referenceNumber) {
-       events.push(deleteOneWalletThroughSNS(event));   
-   } else {
-       events.push(deleteWalletThroughSNS(event));
-   }
+
+    events.push(resetAccountSubscriberThroughSNS(event));   
    let result = await Promise.all(events);
    console.log('The reset account for ' + event.params.querystring.financialPortfolioId + ' was ' + JSON.stringify(result));
     
@@ -131,34 +125,13 @@ function deleteCognitoAccount(event) {
     });
 }
 
-function deleteWalletThroughSNS(event) {
-    console.log("Publishing to DeleteWallet SNS");
-    
-    var params = {
-        Message: event.params.querystring.financialPortfolioId,
-        TopicArn: 'arn:aws:sns:eu-west-1:064559090307:DeleteWallet'
-    };
-    
-    return new Promise((resolve, reject) => {
-        sns.publish(params,  function(err, data) {
-            if (err) {
-                console.log("Error ", err);
-                reject(err);
-            } else {
-                resolve( "Delete Wallet successful");
-            }
-        }); 
-    });
-}
-
-
-function deleteOneWalletThroughSNS(event) {
-    console.log("Publishing to DeleteOneWallet SNS or wallet id - " + event.params.querystring.financialPortfolioId);
+function resetAccountSubscriberThroughSNS(event) {
+    console.log("Publishing to ResetAccountListener SNS or wallet id - " + event.params.querystring.financialPortfolioId);
     
     var params = {
         Message: event.params.querystring.financialPortfolioId,
         Subject: event.params.querystring.referenceNumber,
-        TopicArn: 'arn:aws:sns:eu-west-1:064559090307:DeleteOneWallet'
+        TopicArn: 'arn:aws:sns:eu-west-1:064559090307:ResetAccountSubscriber'
     };
     
     return new Promise((resolve, reject) => {
@@ -171,44 +144,4 @@ function deleteOneWalletThroughSNS(event) {
             }
         }); 
     });
-}
-
-function deleteGoalsThroughSNS(event) {
-    
-    let financialPortfolioId = isEmpty(event.params.querystring.referenceNumber) ? event.params.querystring.financialPortfolioId : event.params.querystring.referenceNumber;
-    console.log("Publishing to DeleteGoals SNS - " + financialPortfolioId);
-    
-    var params = {
-        Message: financialPortfolioId,
-        TopicArn: 'arn:aws:sns:eu-west-1:064559090307:DeleteGoals'
-    };
-    
-    return new Promise((resolve, reject) => {
-        sns.publish(params,  function(err, data) {
-            if (err) {
-                console.log("Error ", err);
-                reject(err);
-            } else {
-                resolve( "Delete Goals successful");
-            }
-        }); 
-    });
-}
-
-function  isEmpty(obj) {
-  // Check if objext is a number or a boolean
-  if(typeof(obj) == 'number' || typeof(obj) == 'boolean') return false; 
-  
-  // Check if obj is null or undefined
-  if (obj == null || obj === undefined) return true;
-  
-  // Check if the length of the obj is defined
-  if(typeof(obj.length) != 'undefined') return obj.length == 0;
-   
-  // check if obj is a custom obj
-  for(let key in obj) {
-        if(obj.hasOwnProperty(key))return false;
-    }
-      
-  return true;
 }
