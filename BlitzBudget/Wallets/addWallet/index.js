@@ -4,39 +4,36 @@ var AWS = require('aws-sdk');
 AWS.config.update({region: 'eu-west-1'});
 
 // Create the DynamoDB service object
-var docClient = new AWS.DynamoDB.DocumentClient();
+var DB = new AWS.DynamoDB.DocumentClient();
 
 exports.handler = async (event) => {
-    console.log("adding goals for ", JSON.stringify(event['body-json']));
-    await addNewGoals(event).then(function(result) {
-       console.log("successfully saved the new goals");
+    
+    await addNewWallet(event).then(function(result) {
+       console.log("successfully saved the new wallet");
     }, function(err) {
-       throw new Error("Unable to add the goals " + err);
+       throw new Error("Unable to add the wallet " + err);
     });
         
     return event;
 };
 
-function addNewGoals(event) {
+function addNewWallet(event) {
     let today = new Date();
-    let randomValue = "Goals#" + today.toUTCString(); 
+    let randomValue = "Wallet#" + today.toISOString(); 
         
     var params = {
       TableName:'blitzbudget',
       Item:{
             "pk": event['body-json'].financialPortfolioId,
             "sk": randomValue,
-            "goal_type": event['body-json'].goalType,
-            "final_amount": event['body-json'].targetAmount,
-            "preferable_target_date": event['body-json'].targetDate,
-            "target_id": event['body-json'].targetId,
-            "target_type": event['body-json'].targetType
+            "currency": event['body-json'].currency,
+            "read_only": event['body-json'].readOnly
       }
     };
     
     console.log("Adding a new item...");
     return new Promise((resolve, reject) => {
-      docClient.put(params, function(err, data) {
+      DB.put(params, function(err, data) {
           if (err) {
             console.log("Error ", err);
             reject(err);
