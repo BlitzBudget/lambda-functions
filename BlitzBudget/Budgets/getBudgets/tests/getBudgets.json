@@ -3,7 +3,7 @@
   "params": {
     "path": {},
     "querystring": {
-      "financialPortfolioId": "Wallets#93202082911265"
+      "financialPortfolioId": "Wallet#93202082911265"
     },
     "header": {
       "Accept": "*/*",
