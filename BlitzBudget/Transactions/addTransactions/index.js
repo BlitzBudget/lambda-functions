@@ -8,7 +8,7 @@ var docClient = new AWS.DynamoDB.DocumentClient();
 
 exports.handler = async (event) => {
     console.log("adding goals for ", JSON.stringify(event['body-json']));
-    await addNewGoals(event).then(function(result) {
+    await addNewTransaction(event).then(function(result) {
        console.log("successfully saved the new goals");
     }, function(err) {
        throw new Error("Unable to add the goals " + err);
@@ -17,20 +17,19 @@ exports.handler = async (event) => {
     return event;
 };
 
-function addNewGoals(event) {
-    let today = new Date();
-    let randomValue = "Goals#" + today.toISOString(); 
+function addNewTransaction(event) {
+    let today = new Date(event['body-json'].dateMeantFor);
+    let randomValue = "Transaction#" + today.toISOString(); 
         
     var params = {
       TableName:'blitzbudget',
       Item:{
             "pk": event['body-json'].financialPortfolioId,
             "sk": randomValue,
-            "goal_type": event['body-json'].goalType,
-            "final_amount": event['body-json'].targetAmount,
-            "preferable_target_date": event['body-json'].targetDate,
-            "target_id": event['body-json'].targetId,
-            "target_type": event['body-json'].targetType
+            "amount": event['body-json'].amount,
+            "description": event['body-json'].description,
+            "category": event['body-json'].category,
+            "recurrence": event['body-json'].recurrence,
       }
     };
     

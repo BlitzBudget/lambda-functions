@@ -6,35 +6,35 @@ AWS.config.update({region: 'eu-west-1'});
 // Create the DynamoDB service object
 var docClient = new AWS.DynamoDB.DocumentClient();
 const parameters = [{
-  "prmName" : "goalType",
-  "prmValue" : 'goal_type'
+  "prmName" : "amount",
+  "prmValue" : 'amount'
 },
 {
-  "prmName" : "finalAmount",
-  "prmValue" : 'final_amount'
+  "prmName" : "description",
+  "prmValue" : 'description'
 },
 {
-  "prmName" : 'targetId',
-  "prmValue" : 'target_id'
+  "prmName" : 'category',
+  "prmValue" : 'category'
 },
 {
-  "prmName" : 'targetType',
-  "prmValue" : 'target_type'
+  "prmName" : 'recurrence',
+  "prmValue" : 'recurrence'
 }
 ]
 
 exports.handler = async (event) => {
-    console.log("updating goals for ", JSON.stringify(event['body-json']));
-    await updatingGoals(event).then(function(result) {
-       console.log("successfully saved the new goals");
+    console.log("updating transactions for ", JSON.stringify(event['body-json']));
+    await updatingTransactions(event).then(function(result) {
+       console.log("successfully saved the new transactions");
     }, function(err) {
-       throw new Error("Unable to add the goals " + err);
+       throw new Error("Unable to add the transactions " + err);
     });
         
     return event;
 };
 
-function updatingGoals(event) {
+function updatingTransactions(event) {
   
     let updateExp = "set";
     let expAttrVal = {};
@@ -76,7 +76,7 @@ function updatingGoals(event) {
       TableName:'blitzbudget',
       Key: {
         "pk": event['body-json'].financialPortfolioId,
-        "sk": event['body-json'].goalId,
+        "sk": event['body-json'].transactionId,
       },
       UpdateExpression: updateExp,
       ExpressionAttributeNames: expAttrNames,

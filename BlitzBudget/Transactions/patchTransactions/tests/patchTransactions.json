@@ -1,10 +1,11 @@
 {
   "body-json": {
     "financialPortfolioId": "Wallets#93202082911265",
-    "goalId": "Goals#2020-04-27T12:30:53.088Z",
-    "goalType": "Pay Off Debt",
-    "targetId": 987654321,
-    "targetType": "Wallet"
+    "transactionId": "transactions#2020-04-27T12:30:53.088Z",
+    "amount": 54,
+    "description": "adding this transaction",
+    "category": "Save More",
+    "recurrence" : "NEVER"
   },
   "params": {
     "path": {},
@@ -52,6 +53,6 @@
     "user-arn": "",
     "request-id": "92231855-49fd-41da-87ed-dfa4fc0d0a01",
     "resource-id": "7ftbxq",
-    "resource-path": "/goals"
+    "resource-path": "/transactions"
   }
 }
