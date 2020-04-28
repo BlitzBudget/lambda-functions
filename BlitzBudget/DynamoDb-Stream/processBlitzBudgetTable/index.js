@@ -2,7 +2,6 @@ console.log('Loading function');
 let categoryTotal = {};
 let accountBalance = {};
 let walletBalance = {};
-let sortKeyAndPartitionKey = {};
 
 exports.handler = async (event, context) => {
     console.log('Received event:', JSON.stringify(event, null, 2));
@@ -23,111 +22,71 @@ function batchWriteItems() {
     }
     
     if(isNotEmpty(categoryTotal)) {
-        updateAllBudgetBalance();
+        //TODO
     }
     
     if(isNotEmpty(accountBalance)) {
-        updateAllAccountBalance();
+        //TODO
     }
     
     if(isNotEmpty(walletBalance)) {
-        updateAllWalletBalance();
+        //TODO
     }
 }
 
-function updateAllWalletBalance() {
-    let paramToGet = batchGetItemParam(accountBalance);
-}
-
-function updateAllAccountBalance() {
-    let paramToGet = batchGetItemParam(walletBalance);
-}
-
-function updateAllBudgetBalance() {
-    let paramForGet = batchGetItemParam(categoryTotal);
-}
-
-function batchGetItemParam(map) {
-    const params = {
-      RequestItems: {
-          blitzbudget: {
-          }
-      },
-    };
-    
-    let budgetBatchWriteMap = [];
-    Object.keys(map).forEach(function(sk) {
-        let pk = sortKeyAndPartitionKey[sk];
-        budgetBatchWriteMap.push({
-            "pk" : pk,
-            "sk" : sk,
-        });
-    });
-    
-    // Prepare Batch Get
-    params.RequestItems.blitzbudget.Keys = budgetBatchWriteMap;
-}
 
 function processEntries(record) {
     let sortKey = record.dynamodb.Keys.sk.S;
+    let pk = record.dynamodb.Keys.pk.S;
     let difference = 0;
     
     // If the entries are not transactions / bank accounts then do not process
     if(includesStr(sortKey, 'Transaction')) {
         difference = calculateValueToAdd(record, 'amount');
-        updateCategoryTotal(sortKey, difference);
-        updateAccountBalance(sortKey, difference);
-        updateSkAndPkRelationship(sortKey, record.dynamodb.Keys.pk.S);
+        updateCategoryTotal(pk, difference);
+        updateAccountBalance(pk, difference);
     } else if(includesStr(sortKey, 'BankAccount')) {
         difference = calculateValueToAdd(record, 'account_balance');
-        updateWalletBalance(sortKey, difference);
-        updateSkAndPkRelationship(sortKey, record.dynamodb.Keys.pk.S);
+        updateWalletBalance(pk, difference);
     }
 }
 
-function updateSkAndPkRelationship(sk , pk) {
+function updateWalletBalance(pk, difference) {
     //if the list is already created for the "key", then uses it
     //else creates new list for the "key" to store multiple values in it.
-    walletBalance[sk] = walletBalance[sk] || [];
-    sortKeyAndPartitionKey[sk].push(pk);
-}
-
-function updateWalletBalance(sortKey, difference) {
-    //if the list is already created for the "key", then uses it
-    //else creates new list for the "key" to store multiple values in it.
-    walletBalance[sortKey] = walletBalance[sortKey] || [];
+    walletBalance[pk] = walletBalance[pk] || [];
     
-    if(isNotEmpty(walletBalance[sortKey])) {
-        let differenceAlreadyPresent = walletBalance[sortKey];
-        walletBalance[sortKey].push((differenceAlreadyPresent + difference));
+    if(isNotEmpty(walletBalance[pk])) {
+        let differenceAlreadyPresent = walletBalance[pk];
+        walletBalance[pk].push((differenceAlreadyPresent + difference));
     } else {
-        walletBalance[sortKey].push(difference);   
+        walletBalance[pk].push(difference);   
     }
 }
 
-function updateAccountBalance(sortKey, difference) {
+function updateAccountBalance(pk, difference) {
     //if the list is already created for the "key", then uses it
     //else creates new list for the "key" to store multiple values in it.
-    accountBalance[sortKey] = accountBalance[sortKey] || [];
+    accountBalance[pk] = accountBalance[pk] || [];
     
-    if(isNotEmpty(accountBalance[sortKey])) {
-        let differenceAlreadyPresent = accountBalance[sortKey];
-        accountBalance[sortKey].push((differenceAlreadyPresent + difference));
+    if(isNotEmpty(accountBalance[pk])) {
+        let differenceAlreadyPresent = accountBalance[pk];
+        accountBalance[pk].push((differenceAlreadyPresent + difference));
     } else {
-        accountBalance[sortKey].push(difference);   
+        accountBalance[pk].push(difference);   
     }
 }
 
-function updateCategoryTotal(sortKey, difference) {
+function updateCategoryTotal(pk, difference) {
     //if the list is already created for the "key", then uses it
     //else creates new list for the "key" to store multiple values in it.
-    categoryTotal[sortKey] = categoryTotal[sortKey] || [];
+    categoryTotal[pk] = categoryTotal[pk] || [];
     
-    if(isNotEmpty(categoryTotal[sortKey])) {
-        let differenceAlreadyPresent = categoryTotal[sortKey];
-        categoryTotal[sortKey].push((differenceAlreadyPresent + difference));
+    if(isNotEmpty(categoryTotal[pk])) {
+        let differenceAlreadyPresent = categoryTotal[pk];
+        categoryTotal[pk].push((differenceAlreadyPresent + difference));
     } else {
-        categoryTotal[sortKey].push(difference);   
+        categoryTotal[pk].push(difference);   
     }
 }
 
@@ -142,34 +101,34 @@ function calculateValueToAdd(record, attributeName) {
 }
 
 function  isEmpty(obj) {
-	// Check if objext is a number or a boolean
-	if(typeof(obj) == 'number' || typeof(obj) == 'boolean') return false; 
-	
-	// Check if obj is null or undefined
-	if (obj == null || obj === undefined) return true;
-	
-	// Check if the length of the obj is defined
-	if(typeof(obj.length) != 'undefined') return obj.length == 0;
-	 
-	// check if obj is a custom obj
-	for(let key in obj) {
+    // Check if objext is a number or a boolean
+    if(typeof(obj) == 'number' || typeof(obj) == 'boolean') return false; 
+    
+    // Check if obj is null or undefined
+    if (obj == null || obj === undefined) return true;
+    
+    // Check if the length of the obj is defined
+    if(typeof(obj.length) != 'undefined') return obj.length == 0;
+     
+    // check if obj is a custom obj
+    for(let key in obj) {
         if(obj.hasOwnProperty(key))return false;
     }
 
-	return true;
+    return true;
 }
 
 function includesStr(arr, val){
-	return isEmpty(arr) ? null : arr.includes(val); 
+    return isEmpty(arr) ? null : arr.includes(val); 
 }
 
 function isEqual(obj1,obj2){
-	if (JSON.stringify(obj1) === JSON.stringify(obj2)) {
-	    return true;
-	}
-	return false;
+    if (JSON.stringify(obj1) === JSON.stringify(obj2)) {
+        return true;
+    }
+    return false;
 }
 
 function  isNotEmpty(obj) {
-	return !isEmpty(obj);
+    return !isEmpty(obj);
 }
