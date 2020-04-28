@@ -18,19 +18,17 @@ exports.handler = async (event) => {
 };
 
 function addNewGoals(event) {
-    let today = new Date();
-    let randomValue = "Goals#" + today.toISOString(); 
+    let today = new Date(event['body-json'].dateMeantFor);
+    let randomValue = "Budget#" + today.toISOString(); 
         
     var params = {
       TableName:'blitzbudget',
       Item:{
             "pk": event['body-json'].financialPortfolioId,
             "sk": randomValue,
-            "goal_type": event['body-json'].goalType,
-            "final_amount": event['body-json'].targetAmount,
-            "preferable_target_date": event['body-json'].targetDate,
-            "target_id": event['body-json'].targetId,
-            "target_type": event['body-json'].targetType
+            "category": event['body-json'].category,
+            "planned": event['body-json'].planned,
+            "auto_generated": false,
       }
     };
     

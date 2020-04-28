@@ -9,28 +9,28 @@ var docClient = new AWS.DynamoDB.DocumentClient({region: 'eu-west-1'});
 
 exports.handler = async (event) => {
   console.log("fetching item for the financialPortfolioId ", event.params.querystring.financialPortfolioId);
-  let goalData = [];
+  let budgetData = [];
   
-    await getGoalItem(event.params.querystring.financialPortfolioId).then(function(result) {
-       goalData = result;
+    await getBudgetItem(event.params.querystring.financialPortfolioId).then(function(result) {
+       budgetData = result;
     }, function(err) {
-       throw new Error("Unable error occured while fetching the goal " + err);
+       throw new Error("Unable error occured while fetching the Budget " + err);
     });
 
-    return goalData;
+    return budgetData;
 };
 
 
-// Get goal Item
-function getGoalItem(financialPortfolioId) {
+// Get Budget Item
+function getBudgetItem(financialPortfolioId) {
     var params = {
       TableName: 'blitzbudget',
       KeyConditionExpression   : "pk = :financialPortfolioId and begins_with(sk, :items)",
       ExpressionAttributeValues: {
           ":financialPortfolioId": financialPortfolioId,
-          ":items": "Goals#"
+          ":items": "Budget#"
       },
-      ProjectionExpression: "preferable_target_date, target_id, target_type, goal_type, sk, pk, final_amount"
+      ProjectionExpression: "category, planned, sk, pk"
     };
     
     // Call DynamoDB to read the item from the table

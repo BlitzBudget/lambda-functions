@@ -1,11 +1,9 @@
 {
   "body-json": {
-    "financialPortfolioId": "Wallet#93202082911265",
-    "goalType": "Save More",
-    "targetAmount": 42,
-    "targetDate": "12062021",
-    "targetId": 123456789,
-    "targetType": "Account"
+    "financialPortfolioId": "Wallets#93202082911265",
+    "budgetId": "Goals#2020-04-27T12:30:53.088Z",
+    "category": "Pay Off Debt",
+    "planned": 52
   },
   "params": {
     "path": {},
@@ -45,7 +43,7 @@
     "cognito-authentication-type": "",
     "cognito-identity-id": "",
     "cognito-identity-pool-id": "",
-    "http-method": "POST",
+    "http-method": "PATCH",
     "stage": "prod",
     "source-ip": "81.40.21.245",
     "user": "",
@@ -53,6 +51,6 @@
     "user-arn": "",
     "request-id": "92231855-49fd-41da-87ed-dfa4fc0d0a01",
     "resource-id": "7ftbxq",
-    "resource-path": "/goals"
+    "resource-path": "/budgets"
   }
 }

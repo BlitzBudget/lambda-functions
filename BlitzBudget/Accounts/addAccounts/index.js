@@ -26,11 +26,11 @@ function addNewBankAccounts(event) {
       Item:{
             "pk": event['body-json'].financialPortfolioId,
             "sk": randomValue,
-            "goal_type": event['body-json'].goalType,
-            "final_amount": event['body-json'].targetAmount,
-            "preferable_target_date": event['body-json'].targetDate,
-            "target_id": event['body-json'].targetId,
-            "target_type": event['body-json'].targetType
+            "account_type": event['body-json'].accountType,
+            "bank_account_name": event['body-json'].bankAccountName,
+            "linked": event['body-json'].linked,
+            "account_balance": event['body-json'].accountBalance,
+            "selected_account": event['body-json'].selectedAccount,
       }
     };
     
