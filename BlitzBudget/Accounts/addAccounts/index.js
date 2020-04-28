@@ -19,7 +19,7 @@ exports.handler = async (event) => {
 
 function addNewBankAccounts(event) {
     let today = new Date();
-    let randomValue = "BankAccounts#" + today.toISOString(); 
+    let randomValue = "BankAccount#" + today.toISOString(); 
         
     var params = {
       TableName:'blitzbudget',
