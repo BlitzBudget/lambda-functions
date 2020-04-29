@@ -9,20 +9,20 @@ var docClient = new AWS.DynamoDB.DocumentClient({region: 'eu-west-1'});
 
 exports.handler = async (event) => {
   console.log("fetching item for the financialPortfolioId ", event.params.querystring.financialPortfolioId);
-  let goalData = [];
+  let walletData = [];
   
-    await getGoalItem(event.params.querystring.financialPortfolioId).then(function(result) {
-       goalData = result;
+    await getWalletItem(event.params.querystring.financialPortfolioId).then(function(result) {
+       walletData = result;
     }, function(err) {
-       throw new Error("Unexpected error occured while fetching the goal " + err);
+       throw new Error("Unexpected error occured while fetching the Wallet " + err);
     });
 
-    return goalData;
+    return walletData;
 };
 
 
-// Get goal Item
-function getGoalItem(financialPortfolioId) {
+// Get Wallet Item
+function getWalletItem(financialPortfolioId) {
     var params = {
       TableName: 'blitzbudget',
       KeyConditionExpression   : "pk = :financialPortfolioId and begins_with(sk, :items)",

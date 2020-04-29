@@ -30,6 +30,7 @@ function addNewTransaction(event) {
             "description": event['body-json'].description,
             "category": event['body-json'].category,
             "recurrence": event['body-json'].recurrence,
+            "account": event['body-json'].account
       }
     };
     
