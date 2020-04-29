@@ -1,8 +1,4 @@
 console.log('Loading function');
-let categoryTotal = {};
-let accountBalance = {};
-let pkToaccountSK = {};
-let walletBalance = {};
 let events = [];
 
 // Load the AWS SDK for Node.js
@@ -19,10 +15,10 @@ exports.handler = async (event, context) => {
         console.log(record.eventID);
         console.log(record.eventName);
         let sortKey = record.dynamodb.Keys.sk.S;
-    
+        
         // If the entries are not transactions / bank accounts then do not process
         if(includesStr(sortKey, 'Transaction')) {
-            //updateCategoryTotal(record);
+            updateCategoryTotal(record);
             updateAccountBalance(record);
         } else if(includesStr(sortKey, 'BankAccount')) {
             updateWalletBalance(record);
@@ -31,9 +27,18 @@ exports.handler = async (event, context) => {
         }
     }
     
-    await Promise.all(events);
+    try {
+        await Promise.all(events);
+    } catch(ex) {
+        console.log("Could not complete operation ", ex);
+    }
+    
     return `Successfully processed ${event.Records.length} records.`;
 };
+
+function updateCategoryTotal(record) {
+    
+}
 
 function addNewBankAccount(record) {
     let today = new Date();
@@ -61,7 +66,6 @@ function addNewBankAccount(record) {
             reject(err);
           } else {
             resolve({ "success" : data});
-            event['body-json'].id= randomValue;
           }
       });
     });
@@ -75,13 +79,13 @@ function updateWalletBalance(record) {
     
     if(isEqual(record.eventName, 'INSERT')) {
         balance = parseInt(record.dynamodb.NewImage['account_balance'].N);
-        primaryWalletId = record.dynamodb.NewImage['primary_wallet'];
+        primaryWalletId = record.dynamodb.NewImage['primary_wallet'].S;
     } else if(isEqual(record.eventName, 'REMOVE')) {
         balance = parseInt(record.dynamodb.OldImage['account_balance'].N) * -1;
-        primaryWalletId = record.dynamodb.OldImage['primary_wallet'];
+        primaryWalletId = record.dynamodb.OldImage['primary_wallet'].S;
     } else if(isEqual(record.eventName, 'MODIFY')) {
         balance = parseInt(record.dynamodb.NewImage['account_balance'].N) + (parseInt(record.dynamodb.OldImage['account_balance'].N) * -1);
-        primaryWalletId = record.dynamodb.NewImage['primary_wallet'];
+        primaryWalletId = record.dynamodb.NewImage['primary_wallet'].S;
     }
     
     console.log("Adding the difference %j to the wallet", balance);
@@ -92,10 +96,10 @@ function updateWalletBalance(record) {
     }
     
     
-    events.push(updateWalletBalanceThroughSNS(primaryWalletId, pk, balance));
+    events.push(updateWalletBalanceItem(primaryWalletId, pk, balance));
 }
 
-function updateWalletBalanceThroughSNS(pk,sk, balance) {
+function updateWalletBalanceItem(pk,sk, balance) {
   let params = {
         TableName: 'blitzbudget',
         Key:{
@@ -103,6 +107,7 @@ function updateWalletBalanceThroughSNS(pk,sk, balance) {
             "sk": sk
         },
         UpdateExpression: "set wallet_balance = wallet_balance + :ab",
+        ConditionExpression: 'attribute_exists(wallet_balance)',
         ExpressionAttributeValues:{
             ":ab": balance,
         },
@@ -163,6 +168,7 @@ function updateAccountBalanceItem(pk, sk, balance) {
             "sk": sk
         },
         UpdateExpression: "set account_balance = account_balance + :ab",
+        ConditionExpression: 'attribute_exists(account_balance)',
         ExpressionAttributeValues:{
             ":ab": balance,
         },
@@ -214,8 +220,4 @@ function isEqual(obj1,obj2){
 
 function isNotEqual(obj1, obj2) {
     return !isEqual(obj1, obj2);
-}
-
-function isNotEmpty(obj) {
-    return !isEmpty(obj);
 }
