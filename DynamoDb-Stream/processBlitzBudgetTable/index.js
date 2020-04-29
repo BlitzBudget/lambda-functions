@@ -42,13 +42,14 @@ function addNewBankAccount(record) {
     var params = {
       TableName:'blitzbudget',
       Item:{
-            "pk": record.dynamodb.Keys.pk.S,
+            "pk": record.dynamodb.Keys.sk.S,
             "sk": randomValue,
             "account_type": 'ASSET',
             "bank_account_name": 'Cash',
             "linked": false,
             "account_balance": 0,
             "selected_account": true,
+            "primary_wallet": record.dynamodb.Keys.pk.S
       }
     };
     
@@ -68,16 +69,19 @@ function addNewBankAccount(record) {
 }
 
 function updateWalletBalance(record) {
-    let pk = record.dynamodb.Keys.pk.S, balance = 0;
+    let pk = record.dynamodb.Keys.pk.S, balance = 0,primaryWalletId;
     
     console.log("event is %j for updating the wallet balance", record.eventName);
     
     if(isEqual(record.eventName, 'INSERT')) {
         balance = parseInt(record.dynamodb.NewImage['account_balance'].N);
+        primaryWalletId = record.dynamodb.NewImage['primary_wallet'];
     } else if(isEqual(record.eventName, 'REMOVE')) {
         balance = parseInt(record.dynamodb.OldImage['account_balance'].N) * -1;
+        primaryWalletId = record.dynamodb.OldImage['primary_wallet'];
     } else if(isEqual(record.eventName, 'MODIFY')) {
         balance = parseInt(record.dynamodb.NewImage['account_balance'].N) + (parseInt(record.dynamodb.OldImage['account_balance'].N) * -1);
+        primaryWalletId = record.dynamodb.NewImage['primary_wallet'];
     }
     
     console.log("Adding the difference %j to the wallet", balance);
@@ -88,11 +92,35 @@ function updateWalletBalance(record) {
     }
     
     
-    events.push(updateWalletBalanceThroughSNS(pk, balance));
+    events.push(updateWalletBalanceThroughSNS(primaryWalletId, pk, balance));
 }
 
-function updateWalletBalanceThroughSNS(pk) {
-  
+function updateWalletBalanceThroughSNS(pk,sk, balance) {
+  let params = {
+        TableName: 'blitzbudget',
+        Key:{
+            "pk": pk,
+            "sk": sk
+        },
+        UpdateExpression: "set wallet_balance = wallet_balance + :ab",
+        ExpressionAttributeValues:{
+            ":ab": balance,
+        },
+        ReturnValues:"UPDATED_NEW"
+    };
+    
+    console.log("Updating the item...");
+    return new Promise((resolve, reject) => {
+        docClient.update(params, function(err, data) {
+            if (err) {
+                console.error("Unable to update item. Error JSON:", JSON.stringify(err, null, 2));
+                reject(err);
+            } else {
+                console.log("UpdateItem succeeded:", JSON.stringify(data, null, 2));
+                resolve(data);
+            }
+        });
+    });
 }
 
 function updateAccountBalance(record) {
@@ -156,36 +184,36 @@ function updateAccountBalanceItem(pk, sk, balance) {
 }
 
 function  isEmpty(obj) {
-	// Check if objext is a number or a boolean
-	if(typeof(obj) == 'number' || typeof(obj) == 'boolean') return false; 
-	
-	// Check if obj is null or undefined
-	if (obj == null || obj === undefined) return true;
-	
-	// Check if the length of the obj is defined
-	if(typeof(obj.length) != 'undefined') return obj.length == 0;
-	 
-	// check if obj is a custom obj
-	for(let key in obj) {
+    // Check if objext is a number or a boolean
+    if(typeof(obj) == 'number' || typeof(obj) == 'boolean') return false; 
+    
+    // Check if obj is null or undefined
+    if (obj == null || obj === undefined) return true;
+    
+    // Check if the length of the obj is defined
+    if(typeof(obj.length) != 'undefined') return obj.length == 0;
+     
+    // check if obj is a custom obj
+    for(let key in obj) {
         if(obj.hasOwnProperty(key))return false;
     }
 
-	return true;
+    return true;
 }
 
 function includesStr(arr, val){
-	return isEmpty(arr) ? null : arr.includes(val); 
+    return isEmpty(arr) ? null : arr.includes(val); 
 }
 
 function isEqual(obj1,obj2){
-	if (JSON.stringify(obj1) === JSON.stringify(obj2)) {
-	    return true;
-	}
-	return false;
+    if (JSON.stringify(obj1) === JSON.stringify(obj2)) {
+        return true;
+    }
+    return false;
 }
 
 function isNotEqual(obj1, obj2) {
-	return !isEqual(obj1, obj2);
+    return !isEqual(obj1, obj2);
 }
 
 function isNotEmpty(obj) {

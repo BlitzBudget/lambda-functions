@@ -27,7 +27,8 @@ function addNewWallet(event) {
             "pk": event['body-json'].financialPortfolioId,
             "sk": randomValue,
             "currency": event['body-json'].currency,
-            "read_only": event['body-json'].readOnly
+            "read_only": event['body-json'].readOnly,
+            "wallet_balance": 0
       }
     };
     
