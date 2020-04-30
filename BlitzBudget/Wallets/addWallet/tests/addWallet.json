@@ -1,8 +1,7 @@
 {
   "body-json": {
-    "financialPortfolioId": "PrimaryWallet#93202082911265",
-    "currency": "American Dollar",
-    "readOnly": true
+    "walletId": "PrimaryWallet#93202082911265",
+    "currency": "American Dollar"
   },
   "params": {
     "path": {},

@@ -24,11 +24,12 @@ function addNewWallet(event) {
     var params = {
       TableName:'blitzbudget',
       Item:{
-            "pk": event['body-json'].financialPortfolioId,
+            "pk": event['body-json'].walletId,
             "sk": randomValue,
             "currency": event['body-json'].currency,
-            "read_only": event['body-json'].readOnly,
-            "wallet_balance": 0
+            "wallet_balance": 0,
+            "total_asset_balance": 0,
+            "total_debt_balance": 0
       }
     };
     
