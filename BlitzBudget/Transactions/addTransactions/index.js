@@ -18,7 +18,9 @@ exports.handler = async (event) => {
 };
 
 function addNewTransaction(event) {
-    let today = new Date(event['body-json'].dateMeantFor);
+    let today = new Date();
+    today.setYear(event['body-json'].dateMeantFor.substring(5, 9));
+    today.setMonth(parseInt(event['body-json'].dateMeantFor.substring(10, 12)) -1);
     let randomValue = "Transaction#" + today.toISOString(); 
         
     var params = {
@@ -30,7 +32,8 @@ function addNewTransaction(event) {
             "description": event['body-json'].description,
             "category": event['body-json'].category,
             "recurrence": event['body-json'].recurrence,
-            "account": event['body-json'].account
+            "account": event['body-json'].account,
+            "date": event['body-json'].dateMeantFor
       }
     };
     

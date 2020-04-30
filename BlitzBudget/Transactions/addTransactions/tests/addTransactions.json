@@ -1,11 +1,11 @@
 {
   "body-json": {
-    "financialPortfolioId": "Wallet#93202082911265",
-    "dateMeantFor": "2019-03-25T00:11:13.000Z",
-    "amount": 2,
+    "financialPortfolioId": "Wallet#2020-04-29T17:54:46.326Z",
+    "dateMeantFor": "Date#2019-03-25T00:11:12.000Z",
+    "amount": 10,
     "category": "Pay Off Debt",
     "recurrence": "MONTHLY",
-    "account": "BankAccount#2020-04-29T12:24:26.073Z"
+    "account": "BankAccount#2020-04-29T17:54:46.712Z"
   },
   "params": {
     "path": {},
