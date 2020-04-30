@@ -1,9 +1,9 @@
 {
   "body-json": {
-    "financialPortfolioId": "Wallet#2020-04-29T17:54:46.326Z",
-    "dateMeantFor": "Date#2019-03-25T00:11:12.000Z",
+    "walletId": "Wallet#2020-04-29T17:54:46.326Z",
+    "dateMeantFor": "Date#2020-04-30T11:10:36.311Z",
     "amount": 10,
-    "category": "Pay Off Debt",
+    "category": "Beauty",
     "recurrence": "MONTHLY",
     "account": "BankAccount#2020-04-29T17:54:46.712Z"
   },
@@ -53,6 +53,6 @@
     "user-arn": "",
     "request-id": "92231855-49fd-41da-87ed-dfa4fc0d0a01",
     "resource-id": "7ftbxq",
-    "resource-path": "/transactions"
+    "resource-path": "/goals"
   }
 }
