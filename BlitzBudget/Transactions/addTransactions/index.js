@@ -40,11 +40,12 @@ function createCategoryItem(event) {
           "pk": event['body-json'].walletId,
           "sk": randomValue,
         },
-        UpdateExpression: "set category_total = :r, category_name = :p, category_type = :q",
+        UpdateExpression: "set category_total = :r, category_name = :p, category_type = :q, date = :s",
         ExpressionAttributeValues:{
             ":r": 0,
             ":p": event['body-json'].category,
-            ":q": event['body-json'].categoryType
+            ":q": event['body-json'].categoryType,
+            ":s": event['body-json'].dateMeantFor,
         },
         ReturnValues: 'ALL_NEW'
     }
