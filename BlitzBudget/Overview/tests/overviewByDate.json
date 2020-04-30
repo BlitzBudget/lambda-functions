@@ -3,7 +3,7 @@
   "params": {
     "path": {},
     "querystring": {
-      "financialPortfolioId": "Wallet#93202082911265",
+      "walletId": "Wallet#2020-04-29T17:54:46.326Z",
       "dateMeantFor": "2020-04"
     },
     "header": {

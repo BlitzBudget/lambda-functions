@@ -10,9 +10,9 @@ let events = [];
 
 exports.handler = async (event) => {
   events = [];
-  console.log("fetching item for the financialPortfolioId ", event.params.querystring.financialPortfolioId);
+  console.log("fetching item for the walletId ", event.params.querystring.walletId);
   let overviewData = [];
-  let walletId = event.params.querystring.financialPortfolioId;
+  let walletId = event.params.querystring.walletId;
   let dateMeantFor = event.params.querystring.dateMeantFor;
   
   events.push(getTransactionsData(walletId, dateMeantFor));
