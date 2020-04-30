@@ -1,15 +1,11 @@
 {
-  "body-json": {
-    "financialPortfolioId": "Wallet#2020-04-29T17:54:46.326Z",
-    "dateMeantFor": "Date#2019-03-25T00:11:12.000Z",
-    "amount": 10,
-    "category": "Pay Off Debt",
-    "recurrence": "MONTHLY",
-    "account": "BankAccount#2020-04-29T17:54:46.712Z"
-  },
+  "body-json": {},
   "params": {
     "path": {},
-    "querystring": {},
+    "querystring": {
+      "financialPortfolioId": "Wallet#93202082911265",
+      "dateMeantFor": "2020-04"
+    },
     "header": {
       "Accept": "*/*",
       "Accept-Encoding": "gzip, deflate, br",
@@ -45,7 +41,7 @@
     "cognito-authentication-type": "",
     "cognito-identity-id": "",
     "cognito-identity-pool-id": "",
-    "http-method": "POST",
+    "http-method": "GET",
     "stage": "prod",
     "source-ip": "81.40.21.245",
     "user": "",
@@ -53,6 +49,6 @@
     "user-arn": "",
     "request-id": "92231855-49fd-41da-87ed-dfa4fc0d0a01",
     "resource-id": "7ftbxq",
-    "resource-path": "/transactions"
+    "resource-path": "/overview"
   }
 }
