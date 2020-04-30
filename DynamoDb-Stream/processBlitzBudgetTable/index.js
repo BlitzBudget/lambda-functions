@@ -19,14 +19,16 @@ exports.handler = async (event, context) => {
         let sortKey = record.dynamodb.Keys.sk.S;
         
         // If the entries are not transactions / bank accounts then do not process
-        if(includesStr(sortKey, 'Transaction')) {
+        if(includesStr(sortKey, 'Transaction#')) {
             updateCategoryTotal(record);
             updateAccountBalance(record);
-        } else if(includesStr(sortKey, 'BankAccount')) {
+        } else if(includesStr(sortKey, 'BankAccount#')) {
             updateWalletBalance(record);
-        } else if(includesStr(sortKey, 'Wallet') && isEqual(record.eventName, 'INSERT')) {
+        } else if(includesStr(sortKey, 'Wallet#') && isEqual(record.eventName, 'INSERT')) {
             events.push(addNewBankAccount(record));
-        }
+        } else if(includesStr(sortKey, 'Category#')) {
+            updateDateTotal(record);
+        } 
     }
     
     try {
@@ -38,8 +40,70 @@ exports.handler = async (event, context) => {
     return `Successfully processed ${event.Records.length} records.`;
 };
 
+function updateDateTotal(record) {
+    let pk = record.dynamodb.Keys.pk.S, balance = 0, date, categoryType, income = 0, expense = 0;
+    console.log("event is %j", record.eventName);
+    if(isEqual(record.eventName, 'INSERT')) {
+        return;
+    } else if(isEqual(record.eventName, 'REMOVE')) {
+        balance = parseInt(record.dynamodb.OldImage['category_total'].N) * -1;
+        categoryType = record.dynamodb.OldImage['category_type'].S;
+        date = record.dynamodb.OldImage.date.S;
+    } else if(isEqual(record.eventName, 'MODIFY')) {
+        balance = parseInt(record.dynamodb.NewImage['category_total'].N) + (parseInt(record.dynamodb.OldImage['category_total'].N) * -1);
+        categoryType = record.dynamodb.NewImage['category_type'].S;
+        date = record.dynamodb.NewImage.date.S;
+    }
+    
+    console.log("adding the difference %j", balance, "to the account %j", date);
+    
+    // if balance is 0 then do nothing
+    if(balance == 0) {
+        return;
+    }
+    
+    if(isEqual(categoryType, "Expense")) {
+        expense = balance;
+    } else if(isEqual(categoryType, "Income")) {
+        income = balance;
+    }
+    
+    events.push(updateDateItem(pk, date, balance, income, expense));
+}
+
+function updateDateItem(pk, sk, difference, income, expense) {
+    let params = {
+        TableName: 'blitzbudget',
+        Key:{
+            "pk": pk,
+            "sk": sk
+        },
+        UpdateExpression: "set balance = balance + :ab, income_total = income_total + :it, expense_total = expense_total + :et",
+        ConditionExpression: 'attribute_exists(balance)',
+        ExpressionAttributeValues:{
+            ":ab": difference,
+            ":it": income,
+            ":et": expense
+        },
+        ReturnValues:"NONE"
+    };
+    
+    console.log("Updating the item...");
+    return new Promise((resolve, reject) => {
+        docClient.update(params, function(err, data) {
+            if (err) {
+                console.error("Unable to update item. Error JSON:", JSON.stringify(err, null, 2));
+                reject(err);
+            } else {
+                console.log("UpdateItem succeeded:", JSON.stringify(data, null, 2));
+                resolve(data);
+            }
+        });
+    });
+}
+
 function updateCategoryTotal(record) {
-     let pk = record.dynamodb.Keys.pk.S, balance = 0, category;
+    let pk = record.dynamodb.Keys.pk.S, balance = 0, category;
     console.log("event is %j", record.eventName);
     if(isEqual(record.eventName, 'INSERT')) {
         balance = parseInt(record.dynamodb.NewImage.amount.N);
