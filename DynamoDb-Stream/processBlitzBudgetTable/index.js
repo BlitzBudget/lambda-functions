@@ -124,19 +124,22 @@ function addNewBankAccount(record) {
 }
 
 function updateWalletBalance(record) {
-    let pk = record.dynamodb.Keys.pk.S, balance = 0,primaryWalletId;
+    let pk = record.dynamodb.Keys.pk.S, balance = 0,primaryWalletId, accountType, assetBalance = 0, debtBalance = 0;
     
     console.log("event is %j for updating the wallet balance", record.eventName);
     
     if(isEqual(record.eventName, 'INSERT')) {
         balance = parseInt(record.dynamodb.NewImage['account_balance'].N);
         primaryWalletId = record.dynamodb.NewImage['primary_wallet'].S;
+        accountType = record.dynamodb.NewImage['account_type'].S;
     } else if(isEqual(record.eventName, 'REMOVE')) {
         balance = parseInt(record.dynamodb.OldImage['account_balance'].N) * -1;
         primaryWalletId = record.dynamodb.OldImage['primary_wallet'].S;
+        accountType = record.dynamodb.OldImage['account_type'].S;
     } else if(isEqual(record.eventName, 'MODIFY')) {
         balance = parseInt(record.dynamodb.NewImage['account_balance'].N) + (parseInt(record.dynamodb.OldImage['account_balance'].N) * -1);
         primaryWalletId = record.dynamodb.NewImage['primary_wallet'].S;
+        accountType = record.dynamodb.NewImage['account_type'].S;
     }
     
     console.log("Adding the difference %j to the wallet", balance);
@@ -146,28 +149,28 @@ function updateWalletBalance(record) {
         return;
     }
     
-    /*
-    * If the wallet is primary wallet then create or update item
-    */
-    if(isEqual(primaryWalletId, pk)) {
-        
-        return;
+    if(isEqual(accountType, "ASSET")) {
+        assetBalance = balance;
+    } else if(isEqual(accountType, "DEBT")) {
+        debtBalance = balance;
     }
     
-    events.push(updateWalletBalanceItem(primaryWalletId, pk, balance));
+    events.push(updateWalletBalanceItem(primaryWalletId, pk, balance, assetBalance, debtBalance));
 }
 
-function updateWalletBalanceItem(pk,sk, balance) {
+function updateWalletBalanceItem(pk,sk, balance, assetBalance, debtBalance) {
   let params = {
         TableName: 'blitzbudget',
         Key:{
             "pk": pk,
             "sk": sk
         },
-        UpdateExpression: "set wallet_balance = wallet_balance + :ab",
+        UpdateExpression: "set wallet_balance = wallet_balance + :ab, total_asset_balance = total_asset_balance + :tab, total_debt_balance = total_debt_balance + :dab",
         ConditionExpression: 'attribute_exists(wallet_balance)',
         ExpressionAttributeValues:{
             ":ab": balance,
+            ":tab": assetBalance,
+            ":dab": debtBalance,
         },
         ReturnValues:"NONE"
     };
