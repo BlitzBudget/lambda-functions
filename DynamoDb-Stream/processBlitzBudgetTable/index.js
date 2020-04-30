@@ -10,6 +10,8 @@ AWS.config.update({region: 'eu-west-1'});
 var docClient = new AWS.DynamoDB.DocumentClient();
 
 exports.handler = async (event, context) => {
+    events = [];
+    
     console.log('Received event:', JSON.stringify(event, null, 2));
     for (const record of event.Records) {
         console.log(record.eventID);
@@ -37,7 +39,56 @@ exports.handler = async (event, context) => {
 };
 
 function updateCategoryTotal(record) {
+     let pk = record.dynamodb.Keys.pk.S, balance = 0, category;
+    console.log("event is %j", record.eventName);
+    if(isEqual(record.eventName, 'INSERT')) {
+        balance = parseInt(record.dynamodb.NewImage.amount.N);
+        category = record.dynamodb.NewImage.category.S;
+    } else if(isEqual(record.eventName, 'REMOVE')) {
+        balance = parseInt(record.dynamodb.OldImage.amount.N) * -1;
+        category = record.dynamodb.OldImage.category.S;
+    } else if(isEqual(record.eventName, 'MODIFY')) {
+        balance = parseInt(record.dynamodb.NewImage.amount.N) + (parseInt(record.dynamodb.OldImage.amount.N) * -1);
+        category = record.dynamodb.NewImage.category.S;
+    }
     
+    console.log("adding the difference %j", balance, "to the account %j", category);
+    
+    // if balance is 0 then do nothing
+    if(balance == 0) {
+        return;
+    }
+    
+    events.push(updateCategoryItem(pk, category, balance));
+}
+
+function updateCategoryItem(pk, sk, difference) {
+    let params = {
+        TableName: 'blitzbudget',
+        Key:{
+            "pk": pk,
+            "sk": sk
+        },
+        UpdateExpression: "set category_total = category_total + :ab",
+        ConditionExpression: 'attribute_exists(category_total)',
+        ExpressionAttributeValues:{
+            ":ab": difference,
+        },
+        ReturnValues:"NONE"
+    };
+    
+    console.log("Updating the item...");
+    return new Promise((resolve, reject) => {
+        docClient.update(params, function(err, data) {
+            if (err) {
+                console.error("Unable to update item. Error JSON:", JSON.stringify(err, null, 2));
+                reject(err);
+            } else {
+                console.log("UpdateItem succeeded:", JSON.stringify(data, null, 2));
+                resolve(data);
+            }
+        });
+    });
 }
 
 function addNewBankAccount(record) {
@@ -95,6 +146,13 @@ function updateWalletBalance(record) {
         return;
     }
     
+    /*
+    * If the wallet is primary wallet then create or update item
+    */
+    if(isEqual(primaryWalletId, pk)) {
+        
+        return;
+    }
     
     events.push(updateWalletBalanceItem(primaryWalletId, pk, balance));
 }
@@ -111,7 +169,7 @@ function updateWalletBalanceItem(pk,sk, balance) {
         ExpressionAttributeValues:{
             ":ab": balance,
         },
-        ReturnValues:"UPDATED_NEW"
+        ReturnValues:"NONE"
     };
     
     console.log("Updating the item...");

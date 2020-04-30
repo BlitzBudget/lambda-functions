@@ -4,6 +4,7 @@
     "dateMeantFor": "Date#2020-04-30T11:10:36.311Z",
     "amount": 10,
     "category": "Beauty",
+    "categoryType": "Expense",
     "recurrence": "MONTHLY",
     "account": "BankAccount#2020-04-29T17:54:46.712Z"
   },
@@ -53,6 +54,6 @@
     "user-arn": "",
     "request-id": "92231855-49fd-41da-87ed-dfa4fc0d0a01",
     "resource-id": "7ftbxq",
-    "resource-path": "/goals"
+    "resource-path": "/transactions"
   }
 }
