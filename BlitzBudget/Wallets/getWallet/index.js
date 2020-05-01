@@ -14,7 +14,7 @@ exports.handler = async (event) => {
     await getWalletItem(event.params.querystring.financialPortfolioId).then(function(result) {
        walletData = result;
     }, function(err) {
-       throw new Error("Unexpected error occured while fetching the Wallet " + err);
+       throw new Error("Unable error occured while fetching the Wallet " + err);
     });
 
     return walletData;
