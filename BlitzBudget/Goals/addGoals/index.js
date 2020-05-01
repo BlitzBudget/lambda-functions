@@ -30,7 +30,9 @@ function addNewGoals(event) {
             "final_amount": event['body-json'].targetAmount,
             "preferable_target_date": event['body-json'].targetDate,
             "target_id": event['body-json'].targetId,
-            "target_type": event['body-json'].targetType
+            "target_type": event['body-json'].targetType,
+            "creation_date": new Date().toISOString(),
+            "updated_date": new Date().toISOString()
       }
     };
     

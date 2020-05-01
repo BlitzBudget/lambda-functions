@@ -40,12 +40,14 @@ function createCategoryItem(event) {
           "pk": event['body-json'].walletId,
           "sk": randomValue,
         },
-        UpdateExpression: "set category_total = :r, category_name = :p, category_type = :q, date_meant_for = :s",
+        UpdateExpression: "set category_total = :r, category_name = :p, category_type = :q, date_meant_for = :s, creation_date = :c, updated_date = :u"
         ExpressionAttributeValues:{
             ":r": 0,
             ":p": event['body-json'].category,
             ":q": event['body-json'].categoryType,
             ":s": event['body-json'].dateMeantFor,
+            ":c": new Date().toISOString(),
+            ":u": new Date().toISOString()
         },
         ReturnValues: 'ALL_NEW'
     }
@@ -79,7 +81,9 @@ function addNewTransaction(event) {
             "category": event['body-json'].category,
             "recurrence": event['body-json'].recurrence,
             "account": event['body-json'].account,
-            "date_meant_for": event['body-json'].dateMeantFor
+            "date_meant_for": event['body-json'].dateMeantFor,
+            "creation_date": new Date().toISOString(),
+            "updated_date": new Date().toISOString()
       }
     };
     

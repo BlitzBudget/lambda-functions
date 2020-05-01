@@ -29,6 +29,8 @@ function addNewGoals(event) {
             "category": event['body-json'].category,
             "planned": event['body-json'].planned,
             "auto_generated": false,
+            "creation_date": new Date().toISOString(),
+            "updated_date": new Date().toISOString()
       }
     };
     

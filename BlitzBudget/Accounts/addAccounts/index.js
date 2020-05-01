@@ -31,6 +31,9 @@ function addNewBankAccounts(event) {
             "linked": event['body-json'].linked,
             "account_balance": event['body-json'].accountBalance,
             "selected_account": event['body-json'].selectedAccount,
+            "primary_wallet": event['body-json'].primaryWallet,
+            "creation_date": new Date().toISOString(),
+            "updated_date": new Date().toISOString()
       }
     };
     
