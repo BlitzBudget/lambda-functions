@@ -48,11 +48,11 @@ function updateDateTotal(record) {
     } else if(isEqual(record.eventName, 'REMOVE')) {
         balance = parseInt(record.dynamodb.OldImage['category_total'].N) * -1;
         categoryType = record.dynamodb.OldImage['category_type'].S;
-        date = record.dynamodb.OldImage.date.S;
+        date = record.dynamodb.OldImage['date_meant_for'].S;
     } else if(isEqual(record.eventName, 'MODIFY')) {
         balance = parseInt(record.dynamodb.NewImage['category_total'].N) + (parseInt(record.dynamodb.OldImage['category_total'].N) * -1);
         categoryType = record.dynamodb.NewImage['category_type'].S;
-        date = record.dynamodb.NewImage.date.S;
+        date = record.dynamodb.NewImage['date_meant_for'].S;
     }
     
     console.log("adding the difference %j", balance, "to the account %j", date);
