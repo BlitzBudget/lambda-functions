@@ -71,12 +71,16 @@ function updatingTransactions(event) {
     if(isEmpty(expAttrVal)) {
       return;
     }
+
+    updateExp += ', #update = :u';
+    expAttrVal[':u'] = new Date().toISOString();
+    expAttrNames['#update'] = 'updated_date';
   
     var params = {
       TableName:'blitzbudget',
       Key: {
         "pk": event['body-json'].financialPortfolioId,
-        "sk": event['body-json'].transactionId,
+        "sk": event['body-json'].transactionId
       },
       UpdateExpression: updateExp,
       ExpressionAttributeNames: expAttrNames,

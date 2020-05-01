@@ -63,6 +63,10 @@ function updatingBudgets(event) {
     if(isEmpty(expAttrVal)) {
       return;
     }
+
+    updateExp += ', #update = :u';
+    expAttrVal[':u'] = new Date().toISOString();
+    expAttrNames['#update'] = 'updated_date';
   
     var params = {
       TableName:'blitzbudget',
