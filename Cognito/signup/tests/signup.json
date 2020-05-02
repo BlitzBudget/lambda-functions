@@ -1,8 +1,9 @@
 {
-  "body-json": {
-    "confirmationCode": "778402",
+  "body-json": {    
     "password" : "ABCDef18.",
-    "username" : "nagarjun_nagesh@outlook.com"
+    "username" : "nagarjun_nagesh@outlook.com",
+    "firstname" : "Nagarjun",
+    "lastname" : "Nagesh"
   },
   "params": {
     "path": {},
@@ -50,6 +51,6 @@
     "user-arn": "",
     "request-id": "92231855-49fd-41da-87ed-dfa4fc0d0a01",
     "resource-id": "7ftbxq",
-    "resource-path": "/confirm-signup"
+    "resource-path": "/signup"
   }
 }

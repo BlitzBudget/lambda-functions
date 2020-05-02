@@ -2,6 +2,8 @@ const AWS = require('aws-sdk')
 AWS.config.update({region: 'eu-west-1'});
 let cognitoidentityserviceprovider = new AWS.CognitoIdentityServiceProvider();
 
+var sns = new AWS.SNS();
+
 exports.handler = async (event) => {
     let response = {};
     let params = {
@@ -10,9 +12,7 @@ exports.handler = async (event) => {
       Username: event['body-json'].username, /* required */
     };
     
-    await confirmSignUp(params).then(function(result) {
-       response = result;
-    }, function(err) {
+    await confirmSignUp(params).then(function(result) {}, function(err) {
        throw new Error("Unable to confirm signup from cognito  " + err);
     });
     
@@ -31,9 +31,54 @@ exports.handler = async (event) => {
        throw new Error("Unable to login from cognito  " + err);
     });
     
+    await getUser(response).then(function(result) {
+       response.Username = result.Username;
+       response.UserAttributes = result.UserAttributes;
+       console.log("logged in the user " + JSON.stringify(result.Username));
+    }, function(err) {
+       throw new Error("Unable to signin from cognito  " + err);
+    });
+
+    await addWalletThroughSNS(response.UserAttributes, localeToCurrency[event.params.header['CloudFront-Viewer-Country']]).then(function(result) {}, function(err) {
+      throw new Error("Unable to add new wallet" + err);
+    });
     
     return response;
 };
+
+function addWalletThroughSNS(userAttributes, currency) {
+    let financialPortfolioId = '';
+    for(let i = 0, len = userAttributes.length; i < len; i++) {
+      let attribute = userAttributes[i];
+      
+      if(isEqual(attribute.Name, 'custom:financialPortfolioId')) {
+        financialPortfolioId = attribute.Value;
+        break;
+      }
+    }
+
+    let params = {
+        Message: financialPortfolioId,
+        MessageAttributes: {
+            "currency": {
+                "DataType": "String",
+                "StringValue": currency
+            }
+        },
+        TopicArn: 'arn:aws:sns:eu-west-1:064559090307:addWallet'
+    };
+
+    return new Promise((resolve, reject) => {
+      sns.publish(params,  function(err, data) {
+            if (err) {
+                console.log("Error ", err);
+                reject(err);
+            } else {
+                resolve( "Reset account to SNS published");
+            }
+        });
+    });
+}
 
 function confirmSignUp(params) {
     return new Promise((resolve, reject) => {
@@ -63,6 +108,32 @@ function initiateAuth(params) {
           }
         });
     });
+}
+
+function getUser(response) {
+    let params = {
+      AccessToken: response.AuthenticationResult.AccessToken /* required */
+    };
+
+    return new Promise((resolve, reject) => {
+        cognitoidentityserviceprovider.getUser(params, function(err, data) {
+          if (err) {
+              console.log(err, err.stack); // an error occurred
+              reject(err);
+          }
+          else {
+              console.log(data);           // successful response
+              resolve(data);
+          }
+        });
+    });
+}
+
+function isEqual(obj1,obj2){
+  if (JSON.stringify(obj1) === JSON.stringify(obj2)) {
+      return true;
+  }
+  return false;
 }
 
 let localeToCurrency = {};
