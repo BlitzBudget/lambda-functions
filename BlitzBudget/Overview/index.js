@@ -14,6 +14,15 @@ exports.handler = async (event) => {
   let overviewData = [];
   let walletId = event.params.querystring.walletId;
   let dateMeantFor = event.params.querystring.dateMeantFor;
+  let userId = event.params.querystring.userId;
+  
+  if(isEmpty(walletId) && isNotEmpty(userId)) {
+      await getWalletsData(userId).then(function(result) {}, function(err) {
+         throw new Error("Unable error occured while fetching the transaction " + err);
+      });
+  } else if(isNotEmpty(walletId) && isNotEmpty(userId)) {
+    events.push(getWalletData(userId, walletId));
+  }
   
   events.push(getTransactionsData(walletId, dateMeantFor));
   events.push(getBudgetsData(walletId, dateMeantFor));
@@ -30,16 +39,80 @@ exports.handler = async (event) => {
   /*
   * Get Date Individually
   */
-  let dateData = await getDateData(walletId, dateMeantFor);
+  let dateData = await getDateData(walletId, dateMeantFor).then(function(result) {}, function(err) {
+     throw new Error("Unable error occured while fetching the transaction " + err);
+  });
+  
   console.log("date entry %j", dateData);
-  if(isEmpty(dateData.Date)) {
+  if(isEmpty(dateData.Date) && isNotEmpty(overviewData[3].BankAccount)) {
     console.log("Date entry is empty so creating the date object");
-    dateData = await updateDateData(walletId, dateMeantFor);
+    dateData = await updateDateData(walletId, dateMeantFor).then(function(result) {}, function(err) {
+      throw new Error("Unable error occured while fetching the transaction " + err);
+    });
   }
   overviewData.push(dateData);
 
   return overviewData;
 };
+
+function getWalletData(userId, walletId) {
+    
+    var params = {
+      AttributesToGet: [
+        "currency",
+        "total_asset_balance", 
+        "total_debt_balance", 
+        "wallet_balance"
+      ],
+      TableName : 'blitzbudget',
+      Key : { 
+        "pk" : {
+          "S" : userId
+        },
+        "sk" : {
+          "S" : walletId
+        }
+      }
+    }
+    
+    // Call DynamoDB to read the item from the table
+    return new Promise((resolve, reject) => {
+        docClient.getItem(params, function(err, data) {
+          if (err) {
+            console.log("Error ", err);
+            reject(err);
+          } else {
+            console.log("data retrieved ", JSON.stringify(data.Items));
+            resolve({ "BankAccount" : data.Items});
+          }
+        });
+    });
+}
+
+function getWalletsData(userId) {
+  var params = {
+      TableName: 'blitzbudget',
+      KeyConditionExpression   : "pk = :pk and begins_with(sk, :items)",
+      ExpressionAttributeValues: {
+          ":pk": userId,
+          ":items": "Wallet#"
+      },
+      ProjectionExpression: "currency, pk, sk, read_only, total_asset_balance, total_debt_balance, wallet_balance"
+    };
+    
+    // Call DynamoDB to read the item from the table
+    return new Promise((resolve, reject) => {
+        docClient.query(params, function(err, data) {
+          if (err) {
+            console.log("Error ", err);
+            reject(err);
+          } else {
+            console.log("data retrieved ", JSON.stringify(data.Items));
+            resolve({ "BankAccount" : data.Items});
+          }
+        });
+    });
+}
 
 function updateDateData(pk, dateMeantFor) {
   let today = new Date();
@@ -219,4 +292,12 @@ function  isEmpty(obj) {
     }
 
     return true;
+}
+
+function isNotEmpty(obj) {
+  return !isEmpty(obj);
+}
+
+function includesStr(arr, val){
+  return isEmpty(arr) ? null : arr.includes(val); 
 }

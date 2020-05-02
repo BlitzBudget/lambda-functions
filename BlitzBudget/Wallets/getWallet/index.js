@@ -8,10 +8,10 @@ var docClient = new AWS.DynamoDB.DocumentClient({region: 'eu-west-1'});
 
 
 exports.handler = async (event) => {
-  console.log("fetching item for the financialPortfolioId ", event.params.querystring.financialPortfolioId);
+  console.log("fetching item for the walletId ", event.params.querystring.walletId);
   let walletData = [];
   
-    await getWalletItem(event.params.querystring.financialPortfolioId).then(function(result) {
+    await getWalletItem(event.params.querystring.walletId).then(function(result) {
        walletData = result;
     }, function(err) {
        throw new Error("Unable error occured while fetching the Wallet " + err);
@@ -22,15 +22,15 @@ exports.handler = async (event) => {
 
 
 // Get Wallet Item
-function getWalletItem(financialPortfolioId) {
+function getWalletItem(walletId) {
     var params = {
       TableName: 'blitzbudget',
-      KeyConditionExpression   : "pk = :financialPortfolioId and begins_with(sk, :items)",
+      KeyConditionExpression   : "pk = :walletId and begins_with(sk, :items)",
       ExpressionAttributeValues: {
-          ":financialPortfolioId": financialPortfolioId,
+          ":walletId": walletId,
           ":items": "Wallet#"
       },
-      ProjectionExpression: "currency, pk, sk, read_only"
+      ProjectionExpression: "currency, pk, sk, total_asset_balance, total_debt_balance, wallet_balance"
     };
     
     // Call DynamoDB to read the item from the table
