@@ -13,7 +13,7 @@ exports.handler = async (event) => {
     await changePassword(params).then(function(result) {
        response = result;
     }, function(err) {
-       throw new Error("Error getting user attributes from cognito  " + err);
+       throw new Error("Unable to change password from cognito  " + err);
     });
     
     

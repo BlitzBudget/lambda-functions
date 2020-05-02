@@ -7,14 +7,13 @@ exports.handler = async (event) => {
     let params = {
       ClientId: 'l7nmpavlqp3jcfjbr237prqae', /* required */
       ConfirmationCode: event['body-json'].confirmationCode, /* required */
-      Password: event['body-json'].password, /* required */
       Username: event['body-json'].username, /* required */
     };
     
-    await confirmForgotPassword(params).then(function(result) {
+    await confirmSignUp(params).then(function(result) {
        response = result;
     }, function(err) {
-       throw new Error("Unable to confirm forgot password from cognito  " + err);
+       throw new Error("Unable to confirm signup from cognito  " + err);
     });
     
     let loginParams = {
@@ -36,9 +35,9 @@ exports.handler = async (event) => {
     return response;
 };
 
-function confirmForgotPassword(params) {
+function confirmSignUp(params) {
     return new Promise((resolve, reject) => {
-        cognitoidentityserviceprovider.confirmForgotPassword(params, function(err, data) {
+        cognitoidentityserviceprovider.confirmSignUp(params, function(err, data) {  
           if (err) {
               console.log(err, err.stack); // an error occurred
               reject(err);

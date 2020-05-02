@@ -12,7 +12,7 @@ exports.handler = async (event) => {
     await forgotPassword(params).then(function(result) {
        response = result;
     }, function(err) {
-       throw new Error("Error getting user attributes from cognito  " + err);
+       throw new Error("Unable to initialize forgot password flow from cognito  " + err);
     });
     
     

@@ -5,24 +5,25 @@ let cognitoidentityserviceprovider = new AWS.CognitoIdentityServiceProvider();
 exports.handler = async (event) => {
     let response = {};
     let params = {
-      AuthFlow:  'REFRESH_TOKEN_AUTH',
+      AuthFlow:  'USER_PASSWORD_AUTH',
       ClientId: 'l7nmpavlqp3jcfjbr237prqae', /* required */
       AuthParameters: {
-           "REFRESH_TOKEN" : event['body-json'].refreshToken
+          USERNAME: event['body-json'].username,
+          PASSWORD: event['body-json'].password
       }
     };
     
-    await refreshToken(params).then(function(result) {
+    await initiateAuth(params).then(function(result) {
        response = result;
     }, function(err) {
-       throw new Error("Unable to refresh token from cognito  " + err);
+       throw new Error("Unable to signin from cognito  " + err);
     });
     
     
     return response;
 };
 
-function refreshToken(params) {
+function initiateAuth(params) {
     return new Promise((resolve, reject) => {
         cognitoidentityserviceprovider.initiateAuth(params, function(err, data) {
           if (err) {
