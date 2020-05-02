@@ -5,14 +5,14 @@ let cognitoidentityserviceprovider = new AWS.CognitoIdentityServiceProvider();
 exports.handler = async (event) => {
     let response = {};
     let params = {
-      AuthFlow:  'REFRESH_TOKEN',
+      AuthFlow:  'REFRESH_TOKEN_AUTH',
       ClientId: 'l7nmpavlqp3jcfjbr237prqae', /* required */
       AuthParameters: {
-          REFRESH_TOKEN: event['body-json'].refreshToken
+           "REFRESH_TOKEN" : event['body-json'].refreshToken
       }
     };
     
-    await initiateAuth(params).then(function(result) {
+    await refreshToken(params).then(function(result) {
        response = result;
     }, function(err) {
        throw new Error("Error getting user attributes from cognito  " + err);
@@ -22,7 +22,7 @@ exports.handler = async (event) => {
     return response;
 };
 
-function initiateAuth(params) {
+function refreshToken(params) {
     return new Promise((resolve, reject) => {
         cognitoidentityserviceprovider.initiateAuth(params, function(err, data) {
           if (err) {
