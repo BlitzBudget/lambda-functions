@@ -18,6 +18,10 @@ exports.handler = async (event) => {
     }, function(err) {
        throw new Error("Unable to signin from cognito  " + err);
     });
+    
+    if(event['body-json'].checkPassword == true) {
+        return response;
+    }
 
     await getUser(response).then(function(result) {
        response.Username = result.Username;
