@@ -6,31 +6,31 @@ AWS.config.update({region: 'eu-west-1'});
 // Create the DynamoDB service object
 var docClient = new AWS.DynamoDB.DocumentClient({region: 'eu-west-1'});
 let events = [];
+let overviewData = {};
 
 
 exports.handler = async (event) => {
   events = [];
+  overviewData = {};
   console.log("fetching item for the walletId ", event.params.querystring.walletId);
-  let overviewData = {};
-  let walletData;
   let walletId = event.params.querystring.walletId;
   let today = new Date();
-  let dateMeantFor = today.getYear() + '-' + ('0' + (today.getMonth() + 1)).slice(-2);
+  let dateMeantFor = today.getFullYear() + '-' + ('0' + (today.getMonth() + 1)).slice(-2);
+  console.log("dateMeantFor %j", dateMeantFor);
   let userId = event.params.querystring.userId;
 
   /*
   * Get all dates from one year ago
   */
-  let startsWithDate = today.toISOString();
+  let endsWithDate = today.toISOString();
   let twelveMonthsAgo = today;
   twelveMonthsAgo.setMonth(twelveMonthsAgo.getMonth() - 12);
   twelveMonthsAgo.setDate(1);
-  let endsWithDate = twelveMonthsAgo.toISOString();
+  let startsWithDate = twelveMonthsAgo.toISOString();
   
   // Cognito does not store wallet information nor curreny. All are stored in wallet.
   if(isEmpty(walletId) && isNotEmpty(userId)) {
       await getWalletsData(userId).then(function(result) {
-        walletData = result;
         walletId = result.Wallet[0].sk;
         console.log("retrieved the wallet for the item ", walletId);
       }, function(err) {
@@ -53,35 +53,6 @@ exports.handler = async (event) => {
   
   await Promise.all(events).then(function(result) {
     let c = 0;
-    if(isNotEmpty(result[c].Wallet)) {
-      overviewData['Wallet'] = result[c].Wallet;
-      c++;
-    }
-
-    if(isNotEmpty(result[c].Category)) {
-      overviewData['Category'] = result[c].Category;
-      c++;
-    }
-
-    if(isNotEmpty(result[c].Transaction)) {
-      overviewData['Transaction'] = result[c].Transaction;
-      c++;
-    }
-
-    if(isNotEmpty(result[c].BankAccount)) {
-      overviewData['BankAccount'] = result[c].BankAccount;
-      c++;
-    }
-
-    if(isNotEmpty(result[c].Budget)) {
-      overviewData['Budget'] = result[c].Budget;
-      c++;
-    }
-
-    if(isNotEmpty(result[c].Date)) {
-      overviewData['Date'] = result[c].Date;
-      c++;
-    }
 
      console.log("Cumilative data retrieved ", overviewData);
   }, function(err) {
@@ -91,15 +62,11 @@ exports.handler = async (event) => {
   console.log("date entry is Empty? %j", isEmpty(overviewData.Date));
   if(isEmpty(overviewData.Date)) {
     console.log("Date entry is empty so creating the date object");
-    await updateDateData(walletId, dateMeantFor).then(function(result) {
-      dateData = result;
+    await updateDateData(walletId).then(function(result) {
+      overviewData['Date'].push(result);
     }, function(err) {
       throw new Error("Unable error occured while fetching the transaction " + err);
     });
-  }
-
-  if(isNotEmpty(walletData)) {
-    overviewData.push(walletData);
   }
   
   return overviewData;
@@ -153,8 +120,9 @@ function getWalletData(userId, walletId) {
             console.log("Error ", err);
             reject(err);
           } else {
-            console.log("data retrieved - Wallet %j", JSON.stringify(data.Item));
-            resolve({ "Wallet" : data.Item});
+            console.log("data retrieved - Wallet %j", JSON.stringify(data));
+            overviewData['Wallet'] = data.Items;
+            resolve({ "Wallet" : data});
           }
         });
     });
@@ -179,16 +147,15 @@ function getWalletsData(userId) {
             reject(err);
           } else {
             console.log("data retrieved - Wallet %j", JSON.stringify(data.Items));
+            overviewData['Wallet'] = data.Items;
             resolve({ "Wallet" : data.Items});
           }
         });
     });
 }
 
-function updateDateData(pk, dateMeantFor) {
+function updateDateData(pk) {
   let today = new Date();
-  today.setYear(dateMeantFor.substring(0,4));
-  today.setMonth(parseInt(dateMeantFor.substring(5,7)) -1);
   let randomValue = "Date#" + today.toISOString(); 
   
   var params = {
@@ -264,6 +231,7 @@ function getCategoryData(pk, dateMeantFor) {
             reject(err);
           } else {
             console.log("data retrieved - Category %j", JSON.stringify(data.Items));
+            overviewData['Category'] = data.Items;
             resolve({ "Category" : data.Items});
           }
         });
@@ -290,6 +258,7 @@ function getDateData(pk, startsWithDate, endsWithDate) {
             reject(err);
           } else {
             console.log("data retrieved - Date ", JSON.stringify(data.Items));
+            overviewData['Date'] = data.Items;
             resolve({ "Date" : data.Items});
           }
         });
@@ -315,6 +284,7 @@ function getBudgetsData(pk, dateMeantFor) {
             reject(err);
           } else {
             console.log("data retrieved - Budget %j", JSON.stringify(data.Items));
+            overviewData['Budget'] = data.Items;
             resolve({ "Budget" : data.Items});
           }
         });
@@ -344,6 +314,7 @@ function getTransactionsData(pk, dateMeantFor) {
             reject(err);
           } else {
             console.log("data retrieved - Transactions %j ", JSON.stringify(data.Items));
+            overviewData['Transaction'] = data.Items;
             resolve({ "Transaction" : data.Items});
           }
         });
