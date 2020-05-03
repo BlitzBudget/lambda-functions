@@ -7,7 +7,7 @@ AWS.config.update({region: 'eu-west-1'});
 var docClient = new AWS.DynamoDB.DocumentClient();
 
 exports.handler = async (event) => {
-    console.log("adding goals for ", JSON.stringify(event['body-json']));
+    console.log("adding transactions for ", JSON.stringify(event['body-json']));
     
     let categoryName = event['body-json'].category;
     if(notIncludesStr(categoryName, 'Category#')) {

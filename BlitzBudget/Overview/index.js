@@ -11,12 +11,21 @@ let events = [];
 exports.handler = async (event) => {
   events = [];
   console.log("fetching item for the walletId ", event.params.querystring.walletId);
-  let overviewData = [];
+  let overviewData = {};
   let walletData;
   let walletId = event.params.querystring.walletId;
-  let dateMeantFor = event.params.querystring.dateMeantFor;
+  let today = new Date();
+  let dateMeantFor = today.getYear() + '-' + ('0' + (today.getMonth() + 1)).slice(-2);
   let userId = event.params.querystring.userId;
-  let overviewType = event.params.querystring.type;
+
+  /*
+  * Get all dates from one year ago
+  */
+  let startsWithDate = today.toISOString();
+  let twelveMonthsAgo = today;
+  twelveMonthsAgo.setMonth(twelveMonthsAgo.getMonth() - 12);
+  twelveMonthsAgo.setDate(1);
+  let endsWithDate = twelveMonthsAgo.toISOString();
   
   // Cognito does not store wallet information nor curreny. All are stored in wallet.
   if(isEmpty(walletId) && isNotEmpty(userId)) {
@@ -31,47 +40,62 @@ exports.handler = async (event) => {
     events.push(getWalletData(userId, walletId));
   }
   
-  if(isEqual(overviewType, 'Transactions')) {
-    events.push(getTransactionsData(walletId, dateMeantFor));
-    events.push(getBankAccountData(walletId));
-    events.push(getBudgetsData(walletId, dateMeantFor));
-    events.push(getCategoryData(walletId, dateMeantFor));
-  } else if (isEqual(overviewType, 'Goals')) {
-    events.push(getGoalsData(walletId));
-    events.push(getBankAccountData(walletId));
-  } else if (isEqual(overviewType, 'Budgets')) {
-    events.push(getBudgetsData(walletId, dateMeantFor));
-    events.push(getCategoryData(walletId, dateMeantFor));
-  }
+  // To display Category name
+  events.push(getCategoryData(walletId, dateMeantFor));
+  // To display first 20 transactions in reverse order
+  events.push(getTransactionsData(walletId, dateMeantFor));
+  // Get Bank account for preview
+  events.push(getBankAccountData(walletId));
+  // Get Budgets to calculate overspent budget
+  events.push(getBudgetsData(walletId, dateMeantFor));
+  // Get Dates information to calculate the monthly Income / expense per month
+  events.push(getDateData(walletId, startsWithDate, endsWithDate));
   
   await Promise.all(events).then(function(result) {
-     overviewData = result;
+    let c = 0;
+    if(isNotEmpty(result[c].Wallet)) {
+      overviewData['Wallet'] = result[c].Wallet;
+      c++;
+    }
+
+    if(isNotEmpty(result[c].Category)) {
+      overviewData['Category'] = result[c].Category;
+      c++;
+    }
+
+    if(isNotEmpty(result[c].Transaction)) {
+      overviewData['Transaction'] = result[c].Transaction;
+      c++;
+    }
+
+    if(isNotEmpty(result[c].BankAccount)) {
+      overviewData['BankAccount'] = result[c].BankAccount;
+      c++;
+    }
+
+    if(isNotEmpty(result[c].Budget)) {
+      overviewData['Budget'] = result[c].Budget;
+      c++;
+    }
+
+    if(isNotEmpty(result[c].Date)) {
+      overviewData['Date'] = result[c].Date;
+      c++;
+    }
+
      console.log("Cumilative data retrieved ", overviewData);
   }, function(err) {
      throw new Error("Unable error occured while fetching the transaction " + err);
   });
   
-  if(isEqual(overviewType, 'Transactions')) {
-    /*
-    * Get Date Individually
-    */
-    let dateData = '';
-    await getDateData(walletId, dateMeantFor).then(function(result) {
+  console.log("date entry is Empty? %j", isEmpty(overviewData.Date));
+  if(isEmpty(overviewData.Date)) {
+    console.log("Date entry is empty so creating the date object");
+    await updateDateData(walletId, dateMeantFor).then(function(result) {
       dateData = result;
     }, function(err) {
-       throw new Error("Unable error occured while fetching the transaction " + err);
+      throw new Error("Unable error occured while fetching the transaction " + err);
     });
-    
-    console.log("date entry is Empty? %j", isEmpty(dateData.Date));
-    if(isEmpty(dateData.Date)) {
-      console.log("Date entry is empty so creating the date object");
-      await updateDateData(walletId, dateMeantFor).then(function(result) {
-        dateData = result;
-      }, function(err) {
-        throw new Error("Unable error occured while fetching the transaction " + err);
-      });
-    }
-    overviewData.push(dateData);
   }
 
   if(isNotEmpty(walletData)) {
@@ -246,13 +270,14 @@ function getCategoryData(pk, dateMeantFor) {
     });
 }
 
-function getDateData(pk, dateMeantFor) {
+function getDateData(pk, startsWithDate, endsWithDate) {
     var params = {
       TableName: 'blitzbudget',
-      KeyConditionExpression   : "pk = :pk and begins_with(sk, :sk)",
+      KeyConditionExpression   : "pk = :pk and sk BETWEEN :bt1 AND :bt2",
       ExpressionAttributeValues: {
           ":pk": pk,
-          ":sk": "Date#" + dateMeantFor
+          ":bt1": "Date#" + startsWithDate,
+          ":bt2": "Date#" + endsWithDate
       },
       ProjectionExpression: "pk, sk, income_total, expense_total, balance"
     };
@@ -306,7 +331,9 @@ function getTransactionsData(pk, dateMeantFor) {
           ":pk": pk,
           ":sk": "Transaction#" + dateMeantFor
       },
-      ProjectionExpression: "amount, description, category, recurrence, sk, pk"
+      ProjectionExpression: "amount, description, category, recurrence, sk, pk",
+      ScanIndexForward: false,
+      Limit: 20
     };
     
     // Call DynamoDB to read the item from the table

@@ -4,8 +4,7 @@
     "path": {},
     "querystring": {
       "userId": "User#2020-05-01T09:14:52.271Z",
-      "walletId": "Wallet#2020-05-02T17:19:13.022Z",
-      "dateMeantFor": "2020-05"
+      "walletId": "Wallet#2020-05-02T17:19:13.022Z"
     },
     "header": {
       "Accept": "*/*",
