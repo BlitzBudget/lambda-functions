@@ -3,7 +3,7 @@
   "params": {
     "path": {},
     "querystring": {
-      "walletId": "Wallets#93202082911265"
+      "userId": "User#2020-05-02T17:18:47.201Z",
     },
     "header": {
       "Accept": "*/*",

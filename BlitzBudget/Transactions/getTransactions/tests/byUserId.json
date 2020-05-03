@@ -3,7 +3,10 @@
   "params": {
     "path": {},
     "querystring": {
-      "walletId": "Wallets#93202082911265"
+      "userId": "User#2020-05-02T17:18:47.201Z",
+      "startsWithDate": "2020-05-01",
+      "endsWithDate": "2020-05-31",
+      "type": "Account"
     },
     "header": {
       "Accept": "*/*",
@@ -48,6 +51,6 @@
     "user-arn": "",
     "request-id": "92231855-49fd-41da-87ed-dfa4fc0d0a01",
     "resource-id": "7ftbxq",
-    "resource-path": "/goals"
+    "resource-path": "/transactions"
   }
 }

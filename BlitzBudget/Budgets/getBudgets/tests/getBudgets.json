@@ -3,7 +3,9 @@
   "params": {
     "path": {},
     "querystring": {
-      "financialPortfolioId": "Wallet#93202082911265"
+      "walletId": "Wallet#2020-05-02T17:19:13.022Z",
+      "startsWithDate": "2020-05-01",
+      "endsWithDate": "2020-05-31"
     },
     "header": {
       "Accept": "*/*",

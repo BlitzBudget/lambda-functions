@@ -8,10 +8,28 @@ var docClient = new AWS.DynamoDB.DocumentClient({region: 'eu-west-1'});
 
 
 exports.handler = async (event) => {
-  console.log("fetching item for the financialPortfolioId ", event.params.querystring.financialPortfolioId);
-  let budgetData = [];
+    let budgetData = [];
+    let events = [];
+    let walletId = event.params.querystring.walletId;
+    let startsWithDate = event.params.querystring.startsWithDate;
+    let endsWithDate = event.params.querystring.endsWithDate;
+    console.log("fetching item for the walletId ", walletId, " with the start date ", startsWithDate, " and end date ", endsWithDate);
+
+    let userId = event.params.querystring.userId;
+
+    // Cognito does not store wallet information nor curreny. All are stored in wallet.
+    if(isEmpty(walletId) && isNotEmpty(userId)) {
+        await getWalletsData(userId).then(function(result) {
+          walletId = result.Wallet[0].sk;
+          console.log("retrieved the wallet for the item ", walletId);
+        }, function(err) {
+           throw new Error("Unable error occured while fetching the transaction " + err);
+        });
+    }
   
-    await getBudgetItem(event.params.querystring.financialPortfolioId).then(function(result) {
+    events.push(getBudgetsItem(walletId, startsWithDate, endsWithDate));
+    events.push(getCategoryData(walletId, startsWithDate, endsWithDate));
+    await Promise.all(events).then(function(result) {
        budgetData = result;
     }, function(err) {
        throw new Error("Unable error occured while fetching the Budget " + err);
@@ -22,13 +40,14 @@ exports.handler = async (event) => {
 
 
 // Get Budget Item
-function getBudgetItem(financialPortfolioId) {
+function getBudgetsItem(walletId, startsWithDate, endsWithDate) {
     var params = {
       TableName: 'blitzbudget',
-      KeyConditionExpression   : "pk = :financialPortfolioId and begins_with(sk, :items)",
+      KeyConditionExpression   : "pk = :walletId AND sk BETWEEN :bt1 AND :bt2",
       ExpressionAttributeValues: {
-          ":financialPortfolioId": financialPortfolioId,
-          ":items": "Budget#"
+          ":walletId": walletId,
+          ":bt1": "Budget#" + startsWithDate,
+          ":bt2": "Budget#" + endsWithDate
       },
       ProjectionExpression: "category, planned, sk, pk"
     };
@@ -41,8 +60,83 @@ function getBudgetItem(financialPortfolioId) {
             reject(err);
           } else {
             console.log("data retrieved ", JSON.stringify(data.Items));
-            resolve(data);
+            resolve({"Budget" : data.Items});
           }
         });
     });
+}
+
+function getCategoryData(pk, startsWithDate, endsWithDate) {
+  var params = {
+      TableName: 'blitzbudget',
+      KeyConditionExpression   : "pk = :pk and sk BETWEEN :bt1 AND :bt2",
+      ExpressionAttributeValues: {
+          ":pk": pk,
+          ":bt1": "Category#" + startsWithDate,
+          ":bt2": "Category#" + endsWithDate,
+      },
+      ProjectionExpression: "pk, sk, category_name, category_total"
+    };
+    
+    // Call DynamoDB to read the item from the table
+    return new Promise((resolve, reject) => {
+        docClient.query(params, function(err, data) {
+          if (err) {
+            console.log("Error ", err);
+            reject(err);
+          } else {
+            console.log("data retrieved - Category %j", JSON.stringify(data.Items));
+            resolve({ "Category" : data.Items});
+          }
+        });
+    });
+}
+
+
+function getWalletsData(userId) {
+  var params = {
+      TableName: 'blitzbudget',
+      KeyConditionExpression   : "pk = :pk and begins_with(sk, :items)",
+      ExpressionAttributeValues: {
+          ":pk": userId,
+          ":items": "Wallet#"
+      },
+      ProjectionExpression: "currency, pk, sk, read_only, total_asset_balance, total_debt_balance, wallet_balance"
+    };
+    
+    // Call DynamoDB to read the item from the table
+    return new Promise((resolve, reject) => {
+        docClient.query(params, function(err, data) {
+          if (err) {
+            console.log("Error ", err);
+            reject(err);
+          } else {
+            console.log("data retrieved - Wallet %j", JSON.stringify(data.Items));
+            resolve({ "Wallet" : data.Items});
+          }
+        });
+    });
+}
+
+
+function isEmpty(obj) {
+    // Check if objext is a number or a boolean
+    if(typeof(obj) == 'number' || typeof(obj) == 'boolean') return false; 
+    
+    // Check if obj is null or undefined
+    if (obj == null || obj === undefined) return true;
+    
+    // Check if the length of the obj is defined
+    if(typeof(obj.length) != 'undefined') return obj.length == 0;
+     
+    // check if obj is a custom obj
+    for(let key in obj) {
+        if(obj.hasOwnProperty(key))return false;
+    }
+
+    return true;
+}
+
+function isNotEmpty(obj) {
+  return !isEmpty(obj);
 }
