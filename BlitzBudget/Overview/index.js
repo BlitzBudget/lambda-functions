@@ -15,19 +15,30 @@ exports.handler = async (event) => {
   let walletId = event.params.querystring.walletId;
   let dateMeantFor = event.params.querystring.dateMeantFor;
   let userId = event.params.querystring.userId;
+  let overviewType = event.params.querystring.type;
   
+  // Cognito does not store wallet information nor curreny. All are stored in wallet.
   if(isEmpty(walletId) && isNotEmpty(userId)) {
-      await getWalletsData(userId).then(function(result) {}, function(err) {
+      await getWalletsData(userId).then(function(result) {
+        walletId = result.BankAccount.sk;
+      }, function(err) {
          throw new Error("Unable error occured while fetching the transaction " + err);
       });
   } else if(isNotEmpty(walletId) && isNotEmpty(userId)) {
     events.push(getWalletData(userId, walletId));
   }
   
-  events.push(getTransactionsData(walletId, dateMeantFor));
-  events.push(getBudgetsData(walletId, dateMeantFor));
-  events.push(getCategoryData(walletId, dateMeantFor));
-  events.push(getBankAccountData(walletId, dateMeantFor));
+  if(isEqual(overviewType, 'Transactions')) {
+    events.push(getTransactionsData(walletId, dateMeantFor));
+    events.push(getBankAccountData(walletId, dateMeantFor));
+    events.push(getBudgetsData(walletId, dateMeantFor));
+    events.push(getCategoryData(walletId, dateMeantFor));
+  } else if (isEqual(overviewType, 'Goals')) {
+    events.push(getGoalsData(walletId));
+  } else if (isEqual(overviewType, 'Budgets')) {
+    events.push(getBudgetsData(walletId, dateMeantFor));
+    events.push(getCategoryData(walletId, dateMeantFor))
+  }
   
   await Promise.all(events).then(function(result) {
      overviewData = result;
@@ -36,24 +47,51 @@ exports.handler = async (event) => {
      throw new Error("Unable error occured while fetching the transaction " + err);
   });
   
-  /*
-  * Get Date Individually
-  */
-  let dateData = await getDateData(walletId, dateMeantFor).then(function(result) {}, function(err) {
-     throw new Error("Unable error occured while fetching the transaction " + err);
-  });
-  
-  console.log("date entry %j", dateData);
-  if(isEmpty(dateData.Date) && isNotEmpty(overviewData[3].BankAccount)) {
-    console.log("Date entry is empty so creating the date object");
-    dateData = await updateDateData(walletId, dateMeantFor).then(function(result) {}, function(err) {
-      throw new Error("Unable error occured while fetching the transaction " + err);
+  if(isEqual(overviewType, 'Transactions')) {
+    /*
+    * Get Date Individually
+    */
+    let dateData = await getDateData(walletId, dateMeantFor).then(function(result) {}, function(err) {
+       throw new Error("Unable error occured while fetching the transaction " + err);
     });
+    
+    console.log("date entry %j", dateData);
+    if(isEmpty(dateData.Date) && isNotEmpty(overviewData[3].BankAccount)) {
+      console.log("Date entry is empty so creating the date object");
+      dateData = await updateDateData(walletId, dateMeantFor).then(function(result) {}, function(err) {
+        throw new Error("Unable error occured while fetching the transaction " + err);
+      });
+    }
+    overviewData.push(dateData);
   }
-  overviewData.push(dateData);
 
   return overviewData;
 };
+
+function getGoalsData(pk) {
+  var params = {
+      TableName: 'blitzbudget',
+      KeyConditionExpression   : "pk = :pk and begins_with(sk, :items)",
+      ExpressionAttributeValues: {
+          ":pk": pk,
+          ":items": "Goals#"
+      },
+      ProjectionExpression: "preferable_target_date, target_id, target_type, goal_type, sk, pk, final_amount"
+    };
+    
+    // Call DynamoDB to read the item from the table
+    return new Promise((resolve, reject) => {
+        docClient.query(params, function(err, data) {
+          if (err) {
+            console.log("Error ", err);
+            reject(err);
+          } else {
+            console.log("data retrieved ", JSON.stringify(data.Items));
+            resolve({ "BankAccount" : data.Items});
+          }
+        });
+    });
+}
 
 function getWalletData(userId, walletId) {
     
@@ -298,6 +336,9 @@ function isNotEmpty(obj) {
   return !isEmpty(obj);
 }
 
-function includesStr(arr, val){
-  return isEmpty(arr) ? null : arr.includes(val); 
+function isEqual(obj1,obj2){
+  if (JSON.stringify(obj1) === JSON.stringify(obj2)) {
+      return true;
+  }
+  return false;
 }
