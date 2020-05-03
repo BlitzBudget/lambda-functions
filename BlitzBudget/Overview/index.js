@@ -22,7 +22,7 @@ exports.handler = async (event) => {
   if(isEmpty(walletId) && isNotEmpty(userId)) {
       await getWalletsData(userId).then(function(result) {
         walletData = result;
-        walletId = result.Wallets[0].sk;
+        walletId = result.Wallet[0].sk;
         console.log("retrieved the wallet for the item ", walletId);
       }, function(err) {
          throw new Error("Unable error occured while fetching the transaction " + err);
@@ -41,7 +41,7 @@ exports.handler = async (event) => {
     events.push(getBankAccountData(walletId));
   } else if (isEqual(overviewType, 'Budgets')) {
     events.push(getBudgetsData(walletId, dateMeantFor));
-    events.push(getCategoryData(walletId, dateMeantFor))
+    events.push(getCategoryData(walletId, dateMeantFor));
   }
   
   await Promise.all(events).then(function(result) {
