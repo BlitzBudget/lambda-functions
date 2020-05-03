@@ -28,7 +28,7 @@ function getGoalItem(financialPortfolioId) {
       KeyConditionExpression   : "pk = :financialPortfolioId and begins_with(sk, :items)",
       ExpressionAttributeValues: {
           ":financialPortfolioId": financialPortfolioId,
-          ":items": "Goals#"
+          ":items": "Goal#"
       },
       ProjectionExpression: "preferable_target_date, target_id, target_type, goal_type, sk, pk, final_amount"
     };

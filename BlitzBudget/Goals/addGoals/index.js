@@ -19,7 +19,7 @@ exports.handler = async (event) => {
 
 function addNewGoals(event) {
     let today = new Date();
-    let randomValue = "Goals#" + today.toISOString(); 
+    let randomValue = "Goal#" + today.toISOString(); 
         
     var params = {
       TableName:'blitzbudget',

@@ -7,18 +7,20 @@ AWS.config.update({region: 'eu-west-1'});
 var docClient = new AWS.DynamoDB.DocumentClient();
 
 exports.handler = async (event) => {
-    console.log("adding goals for ", JSON.stringify(event['body-json']));
-    await addNewGoals(event).then(function(result) {
-       console.log("successfully saved the new goals");
+    console.log("adding Budget for ", JSON.stringify(event['body-json']));
+    await addNewBudget(event).then(function(result) {
+       console.log("successfully saved the new Budget");
     }, function(err) {
-       throw new Error("Unable to add the goals " + err);
+       throw new Error("Unable to add the Budget " + err);
     });
         
     return event;
 };
 
-function addNewGoals(event) {
-    let today = new Date(event['body-json'].dateMeantFor);
+function addNewBudget(event) {
+    let today = new Date();
+    today.setYear(event['body-json'].dateMeantFor.substring(5, 9));
+    today.setMonth(parseInt(event['body-json'].dateMeantFor.substring(10, 12)) -1);
     let randomValue = "Budget#" + today.toISOString(); 
         
     var params = {
@@ -29,6 +31,7 @@ function addNewGoals(event) {
             "category": event['body-json'].category,
             "planned": event['body-json'].planned,
             "auto_generated": false,
+            "date_meant_for": event['body-json'].dateMeantFor,
             "creation_date": new Date().toISOString(),
             "updated_date": new Date().toISOString()
       }
