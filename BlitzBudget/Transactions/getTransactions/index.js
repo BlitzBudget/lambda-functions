@@ -9,7 +9,7 @@ var docClient = new AWS.DynamoDB.DocumentClient({region: 'eu-west-1'});
 
 exports.handler = async (event) => {
     console.log("fetching item for the financialPortfolioId ", event.params.querystring.financialPortfolioId);
-    let transactionData = [];
+    let transactionData = {};
     let events = [];
     let userId = event.params.querystring.userId;
     let walletId = event.params.querystring.walletId;
@@ -34,7 +34,27 @@ exports.handler = async (event) => {
     events.push(getBankAccountData(walletId));
     events.push(getDateData(walletId, startsWithDate, endsWithDate));
     await Promise.all(events).then(function(result) {
-       transactionData = result;
+      let c = 0;
+      if(isNotEmpty(result[c].Transaction)) {
+        transactionData['Transaction'] = result[c].Transaction;
+        c++;
+      }
+
+      if(isNotEmpty(result[c].Category)) {
+        transactionData['Category'] = result[c].Category;
+        c++;
+      }
+
+      if(isNotEmpty(result[c].BankAccount)) {
+        transactionData['BankAccount'] = result[c].BankAccount;
+        c++;
+      }
+
+      if(isNotEmpty(result[c].Date)) {
+        transactionData['Date'] = result[c].Date;
+        c++;
+      }
+
     }, function(err) {
        throw new Error("Unable error occured while fetching the Budget " + err);
     });
