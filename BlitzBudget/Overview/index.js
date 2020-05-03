@@ -12,6 +12,7 @@ exports.handler = async (event) => {
   events = [];
   console.log("fetching item for the walletId ", event.params.querystring.walletId);
   let overviewData = [];
+  let walletData;
   let walletId = event.params.querystring.walletId;
   let dateMeantFor = event.params.querystring.dateMeantFor;
   let userId = event.params.querystring.userId;
@@ -20,7 +21,9 @@ exports.handler = async (event) => {
   // Cognito does not store wallet information nor curreny. All are stored in wallet.
   if(isEmpty(walletId) && isNotEmpty(userId)) {
       await getWalletsData(userId).then(function(result) {
-        walletId = result.BankAccount.sk;
+        walletData = result;
+        walletId = result.Wallets[0].sk;
+        console.log("retrieved the wallet for the item ", walletId);
       }, function(err) {
          throw new Error("Unable error occured while fetching the transaction " + err);
       });
@@ -30,11 +33,12 @@ exports.handler = async (event) => {
   
   if(isEqual(overviewType, 'Transactions')) {
     events.push(getTransactionsData(walletId, dateMeantFor));
-    events.push(getBankAccountData(walletId, dateMeantFor));
+    events.push(getBankAccountData(walletId));
     events.push(getBudgetsData(walletId, dateMeantFor));
     events.push(getCategoryData(walletId, dateMeantFor));
   } else if (isEqual(overviewType, 'Goals')) {
     events.push(getGoalsData(walletId));
+    events.push(getBankAccountData(walletId));
   } else if (isEqual(overviewType, 'Budgets')) {
     events.push(getBudgetsData(walletId, dateMeantFor));
     events.push(getCategoryData(walletId, dateMeantFor))
@@ -51,20 +55,29 @@ exports.handler = async (event) => {
     /*
     * Get Date Individually
     */
-    let dateData = await getDateData(walletId, dateMeantFor).then(function(result) {}, function(err) {
+    let dateData = '';
+    await getDateData(walletId, dateMeantFor).then(function(result) {
+      dateData = result;
+    }, function(err) {
        throw new Error("Unable error occured while fetching the transaction " + err);
     });
     
-    console.log("date entry %j", dateData);
-    if(isEmpty(dateData.Date) && isNotEmpty(overviewData[3].BankAccount)) {
+    console.log("date entry is Empty? %j", isEmpty(dateData.Date));
+    if(isEmpty(dateData.Date)) {
       console.log("Date entry is empty so creating the date object");
-      dateData = await updateDateData(walletId, dateMeantFor).then(function(result) {}, function(err) {
+      await updateDateData(walletId, dateMeantFor).then(function(result) {
+        dateData = result;
+      }, function(err) {
         throw new Error("Unable error occured while fetching the transaction " + err);
       });
     }
     overviewData.push(dateData);
   }
 
+  if(isNotEmpty(walletData)) {
+    overviewData.push(walletData);
+  }
+  
   return overviewData;
 };
 
@@ -74,7 +87,7 @@ function getGoalsData(pk) {
       KeyConditionExpression   : "pk = :pk and begins_with(sk, :items)",
       ExpressionAttributeValues: {
           ":pk": pk,
-          ":items": "Goals#"
+          ":items": "Goal#"
       },
       ProjectionExpression: "preferable_target_date, target_id, target_type, goal_type, sk, pk, final_amount"
     };
@@ -87,14 +100,14 @@ function getGoalsData(pk) {
             reject(err);
           } else {
             console.log("data retrieved ", JSON.stringify(data.Items));
-            resolve({ "BankAccount" : data.Items});
+            resolve({ "Goal" : data.Items});
           }
         });
     });
 }
 
 function getWalletData(userId, walletId) {
-    
+    console.log("fetching the wallet information for the user %j", userId, " with the wallet ", walletId);
     var params = {
       AttributesToGet: [
         "currency",
@@ -104,24 +117,20 @@ function getWalletData(userId, walletId) {
       ],
       TableName : 'blitzbudget',
       Key : { 
-        "pk" : {
-          "S" : userId
-        },
-        "sk" : {
-          "S" : walletId
-        }
+        "pk" : userId,
+        "sk" : walletId
       }
     }
     
     // Call DynamoDB to read the item from the table
     return new Promise((resolve, reject) => {
-        docClient.getItem(params, function(err, data) {
+        docClient.get(params, function(err, data) {
           if (err) {
             console.log("Error ", err);
             reject(err);
           } else {
-            console.log("data retrieved ", JSON.stringify(data.Items));
-            resolve({ "BankAccount" : data.Items});
+            console.log("data retrieved - Wallet %j", JSON.stringify(data.Item));
+            resolve({ "Wallet" : data.Item});
           }
         });
     });
@@ -145,8 +154,8 @@ function getWalletsData(userId) {
             console.log("Error ", err);
             reject(err);
           } else {
-            console.log("data retrieved ", JSON.stringify(data.Items));
-            resolve({ "BankAccount" : data.Items});
+            console.log("data retrieved - Wallet %j", JSON.stringify(data.Items));
+            resolve({ "Wallet" : data.Items});
           }
         });
     });
@@ -187,7 +196,7 @@ function updateDateData(pk, dateMeantFor) {
   
 }
 
-function getBankAccountData(pk, dateMeantFor) {
+function getBankAccountData(pk) {
     var params = {
       TableName: 'blitzbudget',
       KeyConditionExpression   : "pk = :pk and begins_with(sk, :items)",
@@ -205,7 +214,7 @@ function getBankAccountData(pk, dateMeantFor) {
             console.log("Error ", err);
             reject(err);
           } else {
-            console.log("data retrieved ", JSON.stringify(data.Items));
+            console.log("data retrieved - Bank Account %j", JSON.stringify(data.Items));
             resolve({ "BankAccount" : data.Items});
           }
         });
@@ -230,7 +239,7 @@ function getCategoryData(pk, dateMeantFor) {
             console.log("Error ", err);
             reject(err);
           } else {
-            console.log("data retrieved ", JSON.stringify(data.Items));
+            console.log("data retrieved - Category %j", JSON.stringify(data.Items));
             resolve({ "Category" : data.Items});
           }
         });
@@ -255,7 +264,7 @@ function getDateData(pk, dateMeantFor) {
             console.log("Error ", err);
             reject(err);
           } else {
-            console.log("data retrieved ", JSON.stringify(data.Items));
+            console.log("data retrieved - Date ", JSON.stringify(data.Items));
             resolve({ "Date" : data.Items});
           }
         });
@@ -280,7 +289,7 @@ function getBudgetsData(pk, dateMeantFor) {
             console.log("Error ", err);
             reject(err);
           } else {
-            console.log("data retrieved ", JSON.stringify(data.Items));
+            console.log("data retrieved - Budget %j", JSON.stringify(data.Items));
             resolve({ "Budget" : data.Items});
           }
         });
@@ -307,7 +316,7 @@ function getTransactionsData(pk, dateMeantFor) {
             console.log("Error ", err);
             reject(err);
           } else {
-            console.log("data retrieved ", JSON.stringify(data.Items));
+            console.log("data retrieved - Transactions %j ", JSON.stringify(data.Items));
             resolve({ "Transaction" : data.Items});
           }
         });
