@@ -50,7 +50,8 @@ exports.handler = async (event) => {
       events.push(createCategoryItem(event,categoryName));
     }
 
-    await addNewBudget(event).then(function(result) {
+    events.push(addNewBudget(event));
+    await Promise.all(events).then(function(result) {
        console.log("successfully saved the new Budget");
     }, function(err) {
        throw new Error("Unable to add the Budget " + err);
