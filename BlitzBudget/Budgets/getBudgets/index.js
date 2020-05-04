@@ -29,7 +29,7 @@ exports.handler = async (event) => {
   
     events.push(getBudgetsItem(walletId, startsWithDate, endsWithDate));
     events.push(getCategoryData(walletId, startsWithDate, endsWithDate));
-    events.push(getDateData(walletId, startsWithDate.substring(0,4)));
+    events.push(getDateData(walletId, startsWithDate.substring(0,4), endsWithDate.substring(0,4)));
     await Promise.all(events).then(function(result) {
       budgetData['Budget'] = result[0].Budget;
       budgetData['Category'] = result[1].Category;
@@ -41,13 +41,14 @@ exports.handler = async (event) => {
     return budgetData;
 };
 
-function getDateData(pk, year) {
+function getDateData(pk, startsWithYear, endsWithYear) {
   var params = {
       TableName: 'blitzbudget',
-      KeyConditionExpression   : "pk = :pk and begins_with(sk, :items)",
+      KeyConditionExpression   : "pk = :pk and sk BETWEEN :bt1 AND :bt2",
       ExpressionAttributeValues: {
           ":pk": pk,
-          ":items": "Date#" + year
+          ":bt1": "Transaction#" + startsWithYear,
+          ":bt2": "Transaction#" + endsWithYear
       },
       ProjectionExpression: "pk, sk, income_total, expense_total, balance"
     };
@@ -65,6 +66,7 @@ function getDateData(pk, year) {
         });
     });
 }
+
 
 // Get Budget Item
 function getBudgetsItem(walletId, startsWithDate, endsWithDate) {
