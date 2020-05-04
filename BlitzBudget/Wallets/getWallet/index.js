@@ -5,14 +5,15 @@ AWS.config.update({region: 'eu-west-1'});
 
 // Create the DynamoDB service object
 var docClient = new AWS.DynamoDB.DocumentClient({region: 'eu-west-1'});
+let walletData = {};
 
 
 exports.handler = async (event) => {
   console.log("fetching item for the walletId ", event.params.querystring.walletId);
-  let walletData = [];
+  walletData = {};
   
     await getWalletItem(event.params.querystring.walletId).then(function(result) {
-       walletData = result;
+       console.log("Successfully retrieved all wallet information");
     }, function(err) {
        throw new Error("Unable error occured while fetching the Wallet " + err);
     });
@@ -41,7 +42,8 @@ function getWalletItem(walletId) {
             reject(err);
           } else {
             console.log("data retrieved ", JSON.stringify(data.Items));
-            resolve(data);
+            walletData['Wallet'] = data.Items;
+            resolve(data.Items);
           }
         });
     });
