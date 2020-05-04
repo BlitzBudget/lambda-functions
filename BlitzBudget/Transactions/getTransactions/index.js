@@ -32,7 +32,7 @@ exports.handler = async (event) => {
       events.push(getCategoryData(walletId, startsWithDate, endsWithDate));
     }
     events.push(getBankAccountData(walletId));
-    events.push(getDateData(walletId, startsWithDate.substring(0,4), endsWithDate.substring(0,4)));
+    events.push(getDateData(walletId, startsWithDate.substring(0,4)));
     await Promise.all(events).then(function(result) {
       let c = 0;
       if(isNotEmpty(result[c].Transaction)) {
@@ -62,14 +62,13 @@ exports.handler = async (event) => {
     return transactionData;
 };
 
-function getDateData(pk, startsWithYear, endsWithYear) {
+function getDateData(pk, year) {
   var params = {
       TableName: 'blitzbudget',
-      KeyConditionExpression   : "pk = :pk and sk BETWEEN :bt1 AND :bt2",
+      KeyConditionExpression   : "pk = :pk and begins_with(sk, :items)",
       ExpressionAttributeValues: {
           ":pk": pk,
-          ":bt1": "Transaction#" + startsWithYear,
-          ":bt2": "Transaction#" + endsWithYear
+          ":items": "Date#" + year
       },
       ProjectionExpression: "pk, sk, income_total, expense_total, balance"
     };
