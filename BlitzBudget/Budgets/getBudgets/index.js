@@ -5,10 +5,11 @@ AWS.config.update({region: 'eu-west-1'});
 
 // Create the DynamoDB service object
 var docClient = new AWS.DynamoDB.DocumentClient({region: 'eu-west-1'});
+let budgetData = {};
 
 
 exports.handler = async (event) => {
-    let budgetData = {};
+    budgetData = {};
     let events = [];
     let walletId = event.params.querystring.walletId;
     let startsWithDate = event.params.querystring.startsWithDate;
@@ -30,10 +31,8 @@ exports.handler = async (event) => {
     events.push(getBudgetsItem(walletId, startsWithDate, endsWithDate));
     events.push(getCategoryData(walletId, startsWithDate, endsWithDate));
     events.push(getDateData(walletId, startsWithDate.substring(0,4)));
-    await Promise.all(events).then(function(result) {
-      budgetData['Budget'] = result[0].Budget;
-      budgetData['Category'] = result[1].Category;
-      budgetData['Date'] = result[2].Date;
+    await Promise.all(events).then(function(result) {      
+      console.log("Successfully retrieved all relevant information");
     }, function(err) {
        throw new Error("Unable error occured while fetching the Budget " + err);
     });
@@ -60,6 +59,7 @@ function getDateData(pk, year) {
             reject(err);
           } else {
             console.log("data retrieved - Date %j", JSON.stringify(data.Items));
+            budgetData['Date'] = data.Items;
             resolve({ "Date" : data.Items});
           }
         });
@@ -87,6 +87,7 @@ function getBudgetsItem(walletId, startsWithDate, endsWithDate) {
             reject(err);
           } else {
             console.log("data retrieved ", JSON.stringify(data.Items));
+            budgetData['Budget'] = data.Items;
             resolve({"Budget" : data.Items});
           }
         });
@@ -113,6 +114,7 @@ function getCategoryData(pk, startsWithDate, endsWithDate) {
             reject(err);
           } else {
             console.log("data retrieved - Category %j", JSON.stringify(data.Items));
+            budgetData['Category'] = data.Items; 
             resolve({ "Category" : data.Items});
           }
         });

@@ -52,8 +52,6 @@ exports.handler = async (event) => {
   events.push(getDateData(walletId, startsWithDate, endsWithDate));
   
   await Promise.all(events).then(function(result) {
-    let c = 0;
-
      console.log("Cumilative data retrieved ", overviewData);
   }, function(err) {
      throw new Error("Unable error occured while fetching the transaction " + err);

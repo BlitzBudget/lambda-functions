@@ -5,11 +5,11 @@ AWS.config.update({region: 'eu-west-1'});
 
 // Create the DynamoDB service object
 var docClient = new AWS.DynamoDB.DocumentClient({region: 'eu-west-1'});
-
+let transactionData = {};
 
 exports.handler = async (event) => {
+    transactionData = {};
     console.log("fetching item for the financialPortfolioId ", event.params.querystring.financialPortfolioId);
-    let transactionData = {};
     let events = [];
     let userId = event.params.querystring.userId;
     let walletId = event.params.querystring.walletId;
@@ -34,27 +34,7 @@ exports.handler = async (event) => {
     events.push(getBankAccountData(walletId));
     events.push(getDateData(walletId, startsWithDate.substring(0,4)));
     await Promise.all(events).then(function(result) {
-      let c = 0;
-      if(isNotEmpty(result[c].Transaction)) {
-        transactionData['Transaction'] = result[c].Transaction;
-        c++;
-      }
-
-      if(isNotEmpty(result[c].Category)) {
-        transactionData['Category'] = result[c].Category;
-        c++;
-      }
-
-      if(isNotEmpty(result[c].BankAccount)) {
-        transactionData['BankAccount'] = result[c].BankAccount;
-        c++;
-      }
-
-      if(isNotEmpty(result[c].Date)) {
-        transactionData['Date'] = result[c].Date;
-        c++;
-      }
-
+      console.log("Successfully fetched all the relevant information");
     }, function(err) {
        throw new Error("Unable error occured while fetching the Budget " + err);
     });
@@ -81,6 +61,7 @@ function getDateData(pk, year) {
             reject(err);
           } else {
             console.log("data retrieved - Date %j", JSON.stringify(data.Items));
+            transactionData['Date'] = data.Items;
             resolve({ "Date" : data.Items});
           }
         });
@@ -109,6 +90,7 @@ function getTransactionItem(pk, startsWithDate, endsWithDate) {
             reject(err);
           } else {
             console.log("data retrieved - Transactions %j", JSON.stringify(data.Items));
+            transactionData['Transaction'] = data.Items;
             resolve({ "Transaction" : data.Items});
           }
         });
@@ -135,6 +117,7 @@ function getCategoryData(pk, startsWithDate, endsWithDate) {
             reject(err);
           } else {
             console.log("data retrieved - Category %j", JSON.stringify(data.Items));
+            transactionData['Category'] = data.Items;
             resolve({ "Category" : data.Items});
           }
         });
@@ -160,6 +143,7 @@ function getBankAccountData(pk) {
             reject(err);
           } else {
             console.log("data retrieved - Bank Account %j", JSON.stringify(data.Items));
+            transactionData['BankAccount'] = data.Items;
             resolve({ "BankAccount" : data.Items});
           }
         });
@@ -185,6 +169,7 @@ function getWalletsData(userId) {
             reject(err);
           } else {
             console.log("data retrieved - Wallet %j", JSON.stringify(data.Items));
+            transactionData['Wallet'] = data.Items;
             resolve({ "Wallet" : data.Items});
           }
         });
