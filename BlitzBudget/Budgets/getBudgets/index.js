@@ -29,9 +29,11 @@ exports.handler = async (event) => {
   
     events.push(getBudgetsItem(walletId, startsWithDate, endsWithDate));
     events.push(getCategoryData(walletId, startsWithDate, endsWithDate));
+    events.push(getDateData(walletId, startsWithDate.substring(0,4)));
     await Promise.all(events).then(function(result) {
       budgetData['Budget'] = result[0].Budget;
       budgetData['Category'] = result[1].Category;
+      budgetData['Date'] = result[2].Date;
     }, function(err) {
        throw new Error("Unable error occured while fetching the Budget " + err);
     });
@@ -39,6 +41,30 @@ exports.handler = async (event) => {
     return budgetData;
 };
 
+function getDateData(pk, year) {
+  var params = {
+      TableName: 'blitzbudget',
+      KeyConditionExpression   : "pk = :pk and begins_with(sk, :items)",
+      ExpressionAttributeValues: {
+          ":pk": pk,
+          ":items": "Date#" + year
+      },
+      ProjectionExpression: "pk, sk, income_total, expense_total, balance"
+    };
+    
+    // Call DynamoDB to read the item from the table
+    return new Promise((resolve, reject) => {
+        docClient.query(params, function(err, data) {
+          if (err) {
+            console.log("Error ", err);
+            reject(err);
+          } else {
+            console.log("data retrieved - Date %j", JSON.stringify(data.Items));
+            resolve({ "Date" : data.Items});
+          }
+        });
+    });
+}
 
 // Get Budget Item
 function getBudgetsItem(walletId, startsWithDate, endsWithDate) {
