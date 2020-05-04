@@ -6,16 +6,17 @@ AWS.config.update({region: 'eu-west-1'});
 // Create the DynamoDB service object
 var docClient = new AWS.DynamoDB.DocumentClient({region: 'eu-west-1'});
 let budgetData = {};
-
+let percentage = 1;
 
 exports.handler = async (event) => {
+    percentage = 1;
     budgetData = {};
     let events = [];
     let walletId = event.params.querystring.walletId;
     let startsWithDate = event.params.querystring.startsWithDate;
     let endsWithDate = event.params.querystring.endsWithDate;
     console.log("fetching item for the walletId ", walletId, " with the start date ", startsWithDate, " and end date ", endsWithDate);
-
+    let fullMonth = isFullMonth(startsWithDate, endsWithDate);
     let userId = event.params.querystring.userId;
 
     // Cognito does not store wallet information nor curreny. All are stored in wallet.
@@ -31,14 +32,131 @@ exports.handler = async (event) => {
     events.push(getBudgetsItem(walletId, startsWithDate, endsWithDate));
     events.push(getCategoryData(walletId, startsWithDate, endsWithDate));
     events.push(getDateData(walletId, startsWithDate.substring(0,4)));
+    if(!fullMonth) {
+      events.push(getTransactionsData(walletId, startsWithDate, endsWithDate));
+    }
+    
     await Promise.all(events).then(function(result) {      
       console.log("Successfully retrieved all relevant information");
     }, function(err) {
        throw new Error("Unable error occured while fetching the Budget " + err);
     });
 
+    modifyTotalOfBudget(percentage,fullMonth);
+
     return budgetData;
 };
+
+// Get Transaction Item
+function getTransactionsData(pk, startsWithDate, endsWithDate) {
+    var params = {
+      TableName: 'blitzbudget',
+      KeyConditionExpression   : "pk = :pk and sk BETWEEN :bt1 AND :bt2",
+      ExpressionAttributeValues: {
+          ":pk": pk,
+          ":bt1": "Transaction#" + startsWithDate,
+          ":bt2": "Transaction#" + endsWithDate
+      },
+      ProjectionExpression: "amount, description, category, recurrence, sk, pk"
+    };
+    
+    // Call DynamoDB to read the item from the table
+    return new Promise((resolve, reject) => {
+        docClient.query(params, function(err, data) {
+          if (err) {
+            console.log("Error ", err);
+            reject(err);
+          } else {
+            console.log("data retrieved - Transactions %j", JSON.stringify(data.Items));
+            budgetData['Transaction'] = data.Items;
+            resolve({ "Transaction" : data.Items});
+          }
+        });
+    });
+}
+
+/*
+* Calculate difference between startdate and end date
+*/
+function isFullMonth(startsWithDate, endsWithDate) {
+  startsWithDate = new Date(startsWithDate);
+  endsWithDate = new Date(endsWithDate);
+  
+  if(isNotEqual(startsWithDate.getMonth(), endsWithDate.getMonth()) || isNotEqual(startsWithDate.getFullYear(), endsWithDate.getFullYear())) {
+    console.log("The month and the year do not coincide"); 
+    return false;
+  }
+
+  let firstDay = new Date(startsWithDate.getFullYear(), startsWithDate.getMonth());
+  let lastDay = new Date(firstDay.getFullYear(), firstDay.getMonth()+1, 0);
+
+  if(isEqual(firstDay.getDate(), startsWithDate.getDate()) && isEqual(lastDay.getDate(), endsWithDate.getDate())) {
+    return true;
+  }
+  
+  percentage = ( endsWithDate - startsWithDate ) / ( lastDay - firstDay );
+  console.log("Percentage of budget total to be calculated is %j", percentage);
+  return false;
+}
+
+function modifyTotalOfBudget(percentage, fullMonth) {
+   let categoryList = {}; 
+   let categoryNameList = {};
+   
+   if(!fullMonth) {
+      for(const transObj of budgetData.Transaction) {
+        if(isEmpty(categoryList[transObj.category])) {
+          categoryList[transObj.category] = transObj.amount; 
+        } else {
+          categoryList[transObj.category] += transObj.amount; 
+        }
+      } 
+   }
+    
+    for(const categoryObj of budgetData.Category) {
+       if(isEmpty(categoryNameList[categoryObj.sk])) {
+          categoryNameList[categoryObj.sk] = categoryObj['category_name']; 
+        } else {
+          categoryNameList[categoryObj.sk] += categoryObj['category_name']; 
+        }
+        
+        if(fullMonth) {
+           if(isEmpty(categoryList[categoryObj.sk])) {
+              categoryList[categoryObj.sk] = categoryObj['category_total']; 
+            } else {
+              categoryList[categoryObj.sk] += categoryObj['category_total']; 
+            }
+        }
+    }
+    
+   for(const budgetObj of budgetData.Budget) {
+      budgetObj.planned = budgetObj.planned * percentage;
+      if(isNotEmpty(categoryList[budgetObj.category])) {
+        budgetObj.used = categoryList[budgetObj.category];
+      } else {
+        budgetObj.used = 0;
+      }
+      
+      if(isNotEmpty(categoryNameList[budgetObj.category])) {
+        budgetObj.categoryName = categoryNameList[budgetObj.category];
+      }
+      
+      budgetObj.budgetId = budgetObj.sk;
+      budgetObj.walletId = budgetObj.pk;
+      delete budgetObj.sk;
+      delete budgetObj.pk;
+    }
+    
+    for(const dateObj of budgetData.Date) {
+      dateObj.dateId = dateObj.sk;
+      dateObj.walletId = dateObj.pk;
+      delete dateObj.sk;
+      delete dateObj.pk;
+    }
+    
+    delete budgetData.Category;
+    delete budgetData.Transaction;
+}
 
 function getDateData(pk, year) {
   var params = {
@@ -168,4 +286,15 @@ function isEmpty(obj) {
 
 function isNotEmpty(obj) {
   return !isEmpty(obj);
+}
+
+function isEqual(obj1,obj2){
+  if (JSON.stringify(obj1) === JSON.stringify(obj2)) {
+      return true;
+  }
+  return false;
+}
+
+function isNotEqual(obj1,obj2){
+  return !isEqual(obj1,obj2);
 }

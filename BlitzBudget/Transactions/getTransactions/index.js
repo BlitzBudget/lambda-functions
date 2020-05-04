@@ -16,6 +16,12 @@ exports.handler = async (event) => {
     let startsWithDate = event.params.querystring.startsWithDate;
     let endsWithDate = event.params.querystring.endsWithDate;
     let transactionType = event.params.querystring.type;
+    
+    /*
+    * Calculate difference between startdate and end date
+    */
+    let isFullMonth = calculateFullMonth(startsWithDate, endsWithDate);
+    console.log("is full month? %j", isFullMonth);
 
     // Cognito does not store wallet information nor curreny. All are stored in wallet.
     if(isEmpty(walletId) && isNotEmpty(userId)) {
@@ -38,9 +44,37 @@ exports.handler = async (event) => {
     }, function(err) {
        throw new Error("Unable error occured while fetching the Budget " + err);
     });
+    
+    if(!isFullMonth) {
+      for(const dateObj of transactionData.Date) {
+        console.log("Date object - ", JSON.stringify(dateObj));
+      }
+    }
 
     return transactionData;
 };
+
+function calculateFullMonth(startsWithDate, endsWithDate) {
+  startsWithDate = new Date(startsWithDate);
+  endsWithDate = new Date(endsWithDate);
+  
+  
+  if(isNotEqual(startsWithDate.getMonth(), endsWithDate.getMonth()) || isNotEqual(startsWithDate.getFullYear(), endsWithDate.getFullYear())) {
+    console.log("The month and the year do not coincide"); 
+    return false;
+  }
+
+  let firstDay = new Date(startsWithDate.getFullYear(), startsWithDate.getMonth());
+  let lastDay = new Date(firstDay.getFullYear(), firstDay.getMonth()+1, 0);
+
+  if(isEqual(firstDay.getDate(), startsWithDate.getDate()) && isEqual(lastDay.getDate(), endsWithDate.getDate())) {
+    return true;
+  }
+  
+  console.log("The first day of the month is ", firstDay.getDate(), " The last day is ", lastDay.getDate(), " And they do not coincide ");
+
+  return false;
+}
 
 function getDateData(pk, year) {
   var params = {
@@ -204,4 +238,8 @@ function isEqual(obj1,obj2){
       return true;
   }
   return false;
+}
+
+function isNotEqual(obj1,obj2){
+  return !isEqual(obj1,obj2);
 }
