@@ -44,10 +44,10 @@ exports.handler = async (event) => {
       let today = new Date();
       today.setYear(event['body-json'].dateMeantFor.substring(5, 9));
       today.setMonth(parseInt(event['body-json'].dateMeantFor.substring(10, 12)) -1);
-      categoryName = "Category#" + today.toISOString();
+      let categoryId = "Category#" + today.toISOString();
       // Assign Category to create the transactions with the category ID
-      event['body-json'].category = categoryName; 
-      events.push(createCategoryItem(event,categoryName));
+      event['body-json'].category = categoryId; 
+      events.push(createCategoryItem(event,categoryId, categoryName));
     }
     
     events.push(addNewTransaction(event));
@@ -120,7 +120,7 @@ function createDateData(event, skForDate) {
   
 }
 
-function createCategoryItem(event, skForCategory) {
+function createCategoryItem(event, skForCategory, categoryName) {
     
     var params = {
         TableName:'blitzbudget',
@@ -131,7 +131,7 @@ function createCategoryItem(event, skForCategory) {
         UpdateExpression: "set category_total = :r, category_name = :p, category_type = :q, date_meant_for = :s, creation_date = :c, updated_date = :u",
         ExpressionAttributeValues:{
             ":r": 0,
-            ":p": event['body-json'].category,
+            ":p": categoryName,
             ":q": event['body-json'].categoryType,
             ":s": event['body-json'].dateMeantFor,
             ":c": new Date().toISOString(),

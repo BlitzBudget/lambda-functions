@@ -9,20 +9,15 @@ let transactionData = {};
 
 exports.handler = async (event) => {
     transactionData = {};
-    console.log("fetching item for the financialPortfolioId ", event.params.querystring.financialPortfolioId);
+    console.log("fetching item for the walletId ", event.params.querystring.walletId);
     let events = [];
     let userId = event.params.querystring.userId;
     let walletId = event.params.querystring.walletId;
     let startsWithDate = event.params.querystring.startsWithDate;
     let endsWithDate = event.params.querystring.endsWithDate;
     let transactionType = event.params.querystring.type;
+    let fullMonth = isFullMonth(startsWithDate, endsWithDate);
     
-    /*
-    * Calculate difference between startdate and end date
-    */
-    let isFullMonth = calculateFullMonth(startsWithDate, endsWithDate);
-    console.log("is full month? %j", isFullMonth);
-
     // Cognito does not store wallet information nor curreny. All are stored in wallet.
     if(isEmpty(walletId) && isNotEmpty(userId)) {
         await getWalletsData(userId).then(function(result) {
@@ -44,20 +39,48 @@ exports.handler = async (event) => {
     }, function(err) {
        throw new Error("Unable error occured while fetching the Budget " + err);
     });
-    
-    if(!isFullMonth) {
-      for(const dateObj of transactionData.Date) {
-        console.log("Date object - ", JSON.stringify(dateObj));
-      }
-    }
 
+    calculateDateAndCategoryTotal(fullMonth);
     return transactionData;
 };
 
-function calculateFullMonth(startsWithDate, endsWithDate) {
+function calculateDateAndCategoryTotal(fullMonth) {
+    let categoryList = {}; 
+    let incomeTotal = 0, expenseTotal = 0, periodBalance = 0;
+      
+    for(const transObj of transactionData.Transaction) {
+        if(isEmpty(categoryList[transObj.category])) {
+          categoryList[transObj.category] = transObj.amount; 
+        } else {
+          categoryList[transObj.category] += transObj.amount; 
+        }
+    }
+    
+    for(const categoryObj of transactionData.Category) {
+       if(isNotEmpty(categoryList[categoryObj.sk]) &&  !fullMonth) {
+          categoryObj['category_total'] = categoryList[categoryObj.sk];
+       }
+       
+       if(isEqual(categoryObj['category_type'], 'Income')) {
+         incomeTotal += categoryList[categoryObj.sk];
+       } else if(isEqual(categoryObj['category_type'], 'Expense')) {
+         expenseTotal += categoryList[categoryObj.sk];
+       }
+       periodBalance = incomeTotal - expenseTotal;
+    }
+    
+    transactionData.incomeTotal = incomeTotal;
+    transactionData.expenseTotal = expenseTotal;
+    transactionData.balance = periodBalance;
+    
+}
+
+/*
+* Calculate difference between startdate and end date
+*/
+function isFullMonth(startsWithDate, endsWithDate) {
   startsWithDate = new Date(startsWithDate);
   endsWithDate = new Date(endsWithDate);
-  
   
   if(isNotEqual(startsWithDate.getMonth(), endsWithDate.getMonth()) || isNotEqual(startsWithDate.getFullYear(), endsWithDate.getFullYear())) {
     console.log("The month and the year do not coincide"); 
@@ -71,8 +94,6 @@ function calculateFullMonth(startsWithDate, endsWithDate) {
     return true;
   }
   
-  console.log("The first day of the month is ", firstDay.getDate(), " The last day is ", lastDay.getDate(), " And they do not coincide ");
-
   return false;
 }
 
@@ -140,7 +161,7 @@ function getCategoryData(pk, startsWithDate, endsWithDate) {
           ":bt1": "Category#" + startsWithDate,
           ":bt2": "Category#" + endsWithDate
       },
-      ProjectionExpression: "pk, sk, category_name, category_total"
+      ProjectionExpression: "pk, sk, category_name, category_total, category_type"
     };
     
     // Call DynamoDB to read the item from the table
