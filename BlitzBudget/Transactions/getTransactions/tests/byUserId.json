@@ -5,8 +5,7 @@
     "querystring": {
       "userId": "User#2020-05-02T17:18:47.201Z",
       "startsWithDate": "2020-05-01",
-      "endsWithDate": "2020-05-31",
-      "type": "Account"
+      "endsWithDate": "2020-05-31"
     },
     "header": {
       "Accept": "*/*",

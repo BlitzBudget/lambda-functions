@@ -15,7 +15,6 @@ exports.handler = async (event) => {
     let walletId = event.params.querystring.walletId;
     let startsWithDate = event.params.querystring.startsWithDate;
     let endsWithDate = event.params.querystring.endsWithDate;
-    let transactionType = event.params.querystring.type;
     let fullMonth = isFullMonth(startsWithDate, endsWithDate);
     
     // Cognito does not store wallet information nor curreny. All are stored in wallet.
@@ -29,9 +28,7 @@ exports.handler = async (event) => {
     }
   
     events.push(getTransactionItem(walletId, startsWithDate, endsWithDate));
-    if(isEqual(transactionType, "Category")) {
-      events.push(getCategoryData(walletId, startsWithDate, endsWithDate));
-    }
+    events.push(getCategoryData(walletId, startsWithDate, endsWithDate));
     events.push(getBankAccountData(walletId));
     events.push(getDateData(walletId, startsWithDate.substring(0,4)));
     await Promise.all(events).then(function(result) {
