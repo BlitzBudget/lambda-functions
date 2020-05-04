@@ -8,18 +8,50 @@ var docClient = new AWS.DynamoDB.DocumentClient();
 
 exports.handler = async (event) => {
     console.log("adding transactions for ", JSON.stringify(event['body-json']));
-    
-    let categoryName = event['body-json'].category;
-    if(notIncludesStr(categoryName, 'Category#')) {
-      await createCategoryItem(event).then(function(result) {
-         console.log("successfully created a new category %j", result.sk);
-         event['body-json'].category = result.sk;
-      }, function(err) {
-         throw new Error("Unable to add the category " + err);
-      });
+    let events = [];
+    let walletId = event['body-json'].walletId;
+
+    /*
+    * If Date Id is not present
+    */
+    let dateMeantFor = event['body-json'].dateMeantFor;
+    if(notIncludesStr(dateMeantFor, 'Date#')) {
+        let today = new Date(event['body-json'].dateMeantFor);
+        /*
+        * Check if date is present before adding them
+        */
+        await getDateData(walletId, today).then(function(result) {
+          if(isNotEmpty(result.Date)) {
+            console.log("successfully assigned the exissting date %j", result.Date[0].sk);
+            dateMeantFor = result.Date[0].sk;
+          } else {
+            dateMeantFor = "Date#" + today.toISOString();
+            console.log("Date entry is empty so creating the date object");
+            events.push(createDateData(walletId, dateMeantFor));
+          }
+          // Assign Date meant for to create the transactions with the date ID
+          event['body-json'].dateMeantFor = dateMeantFor;
+        }, function(err) {
+           throw new Error("Unable to add the Budget " + err);
+        });
     }
     
-    await addNewTransaction(event).then(function(result) {
+    /*
+    * If category Id is not present
+    */
+    let categoryName = event['body-json'].category;
+    if(notIncludesStr(categoryName, 'Category#')) {
+      let today = new Date();
+      today.setYear(event['body-json'].dateMeantFor.substring(5, 9));
+      today.setMonth(parseInt(event['body-json'].dateMeantFor.substring(10, 12)) -1);
+      categoryName = "Category#" + today.toISOString();
+      // Assign Category to create the transactions with the category ID
+      event['body-json'].category = categoryName; 
+      events.push(createCategoryItem(event,categoryName));
+    }
+    
+    events.push(addNewTransaction(event));
+    await Promise.all(events).then(function(result) {
        console.log("successfully saved the new transaction");
     }, function(err) {
        throw new Error("Unable to add the transactions " + err);
@@ -28,19 +60,75 @@ exports.handler = async (event) => {
     return event;
 };
 
-function createCategoryItem(event) {
-    let today = new Date();
-    today.setYear(event['body-json'].dateMeantFor.substring(5, 9));
-    today.setMonth(parseInt(event['body-json'].dateMeantFor.substring(10, 12)) -1);
-    let randomValue = "Category#" + today.toISOString(); 
+function getDateData(pk, today) {
+  var params = {
+      TableName: 'blitzbudget',
+      KeyConditionExpression   : "pk = :pk AND begins_with(sk, :items)",
+      ExpressionAttributeValues: {
+          ":pk": pk,
+          ":items": "Date#" + today.getFullYear() + '-' + ('0' + (today.getMonth() + 1)).slice(-2)
+      },
+      ProjectionExpression: "pk, sk"
+    };
+    
+    // Call DynamoDB to read the item from the table
+    return new Promise((resolve, reject) => {
+        docClient.query(params, function(err, data) {
+          if (err) {
+            console.log("Error ", err);
+            reject(err);
+          } else {
+            console.log("data retrieved - Date %j", JSON.stringify(data.Items));
+            resolve({ "Date" : data.Items});
+          }
+        });
+    });
+}
+
+function createDateData(event, skForDate) {
+  
+  var params = {
+      TableName:'blitzbudget',
+      Key:{
+        "pk": event['body-json'].walletId,
+        "sk": skForDate,
+      },
+      UpdateExpression: "set income_total = :r, expense_total=:p, balance=:a, creation_date = :c, updated_date = :u",
+      ExpressionAttributeValues:{
+          ":r":0,
+          ":p":0,
+          ":a":0,
+          ":c": new Date().toISOString(),
+          ":u": new Date().toISOString()
+      },
+      ReturnValues: 'ALL_NEW'
+  }
+  
+  console.log("Adding a new item...");
+  return new Promise((resolve, reject) => {
+    docClient.update(params, function(err, data) {
+        if (err) {
+          console.log("Error ", err);
+          reject(err);
+        } else {
+          console.log("successfully created a new date %j", data.Attributes.sk);
+          event['body-json'].dateMeantFor = data.Attributes.sk;
+          resolve({ "Date" : data.Attributes});
+        }
+    });
+  });
+  
+}
+
+function createCategoryItem(event, skForCategory) {
     
     var params = {
         TableName:'blitzbudget',
         Key:{
           "pk": event['body-json'].walletId,
-          "sk": randomValue,
+          "sk": skForCategory,
         },
-        UpdateExpression: "set category_total = :r, category_name = :p, category_type = :q, date_meant_for = :s, creation_date = :c, updated_date = :u"
+        UpdateExpression: "set category_total = :r, category_name = :p, category_type = :q, date_meant_for = :s, creation_date = :c, updated_date = :u",
         ExpressionAttributeValues:{
             ":r": 0,
             ":p": event['body-json'].category,
@@ -59,7 +147,9 @@ function createCategoryItem(event) {
             console.log("Error ", err);
             reject(err);
           } else {
-            resolve(data.Attributes);
+            console.log("Successfully created a new category %j", data.Attributes.sk)
+            event['body-json'].category = data.Attributes.sk;
+            resolve({ "Category" : data.Attributes});
           }
       });
     });
@@ -101,13 +191,12 @@ function addNewTransaction(event) {
     });
     
 }
-
-function notIncludesStr(arr, val) {
-  return !includesStr(arr, val);
-}
-
 function includesStr(arr, val){
   return isEmpty(arr) ? null : arr.includes(val); 
+}
+
+function notIncludesStr(arr, val){
+  return !includesStr(arr, val); 
 }
 
 function  isEmpty(obj) {
@@ -124,9 +213,10 @@ function  isEmpty(obj) {
   for(let key in obj) {
         if(obj.hasOwnProperty(key))return false;
     }
-
-    // Check if obj is an element
-    if(obj instanceof Element) return false;
       
   return true;
+}
+
+function isNotEmpty(obj) {
+  return !isEmpty(obj);
 }

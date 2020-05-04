@@ -59,16 +59,6 @@ exports.handler = async (event) => {
      throw new Error("Unable error occured while fetching the transaction " + err);
   });
   
-  console.log("date entry is Empty? %j", isEmpty(overviewData.Date));
-  if(isEmpty(overviewData.Date)) {
-    console.log("Date entry is empty so creating the date object");
-    await updateDateData(walletId).then(function(result) {
-      overviewData['Date'].push(result);
-    }, function(err) {
-      throw new Error("Unable error occured while fetching the transaction " + err);
-    });
-  }
-  
   return overviewData;
 };
 
@@ -152,39 +142,6 @@ function getWalletsData(userId) {
           }
         });
     });
-}
-
-function updateDateData(pk) {
-  let today = new Date();
-  let randomValue = "Date#" + today.toISOString(); 
-  
-  var params = {
-      TableName:'blitzbudget',
-      Key:{
-        "pk": pk,
-        "sk": randomValue,
-      },
-      UpdateExpression: "set income_total = :r, expense_total=:p, balance=:a",
-      ExpressionAttributeValues:{
-          ":r":0,
-          ":p":0,
-          ":a":0
-      },
-      ReturnValues: 'ALL_NEW'
-  }
-  
-  console.log("Adding a new item...");
-  return new Promise((resolve, reject) => {
-    docClient.update(params, function(err, data) {
-        if (err) {
-          console.log("Error ", err);
-          reject(err);
-        } else {
-          resolve({ "date" : data});
-        }
-    });
-  });
-  
 }
 
 function getBankAccountData(pk) {
