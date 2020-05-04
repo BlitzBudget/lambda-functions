@@ -163,7 +163,7 @@ function addNewBudget(event) {
     var params = {
       TableName:'blitzbudget',
       Item:{
-            "pk": event['body-json'].financialPortfolioId,
+            "pk": event['body-json'].walletId,
             "sk": randomValue,
             "category": event['body-json'].category,
             "planned": event['body-json'].planned,
