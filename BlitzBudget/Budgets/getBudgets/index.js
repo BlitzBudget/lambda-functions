@@ -32,6 +32,7 @@ exports.handler = async (event) => {
     events.push(getBudgetsItem(walletId, startsWithDate, endsWithDate));
     events.push(getCategoryData(walletId, startsWithDate, endsWithDate));
     events.push(getDateData(walletId, startsWithDate.substring(0,4)));
+    events.push(getBankAccountData(walletId));
     if(!fullMonth) {
       events.push(getTransactionsData(walletId, startsWithDate, endsWithDate));
     }
@@ -70,6 +71,38 @@ function getTransactionsData(pk, startsWithDate, endsWithDate) {
             console.log("data retrieved - Transactions %j", JSON.stringify(data.Items));
             budgetData['Transaction'] = data.Items;
             resolve({ "Transaction" : data.Items});
+          }
+        });
+    });
+}
+
+function getBankAccountData(pk) {
+    var params = {
+      TableName: 'blitzbudget',
+      KeyConditionExpression   : "pk = :pk and begins_with(sk, :items)",
+      ExpressionAttributeValues: {
+          ":pk": pk,
+          ":items": "BankAccount#"
+      },
+      ProjectionExpression: "bank_account_name, linked, bank_account_number, account_balance, sk, pk, selected_account, number_of_times_selected, account_type"
+    };
+    
+    // Call DynamoDB to read the item from the table
+    return new Promise((resolve, reject) => {
+        docClient.query(params, function(err, data) {
+          if (err) {
+            console.log("Error ", err);
+            reject(err);
+          } else {
+            console.log("data retrieved - Bank Account %j", JSON.stringify(data.Items));
+            for(const accountObj of data.Items) {
+              accountObj.accountId = accountObj.sk;
+              accountObj.userId = accountObj.pk;
+              delete accountObj.sk;
+              delete accountObj.pk;
+            }
+            budgetData['BankAccount'] = data.Items;
+            resolve({ "BankAccount" : data.Items});
           }
         });
     });
