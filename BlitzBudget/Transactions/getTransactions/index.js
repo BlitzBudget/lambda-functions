@@ -20,7 +20,7 @@ exports.handler = async (event) => {
     // Cognito does not store wallet information nor curreny. All are stored in wallet.
     if(isEmpty(walletId) && isNotEmpty(userId)) {
         await getWalletsData(userId).then(function(result) {
-          walletId = result.Wallet[0].sk;
+          walletId = result.Wallet[0].walletId;
           console.log("retrieved the wallet for the item ", walletId);
         }, function(err) {
            throw new Error("Unable error occured while fetching the transaction " + err);
@@ -51,6 +51,10 @@ function calculateDateAndCategoryTotal(fullMonth) {
         } else {
           categoryList[transObj.category] += transObj.amount; 
         }
+        transObj.transactionId = transObj.sk;
+        transObj.walletId = transObj.pk;
+        delete transObj.sk;
+        delete transObj.pk;
     }
     
     for(const categoryObj of transactionData.Category) {
@@ -64,6 +68,17 @@ function calculateDateAndCategoryTotal(fullMonth) {
          expenseTotal += categoryList[categoryObj.sk];
        }
        periodBalance = incomeTotal - expenseTotal;
+       categoryObj.categoryId = categoryObj.sk;
+       categoryObj.walletId = categoryObj.pk;
+       delete categoryObj.sk;
+       delete categoryObj.pk;
+    }
+    
+    for(const dateObj of transactionData.Date) {
+      dateObj.dateId = dateObj.sk;
+      dateObj.walletId = dateObj.pk;
+      delete dateObj.sk;
+      delete dateObj.pk;
     }
     
     transactionData.incomeTotal = incomeTotal;
@@ -221,6 +236,12 @@ function getWalletsData(userId) {
             reject(err);
           } else {
             console.log("data retrieved - Wallet %j", JSON.stringify(data.Items));
+            for(const walletObj of data.Items) {
+              walletObj.walletId = walletObj.sk;
+              walletObj.userId = walletObj.pk;
+              delete walletObj.sk;
+              delete walletObj.pk;
+            }
             transactionData['Wallet'] = data.Items;
             resolve({ "Wallet" : data.Items});
           }
