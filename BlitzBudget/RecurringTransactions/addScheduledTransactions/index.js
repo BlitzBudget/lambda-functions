@@ -8,6 +8,7 @@ var DB = new AWS.DynamoDB.DocumentClient();
 let nextSchArray = [];
 let events = [];
 let params = {};
+let recurringTransactionsNextSch;
 
 exports.handler = async (event) => {
     params = {};
@@ -62,9 +63,52 @@ exports.handler = async (event) => {
     }, function(err) {
        throw new Error("Unable to batch write all the transactions and dates " + err);
     });
+    
+    await updateRecurringTransactionsData(walletId, recurringTransactionsId).then(function(result) {
+      console.log("Successfully updated the recurring transactions field %j", recurringTransactionsNextSch);
+    }, function(err) {
+       throw new Error("Unable to update the recurring transactions field " + err);
+    });
 
 };
 
+/*
+* Update the recurring transaction
+*/ 
+function updateRecurringTransactionsData(walletId, sk) {
+  
+  var params = {
+      TableName:'blitzbudget',
+      Key:{
+        "pk": walletId,
+        "sk": sk,
+      },
+      UpdateExpression: "set next_scheduled = :ns, updated_date = :u",
+      ExpressionAttributeValues:{
+          ":ns": recurringTransactionsNextSch,
+          ":u": new Date().toISOString()
+      },
+      ReturnValues: 'ALL_NEW'
+  }
+  
+  console.log("Adding a new item...");
+  return new Promise((resolve, reject) => {
+    DB.update(params, function(err, data) {
+        if (err) {
+          console.log("Error ", err);
+          reject(err);
+        } else {
+          console.log("successfully updated the recurring transaction %j", data.Attributes.sk);
+          resolve(data.Attributes);
+        }
+    });
+  });
+  
+}
+
+/*
+* Batch write all the transactions and dates created
+*/
 function batchWriteItems() {
     return new Promise((resolve, reject) => {
         DB.batchWrite(params, function(err, data) {
@@ -88,7 +132,7 @@ function reconstructTransactionsWithDateMeantFor(datesMap) {
             let compareString = sk.substring(12,19);
             if(isNotEmpty(datesMap[compareString])) {
                 console.log("The date for the transaction %j ", sk, " is ", datesMap[compareString]);
-                putItem.PutRequest.Item.dateMeantFor = datesMap[compareString];
+                putItem.PutRequest.Item['date_meant_for'] = datesMap[compareString];
             }
         }
     }
@@ -177,17 +221,6 @@ function buildParamsForPut(event) {
     
     while (nextScheduledDate < today) {
         console.log("The scheduled date is %j", nextScheduledDate);
-        switch(recurrence) {
-           case 'MONTHLY':
-            nextScheduledDate.setMonth(nextScheduledDate.getMonth() + 1);
-            break;
-          case 'WEEKLY':
-            nextScheduledDate.setDate(nextScheduledDate.getDate() + 7);
-            break;
-          case 'BI-MONTHLY':
-            nextScheduledDate.setDate(nextScheduledDate.getDate() + 15);
-            break;
-        }
         
         /*
         * Scheduled Transactions
@@ -214,9 +247,27 @@ function buildParamsForPut(event) {
                }
             }
         };
+        
+        // Update recurrence
+        switch(recurrence) {
+           case 'MONTHLY':
+            nextScheduledDate.setMonth(nextScheduledDate.getMonth() + 1);
+            break;
+          case 'WEEKLY':
+            nextScheduledDate.setDate(nextScheduledDate.getDate() + 7);
+            break;
+          case 'BI-MONTHLY':
+            nextScheduledDate.setDate(nextScheduledDate.getDate() + 15);
+            break;
+        }
         // Update counter
         i++;
     }
+    
+    /*
+    * Set the next date field for recurring transaction
+    */
+    recurringTransactionsNextSch = nextScheduledDate.toISOString();
 }
 
 function  isEmpty(obj) {
