@@ -1,6 +1,7 @@
 {
   "body-json": {
-    "financialPortfolioId": "Wallet#93202082911265",
+    "walletId": "Wallet#93202082911265",
+    "primaryWallet": "User#123456789",
     "bankAccountName": "HDFC",
     "accountBalance": 23,
     "selectedAccount": true,

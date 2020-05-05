@@ -24,7 +24,7 @@ function addNewBankAccounts(event) {
     var params = {
       TableName:'blitzbudget',
       Item:{
-            "pk": event['body-json'].financialPortfolioId,
+            "pk": event['body-json'].walletId,
             "sk": randomValue,
             "account_type": event['body-json'].accountType,
             "bank_account_name": event['body-json'].bankAccountName,
