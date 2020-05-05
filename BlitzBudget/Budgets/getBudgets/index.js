@@ -128,7 +128,7 @@ function isFullMonth(startsWithDate, endsWithDate) {
   }
   
   // Calculate oercentage only if the start date and end date is the same month and year, Else the percentage will be applied for all months
-  percentage = ( endsWithDate - startsWithDate ) / ( lastDay - firstDay );
+  percentage = ( endsWithDate.getDate() - startsWithDate.getDate() ) / ( lastDay.getDate() - firstDay.getDate() );
   console.log("Percentage of budget total to be calculated is %j", percentage);
   return false;
 }

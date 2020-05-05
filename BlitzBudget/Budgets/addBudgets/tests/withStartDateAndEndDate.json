@@ -1,9 +1,10 @@
 {
   "body-json": {
-    "walletId": "Wallet#93202082911265",
-    "category": "Save More",
-    "planned": 42,
-    "dateMeantFor": "2015-03-25T00:00:00.000Z"
+    "walletId": "Wallet#2020-05-02T17:19:13.022Z",
+    "category": "Category#2020-05-03T10:49:06.606Z",
+    "planned": 21,
+    "startsWithDate": "2020-05-03T10:16:52.571Z",
+    "endsWithDate": "2020-05-03T10:16:52.571Z"
   },
   "params": {
     "path": {},

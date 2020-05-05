@@ -5,17 +5,39 @@ AWS.config.update({region: 'eu-west-1'});
 
 // Create the DynamoDB service object
 var docClient = new AWS.DynamoDB.DocumentClient();
+let percentage = 1;
 
 exports.handler = async (event) => {
     console.log("adding Budget for ", JSON.stringify(event['body-json']));
     let events = [];
+    percentage = 1;
     let walletId = event['body-json'].walletId;
+    let startsWithDate = event['body-json'].startsWithDate;
+    let endsWithDate = event['body-json'].endsWithDate;
+    let dateMeantFor = event['body-json'].dateMeantFor;
+    
+    /*
+    * Start date and end date is present without datemeantfor
+    */
+    if(isNotEmpty(startsWithDate) && isNotEmpty(endsWithDate)) {
+      console.log("Start date %j ", startsWithDate, " and end date is ", endsWithDate, " are present.");
+      if(isFullMonth(startsWithDate, endsWithDate)) {
+        event['body-json'].dateMeantFor = startsWithDate;
+      } else if(percentage == 1){
+        throw new Error("Unable to add the Budget, As the start date and end date must be the same month and year.");
+      } else {
+        event['body-json'].dateMeantFor = startsWithDate;
+        dateMeantFor = startsWithDate;
+        event['body-json'].planned *= percentage;
+        console.log("Changing the date meant for to %j", event['body-json'].dateMeantFor, " and the planned to ", event['body-json'].planned);
+      }
+    }
 
     /*
     * If Date Id is not present
     */
-    let dateMeantFor = event['body-json'].dateMeantFor;
     if(notIncludesStr(dateMeantFor, 'Date#')) {
+      console.log("The date is %j", dateMeantFor);
         let today = new Date(event['body-json'].dateMeantFor);
         /*
         * Check if date is present before adding them
@@ -59,6 +81,40 @@ exports.handler = async (event) => {
         
     return event;
 };
+
+/*
+* Calculate difference between startdate and end date
+*/
+function isFullMonth(startsWithDate, endsWithDate) {
+  startsWithDate = new Date(startsWithDate);
+  endsWithDate = new Date(endsWithDate);
+  
+  if(isNotEqual(startsWithDate.getMonth(), endsWithDate.getMonth()) || isNotEqual(startsWithDate.getFullYear(), endsWithDate.getFullYear())) {
+    console.log("The month and the year do not coincide"); 
+    return false;
+  }
+
+  let firstDay = new Date(startsWithDate.getFullYear(), startsWithDate.getMonth());
+  let lastDay = new Date(firstDay.getFullYear(), firstDay.getMonth()+1, 0);
+
+  if(isEqual(firstDay.getDate(), startsWithDate.getDate()) && isEqual(lastDay.getDate(), endsWithDate.getDate())) {
+    return true;
+  }
+  
+  let periodChosen = endsWithDate.getDate() - startsWithDate.getDate();
+  /*
+  * If the starts date and end date is the same then. 
+  */
+  if(periodChosen == 0) {
+      console.log("The start date and the end date mentioned are the same");
+      periodChosen = 1;
+  }
+  
+  // Calculate oercentage only if the start date and end date is the same month and year, Else the percentage will be applied for all months
+  percentage = lastDay.getDate()/periodChosen;
+  console.log("Percentage of budget total to be calculated is %j", percentage);
+  return false;
+}
 
 function getDateData(pk, today) {
   var params = {
@@ -218,4 +274,15 @@ function  isEmpty(obj) {
 
 function isNotEmpty(obj) {
   return !isEmpty(obj);
+}
+
+function isEqual(obj1,obj2){
+  if (JSON.stringify(obj1) === JSON.stringify(obj2)) {
+      return true;
+  }
+  return false;
+}
+
+function isNotEqual(obj1,obj2){
+  return !isEqual(obj1,obj2);
 }

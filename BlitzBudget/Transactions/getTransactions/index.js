@@ -49,10 +49,10 @@ exports.handler = async (event) => {
 function getRecurringTransactions(walletId) {
     var params = {
       TableName: 'blitzbudget',
-      KeyConditionExpression   : "pk = :walletId AND sk < :today",
+      KeyConditionExpression   : "pk = :walletId AND begins_with(sk, :items)",
       ExpressionAttributeValues: {
           ":walletId": walletId,
-          ":today": "RecurringTransactions#" + new Date().toISOString();
+          ":items": "RecurringTransactions#"
       },
       ProjectionExpression: "sk, pk, amount, description, category, recurrence, account, next_scheduled"
     };
@@ -197,7 +197,7 @@ function isFullMonth(startsWithDate, endsWithDate) {
   }
   
   // Calculate oercentage only if the start date and end date is the same month and year, Else the percentage will be applied for all months
-  percentage = ( endsWithDate - startsWithDate ) / ( lastDay - firstDay );
+  percentage = ( endsWithDate.getDate() - startsWithDate.getDate() ) / ( lastDay.getDate() - firstDay.getDate() );
   console.log("Percentage of budget total to be calculated is %j", percentage);
   return false;
 }
