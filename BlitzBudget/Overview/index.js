@@ -78,7 +78,7 @@ function getGoalsData(pk) {
             console.log("Error ", err);
             reject(err);
           } else {
-            console.log("data retrieved ", JSON.stringify(data.Items));
+            console.log("data retrieved ", data.Count);
             resolve({ "Goal" : data.Items});
           }
         });
@@ -134,7 +134,7 @@ function getWalletsData(userId) {
             console.log("Error ", err);
             reject(err);
           } else {
-            console.log("data retrieved - Wallet %j", JSON.stringify(data.Items));
+            console.log("data retrieved - Wallet %j", data.Count);
             overviewData['Wallet'] = data.Items;
             resolve({ "Wallet" : data.Items});
           }
@@ -160,7 +160,7 @@ function getBankAccountData(pk) {
             console.log("Error ", err);
             reject(err);
           } else {
-            console.log("data retrieved - Bank Account %j", JSON.stringify(data.Items));
+            console.log("data retrieved - Bank Account %j", data.Count);
             resolve({ "BankAccount" : data.Items});
           }
         });
@@ -185,7 +185,7 @@ function getCategoryData(pk, dateMeantFor) {
             console.log("Error ", err);
             reject(err);
           } else {
-            console.log("data retrieved - Category %j", JSON.stringify(data.Items));
+            console.log("data retrieved - Category %j", data.Count);
             overviewData['Category'] = data.Items;
             resolve({ "Category" : data.Items});
           }
@@ -212,7 +212,7 @@ function getDateData(pk, startsWithDate, endsWithDate) {
             console.log("Error ", err);
             reject(err);
           } else {
-            console.log("data retrieved - Date ", JSON.stringify(data.Items));
+            console.log("data retrieved - Date ", data.Count);
             overviewData['Date'] = data.Items;
             resolve({ "Date" : data.Items});
           }
@@ -238,7 +238,7 @@ function getBudgetsData(pk, dateMeantFor) {
             console.log("Error ", err);
             reject(err);
           } else {
-            console.log("data retrieved - Budget %j", JSON.stringify(data.Items));
+            console.log("data retrieved - Budget %j", data.Count);
             overviewData['Budget'] = data.Items;
             resolve({ "Budget" : data.Items});
           }
@@ -268,7 +268,7 @@ function getTransactionsData(pk, dateMeantFor) {
             console.log("Error ", err);
             reject(err);
           } else {
-            console.log("data retrieved - Transactions %j ", JSON.stringify(data.Items));
+            console.log("data retrieved - Transactions %j ", data.Count);
             overviewData['Transaction'] = data.Items;
             resolve({ "Transaction" : data.Items});
           }

@@ -68,7 +68,7 @@ function getTransactionsData(pk, startsWithDate, endsWithDate) {
             console.log("Error ", err);
             reject(err);
           } else {
-            console.log("data retrieved - Transactions %j", JSON.stringify(data.Items));
+            console.log("data retrieved - Transactions %j", data.Count);
             budgetData['Transaction'] = data.Items;
             resolve({ "Transaction" : data.Items});
           }
@@ -94,7 +94,7 @@ function getBankAccountData(pk) {
             console.log("Error ", err);
             reject(err);
           } else {
-            console.log("data retrieved - Bank Account %j", JSON.stringify(data.Items));
+            console.log("data retrieved - Bank Account %j", data.Count);
             for(const accountObj of data.Items) {
               accountObj.accountId = accountObj.sk;
               accountObj.userId = accountObj.pk;
@@ -210,7 +210,7 @@ function getDateData(pk, year) {
             console.log("Error ", err);
             reject(err);
           } else {
-            console.log("data retrieved - Date %j", JSON.stringify(data.Items));
+            console.log("data retrieved - Date %j", data.Count);
             budgetData['Date'] = data.Items;
             resolve({ "Date" : data.Items});
           }
@@ -238,7 +238,7 @@ function getBudgetsItem(walletId, startsWithDate, endsWithDate) {
             console.log("Error ", err);
             reject(err);
           } else {
-            console.log("data retrieved ", JSON.stringify(data.Items));
+            console.log("data retrieved ", data.Count);
             budgetData['Budget'] = data.Items;
             resolve({"Budget" : data.Items});
           }
@@ -265,7 +265,7 @@ function getCategoryData(pk, startsWithDate, endsWithDate) {
             console.log("Error ", err);
             reject(err);
           } else {
-            console.log("data retrieved - Category %j", JSON.stringify(data.Items));
+            console.log("data retrieved - Category %j", data.Count);
             budgetData['Category'] = data.Items; 
             resolve({ "Category" : data.Items});
           }
@@ -292,7 +292,7 @@ function getWalletsData(userId) {
             console.log("Error ", err);
             reject(err);
           } else {
-            console.log("data retrieved - Wallet %j", JSON.stringify(data.Items));
+            console.log("data retrieved - Wallet %j", data.Count);
             for(const walletObj of data.Items) {
               walletObj.walletId = walletObj.sk;
               walletObj.userId = walletObj.pk;

@@ -41,7 +41,7 @@ function getWalletItem(walletId) {
             console.log("Error ", err);
             reject(err);
           } else {
-            console.log("data retrieved ", JSON.stringify(data.Items));
+            console.log("data retrieved ", data.Count);
             for(const walletObj of data.Items) {
               walletObj.walletId = walletObj.sk;
               walletObj.userId = walletObj.pk;

@@ -86,7 +86,7 @@ function getAllItems(financialPortfolioId) {
             console.log("Error ", err);
             reject(err);
           } else {
-            console.log("data retrieved ", JSON.stringify(data.Items));
+            console.log("data retrieved ", data.Count);
             resolve(data);
           }
         });

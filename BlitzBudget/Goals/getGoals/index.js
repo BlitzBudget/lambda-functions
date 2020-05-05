@@ -53,7 +53,7 @@ function getBankAccountData(pk) {
             console.log("Error ", err);
             reject(err);
           } else {
-            console.log("data retrieved - Bank Account %j", JSON.stringify(data.Items));
+            console.log("data retrieved - Bank Account %j", data.Count);
             for(const accountObj of data.Items) {
               accountObj.accountId = accountObj.sk;
               accountObj.walletId = accountObj.pk;
@@ -85,7 +85,7 @@ function getWalletsData(userId) {
             console.log("Error ", err);
             reject(err);
           } else {
-            console.log("data retrieved - Wallet %j", JSON.stringify(data.Items));
+            console.log("data retrieved - Wallet %j", data.Count);
             for(const walletObj of data.Items) {
               walletObj.walletId = walletObj.sk;
               walletObj.userId = walletObj.pk;
@@ -119,7 +119,7 @@ function getGoalItem(walletId) {
             console.log("Error ", err);
             reject(err);
           } else {
-            console.log("data retrieved - Goal %j", JSON.stringify(data.Items));
+            console.log("data retrieved - Goal %j", data.Count);
             for(const goalObj of data.Items) {
               goalObj.goalId = goalObj.sk;
               goalObj.userId = goalObj.pk;

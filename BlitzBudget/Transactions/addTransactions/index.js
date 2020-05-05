@@ -84,7 +84,7 @@ function getDateData(pk, today) {
             console.log("Error ", err);
             reject(err);
           } else {
-            console.log("data retrieved - Date %j", JSON.stringify(data.Items));
+            console.log("data retrieved - Date %j", data.Count);
             resolve({ "Date" : data.Items});
           }
         });
@@ -203,7 +203,7 @@ function addNewRecurringTransaction(event) {
     today.setYear(event['body-json'].dateMeantFor.substring(5, 9));
     today.setMonth(parseInt(event['body-json'].dateMeantFor.substring(10, 12)) -1);
     let randomValue = "RecurringTransactions#" + today.toISOString(); 
-    let nextRecurrence =  new Date();
+    let nextRecurrence =  today;
 
     switch(event['body-json'].recurrence) {
        case 'MONTHLY':
