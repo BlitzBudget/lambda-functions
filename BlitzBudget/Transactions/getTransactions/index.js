@@ -8,6 +8,8 @@ var docClient = new AWS.DynamoDB.DocumentClient({region: 'eu-west-1'});
 let transactionData = {};
 let percentage = 1;
 
+var sns = new AWS.SNS();
+
 exports.handler = async (event) => {
     transactionData = {};
     percentage = 1;
@@ -84,7 +86,49 @@ function getRecurringTransactions(walletId) {
 }
 
 function markTransactionForCreation(recurringTransaction) {
-  console.log("Marking the recurring transaction for creation %j", JSON.stringify(recurringTransaction));
+  console.log("Marking the recurring transaction for creation %j", recurringTransaction.sk);
+
+  let params = {
+      Message: recurringTransaction.sk,
+      MessageAttributes: {
+          "category": {
+              "DataType": "String",
+              "StringValue": recurringTransaction.category
+          },
+          "next_scheduled": {
+              "DataType": "String",
+              "StringValue": recurringTransaction['next_scheduled']
+          },
+          "amount": {
+              "DataType": "String",
+              "StringValue": recurringTransaction.amount
+          },
+          "recurrence": {
+              "DataType": "String",
+              "StringValue": recurringTransaction.recurrence
+          },
+          "description": {
+              "DataType": "String",
+              "StringValue": recurringTransaction.description
+          },
+          "account": {
+              "DataType": "String",
+              "StringValue": recurringTransaction.account
+          }
+      },
+      TopicArn: 'arn:aws:sns:eu-west-1:064559090307:addRecurringTransactions'
+  };
+
+  return new Promise((resolve, reject) => {
+    sns.publish(params,  function(err, data) {
+          if (err) {
+              console.log("Error ", err);
+              reject(err);
+          } else {
+              resolve( "Reset account to SNS published");
+          }
+      });
+  });
 }
 
 // Get Budget Item

@@ -1,12 +1,13 @@
 {
   "body-json": {
-    "walletId": "Wallet#2020-04-29T17:54:46.326Z",
-    "dateMeantFor": "Date#2020-04-30T11:10:36.311Z",
-    "amount": 10,
-    "category": "Beauty",
+    "walletId": "Wallet#2020-05-02T17:19:13.022Z",
+    "dateMeantFor": "Date#2020-04-03T10:16:52.571Z",
+    "amount": 95,
+    "category": "Others",
     "categoryType": "Expense",
-    "recurrence": "MONTHLY",
-    "account": "BankAccount#2020-04-29T17:54:46.712Z"
+    "recurrence": "BI-MONTHLY",
+    "account": "BankAccount#2020-05-02T17:19:13.430Z",
+    "description": "Transaction Description"
   },
   "params": {
     "path": {},
