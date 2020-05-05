@@ -14,19 +14,24 @@ exports.handler = async (event, context) => {
     try {
         console.log('Received event:', JSON.stringify(event, null, 2));
         for (const record of event.Records) {
-            console.log(record.eventID);
-            console.log(record.eventName);
             let sortKey = record.dynamodb.Keys.sk.S;
+            console.log("Started processing the event with the sort key %j", sortKey);
+            console.log("Started processing the event with id %j", record.eventID);
+            console.log("The event name is %j", record.eventName);
             
             // If the entries are not transactions / bank accounts then do not process
             if(includesStr(sortKey, 'Transaction#')) {
+                console.log("Updating the category total and account balance");
                 updateCategoryTotal(record);
                 updateAccountBalance(record);
             } else if(includesStr(sortKey, 'BankAccount#')) {
+                console.log("Updating the wallet account balance");
                 updateWalletBalance(record);
             } else if(includesStr(sortKey, 'Wallet#') && isEqual(record.eventName, 'INSERT')) {
+                console.log("Adding a new bank account for the newly created wallet");
                 events.push(addNewBankAccount(record));
             } else if(includesStr(sortKey, 'Category#')) {
+                console.log("Updating the date wrapper with the total");
                 updateDateTotal(record);
             } 
         }
@@ -55,7 +60,7 @@ function updateDateTotal(record) {
         date = record.dynamodb.NewImage['date_meant_for'].S;
     }
     
-    console.log("adding the difference %j", balance, "to the account %j", date);
+    console.log("adding the difference %j", balance, "to the date %j", date);
     
     // if balance is 0 then do nothing
     if(balance == 0) {
@@ -116,7 +121,7 @@ function updateCategoryTotal(record) {
         category = record.dynamodb.NewImage.category.S;
     }
     
-    console.log("adding the difference %j", balance, "to the account %j", category);
+    console.log("adding the difference %j", balance, "to the category %j", category);
     
     // if balance is 0 then do nothing
     if(balance == 0) {

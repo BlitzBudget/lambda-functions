@@ -17,7 +17,9 @@ exports.handler = async (event) => {
     nextSchArray = []; 
     events = [];
     let datesMap = {};
+    let categoryMap = {};
     let walletId = event.Records[0].Sns.MessageAttributes.walletId.Value;
+    let category = event.Records[0].Sns.MessageAttributes.category.Value;
     let recurringTransactionsId = event.Records[0].Sns.Message;
     console.log( 'Creating transactions via recurring transactions for the walletId ' + walletId);
     buildParamsForPut(event);
@@ -28,15 +30,26 @@ exports.handler = async (event) => {
     * Fetch available dates
     */
     fetchDatesForWallet(walletId);
+    fetchCategoryFromTransaction(walletId, category);
     
     /*
     * Publish events to get date data
     */
     await Promise.all(events).then(function(result) {
-      console.log("Successfully fetched all the relevant information %j", JSON.stringify(result));
+        console.log("Successfully fetched all the relevant information %j", JSON.stringify(result));
       
-         for(const dateObj of result) {
-              if(includesStr(nextSchArray, dateObj.dateToCreate)) {
+        /*
+        * Calculate Date
+        */
+        let categoryToCopy;
+        for(const dateObj of result) {
+             if(dateObj.CategoryToCopy){
+                 // Copy the category to copy
+                 categoryToCopy = dateObj.CategoryToCopy;
+                 return;
+             }
+             
+             if(includesStr(nextSchArray, dateObj.dateToCreate)) {
                 let dateToCreate = new Date();
                 dateToCreate.setFullYear(dateObj.dateToCreate.substring(0,4));
                 let month = parseInt(dateObj.dateToCreate.substring(5,7)) -1;
@@ -48,15 +61,33 @@ exports.handler = async (event) => {
                 */
                 dateObj.Date = [];
                 dateObj.Date.push({ 'sk': sk});
-              }
-              datesMap[dateObj.Date[0].sk.substring(5, 12)] = (dateObj.Date[0].sk);
-          }   
+             }
+             datesMap[dateObj.Date[0].sk.substring(5, 12)] = (dateObj.Date[0].sk);
+       }
+       
+       /*
+       * Build category id's to construct the transactions
+       */ 
+       if(isNotEmpty(categoryToCopy)) {
+            for(const categoryObj of result) {
+               // If the category field is populated
+               if(isNotEmpty(categoryObj.Category)) {
+                   if(isEqual(categoryObj['category_name'], categoryToCopy['category_name']) 
+                   && isEqual(categoryObj['category_type'], categoryToCopy['category_type'])) {
+                       console.log("Not necessary to copy the category for the month %j", categoryObj.sk);
+                       categoryMap[categoryObj.sk.substring(9,16)] = categoryObj.sk;
+                   }
+               }
+           }
+       }
+       
     }, function(err) {
        throw new Error("Unable to fetch the date for the recurring transaction" + err);
     });
     
     console.log(" The number of transactions and dates to create are %j", params.RequestItems.blitzbudget.length);
     
+    reconstructTransactionsWithCategory(categoryMap);
     reconstructTransactionsWithDateMeantFor(datesMap);
     await batchWriteItems().then(function(result) {
       console.log("Successfully fetched all the relevant information %j", JSON.stringify(result));
@@ -71,6 +102,38 @@ exports.handler = async (event) => {
     });
 
 };
+
+/*
+* Fetch category
+*/
+function fetchCategoryFromTransaction(pk, sk) {
+    console.log("Fetching the category %j", sk, " with the wallet id as ", pk )
+    var params = {
+      AttributesToGet: [
+        "category_name",
+        "category_total", 
+        "category_type"
+      ],
+      TableName: 'blitzbudget',
+      Key : { 
+        "pk" : pk,
+        "sk" : sk
+      }
+    };
+    
+    // Call DynamoDB to read the item from the table
+    return new Promise((resolve, reject) => {
+        DB.get(params, function(err, data) {
+          if (err) {
+            console.log("Error ", err);
+            reject(err);
+          } else {
+            console.log("data retrieved - Category %j", JSON.stringify(data));
+            resolve({ "CategoryToCopy" : data});
+          }
+        });
+    });
+}
 
 /*
 * Update the recurring transaction
@@ -125,6 +188,22 @@ function batchWriteItems() {
 /*
 * Populate the date meant for attribute in the transactions
 */
+function reconstructTransactionsWithCategory(categoryMap) {
+    for(const putItem of params.RequestItems.blitzbudget) {
+        let sk = putItem.PutRequest.Item.sk;
+        if(includesStr(sk, 'Transaction#')) {
+            let compareString = sk.substring(12,19);
+            if(isNotEmpty(categoryMap[compareString])) {
+                console.log("The date for the transaction %j ", sk, " is ", categoryMap[compareString]);
+                putItem.PutRequest.Item.category = categoryMap[compareString];
+            }
+        }
+    }
+}
+
+/*
+* Populate the date meant for attribute in the transactions
+*/
 function reconstructTransactionsWithDateMeantFor(datesMap) {
     for(const putItem of params.RequestItems.blitzbudget) {
         let sk = putItem.PutRequest.Item.sk;
@@ -162,7 +241,36 @@ function buildParamsForDate(walletId, sk) {
 function fetchDatesForWallet(walletId) {
     for(const dateMeantFor of nextSchArray) {
         events.push(getDateData(walletId, dateMeantFor));
+        events.push(getCategoryData(walletId, dateMeantFor));
     }
+}
+
+/*
+* Get Category Data
+*/
+function getCategoryData(pk, today) {
+  var params = {
+      TableName: 'blitzbudget',
+      KeyConditionExpression   : "pk = :pk AND begins_with(sk, :items)",
+      ExpressionAttributeValues: {
+          ":pk": pk,
+          ":items": "Category#" + today.substring(0,4) + '-' + today.substring(5,7)
+      },
+      ProjectionExpression: "pk, sk"
+    };
+    
+    // Call DynamoDB to read the item from the table
+    return new Promise((resolve, reject) => {
+        DB.query(params, function(err, data) {
+          if (err) {
+            console.log("Error ", err);
+            reject(err);
+          } else {
+            console.log("data retrieved - Category %j", data.Count, " for the date ", today);
+            resolve({ "Category" : data.Items});
+          }
+        });
+    });
 }
 
 /*
@@ -209,7 +317,7 @@ function buildParamsForPut(event) {
     let nextScheduled = event.Records[0].Sns.MessageAttributes["next_scheduled"].Value;
     let recurrence = event.Records[0].Sns.MessageAttributes.recurrence.Value;
     let walletId = event.Records[0].Sns.MessageAttributes.walletId.Value;
-    let amount = event.Records[0].Sns.MessageAttributes.amount.Value;
+    let amount = parseInt(event.Records[0].Sns.MessageAttributes.amount.Value);
     let description = event.Records[0].Sns.MessageAttributes.description.Value;
     let category = event.Records[0].Sns.MessageAttributes.category.Value;
     let account = event.Records[0].Sns.MessageAttributes.account.Value;
@@ -298,4 +406,11 @@ function notIncludesStr(arr, val){
 
 function isNotEmpty(obj) {
   return !isEmpty(obj);
+}
+
+function isEqual(obj1,obj2){
+  if (JSON.stringify(obj1) === JSON.stringify(obj2)) {
+      return true;
+  }
+  return false;
 }
