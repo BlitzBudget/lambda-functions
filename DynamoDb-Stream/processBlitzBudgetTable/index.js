@@ -11,27 +11,27 @@ var docClient = new AWS.DynamoDB.DocumentClient();
 
 exports.handler = async (event, context) => {
     events = [];
-    
-    console.log('Received event:', JSON.stringify(event, null, 2));
-    for (const record of event.Records) {
-        console.log(record.eventID);
-        console.log(record.eventName);
-        let sortKey = record.dynamodb.Keys.sk.S;
-        
-        // If the entries are not transactions / bank accounts then do not process
-        if(includesStr(sortKey, 'Transaction#')) {
-            updateCategoryTotal(record);
-            updateAccountBalance(record);
-        } else if(includesStr(sortKey, 'BankAccount#')) {
-            updateWalletBalance(record);
-        } else if(includesStr(sortKey, 'Wallet#') && isEqual(record.eventName, 'INSERT')) {
-            events.push(addNewBankAccount(record));
-        } else if(includesStr(sortKey, 'Category#')) {
-            updateDateTotal(record);
-        } 
-    }
-    
     try {
+        console.log('Received event:', JSON.stringify(event, null, 2));
+        for (const record of event.Records) {
+            console.log(record.eventID);
+            console.log(record.eventName);
+            let sortKey = record.dynamodb.Keys.sk.S;
+            
+            // If the entries are not transactions / bank accounts then do not process
+            if(includesStr(sortKey, 'Transaction#')) {
+                updateCategoryTotal(record);
+                updateAccountBalance(record);
+            } else if(includesStr(sortKey, 'BankAccount#')) {
+                updateWalletBalance(record);
+            } else if(includesStr(sortKey, 'Wallet#') && isEqual(record.eventName, 'INSERT')) {
+                events.push(addNewBankAccount(record));
+            } else if(includesStr(sortKey, 'Category#')) {
+                updateDateTotal(record);
+            } 
+        }
+        
+    
         await Promise.all(events);
     } catch(ex) {
         console.log("Could not complete operation ", ex);
@@ -190,7 +190,7 @@ function addNewBankAccount(record) {
 function updateWalletBalance(record) {
     let pk = record.dynamodb.Keys.pk.S, balance = 0,primaryWalletId, accountType, assetBalance = 0, debtBalance = 0;
     
-    console.log("event is %j for updating the wallet balance", record.eventName);
+    console.log("event is %j for updating the wallet balance", JSON.stringify(record.dynamodb));
     
     if(isEqual(record.eventName, 'INSERT')) {
         balance = parseInt(record.dynamodb.NewImage['account_balance'].N);
