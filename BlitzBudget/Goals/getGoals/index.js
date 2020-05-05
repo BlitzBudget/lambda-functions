@@ -26,7 +26,6 @@ exports.handler = async (event) => {
     
     events.push(getBankAccountData(walletId));
     events.push(getGoalItem(walletId));
-
     await Promise.all(events).then(function(result) {
        console.log("successfully retrieved all information");
     }, function(err) {
@@ -57,7 +56,7 @@ function getBankAccountData(pk) {
             console.log("data retrieved - Bank Account %j", JSON.stringify(data.Items));
             for(const accountObj of data.Items) {
               accountObj.accountId = accountObj.sk;
-              accountObj.userId = accountObj.pk;
+              accountObj.walletId = accountObj.pk;
               delete accountObj.sk;
               delete accountObj.pk;
             }
@@ -76,7 +75,7 @@ function getWalletsData(userId) {
           ":pk": userId,
           ":items": "Wallet#"
       },
-      ProjectionExpression: "currency, pk, sk, read_only, total_asset_balance, total_debt_balance, wallet_balance"
+      ProjectionExpression: "currency, pk, sk, total_asset_balance, total_debt_balance, wallet_balance"
     };
     
     // Call DynamoDB to read the item from the table

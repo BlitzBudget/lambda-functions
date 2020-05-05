@@ -127,6 +127,7 @@ function isFullMonth(startsWithDate, endsWithDate) {
     return true;
   }
   
+  // Calculate oercentage only if the start date and end date is the same month and year, Else the percentage will be applied for all months
   percentage = ( endsWithDate - startsWithDate ) / ( lastDay - firstDay );
   console.log("Percentage of budget total to be calculated is %j", percentage);
   return false;
@@ -281,7 +282,7 @@ function getWalletsData(userId) {
           ":pk": userId,
           ":items": "Wallet#"
       },
-      ProjectionExpression: "currency, pk, sk, read_only, total_asset_balance, total_debt_balance, wallet_balance"
+      ProjectionExpression: "currency, pk, sk, total_asset_balance, total_debt_balance, wallet_balance"
     };
     
     // Call DynamoDB to read the item from the table

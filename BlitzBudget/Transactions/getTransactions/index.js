@@ -6,9 +6,11 @@ AWS.config.update({region: 'eu-west-1'});
 // Create the DynamoDB service object
 var docClient = new AWS.DynamoDB.DocumentClient({region: 'eu-west-1'});
 let transactionData = {};
+let percentage = 1;
 
 exports.handler = async (event) => {
     transactionData = {};
+    percentage = 1;
     console.log("fetching item for the walletId ", event.params.querystring.walletId);
     let events = [];
     let userId = event.params.querystring.userId;
@@ -28,9 +30,11 @@ exports.handler = async (event) => {
     }
   
     events.push(getTransactionItem(walletId, startsWithDate, endsWithDate));
+    events.push(getBudgetsItem(walletId, startsWithDate, endsWithDate));
     events.push(getCategoryData(walletId, startsWithDate, endsWithDate));
     events.push(getBankAccountData(walletId));
     events.push(getDateData(walletId, startsWithDate.substring(0,4)));
+    events.push(getRecurringTransactions(walletId));
     await Promise.all(events).then(function(result) {
       console.log("Successfully fetched all the relevant information");
     }, function(err) {
@@ -40,6 +44,76 @@ exports.handler = async (event) => {
     calculateDateAndCategoryTotal(fullMonth);
     return transactionData;
 };
+
+// Get Budget Item
+function getRecurringTransactions(walletId) {
+    var params = {
+      TableName: 'blitzbudget',
+      KeyConditionExpression   : "pk = :walletId AND sk < :today",
+      ExpressionAttributeValues: {
+          ":walletId": walletId,
+          ":today": "RecurringTransactions#" + new Date().toISOString();
+      },
+      ProjectionExpression: "sk, pk, amount, description, category, recurrence, account, next_scheduled"
+    };
+    
+    // Call DynamoDB to read the item from the table
+    return new Promise((resolve, reject) => {
+        docClient.query(params, function(err, data) {
+          if (err) {
+            console.log("Error ", err);
+            reject(err);
+          } else {
+            console.log("data retrieved ", JSON.stringify(data.Items));
+            let today =  new Date();
+            for(const rtObj of data.Items) {
+              let scheduled = new Date(rtObj['next_scheduled']);
+              if(scheduled < today) {
+                markTransactionForCreation(rtObj);
+              }
+              rtObj.recurringTransactionsId = rtObj.sk;
+              rtObj.walletId = rtObj.pk;
+              delete rtObj.sk;
+              delete rtObj.pk;
+            }
+            transactionData['RecurringTransactions'] = data.Items;
+            resolve({"RecurringTransactions" : data.Items});
+          }
+        });
+    });
+}
+
+function markTransactionForCreation(recurringTransactions) {
+
+}
+
+// Get Budget Item
+function getBudgetsItem(walletId, startsWithDate, endsWithDate) {
+    var params = {
+      TableName: 'blitzbudget',
+      KeyConditionExpression   : "pk = :walletId AND sk BETWEEN :bt1 AND :bt2",
+      ExpressionAttributeValues: {
+          ":walletId": walletId,
+          ":bt1": "Budget#" + startsWithDate,
+          ":bt2": "Budget#" + endsWithDate
+      },
+      ProjectionExpression: "category, planned, sk, pk"
+    };
+    
+    // Call DynamoDB to read the item from the table
+    return new Promise((resolve, reject) => {
+        docClient.query(params, function(err, data) {
+          if (err) {
+            console.log("Error ", err);
+            reject(err);
+          } else {
+            console.log("data retrieved ", JSON.stringify(data.Items));
+            transactionData['Budget'] = data.Items;
+            resolve({"Budget" : data.Items});
+          }
+        });
+    });
+}
 
 function calculateDateAndCategoryTotal(fullMonth) {
     let categoryList = {}; 
@@ -80,6 +154,22 @@ function calculateDateAndCategoryTotal(fullMonth) {
       delete dateObj.sk;
       delete dateObj.pk;
     }
+
+    /*
+    * Assuming the category total will be equal to the transactions added
+    */
+    for(const budgetObj of transactionData.Budget) {
+      budgetObj.planned = budgetObj.planned * percentage;
+      if(isNotEmpty(categoryList[budgetObj.category])) {
+        budgetObj.used = categoryList[budgetObj.category];
+      } else {
+        budgetObj.used = 0;
+      }
+      budgetObj.budgetId = budgetObj.sk;
+      budgetObj.walletId = budgetObj.pk;
+      delete budgetObj.sk;
+      delete budgetObj.pk;
+    }
     
     transactionData.incomeTotal = incomeTotal;
     transactionData.expenseTotal = expenseTotal;
@@ -106,6 +196,9 @@ function isFullMonth(startsWithDate, endsWithDate) {
     return true;
   }
   
+  // Calculate oercentage only if the start date and end date is the same month and year, Else the percentage will be applied for all months
+  percentage = ( endsWithDate - startsWithDate ) / ( lastDay - firstDay );
+  console.log("Percentage of budget total to be calculated is %j", percentage);
   return false;
 }
 
@@ -146,7 +239,7 @@ function getTransactionItem(pk, startsWithDate, endsWithDate) {
           ":bt1": "Transaction#" + startsWithDate,
           ":bt2": "Transaction#" + endsWithDate
       },
-      ProjectionExpression: "amount, description, category, recurrence, sk, pk"
+      ProjectionExpression: "amount, description, category, recurrence, account, date_meant_for, sk, pk"
     };
     
     // Call DynamoDB to read the item from the table
@@ -231,7 +324,7 @@ function getWalletsData(userId) {
           ":pk": userId,
           ":items": "Wallet#"
       },
-      ProjectionExpression: "currency, pk, sk, read_only, total_asset_balance, total_debt_balance, wallet_balance"
+      ProjectionExpression: "currency, pk, sk, total_asset_balance, total_debt_balance, wallet_balance"
     };
     
     // Call DynamoDB to read the item from the table
