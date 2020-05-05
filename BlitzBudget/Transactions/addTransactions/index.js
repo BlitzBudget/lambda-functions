@@ -84,7 +84,7 @@ function getDateData(pk, today) {
             console.log("Error ", err);
             reject(err);
           } else {
-            console.log("data retrieved - Date %j", JSON.stringify(data.Items));
+            console.log("data retrieved - Date %j", data.Count);
             resolve({ "Date" : data.Items});
           }
         });

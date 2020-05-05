@@ -9,6 +9,7 @@ let transactionData = {};
 let percentage = 1;
 
 var sns = new AWS.SNS();
+let snsEvents = [];
 
 exports.handler = async (event) => {
     transactionData = {};
@@ -44,6 +45,17 @@ exports.handler = async (event) => {
     });
 
     calculateDateAndCategoryTotal(fullMonth);
+    
+    /*
+    * Send to SNS events
+    */
+    if(isNotEmpty(snsEvents)) {
+        await Promise.all(snsEvents).then(function(result) {
+          console.log("Successfully sent the pending recurring transactions for creation");
+        }, function(err) {
+           throw new Error("Unable to send the pending recurring transactions for creation" + err);
+        });
+    }
     return transactionData;
 };
 
@@ -71,7 +83,7 @@ function getRecurringTransactions(walletId) {
             for(const rtObj of data.Items) {
               let scheduled = new Date(rtObj['next_scheduled']);
               if(scheduled < today) {
-                markTransactionForCreation(rtObj);
+                snsEvents.push(markTransactionForCreation(rtObj));
               }
               rtObj.recurringTransactionsId = rtObj.sk;
               rtObj.walletId = rtObj.pk;
@@ -87,6 +99,10 @@ function getRecurringTransactions(walletId) {
 
 function markTransactionForCreation(recurringTransaction) {
   console.log("Marking the recurring transaction for creation %j", recurringTransaction.sk);
+  
+  if(isEmpty(recurringTransaction.description)) {
+    recurringTransaction.description = 'No description';
+  }
 
   let params = {
       Message: recurringTransaction.sk,
@@ -101,7 +117,7 @@ function markTransactionForCreation(recurringTransaction) {
           },
           "amount": {
               "DataType": "String",
-              "StringValue": recurringTransaction.amount
+              "StringValue": recurringTransaction.amount.toString()
           },
           "recurrence": {
               "DataType": "String",
@@ -114,6 +130,10 @@ function markTransactionForCreation(recurringTransaction) {
           "account": {
               "DataType": "String",
               "StringValue": recurringTransaction.account
+          },
+          "walletId": {
+              "DataType": "String",
+              "StringValue": recurringTransaction.pk
           }
       },
       TopicArn: 'arn:aws:sns:eu-west-1:064559090307:addRecurringTransactions'
