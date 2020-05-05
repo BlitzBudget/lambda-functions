@@ -5,11 +5,11 @@ AWS.config.update({region: 'eu-west-1'});
 
 // Create the DynamoDB service object
 var docClient = new AWS.DynamoDB.DocumentClient({region: 'eu-west-1'});
-
+let goalData = {};
 
 exports.handler = async (event) => {
     console.log("fetching item for the walletId ", event.params.querystring.walletId);
-    let goalData = {};
+    goalData = {};
     let events = [];
     let userId = event.params.querystring.userId;
     let walletId = event.params.querystring.walletId;
@@ -17,7 +17,7 @@ exports.handler = async (event) => {
     // Cognito does not store wallet information nor curreny. All are stored in wallet.
     if(isEmpty(walletId) && isNotEmpty(userId)) {
         await getWalletsData(userId).then(function(result) {
-          walletId = result.Wallet[0].sk;
+          walletId = result.Wallet[0].walletId;
           console.log("retrieved the wallet for the item ", walletId);
         }, function(err) {
            throw new Error("Unable error occured while fetching the transaction " + err);
@@ -28,8 +28,7 @@ exports.handler = async (event) => {
     events.push(getGoalItem(walletId));
 
     await Promise.all(events).then(function(result) {
-       goalData['BankAccount'] = result[0].BankAccount;
-       goalData['Goal'] = result[0].Goal;
+       console.log("successfully retrieved all information");
     }, function(err) {
        throw new Error("Unable error occured while fetching the goal " + err);
     });
@@ -56,6 +55,13 @@ function getBankAccountData(pk) {
             reject(err);
           } else {
             console.log("data retrieved - Bank Account %j", JSON.stringify(data.Items));
+            for(const accountObj of data.Items) {
+              accountObj.accountId = accountObj.sk;
+              accountObj.userId = accountObj.pk;
+              delete accountObj.sk;
+              delete accountObj.pk;
+            }
+            goalData['BankAccount'] = data.Items;
             resolve({ "BankAccount" : data.Items});
           }
         });
@@ -81,6 +87,13 @@ function getWalletsData(userId) {
             reject(err);
           } else {
             console.log("data retrieved - Wallet %j", JSON.stringify(data.Items));
+            for(const walletObj of data.Items) {
+              walletObj.walletId = walletObj.sk;
+              walletObj.userId = walletObj.pk;
+              delete walletObj.sk;
+              delete walletObj.pk;
+            }
+            goalData['Wallet'] = data.Items;
             resolve({ "Wallet" : data.Items});
           }
         });
@@ -108,6 +121,13 @@ function getGoalItem(walletId) {
             reject(err);
           } else {
             console.log("data retrieved - Goal %j", JSON.stringify(data.Items));
+            for(const goalObj of data.Items) {
+              goalObj.goalId = goalObj.sk;
+              goalObj.userId = goalObj.pk;
+              delete goalObj.sk;
+              delete goalObj.pk;
+            }
+            goalData['Goal'] = data.Items;
             resolve({ "Goal" : data.Items});
           }
         });

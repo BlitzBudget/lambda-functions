@@ -210,6 +210,12 @@ function getBankAccountData(pk) {
             reject(err);
           } else {
             console.log("data retrieved - Bank Account %j", JSON.stringify(data.Items));
+            for(const accountObj of data.Items) {
+              accountObj.accountId = accountObj.sk;
+              accountObj.userId = accountObj.pk;
+              delete accountObj.sk;
+              delete accountObj.pk;
+            }
             transactionData['BankAccount'] = data.Items;
             resolve({ "BankAccount" : data.Items});
           }
