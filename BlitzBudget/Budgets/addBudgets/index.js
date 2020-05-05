@@ -49,7 +49,7 @@ exports.handler = async (event) => {
           } else {
             dateMeantFor = "Date#" + today.toISOString();
             console.log("Date entry is empty so creating the date object");
-            events.push(createDateData(walletId, dateMeantFor));
+            events.push(createDateData(event, dateMeantFor));
           }
           // Assign Date meant for to create the transactions with the date ID
           event['body-json'].dateMeantFor = dateMeantFor;
