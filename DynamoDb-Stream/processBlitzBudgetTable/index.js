@@ -286,6 +286,7 @@ function updateAccountBalance(record) {
 }
 
 function updateAccountBalanceItem(pk, sk, balance) {
+    console.log("Updating account balance for the account with walelt Id %j", pk, " With sk as ", sk, " with the balance ", balance);
     let params = {
         TableName: 'blitzbudget',
         Key:{
