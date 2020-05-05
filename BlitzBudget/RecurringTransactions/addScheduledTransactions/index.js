@@ -15,6 +15,7 @@ exports.handler = async (event) => {
     params.RequestItems.blitzbudget = [];
     nextSchArray = []; 
     events = [];
+    let datesMap = {};
     let walletId = event.Records[0].Sns.MessageAttributes.walletId.Value;
     let recurringTransactionsId = event.Records[0].Sns.Message;
     console.log( 'Creating transactions via recurring transactions for the walletId ' + walletId);
@@ -37,24 +38,67 @@ exports.handler = async (event) => {
               if(includesStr(nextSchArray, dateObj.dateToCreate)) {
                 let dateToCreate = new Date();
                 dateToCreate.setFullYear(dateObj.dateToCreate.substring(0,4));
-                dateToCreate.setMonth(dateObj.dateToCreate.substring(5,7));
+                let month = parseInt(dateObj.dateToCreate.substring(5,7)) -1;
+                dateToCreate.setMonth(month);
                 let sk = "Date#" + dateToCreate.toISOString();
-                let length = params.RequestItems.blitzbudget.length;
-                buildParamsForDate(walletId, sk, length);   
+                buildParamsForDate(walletId, sk);
+                /*
+                * Build date object to place the date in transactions
+                */
+                dateObj.Date = [];
+                dateObj.Date.push({ 'sk': sk});
               }
+              datesMap[dateObj.Date[0].sk.substring(5, 12)] = (dateObj.Date[0].sk);
           }   
     }, function(err) {
-       throw new Error("Unable error occured while fetching the Budget " + err);
+       throw new Error("Unable to fetch the date for the recurring transaction" + err);
     });
     
     console.log(" The number of transactions and dates to create are %j", params.RequestItems.blitzbudget.length);
+    
+    reconstructTransactionsWithDateMeantFor(datesMap);
+    await batchWriteItems().then(function(result) {
+      console.log("Successfully fetched all the relevant information %j", JSON.stringify(result));
+    }, function(err) {
+       throw new Error("Unable to batch write all the transactions and dates " + err);
+    });
 
 };
+
+function batchWriteItems() {
+    return new Promise((resolve, reject) => {
+        DB.batchWrite(params, function(err, data) {
+          if (err) {
+            console.log("Error ", err);
+            reject(err);
+          } else {
+            resolve({ "success" : data});
+          }
+        });
+    });
+}
+
+/*
+* Populate the date meant for attribute in the transactions
+*/
+function reconstructTransactionsWithDateMeantFor(datesMap) {
+    for(const putItem of params.RequestItems.blitzbudget) {
+        let sk = putItem.PutRequest.Item.sk;
+        if(includesStr(sk, 'Transaction#')) {
+            let compareString = sk.substring(12,19);
+            if(isNotEmpty(datesMap[compareString])) {
+                console.log("The date for the transaction %j ", sk, " is ", datesMap[compareString]);
+                putItem.PutRequest.Item.dateMeantFor = datesMap[compareString];
+            }
+        }
+    }
+}
 
 /*
 * Build params for date
 */
-function buildParamsForDate(walletId, sk, length) {
+function buildParamsForDate(walletId, sk) {
+    let length = params.RequestItems.blitzbudget.length;
     console.log(" Creating the date wrapper for %j", sk);
     params.RequestItems.blitzbudget[length] = { 
         "PutRequest": { 
@@ -153,7 +197,7 @@ function buildParamsForPut(event) {
             nextSchArray.push(nextScheduledDateAsString);   
         }
         
-        let sk = "Transaction#" + today.toISOString();
+        let sk = "Transaction#" + nextScheduledDate.toISOString();
         params.RequestItems.blitzbudget[i] = { 
             "PutRequest": { 
                "Item": {
@@ -199,4 +243,8 @@ function includesStr(arr, val){
 
 function notIncludesStr(arr, val){
   return !includesStr(arr, val); 
+}
+
+function isNotEmpty(obj) {
+  return !isEmpty(obj);
 }

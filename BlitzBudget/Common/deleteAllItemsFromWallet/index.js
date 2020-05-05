@@ -1,98 +1,69 @@
-// Load the AWS SDK for Node.js
-var AWS = require('aws-sdk');
-// Set the region 
+const http = require('http');
+const AWS = require('aws-sdk')
 AWS.config.update({region: 'eu-west-1'});
-
-// Create the DynamoDB service object
-var DB = new AWS.DynamoDB.DocumentClient();
-
-exports.handler = async (event) => {
-    console.log( 'event ' + JSON.stringify(event.Records[0]));
-    let financialPortfolioId = event.Records[0].Sns.Message;
-    let deleteParams = {};
-    
-    await getAllItems(financialPortfolioId).then(function(result) {
-       console.log("successfully fetched all the goals ", result);
-       deleteParams = buildParamsForDelete(result, financialPortfolioId);
-    }, function(err) {
-       throw new Error("Unable to delete the goals " + err);
-    });
-    
-    if(isEmpty(deleteParams)) {
-        return event;
-    }
-    
-    await deleteItems(deleteParams).then(function(result) {
-       console.log("successfully deleted the goals");
-    }, function(err) {
-       throw new Error("Unable to delete the goals " + err);
-    });
-        
-    return event;
+// Delete User
+let cognitoIdServiceProvider = new AWS.CognitoIdentityServiceProvider();
+const userPoolId = 'eu-west-1_cjfC8qNiB';
+let paramsDelete = {
+    UserPoolId: userPoolId, /* required */
 };
 
-function buildParamsForDelete(result, financialPortfolioId) {
-    if(isEmpty(result.Items)){
-        return;
-    }
+var sns = new AWS.SNS();
+
+exports.handler =  async function(event) {
+   
+   // Concurrently call multiple APIs and wait for the response 
+   let events = [];
+   
+   if(event.params.querystring.deleteAccount == 'true') {
+        events.push(deleteCognitoAccount(event));   
+   }
+
+   events.push(resetAccountSubscriberThroughSNS(event));   
+   let result = await Promise.all(events);
+   console.log('The reset account for ' + event.params.querystring.financialPortfolioId + ' was ' + JSON.stringify(result));
     
-    let params = {};
-    params.RequestItems = {};
-    params.RequestItems.blitzbudget = [];
-    
-    for(let i = 0, len = result.Items.length; i < len; i++) {
-        let item = result.Items[i];
-        params.RequestItems.blitzbudget[i] = { 
-                    "DeleteRequest": { 
-                       "Key": {
-                           "pk": financialPortfolioId,
-                           "sk": item['sk']
-                       }
-                    }
-                 };
-        
-    }
-    
-    return params;
+   return Object.assign({ result });
 }
 
-// Get goal Item
-function getAllItems(financialPortfolioId) {
-    var params = {
-      TableName: 'blitzbudget',
-      KeyConditionExpression   : "pk = :financialPortfolioId",
-      ExpressionAttributeValues: {
-          ":financialPortfolioId": financialPortfolioId
-      },
-      ProjectionExpression: "sk"
-    };
+// Delete Cognito Account
+function deleteCognitoAccount(event) {
+    paramsDelete.Username = event.params.querystring.userName;
     
-    // Call DynamoDB to read the item from the table
     return new Promise((resolve, reject) => {
-        DB.query(params, function(err, data) {
-          if (err) {
-            console.log("Error ", err);
-            reject(err);
-          } else {
-            console.log("data retrieved ", data.Count);
-            resolve(data);
-          }
+        cognitoIdServiceProvider.adminDeleteUser(paramsDelete, function(err, data) {
+            if (err) reject(err); // an error occurred
+            else     resolve('Delete Account Success');           // successful response
         });
     });
 }
 
-
-function deleteItems(params) {
-   
+function resetAccountSubscriberThroughSNS(event) {
+    console.log("Publishing to ResetAccountListener SNS or wallet id - " + event.params.querystring.financialPortfolioId);
+    let financialPortfolioId = isNotEmpty(event.params.querystring.referenceNumber) ? event.params.querystring.referenceNumber : event.params.querystring.financialPortfolioId;
+    let deleteOneWalletAttribute = isNotEmpty(event.params.querystring.referenceNumber) ? "execute" : "donotexecute";
+    
+    var params = {
+        Message: financialPortfolioId,
+        Subject: event.params.querystring.financialPortfolioId,
+        MessageAttributes: {
+            "delete_one_wallet": {
+                "DataType": "String",
+                "StringValue": deleteOneWalletAttribute
+            }
+        },
+        TopicArn: 'arn:aws:sns:eu-west-1:064559090307:ResetAccountSubscriber'
+    };
+    
     return new Promise((resolve, reject) => {
-        DB.batchWrite(params, function(err, data) {
-          if (err) {
-            console.log("Error ", err);
-            reject(err);
-          } else {
-            resolve({ "success" : data});
-          }
-        });
+        sns.publish(params,  function(err, data) {
+            if (err) {
+                console.log("Error ", err);
+                reject(err);
+            } else {
+                resolve( "Reset account to SNS published");
+            }
+        }); 
     });
 }
 
@@ -112,4 +83,8 @@ function  isEmpty(obj) {
     }
 
   return true;
+}
+
+function isNotEmpty(obj) {
+    return !isEmpty(obj)
 }
