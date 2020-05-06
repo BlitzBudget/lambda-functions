@@ -98,7 +98,7 @@ exports.handler = async (event) => {
         console.log("Processing Categories to create");
         for(const categoryItem of result) {
             categoryMap[categoryItem.dateMeantFor] = categoryItem.sortKey;
-            buildParamsForCategory(walletId, categoryItem.sortKey, originalCategory, 1);   
+            buildParamsForCategory(walletId, categoryItem.sortKey, originalCategory, datesMap[categoryItem.dateMeantFor]);   
         }
     }, function(err) {
        throw new Error("Unable to fetch the date for the recurring transaction" + err);
@@ -108,6 +108,68 @@ exports.handler = async (event) => {
     constructTransactionsWithDateMeantForAndCategory(datesMap, categoryMap, event);
     console.log(" The number of transactions to create are %j", params.RequestItems.blitzbudget.length);
 
+    /*
+    * Update recurring transactions
+    */
+    await updateRecurringTransactionsData(walletId, recurringTransactionsId).then(function(result) {
+      console.log("Successfully updated the recurring transactions field %j", recurringTransactionsNextSch);
+    }, function(err) {
+       throw new Error("Unable to update the recurring transactions field " + err);
+    });
+    
+    
+    /*
+    * Processing 25 items at a time
+    */
+    if(params.RequestItems.blitzbudget.length < 25) {
+        console.log("Total batch items are less than 25, so adding them");
+        await batchWriteItems(params).then(function(result) {
+          console.log("Successfully processed adding transactions, dates & categories %j", JSON.stringify(result));
+        }, function(err) {
+           throw new Error("Unable to batch write all the transactions and dates " + err);
+        });
+    } else {
+        let processBatch = false;
+        /*
+        * Build partial params to handle 25 items at a time
+        */
+        let paramsPartial = {};
+        paramsPartial.RequestItems = {};
+        paramsPartial.RequestItems.blitzbudget = [];
+        for(let i = 0, len = params.RequestItems.blitzbudget.length; i < len; i++) {
+            processBatch = false;
+            let item =  params.RequestItems.blitzbudget[i];
+            
+            if(paramsPartial.RequestItems.blitzbudget.length < 25) {
+                console.log("Building the delete params for the item %j", item.sk);
+                paramsPartial.RequestItems.blitzbudget[i] = params.RequestItems.blitzbudget[i];
+                     
+                /*
+                * If last iteration is running then
+                */
+                if(i == (len -1)) {
+                    processBatch = true;
+                }
+            } else {
+               processBatch = true;
+            }
+            
+            if(processBatch) {
+               console.log("Processing the batch with %j items", paramsPartial.RequestItems.blitzbudget.length)
+               await batchWriteItems(paramsPartial).then(function(result) {
+                  console.log("Successfully processed adding transactions, dates & categories %j", JSON.stringify(result));
+                }, function(err) {
+                   throw new Error("Unable to batch write all the transactions and dates " + err);
+                });
+                /*
+                * Reinitialize the params
+                */
+                paramsPartial = {};
+                paramsPartial.RequestItems = {};
+                paramsPartial.RequestItems.blitzbudget = [];
+            }
+        }   
+    }
 };
 
 function buildParamsForCategory(pk, sk, categoryToCopy, dateMeantFor) {
@@ -128,20 +190,6 @@ function buildParamsForCategory(pk, sk, categoryToCopy, dateMeantFor) {
         }
     }
     console.log("Creating the category with an sk %j", sk, " And with a date as ", dateMeantFor, " for the wallet ", pk);
-}
-
-async function call() {
-    await batchWriteItems().then(function(result) {
-      console.log("Successfully fetched all the relevant information %j", JSON.stringify(result));
-    }, function(err) {
-       throw new Error("Unable to batch write all the transactions and dates " + err);
-    });
-    
-    await updateRecurringTransactionsData(walletId, recurringTransactionsId).then(function(result) {
-      console.log("Successfully updated the recurring transactions field %j", recurringTransactionsNextSch);
-    }, function(err) {
-       throw new Error("Unable to update the recurring transactions field " + err);
-    });
 }
 
 /*
@@ -215,17 +263,17 @@ function updateRecurringTransactionsData(walletId, sk) {
 /*
 * Batch write all the transactions and dates created
 */
-function batchWriteItems() {
+function batchWriteItems(paramsPartial) {
     return new Promise((resolve, reject) => {
-        DB.batchWrite(params, function(err, data) {
-          if (err) {
-            console.log("Error ", err);
-            reject(err);
-          } else {
-            resolve({ "success" : data});
-          }
+            DB.batchWrite(paramsPartial, function(err, data) {
+              if (err) {
+                console.log("Error ", err);
+                reject(err);
+              } else {
+                resolve({ "success" : data});
+              }
+            });
         });
-    });
 }
 
 /*
