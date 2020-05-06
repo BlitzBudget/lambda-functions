@@ -181,8 +181,8 @@ function buildParamsForCategory(pk, sk, categoryToCopy, dateMeantFor) {
                "pk": pk,
                "sk": sk,
                "category_total": 0,
-               "category_name": categoryToCopy['category_name'],
-               "category_type": categoryToCopy['category_type'], 
+               "category_name": categoryToCopy.CategoryToCopy.Item['category_name'],
+               "category_type": categoryToCopy.CategoryToCopy.Item['category_type'], 
                "date_meant_for": dateMeantFor,
                "creation_date": new Date().toISOString(),
                "updated_date": new Date().toISOString()
