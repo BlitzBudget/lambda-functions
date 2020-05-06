@@ -50,6 +50,10 @@ function resetAccountSubscriberThroughSNS(event) {
             "delete_one_wallet": {
                 "DataType": "String",
                 "StringValue": deleteOneWalletAttribute
+            },
+            "delete_all_items_in_wallet": {
+                "DataType": "String",
+                "StringValue": deleteOneWalletAttribute
             }
         },
         TopicArn: 'arn:aws:sns:eu-west-1:064559090307:ResetAccountSubscriber'

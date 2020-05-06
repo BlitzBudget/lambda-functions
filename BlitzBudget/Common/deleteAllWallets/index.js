@@ -86,7 +86,7 @@ function getAllItems(financialPortfolioId) {
             console.log("Error ", err);
             reject(err);
           } else {
-            console.log("data retrieved ", data.Count);
+            console.log("data retrieved ", JSON.stringify(data.Items));
             resolve(data);
           }
         });
@@ -136,6 +136,10 @@ function publishToResetAccountsSNS(item) {
         Message: item,
         MessageAttributes: {
             "delete_one_wallet": {
+                "DataType": "String",
+                "StringValue": "execute"
+            },
+            "delete_all_items_in_wallet": {
                 "DataType": "String",
                 "StringValue": "execute"
             }
