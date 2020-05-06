@@ -83,7 +83,12 @@ exports.handler = async (event) => {
     
     events = [];
     for(const dateMeantFor of nextSchArray) {
-        events.push(getCategoryData(walletId, dateMeantFor, originalCategory));
+        /*
+        * Check if 2020-03 == 2020-02
+        */
+        if(isNotEqual(dateMeantFor,originalCategory.CategoryToCopy.Item.sk.substring(9,16))) {
+            events.push(getCategoryData(walletId, dateMeantFor, originalCategory));
+        }
     }
     
     /*
@@ -92,8 +97,8 @@ exports.handler = async (event) => {
     await Promise.all(events).then(function(result) {
         console.log("Processing Categories to create");
         for(const categoryItem of result) {
-            console.log("The category %j", categoryItem);
-            categoryMap[categoryItem.sortKey] = categoryItem.sortKey;
+            categoryMap[categoryItem.dateMeantFor] = categoryItem.sortKey;
+            buildParamsForCategory(walletId, categoryItem.sortKey, originalCategory, 1);   
         }
     }, function(err) {
        throw new Error("Unable to fetch the date for the recurring transaction" + err);
@@ -340,8 +345,14 @@ function getCategoryData(pk, today, originalCategory) {
             reject(err);
           } else {
             console.log("data retrieved - Category %j", data.Count, " for the date ", today);
+            /*
+            * Create a new sortkey is necessary
+            */
+            let sortKeyDate = new Date();
+            sortKeyDate.setFullYear(today.substring(0,4));
+            sortKeyDate.setMonth(parseInt(today.substring(5,7)) -1);
+            let sortKey = "Category#" + sortKeyDate.toISOString();
             if(data.Count > 0) {
-                let sortKey = originalCategory.CategoryToCopy.Item.sk;
                 for(const item of data.Items) {
                     if(item['category_name'] == originalCategory.CategoryToCopy.Item['category_name']
                     && item['category_type'] == originalCategory.CategoryToCopy.Item['category_type']) {
@@ -349,11 +360,14 @@ function getCategoryData(pk, today, originalCategory) {
                         console.log("There is a positive match for the category %j", item.sk);
                     }
                 }
-                resolve({ "sortKey" : sortKey});   
             } else {
                 console.log("Since the count is 0 for the month %j", today, " sending the originalcategory ", originalCategory.CategoryToCopy.Item.sk);
-                resolve({ "sortKey" : originalCategory.CategoryToCopy.Item.sk})   
             }
+            
+            resolve({ 
+                    "sortKey" : sortKey, 
+                    "dateMeantFor": today
+                });  
           }
         });
     });
