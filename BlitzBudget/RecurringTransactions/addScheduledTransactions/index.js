@@ -23,33 +23,28 @@ exports.handler = async (event) => {
     let recurringTransactionsId = event.Records[0].Sns.Message;
     console.log( 'Creating transactions via recurring transactions for the walletId ' + walletId);
     buildParamsForPut(event);
-    console.log(" The number of transactions to create are %j", params.RequestItems.blitzbudget.length);
     console.log(" The dates to create are %j", nextSchArray.toString());
     
     /*
     * Fetch available dates
     */
     fetchDatesForWallet(walletId);
-    fetchCategoryFromTransaction(walletId, category);
     
     /*
     * Publish events to get date data
     */
     await Promise.all(events).then(function(result) {
         console.log("Successfully fetched all the relevant information %j", JSON.stringify(result));
-      
+        
         /*
         * Calculate Date
         */
-        let categoryToCopy;
         for(const dateObj of result) {
-             if(dateObj.CategoryToCopy){
-                 // Copy the category to copy
-                 categoryToCopy = dateObj.CategoryToCopy;
-                 return;
-             }
              
-             if(includesStr(nextSchArray, dateObj.dateToCreate)) {
+            /*
+            * If Date is empty then
+            */
+            if(includesStr(nextSchArray, dateObj.dateToCreate)) {
                 let dateToCreate = new Date();
                 dateToCreate.setFullYear(dateObj.dateToCreate.substring(0,4));
                 let month = parseInt(dateObj.dateToCreate.substring(5,7)) -1;
@@ -61,34 +56,76 @@ exports.handler = async (event) => {
                 */
                 dateObj.Date = [];
                 dateObj.Date.push({ 'sk': sk});
-             }
-             datesMap[dateObj.Date[0].sk.substring(5, 12)] = (dateObj.Date[0].sk);
-       }
-       
-       /*
-       * Build category id's to construct the transactions
-       */ 
-       if(isNotEmpty(categoryToCopy)) {
-            for(const categoryObj of result) {
-               // If the category field is populated
-               if(isNotEmpty(categoryObj.Category)) {
-                   if(isEqual(categoryObj['category_name'], categoryToCopy['category_name']) 
-                   && isEqual(categoryObj['category_type'], categoryToCopy['category_type'])) {
-                       console.log("Not necessary to copy the category for the month %j", categoryObj.sk);
-                       categoryMap[categoryObj.sk.substring(9,16)] = categoryObj.sk;
-                   }
-               }
-           }
-       }
+            }
+              
+            /*
+            * Populate to dates map
+            */
+            if(dateObj.Date) {
+                 datesMap[dateObj.Date[0].sk.substring(5, 12)] = (dateObj.Date[0].sk);   
+            }
+            
+        }
        
     }, function(err) {
        throw new Error("Unable to fetch the date for the recurring transaction" + err);
     });
     
-    console.log(" The number of transactions and dates to create are %j", params.RequestItems.blitzbudget.length);
+    /*
+    * Start processing categories
+    */
+    let originalCategory;
+    await fetchCategoryFromTransaction(walletId, category).then(function(result) {
+        originalCategory = result;
+    }, function(err) {
+       throw new Error("Unable to fetch the date for the recurring transaction" + err);
+    });
     
-    reconstructTransactionsWithCategory(categoryMap);
-    reconstructTransactionsWithDateMeantFor(datesMap);
+    events = [];
+    for(const dateMeantFor of nextSchArray) {
+        events.push(getCategoryData(walletId, dateMeantFor, originalCategory));
+    }
+    
+    /*
+    * Publish events to get category data
+    */
+    await Promise.all(events).then(function(result) {
+        console.log("Processing Categories to create");
+        for(const categoryItem of result) {
+            console.log("The category %j", categoryItem);
+            categoryMap[categoryItem.sortKey] = categoryItem.sortKey;
+        }
+    }, function(err) {
+       throw new Error("Unable to fetch the date for the recurring transaction" + err);
+    });
+    
+    console.log(" The number of dates and categories to create are %j", params.RequestItems.blitzbudget.length);
+    constructTransactionsWithDateMeantForAndCategory(datesMap, categoryMap, event);
+    console.log(" The number of transactions to create are %j", params.RequestItems.blitzbudget.length);
+
+};
+
+function buildParamsForCategory(pk, sk, categoryToCopy, dateMeantFor) {
+    let length = params.RequestItems.blitzbudget.length;
+    console.log(" Creating the date wrapper for %j", sk);
+    params.RequestItems.blitzbudget[length] = { 
+        "PutRequest": { 
+           "Item": {
+               "pk": pk,
+               "sk": sk,
+               "category_total": 0,
+               "category_name": categoryToCopy['category_name'],
+               "category_type": categoryToCopy['category_type'], 
+               "date_meant_for": dateMeantFor,
+               "creation_date": new Date().toISOString(),
+               "updated_date": new Date().toISOString()
+           }
+        }
+    }
+    console.log("Creating the category with an sk %j", sk, " And with a date as ", dateMeantFor, " for the wallet ", pk);
+}
+
+async function call() {
     await batchWriteItems().then(function(result) {
       console.log("Successfully fetched all the relevant information %j", JSON.stringify(result));
     }, function(err) {
@@ -100,8 +137,7 @@ exports.handler = async (event) => {
     }, function(err) {
        throw new Error("Unable to update the recurring transactions field " + err);
     });
-
-};
+}
 
 /*
 * Fetch category
@@ -112,7 +148,9 @@ function fetchCategoryFromTransaction(pk, sk) {
       AttributesToGet: [
         "category_name",
         "category_total", 
-        "category_type"
+        "category_type",
+        "pk",
+        "sk"
       ],
       TableName: 'blitzbudget',
       Key : { 
@@ -128,7 +166,7 @@ function fetchCategoryFromTransaction(pk, sk) {
             console.log("Error ", err);
             reject(err);
           } else {
-            console.log("data retrieved - Category %j", JSON.stringify(data));
+            console.log("data retrieved - Category To Copy %j", JSON.stringify(data));
             resolve({ "CategoryToCopy" : data});
           }
         });
@@ -188,32 +226,68 @@ function batchWriteItems() {
 /*
 * Populate the date meant for attribute in the transactions
 */
-function reconstructTransactionsWithCategory(categoryMap) {
-    for(const putItem of params.RequestItems.blitzbudget) {
-        let sk = putItem.PutRequest.Item.sk;
-        if(includesStr(sk, 'Transaction#')) {
-            let compareString = sk.substring(12,19);
-            if(isNotEmpty(categoryMap[compareString])) {
-                console.log("The date for the transaction %j ", sk, " is ", categoryMap[compareString]);
-                putItem.PutRequest.Item.category = categoryMap[compareString];
-            }
+function constructTransactionsWithDateMeantForAndCategory(datesMap, categoryMap, event) {
+    let recurrence = event.Records[0].Sns.MessageAttributes.recurrence.Value;
+    let walletId = event.Records[0].Sns.MessageAttributes.walletId.Value;
+    let amount = parseInt(event.Records[0].Sns.MessageAttributes.amount.Value);
+    let description = event.Records[0].Sns.MessageAttributes.description.Value;
+    let category = event.Records[0].Sns.MessageAttributes.category.Value;
+    let account = event.Records[0].Sns.MessageAttributes.account.Value;
+    let i = params.RequestItems.blitzbudget.length;
+    let dateMeantFor;
+    
+    let nextScheduled = event.Records[0].Sns.MessageAttributes["next_scheduled"].Value;
+    let nextScheduledDate = new Date(nextScheduled);
+    let today =  new Date();
+    
+    while (nextScheduledDate < today) {
+        let sk = "Transaction#" + nextScheduledDate.toISOString();
+        
+        let compareString = sk.substring(12,19);
+        if(isNotEmpty(datesMap[compareString])) {
+            console.log("The date for the transaction %j ", sk, " is ", datesMap[compareString]);
+            dateMeantFor = datesMap[compareString];
         }
-    }
-}
-
-/*
-* Populate the date meant for attribute in the transactions
-*/
-function reconstructTransactionsWithDateMeantFor(datesMap) {
-    for(const putItem of params.RequestItems.blitzbudget) {
-        let sk = putItem.PutRequest.Item.sk;
-        if(includesStr(sk, 'Transaction#')) {
-            let compareString = sk.substring(12,19);
-            if(isNotEmpty(datesMap[compareString])) {
-                console.log("The date for the transaction %j ", sk, " is ", datesMap[compareString]);
-                putItem.PutRequest.Item['date_meant_for'] = datesMap[compareString];
-            }
+        
+        if(isNotEmpty(categoryMap[compareString])) {
+            console.log("The category for the transaction %j ", sk, " is ", categoryMap[compareString]);
+            category = categoryMap[compareString];
         }
+        
+        params.RequestItems.blitzbudget[i] = { 
+            "PutRequest": { 
+               "Item": {
+                   "pk": walletId,
+                   "sk": sk,
+                   "recurrence": recurrence,
+                   "amount": amount,
+                   "description": description,
+                   "category": category,
+                   "account": account,
+                   "date_meant_for": dateMeantFor,
+                   "creation_date": new Date().toISOString(),
+                   "updated_date": new Date().toISOString()
+               }
+            }
+        };
+        
+        // Update recurrence
+        switch(recurrence) {
+           case 'MONTHLY':
+            nextScheduledDate.setMonth(nextScheduledDate.getMonth() + 1);
+            break;
+          case 'WEEKLY':
+            nextScheduledDate.setDate(nextScheduledDate.getDate() + 7);
+            break;
+          case 'BI-MONTHLY':
+            nextScheduledDate.setDate(nextScheduledDate.getDate() + 15);
+            break;
+          default:
+            nextScheduledDate = new Date();
+            break;
+        }
+        // Update counter
+        i++;
     }
 }
 
@@ -241,14 +315,13 @@ function buildParamsForDate(walletId, sk) {
 function fetchDatesForWallet(walletId) {
     for(const dateMeantFor of nextSchArray) {
         events.push(getDateData(walletId, dateMeantFor));
-        events.push(getCategoryData(walletId, dateMeantFor));
     }
 }
 
 /*
 * Get Category Data
 */
-function getCategoryData(pk, today) {
+function getCategoryData(pk, today, originalCategory) {
   var params = {
       TableName: 'blitzbudget',
       KeyConditionExpression   : "pk = :pk AND begins_with(sk, :items)",
@@ -256,7 +329,7 @@ function getCategoryData(pk, today) {
           ":pk": pk,
           ":items": "Category#" + today.substring(0,4) + '-' + today.substring(5,7)
       },
-      ProjectionExpression: "pk, sk"
+      ProjectionExpression: "pk, sk, category_name, category_type"
     };
     
     // Call DynamoDB to read the item from the table
@@ -267,7 +340,20 @@ function getCategoryData(pk, today) {
             reject(err);
           } else {
             console.log("data retrieved - Category %j", data.Count, " for the date ", today);
-            resolve({ "Category" : data.Items});
+            if(data.Count > 0) {
+                let sortKey = originalCategory.CategoryToCopy.Item.sk;
+                for(const item of data.Items) {
+                    if(item['category_name'] == originalCategory.CategoryToCopy.Item['category_name']
+                    && item['category_type'] == originalCategory.CategoryToCopy.Item['category_type']) {
+                        sortKey = item.sk;
+                        console.log("There is a positive match for the category %j", item.sk);
+                    }
+                }
+                resolve({ "sortKey" : sortKey});   
+            } else {
+                console.log("Since the count is 0 for the month %j", today, " sending the originalcategory ", originalCategory.CategoryToCopy.Item.sk);
+                resolve({ "sortKey" : originalCategory.CategoryToCopy.Item.sk})   
+            }
           }
         });
     });
@@ -316,13 +402,6 @@ function buildParamsForPut(event) {
     
     let nextScheduled = event.Records[0].Sns.MessageAttributes["next_scheduled"].Value;
     let recurrence = event.Records[0].Sns.MessageAttributes.recurrence.Value;
-    let walletId = event.Records[0].Sns.MessageAttributes.walletId.Value;
-    let amount = parseInt(event.Records[0].Sns.MessageAttributes.amount.Value);
-    let description = event.Records[0].Sns.MessageAttributes.description.Value;
-    let category = event.Records[0].Sns.MessageAttributes.category.Value;
-    let account = event.Records[0].Sns.MessageAttributes.account.Value;
-    
-    
     let nextScheduledDate = new Date(nextScheduled);
     let today =  new Date();
     let i = 0;
@@ -338,23 +417,6 @@ function buildParamsForPut(event) {
             nextSchArray.push(nextScheduledDateAsString);   
         }
         
-        let sk = "Transaction#" + nextScheduledDate.toISOString();
-        params.RequestItems.blitzbudget[i] = { 
-            "PutRequest": { 
-               "Item": {
-                   "pk": walletId,
-                   "sk": sk,
-                   "recurrence": recurrence,
-                   "amount": amount,
-                   "description": description,
-                   "category": category,
-                   "account": account,
-                   "date_meant_for": 1,
-                   "creation_date": new Date().toISOString(),
-                   "updated_date": new Date().toISOString()
-               }
-            }
-        };
         
         // Update recurrence
         switch(recurrence) {
@@ -366,6 +428,9 @@ function buildParamsForPut(event) {
             break;
           case 'BI-MONTHLY':
             nextScheduledDate.setDate(nextScheduledDate.getDate() + 15);
+            break;
+          default:
+            nextScheduledDate = new Date();
             break;
         }
         // Update counter
@@ -413,4 +478,8 @@ function isEqual(obj1,obj2){
       return true;
   }
   return false;
+}
+
+function isNotEqual(obj1, obj2) {
+  return !isEqual(obj1, obj2);
 }
