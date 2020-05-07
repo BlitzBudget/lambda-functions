@@ -6,7 +6,7 @@ exports.handler = async (event) => {
     let response = {};
     let params = {
       ClientId: 'l7nmpavlqp3jcfjbr237prqae', /* required */
-      Username: event['body-json'].userName, /* required */
+      Username: event['body-json'].username, /* required */
     };
     
     await forgotPassword(params).then(function(result) {
