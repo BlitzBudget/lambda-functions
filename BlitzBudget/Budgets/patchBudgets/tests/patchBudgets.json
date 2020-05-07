@@ -1,7 +1,7 @@
 {
   "body-json": {
-    "financialPortfolioId": "Wallet#93202082911265",
-    "budgetId": "Budget#2020-04-27T12:30:53.088Z",
+    "walletId": "Wallet#93202082911265",
+    "budgetId": "Budget#2015-03-25T00:10:00.000Z",
     "category": "Pay Off Debt",
     "planned": 52
   },
