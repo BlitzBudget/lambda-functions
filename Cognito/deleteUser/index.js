@@ -11,7 +11,7 @@ exports.handler = async (event) => {
     await deleteUser(params).then(function(result) {
        response = result;
     }, function(err) {
-       throw new Error("Unable to signin from cognito  " + err);
+       throw new Error("Unable to delete user from cognito  " + err);
     });
     
     return response;
