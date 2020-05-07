@@ -4,7 +4,7 @@
     "path": {},
     "querystring": {
       "deleteAccount": "true",
-      "financialPortfolioId": "2212020113431339",
+      "walletId": "2212020113431339",
       "userName": "nagarjun_nagesh@outlook.com"
     },
     "header": {

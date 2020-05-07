@@ -21,7 +21,7 @@ exports.handler =  async function(event) {
 
    events.push(resetAccountSubscriberThroughSNS(event));   
    let result = await Promise.all(events);
-   console.log('The reset account for ' + event.params.querystring.financialPortfolioId + ' was ' + JSON.stringify(result));
+   console.log('The reset account for ' + event.params.querystring.walletId + ' was ' + JSON.stringify(result));
     
    return Object.assign({ result });
 }
@@ -39,13 +39,13 @@ function deleteCognitoAccount(event) {
 }
 
 function resetAccountSubscriberThroughSNS(event) {
-    console.log("Publishing to ResetAccountListener SNS or wallet id - " + event.params.querystring.financialPortfolioId);
-    let financialPortfolioId = isNotEmpty(event.params.querystring.referenceNumber) ? event.params.querystring.referenceNumber : event.params.querystring.financialPortfolioId;
+    console.log("Publishing to ResetAccountListener SNS or wallet id - " + event.params.querystring.walletId);
+    let walletId = isNotEmpty(event.params.querystring.referenceNumber) ? event.params.querystring.referenceNumber : event.params.querystring.walletId;
     let deleteOneWalletAttribute = isNotEmpty(event.params.querystring.referenceNumber) ? "execute" : "donotexecute";
     
     var params = {
-        Message: financialPortfolioId,
-        Subject: event.params.querystring.financialPortfolioId,
+        Message: walletId,
+        Subject: event.params.querystring.walletId,
         MessageAttributes: {
             "delete_one_wallet": {
                 "DataType": "String",

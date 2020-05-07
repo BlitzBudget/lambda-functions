@@ -1,6 +1,6 @@
 {
   "body-json": {
-    "financialPortfolioId": "Wallet#93202082911265",
+    "walletId": "Wallet#93202082911265",
     "goalType": "Save More",
     "targetAmount": 42,
     "targetDate": "12062021",

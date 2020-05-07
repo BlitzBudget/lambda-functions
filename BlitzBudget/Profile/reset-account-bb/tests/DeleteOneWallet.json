@@ -4,7 +4,7 @@
     "path": {},
     "querystring": {
       "deleteAccount": "false",
-      "financialPortfolioId": "15320201042369",
+      "walletId": "15320201042369",
       "referenceNumber": "93202082911265"
     },
     "header": {

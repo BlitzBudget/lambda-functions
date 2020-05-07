@@ -8,10 +8,10 @@ var docClient = new AWS.DynamoDB.DocumentClient({region: 'eu-west-1'});
 
 
 exports.handler = async (event) => {
-  console.log("fetching item for the financialPortfolioId ", event.params.querystring.financialPortfolioId);
+  console.log("fetching item for the walletId ", event.params.querystring.walletId);
   let BankAccountData = [];
   
-    await getBankAccountItem(event.params.querystring.financialPortfolioId).then(function(result) {
+    await getBankAccountItem(event.params.querystring.walletId).then(function(result) {
        BankAccountData = result;
     }, function(err) {
        throw new Error("Unable error occured while fetching the BankAccount " + err);
@@ -22,12 +22,12 @@ exports.handler = async (event) => {
 
 
 // Get BankAccount Item
-function getBankAccountItem(financialPortfolioId) {
+function getBankAccountItem(walletId) {
     var params = {
       TableName: 'blitzbudget',
-      KeyConditionExpression   : "pk = :financialPortfolioId and begins_with(sk, :items)",
+      KeyConditionExpression   : "pk = :walletId and begins_with(sk, :items)",
       ExpressionAttributeValues: {
-          ":financialPortfolioId": financialPortfolioId,
+          ":walletId": walletId,
           ":items": "BankAccount#"
       },
       ProjectionExpression: "bank_account_name, linked, bank_account_number, account_balance, sk, pk, selected_account, number_of_times_selected, account_type"

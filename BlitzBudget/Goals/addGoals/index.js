@@ -24,7 +24,7 @@ function addNewGoals(event) {
     var params = {
       TableName:'blitzbudget',
       Item:{
-            "pk": event['body-json'].financialPortfolioId,
+            "pk": event['body-json'].walletId,
             "sk": randomValue,
             "goal_type": event['body-json'].goalType,
             "final_amount": event['body-json'].targetAmount,

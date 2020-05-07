@@ -12,12 +12,12 @@ let events = [];
 
 exports.handler = async (event) => {
     console.log( 'event ' + JSON.stringify(event.Records[0]));
-    let financialPortfolioId = event.Records[0].Sns.Message;
+    let walletId = event.Records[0].Sns.Message;
     let deleteParams = {};
     
-    await getAllItems(financialPortfolioId).then(function(result) {
+    await getAllItems(walletId).then(function(result) {
        console.log("successfully fetched all the wallets ", result);
-       deleteParams = buildParamsForDelete(result, financialPortfolioId);
+       deleteParams = buildParamsForDelete(result, walletId);
     }, function(err) {
        throw new Error("Unable to delete the goals " + err);
     });
@@ -37,7 +37,7 @@ exports.handler = async (event) => {
     return event;
 };
 
-function buildParamsForDelete(result, financialPortfolioId) {
+function buildParamsForDelete(result, walletId) {
     if(isEmpty(result.Items)){
         return;
     }
@@ -53,7 +53,7 @@ function buildParamsForDelete(result, financialPortfolioId) {
         params.RequestItems.blitzbudget[i] = { 
                     "DeleteRequest": { 
                        "Key": {
-                           "pk": financialPortfolioId,
+                           "pk": walletId,
                            "sk": sk
                        }
                     }
@@ -69,12 +69,12 @@ function buildParamsForDelete(result, financialPortfolioId) {
 }
 
 // Get goal Item
-function getAllItems(financialPortfolioId) {
+function getAllItems(walletId) {
     var params = {
       TableName: 'blitzbudget',
-      KeyConditionExpression   : "pk = :financialPortfolioId",
+      KeyConditionExpression   : "pk = :walletId",
       ExpressionAttributeValues: {
-          ":financialPortfolioId": financialPortfolioId
+          ":walletId": walletId
       },
       ProjectionExpression: "sk"
     };

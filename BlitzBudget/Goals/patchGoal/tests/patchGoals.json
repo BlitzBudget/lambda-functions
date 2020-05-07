@@ -1,6 +1,6 @@
 {
   "body-json": {
-    "financialPortfolioId": "Wallets#93202082911265",
+    "walletId": "Wallets#93202082911265",
     "goalId": "Goals#2020-04-27T12:30:53.088Z",
     "goalType": "Pay Off Debt",
     "targetId": 987654321,
