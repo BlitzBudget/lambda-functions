@@ -5,7 +5,7 @@ let cognitoidentityserviceprovider = new AWS.CognitoIdentityServiceProvider();
 exports.handler = async (event) => {
     let response = {};
     var params = {
-      AccessToken: event.params.header.Authorization /* required */
+      AccessToken: event['body-json'].accessToken /* required */
     };
     
     await deleteUser(params).then(function(result) {
