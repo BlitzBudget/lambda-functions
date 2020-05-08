@@ -39,6 +39,7 @@ exports.handler = async (event) => {
        throw new Error("Unable to signin from cognito  " + err);
     });
 
+    console.log("Fetching the country header from cloudfront %j", event.params.header['CloudFront-Viewer-Country']);
     await addWalletThroughSNS(response.UserAttributes, localeToCurrency[event.params.header['CloudFront-Viewer-Country']]).then(function(result) {}, function(err) {
       throw new Error("Unable to add new wallet" + err);
     });
