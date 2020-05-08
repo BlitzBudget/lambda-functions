@@ -39,8 +39,16 @@ exports.handler = async (event) => {
        throw new Error("Unable to signin from cognito  " + err);
     });
 
-    console.log("Fetching the country header from cloudfront %j", event.params.header['CloudFront-Viewer-Country']);
-    await addWalletThroughSNS(response.UserAttributes, localeToCurrency[event.params.header['CloudFront-Viewer-Country']]).then(function(result) {}, function(err) {
+    /*
+    * Get locale to currency
+    */
+    let currenyChosen = localeToCurrency[event.params.header['CloudFront-Viewer-Country']];
+    /*
+    * If chosen currency is empty then revert to Dollars
+    */
+    currenyChosen = isEmpty(currenyChosen) ? '$' : currenyChosen;
+    console.log("Fetching the country header from cloudfront ", currenyChosen);
+    await addWalletThroughSNS(response.UserAttributes, currenyChosen).then(function(result) {}, function(err) {
       throw new Error("Unable to add new wallet" + err);
     });
     
@@ -137,6 +145,24 @@ function isEqual(obj1,obj2){
   return false;
 }
 
+function isEmpty(obj) {
+    // Check if objext is a number or a boolean
+    if(typeof(obj) == 'number' || typeof(obj) == 'boolean') return false; 
+    
+    // Check if obj is null or undefined
+    if (obj == null || obj === undefined) return true;
+    
+    // Check if the length of the obj is defined
+    if(typeof(obj.length) != 'undefined') return obj.length == 0;
+     
+    // check if obj is a custom obj
+    for(let key in obj) {
+        if(obj.hasOwnProperty(key))return false;
+    }
+
+    return true;
+}
+
 let localeToCurrency = {};
 localeToCurrency['AI'] = '$';
 localeToCurrency['AM'] = '֏';
@@ -164,6 +190,7 @@ localeToCurrency['CX'] = 'AU$';
 localeToCurrency['DM'] = 'RD$';
 localeToCurrency['EC'] = '$';
 localeToCurrency['EE'] = '€';
+localeToCurrency['ES'] = '€';
 localeToCurrency['EH'] = '₧';
 localeToCurrency['ET'] = 'Br';
 localeToCurrency['FI'] = '€';
