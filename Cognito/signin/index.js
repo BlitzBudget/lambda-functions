@@ -42,7 +42,7 @@ exports.handler = async (event) => {
     }
     await getWallet(userIdParam).then(function(result) {
        response.Wallet = result;
-       console.log("logged in the user " + JSON.stringify(result.Username));
+       console.log("logged in the user " + JSON.stringify(result.walletId));
     }, function(err) {
        throw new Error("Unable to get the wallet at the moment  " + err);
     });
