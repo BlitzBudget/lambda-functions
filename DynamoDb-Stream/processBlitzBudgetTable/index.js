@@ -11,32 +11,38 @@ var docClient = new AWS.DynamoDB.DocumentClient();
 
 exports.handler = async (event, context) => {
     events = [];
-    try {
+   
         console.log('Received event:', JSON.stringify(event, null, 2));
         for (const record of event.Records) {
-            let sortKey = record.dynamodb.Keys.sk.S;
-            console.log("Started processing the event with the sort key %j", sortKey);
-            console.log("Started processing the event with id %j", record.eventID);
-            console.log("The event name is %j", record.eventName);
-            
-            // If the entries are not transactions / bank accounts then do not process
-            if(includesStr(sortKey, 'Transaction#')) {
-                console.log("Updating the category total and account balance");
-                updateCategoryTotal(record);
-                updateAccountBalance(record);
-            } else if(includesStr(sortKey, 'BankAccount#')) {
-                console.log("Updating the wallet account balance");
-                updateWalletBalance(record);
-            } else if(includesStr(sortKey, 'Wallet#') && isEqual(record.eventName, 'INSERT')) {
-                console.log("Adding a new bank account for the newly created wallet");
-                events.push(addNewBankAccount(record));
-            } else if(includesStr(sortKey, 'Category#')) {
-                console.log("Updating the date wrapper with the total");
-                updateDateTotal(record);
-            } 
+            try {
+                let sortKey = record.dynamodb.Keys.sk.S;
+                console.log("Started processing the event with the sort key %j", sortKey);
+                console.log("Started processing the event with id %j", record.eventID);
+                console.log("The event name is %j", record.eventName);
+                
+                // If the entries are not transactions / bank accounts then do not process
+                if(includesStr(sortKey, 'Transaction#')) {
+                    console.log("Updating the category total and account balance");
+                    updateCategoryTotal(record);
+                    updateAccountBalance(record);
+                } else if(includesStr(sortKey, 'BankAccount#')) {
+                    console.log("Updating the wallet account balance");
+                    updateWalletBalance(record);
+                } else if(includesStr(sortKey, 'Wallet#') && isEqual(record.eventName, 'INSERT')) {
+                    console.log("Adding a new bank account for the newly created wallet");
+                    events.push(addNewBankAccount(record));
+                } else if(includesStr(sortKey, 'Category#')) {
+                    console.log("Updating the date wrapper with the total");
+                    updateDateTotal(record);
+                } 
+            } catch(ex) {
+                console.log("Could not complete operation", ex);
+                console.log("The record that could not be process is %j", JSON.stringify(record));
+                continue;
+            }
         }
         
-    
+    try {
         await Promise.all(events);
     } catch(ex) {
         console.log("Could not complete operation ", ex);
