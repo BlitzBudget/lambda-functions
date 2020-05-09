@@ -10,11 +10,12 @@ exports.handler = async (event) => {
        // Success function
        console.log("Successfully updated the attribute");
     }, function(err) {
-       throw new Error("Email cannot be updated. " + err);
+       throw new Error("Unable to update the userattributes. " + err);
     });
     
     return event;
 };
+
 
 // Update User Attributes
 function updateAttributes(event, email) {
