@@ -20,7 +20,7 @@ exports.handler = async (event) => {
     await updatingItem(event).then(function(result) {
        console.log("successfully saved the new goals");
     }, function(err) {
-       throw new Error("Unable to add the goals " + err);
+       throw new Error("Unable to save the changes to the wallet " + err);
     });
         
     return event;
