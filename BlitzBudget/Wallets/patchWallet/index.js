@@ -71,7 +71,7 @@ function updatingItem(event) {
     var params = {
       TableName:'blitzbudget',
       Key: {
-        "pk": event['body-json'].walletId,
+        "pk": event['body-json'].userId,
         "sk": event['body-json'].walletId,
       },
       UpdateExpression: updateExp,

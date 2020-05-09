@@ -9,10 +9,10 @@ let walletData = {};
 
 
 exports.handler = async (event) => {
-  console.log("fetching item for the walletId ", event.params.querystring.walletId);
+  console.log("fetching item for the userId ", event.params.querystring.userId);
   walletData = {};
   
-    await getWalletItem(event.params.querystring.walletId).then(function(result) {
+    await getWalletItem(event.params.querystring.userId).then(function(result) {
        console.log("Successfully retrieved all wallet information");
     }, function(err) {
        throw new Error("Unable error occured while fetching the Wallet " + err);
@@ -23,12 +23,12 @@ exports.handler = async (event) => {
 
 
 // Get Wallet Item
-function getWalletItem(walletId) {
+function getWalletItem(userId) {
     var params = {
       TableName: 'blitzbudget',
-      KeyConditionExpression   : "pk = :walletId and begins_with(sk, :items)",
+      KeyConditionExpression   : "pk = :userId and begins_with(sk, :items)",
       ExpressionAttributeValues: {
-          ":walletId": walletId,
+          ":userId": userId,
           ":items": "Wallet#"
       },
       ProjectionExpression: "currency, pk, sk, total_asset_balance, total_debt_balance, wallet_balance"
