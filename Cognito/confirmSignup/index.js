@@ -38,7 +38,14 @@ exports.handler = async (event) => {
     }, function(err) {
        throw new Error("Unable to signin from cognito  " + err);
     });
-
+    
+    /*
+    * Do not create wallet
+    */
+    if(event['body-json'].doNotCreateWallet) {
+        return response;
+    }
+    
     /*
     * Get locale to currency
     */
