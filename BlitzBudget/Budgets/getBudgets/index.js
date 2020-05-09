@@ -12,12 +12,12 @@ exports.handler = async (event) => {
     percentage = 1;
     budgetData = {};
     let events = [];
-    let walletId = event.params.querystring.walletId;
-    let startsWithDate = event.params.querystring.startsWithDate;
-    let endsWithDate = event.params.querystring.endsWithDate;
+    let walletId = event['body-json'].walletId;
+    let startsWithDate = event['body-json'].startsWithDate;
+    let endsWithDate = event['body-json'].endsWithDate;
     console.log("fetching item for the walletId ", walletId, " with the start date ", startsWithDate, " and end date ", endsWithDate);
     let fullMonth = isFullMonth(startsWithDate, endsWithDate);
-    let userId = event.params.querystring.userId;
+    let userId = event['body-json'].userId;
 
     // Cognito does not store wallet information nor curreny. All are stored in wallet.
     if(isEmpty(walletId) && isNotEmpty(userId)) {

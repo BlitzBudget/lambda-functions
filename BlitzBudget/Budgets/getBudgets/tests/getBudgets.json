@@ -1,12 +1,12 @@
 {
-  "body-json": {},
+  "body-json": {
+    "walletId": "Wallet#2020-05-02T17:19:13.022Z",
+    "startsWithDate": "2020-05-01",
+    "endsWithDate": "2020-05-31"
+  },
   "params": {
     "path": {},
-    "querystring": {
-      "walletId": "Wallet#2020-05-02T17:19:13.022Z",
-      "startsWithDate": "2020-05-01",
-      "endsWithDate": "2020-05-31"
-    },
+    "querystring": {},
     "header": {
       "Accept": "*/*",
       "Accept-Encoding": "gzip, deflate, br",
