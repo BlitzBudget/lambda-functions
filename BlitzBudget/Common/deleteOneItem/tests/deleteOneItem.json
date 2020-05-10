@@ -3,8 +3,8 @@
   "params": {
     "path": {},
     "querystring": {
-      "walletId": "Wallets#93202082911265",
-      "goalId": "Goals#2020-04-27T12:30:54.089Z"
+      "walletId": "Wallet#93202082911265",
+      "itemId": "Transaction#2019-04-26T00:00:00.000Z"
     },
     "header": {
       "Accept": "*/*",
@@ -49,6 +49,6 @@
     "user-arn": "",
     "request-id": "92231855-49fd-41da-87ed-dfa4fc0d0a01",
     "resource-id": "7ftbxq",
-    "resource-path": "/goals"
+    "resource-path": "/"
   }
 }

@@ -11,9 +11,9 @@ exports.handler = async (event) => {
     let sk = isNotEmpty(event.Records) ? event.Records[0].Sns.Message : event.params.querystring.itemId;
     console.log( 'pk ', pk, ' sk ', sk);
     await deleteOneItem(pk, sk).then(function(result) {
-       console.log("successfully deleted the goals");
+       console.log("successfully deleted the item");
     }, function(err) {
-       throw new Error("Unable to delete the goals " + err);
+       throw new Error("Unable to delete the item " + err);
     });
         
     return event;
@@ -21,7 +21,7 @@ exports.handler = async (event) => {
 
 
 function deleteOneItem(pk, sk) {
-    console.log('financial Portfolio Id selected for deletion is ' + pk);
+    console.log('user Id selected for deletion is ' + pk);
     
     var params = {
         "TableName": 'blitzbudget', 
