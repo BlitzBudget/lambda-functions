@@ -7,8 +7,8 @@ AWS.config.update({region: 'eu-west-1'});
 var DB = new AWS.DynamoDB.DocumentClient();
 
 exports.handler = async (event) => {
-    let pk = isNotEmpty(event.Records) ? event.Records[0].Sns.Subject : event.params.querystring.walletId;
-    let sk = isNotEmpty(event.Records) ? event.Records[0].Sns.Message : event.params.querystring.itemId;
+    let pk = isNotEmpty(event.Records) ? event.Records[0].Sns.Subject : event['body-json'].walletId;
+    let sk = isNotEmpty(event.Records) ? event.Records[0].Sns.Message : event['body-json'].itemId;
     console.log( 'pk ', pk, ' sk ', sk);
     await deleteOneItem(pk, sk).then(function(result) {
        console.log("successfully deleted the item");
