@@ -66,10 +66,10 @@ exports.handler = async (event) => {
       let today = new Date();
       today.setYear(event['body-json'].dateMeantFor.substring(5, 9));
       today.setMonth(parseInt(event['body-json'].dateMeantFor.substring(10, 12)) -1);
-      categoryName = "Category#" + today.toISOString();
+      let categoryId = "Category#" + today.toISOString();
       // Assign Category to create the transactions with the category ID
-      event['body-json'].category = categoryName; 
-      events.push(createCategoryItem(event,categoryName));
+      event['body-json'].category = categoryId; 
+      events.push(createCategoryItem(event,categoryId, categoryName));
     }
 
     events.push(addNewBudget(event));
