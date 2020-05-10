@@ -15,20 +15,20 @@ exports.handler =  async function(event) {
    // Concurrently call multiple APIs and wait for the response 
    let events = [];
    
-   if(event.params.querystring.deleteAccount == 'true') {
+   if(event['body-json'].deleteAccount == 'true') {
         events.push(deleteCognitoAccount(event));   
    }
 
    events.push(resetAccountSubscriberThroughSNS(event));   
    let result = await Promise.all(events);
-   console.log('The reset account for ' + event.params.querystring.walletId + ' was ' + JSON.stringify(result));
+   console.log('The reset account for ' + event['body-json'].walletId + ' was ' + JSON.stringify(result));
     
    return Object.assign({ result });
 }
 
 // Delete Cognito Account
 function deleteCognitoAccount(event) {
-    paramsDelete.Username = event.params.querystring.userName;
+    paramsDelete.Username = event['body-json'].userName;
     
     return new Promise((resolve, reject) => {
         cognitoIdServiceProvider.adminDeleteUser(paramsDelete, function(err, data) {
@@ -39,13 +39,13 @@ function deleteCognitoAccount(event) {
 }
 
 function resetAccountSubscriberThroughSNS(event) {
-    console.log("Publishing to ResetAccountListener SNS or wallet id - " + event.params.querystring.walletId);
-    let walletId = isNotEmpty(event.params.querystring.referenceNumber) ? event.params.querystring.referenceNumber : event.params.querystring.walletId;
-    let deleteOneWalletAttribute = isNotEmpty(event.params.querystring.referenceNumber) ? "execute" : "donotexecute";
+    console.log("Publishing to ResetAccountListener SNS or wallet id - " + event['body-json'].walletId);
+    let walletId = isNotEmpty(event['body-json'].referenceNumber) ? event['body-json'].referenceNumber : event['body-json'].walletId;
+    let deleteOneWalletAttribute = isNotEmpty(event['body-json'].referenceNumber) ? "execute" : "donotexecute";
     
     var params = {
         Message: walletId,
-        Subject: event.params.querystring.walletId,
+        Subject: event['body-json'].walletId,
         MessageAttributes: {
             "delete_one_wallet": {
                 "DataType": "String",
