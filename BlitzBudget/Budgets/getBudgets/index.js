@@ -188,7 +188,6 @@ function modifyTotalOfBudget(percentage, fullMonth) {
       delete dateObj.pk;
     }
     
-    delete budgetData.Category;
     delete budgetData.Transaction;
 }
 
