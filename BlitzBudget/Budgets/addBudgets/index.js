@@ -176,7 +176,7 @@ function createDateData(event, skForDate) {
   
 }
 
-function createCategoryItem(event, skForCategory) {
+function createCategoryItem(event, skForCategory, categoryName) {
     
     var params = {
         TableName:'blitzbudget',
@@ -187,7 +187,7 @@ function createCategoryItem(event, skForCategory) {
         UpdateExpression: "set category_total = :r, category_name = :p, category_type = :q, date_meant_for = :s, creation_date = :c, updated_date = :u",
         ExpressionAttributeValues:{
             ":r": 0,
-            ":p": event['body-json'].category,
+            ":p": categoryName,
             ":q": event['body-json'].categoryType,
             ":s": event['body-json'].dateMeantFor,
             ":c": new Date().toISOString(),
@@ -210,6 +210,7 @@ function createCategoryItem(event, skForCategory) {
       });
     });
 }
+
 
 function addNewBudget(event) {
     let today = new Date();

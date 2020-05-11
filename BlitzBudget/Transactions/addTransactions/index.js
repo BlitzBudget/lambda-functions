@@ -47,7 +47,7 @@ exports.handler = async (event) => {
       let categoryId = "Category#" + today.toISOString();
       // Assign Category to create the transactions with the category ID
       event['body-json'].category = categoryId; 
-      events.push(createCategoryItem(event,categoryId, categoryName));
+      events.push(createCategoryItem(event, categoryId, categoryName));
     }
     
     /*
