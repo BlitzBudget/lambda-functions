@@ -15,7 +15,7 @@ exports.handler =  async function(event) {
    // Concurrently call multiple APIs and wait for the response 
    let events = [];
    
-   if(event['body-json'].deleteAccount == 'true') {
+   if(event['body-json'].deleteAccount) {
         events.push(deleteCognitoAccount(event));   
    }
 
@@ -32,8 +32,14 @@ function deleteCognitoAccount(event) {
     
     return new Promise((resolve, reject) => {
         cognitoIdServiceProvider.adminDeleteUser(paramsDelete, function(err, data) {
-            if (err) reject(err); // an error occurred
-            else     resolve('Delete Account Success');           // successful response
+            if (err) {
+                console.log("Unable to deleted the user %j", paramsDelete.Usename);
+                reject(err); // an error occurred
+            }
+            else   {
+                console.log("Successfully deleted the user %j", paramsDelete.Usename);
+                resolve('Delete Account Success');           // successful response
+            }
         });
     });
 }
