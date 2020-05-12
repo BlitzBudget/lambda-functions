@@ -68,7 +68,9 @@ exports.handler = async (event) => {
       today.setMonth(parseInt(event['body-json'].dateMeantFor.substring(10, 12)) -1);
       let categoryId = "Category#" + today.toISOString();
       // Assign Category to create the transactions with the category ID
-      event['body-json'].category = categoryId; 
+      event['body-json'].category = categoryId;
+      // If it is a newly created category then the category total is 0
+      event['body-json'].used = 0;
       events.push(createCategoryItem(event,categoryId, categoryName));
     }
 
