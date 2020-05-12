@@ -12,12 +12,12 @@ let overviewData = {};
 exports.handler = async (event) => {
   events = [];
   overviewData = {};
-  console.log("fetching item for the walletId ", event.params.querystring.walletId);
-  let walletId = event.params.querystring.walletId;
+  console.log("fetching item for the walletId ", event['body-json'].walletId);
+  let walletId = event['body-json'].walletId;
   let today = new Date();
   let dateMeantFor = today.getFullYear() + '-' + ('0' + (today.getMonth() + 1)).slice(-2);
   console.log("dateMeantFor %j", dateMeantFor);
-  let userId = event.params.querystring.userId;
+  let userId = event['body-json'].userId;
 
   /*
   * Get all dates from one year ago
