@@ -109,6 +109,12 @@ function getWalletData(userId, walletId) {
             reject(err);
           } else {
             console.log("data retrieved - Wallet %j", JSON.stringify(data));
+            for(const walletObj of data.Items) {
+              walletObj.walletId = walletObj.sk;
+              walletObj.userId = walletObj.pk;
+              delete walletObj.sk;
+              delete walletObj.pk;
+            }
             overviewData['Wallet'] = data.Items;
             resolve({ "Wallet" : data});
           }
@@ -135,6 +141,12 @@ function getWalletsData(userId) {
             reject(err);
           } else {
             console.log("data retrieved - Wallet %j", data.Count);
+            for(const walletObj of data.Items) {
+              walletObj.walletId = walletObj.sk;
+              walletObj.userId = walletObj.pk;
+              delete walletObj.sk;
+              delete walletObj.pk;
+            }
             overviewData['Wallet'] = data.Items;
             resolve({ "Wallet" : data.Items});
           }
@@ -161,6 +173,13 @@ function getBankAccountData(pk) {
             reject(err);
           } else {
             console.log("data retrieved - Bank Account %j", data.Count);
+            for(const accountObj of data.Items) {
+              accountObj.accountId = accountObj.sk;
+              accountObj.walletId = accountObj.pk;
+              delete accountObj.sk;
+              delete accountObj.pk;
+            }
+            overviewData['BankAccount'] = data.Items;
             resolve({ "BankAccount" : data.Items});
           }
         });
@@ -186,6 +205,12 @@ function getCategoryData(pk, dateMeantFor) {
             reject(err);
           } else {
             console.log("data retrieved - Category %j", data.Count);
+            for(const categoryObj of data.Items) {
+              categoryObj.categoryId = categoryObj.sk;
+              categoryObj.walletId = categoryObj.pk;
+              delete categoryObj.sk;
+              delete categoryObj.pk;
+            }
             overviewData['Category'] = data.Items;
             resolve({ "Category" : data.Items});
           }
@@ -213,6 +238,12 @@ function getDateData(pk, startsWithDate, endsWithDate) {
             reject(err);
           } else {
             console.log("data retrieved - Date ", data.Count);
+            for(const dateObj of data.Items) {
+              dateObj.dateId = dateObj.sk;
+              dateObj.walletId = dateObj.pk;
+              delete dateObj.sk;
+              delete dateObj.pk;
+            }
             overviewData['Date'] = data.Items;
             resolve({ "Date" : data.Items});
           }
@@ -239,6 +270,12 @@ function getBudgetsData(pk, dateMeantFor) {
             reject(err);
           } else {
             console.log("data retrieved - Budget %j", data.Count);
+            for(const budgetObj of data.Items) {
+              budgetObj.budgetId = budgetObj.sk;
+              budgetObj.walletId = budgetObj.pk;
+              delete budgetObj.sk;
+              delete budgetObj.pk;
+            }
             overviewData['Budget'] = data.Items;
             resolve({ "Budget" : data.Items});
           }
@@ -269,6 +306,12 @@ function getTransactionsData(pk, dateMeantFor) {
             reject(err);
           } else {
             console.log("data retrieved - Transactions %j ", data.Count);
+            for(const transObj of data.Items) {
+              transObj.transactionId = transObj.sk;
+              transObj.walletId = transObj.pk;
+              delete transObj.sk;
+              delete transObj.pk;
+            }
             overviewData['Transaction'] = data.Items;
             resolve({ "Transaction" : data.Items});
           }
