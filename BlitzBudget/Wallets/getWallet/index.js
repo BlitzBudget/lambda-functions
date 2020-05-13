@@ -31,7 +31,7 @@ function getWalletItem(userId) {
           ":userId": userId,
           ":items": "Wallet#"
       },
-      ProjectionExpression: "currency, pk, sk, total_asset_balance, total_debt_balance, wallet_balance, name"
+      ProjectionExpression: "currency, pk, sk, total_asset_balance, total_debt_balance, wallet_balance, wallet_name"
     };
     
     // Call DynamoDB to read the item from the table

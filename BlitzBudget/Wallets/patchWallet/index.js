@@ -11,7 +11,7 @@ const parameters = [{
 },
 {
   "prmName" : "name",
-  "prmValue" : 'name'
+  "prmValue" : 'wallet_name'
 }
 ]
 
