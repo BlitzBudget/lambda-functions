@@ -48,7 +48,7 @@ function updatingItem(event) {
       }
       
       // Add a comma to update expression
-      if(i > 0 && i < len) {
+      if(includesStr(updateExp , '#variable')) {
         updateExp += ',';
       }
       
@@ -109,4 +109,8 @@ function  isEmpty(obj) {
     }
       
   return true;
+}
+
+function includesStr(arr, val){
+  return isEmpty(arr) ? null : arr.includes(val); 
 }
