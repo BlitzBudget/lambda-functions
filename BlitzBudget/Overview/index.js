@@ -109,15 +109,13 @@ function getWalletData(userId, walletId) {
             reject(err);
           } else {
             console.log("data retrieved - Wallet %j", JSON.stringify(data));
-            if(data.Items) {
-              for(const walletObj of data.Items) {
-                walletObj.walletId = walletObj.sk;
-                walletObj.userId = walletObj.pk;
-                delete walletObj.sk;
-                delete walletObj.pk;
-              } 
+            if(data.Item) {
+                data.Item.walletId = data.Item.sk;
+                data.Item.userId = data.Item.pk;
+                delete data.Item.sk;
+                delete data.Item.pk;
             }
-            overviewData['Wallet'] = data.Items;
+            overviewData['Wallet'] = data.Item;
             resolve({ "Wallet" : data});
           }
         });
