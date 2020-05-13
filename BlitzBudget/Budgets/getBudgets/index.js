@@ -95,11 +95,13 @@ function getBankAccountData(pk) {
             reject(err);
           } else {
             console.log("data retrieved - Bank Account %j", data.Count);
-            for(const accountObj of data.Items) {
-              accountObj.accountId = accountObj.sk;
-              accountObj.userId = accountObj.pk;
-              delete accountObj.sk;
-              delete accountObj.pk;
+            if(data.Items) {
+              for(const accountObj of data.Items) {
+                accountObj.accountId = accountObj.sk;
+                accountObj.userId = accountObj.pk;
+                delete accountObj.sk;
+                delete accountObj.pk;
+              } 
             }
             budgetData['BankAccount'] = data.Items;
             resolve({ "BankAccount" : data.Items});
@@ -292,11 +294,13 @@ function getWalletsData(userId) {
             reject(err);
           } else {
             console.log("data retrieved - Wallet %j", data.Count);
-            for(const walletObj of data.Items) {
-              walletObj.walletId = walletObj.sk;
-              walletObj.userId = walletObj.pk;
-              delete walletObj.sk;
-              delete walletObj.pk;
+            if(data.Items) {
+              for(const walletObj of data.Items) {
+                walletObj.walletId = walletObj.sk;
+                walletObj.userId = walletObj.pk;
+                delete walletObj.sk;
+                delete walletObj.pk;
+              }
             }
             budgetData['Wallet'] = data.Items; 
             resolve({ "Wallet" : data.Items});

@@ -54,11 +54,13 @@ function getBankAccountData(pk) {
             reject(err);
           } else {
             console.log("data retrieved - Bank Account %j", data.Count);
-            for(const accountObj of data.Items) {
-              accountObj.accountId = accountObj.sk;
-              accountObj.walletId = accountObj.pk;
-              delete accountObj.sk;
-              delete accountObj.pk;
+            if(data.Items) {
+              for(const accountObj of data.Items) {
+                accountObj.accountId = accountObj.sk;
+                accountObj.walletId = accountObj.pk;
+                delete accountObj.sk;
+                delete accountObj.pk;
+              }
             }
             goalData['BankAccount'] = data.Items;
             resolve({ "BankAccount" : data.Items});
@@ -86,11 +88,13 @@ function getWalletsData(userId) {
             reject(err);
           } else {
             console.log("data retrieved - Wallet %j", data.Count);
-            for(const walletObj of data.Items) {
-              walletObj.walletId = walletObj.sk;
-              walletObj.userId = walletObj.pk;
-              delete walletObj.sk;
-              delete walletObj.pk;
+            if(data.Items) {
+              for(const walletObj of data.Items) {
+                walletObj.walletId = walletObj.sk;
+                walletObj.userId = walletObj.pk;
+                delete walletObj.sk;
+                delete walletObj.pk;
+              }
             }
             goalData['Wallet'] = data.Items;
             resolve({ "Wallet" : data.Items});
@@ -120,11 +124,13 @@ function getGoalItem(walletId) {
             reject(err);
           } else {
             console.log("data retrieved - Goal %j", data.Count);
-            for(const goalObj of data.Items) {
-              goalObj.goalId = goalObj.sk;
-              goalObj.userId = goalObj.pk;
-              delete goalObj.sk;
-              delete goalObj.pk;
+            if(data.Items) {
+              for(const goalObj of data.Items) {
+                goalObj.goalId = goalObj.sk;
+                goalObj.userId = goalObj.pk;
+                delete goalObj.sk;
+                delete goalObj.pk;
+              }
             }
             goalData['Goal'] = data.Items;
             resolve({ "Goal" : data.Items});

@@ -42,11 +42,13 @@ function getWalletItem(userId) {
             reject(err);
           } else {
             console.log("data retrieved ", data.Count);
-            for(const walletObj of data.Items) {
-              walletObj.walletId = walletObj.sk;
-              walletObj.userId = walletObj.pk;
-              delete walletObj.sk;
-              delete walletObj.pk;
+            if(data.Items) {
+              for(const walletObj of data.Items) {
+                walletObj.walletId = walletObj.sk;
+                walletObj.userId = walletObj.pk;
+                delete walletObj.sk;
+                delete walletObj.pk;
+              }
             }
             walletData['Wallet'] = data.Items;
             resolve(data.Items);

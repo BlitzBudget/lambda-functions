@@ -80,15 +80,17 @@ function getRecurringTransactions(walletId) {
           } else {
             console.log("data retrieved - RecurringTransactions ", data.Count);
             let today =  new Date();
-            for(const rtObj of data.Items) {
-              let scheduled = new Date(rtObj['next_scheduled']);
-              if(scheduled < today) {
-                snsEvents.push(markTransactionForCreation(rtObj));
+            if(data.Items) {
+              for(const rtObj of data.Items) {
+                let scheduled = new Date(rtObj['next_scheduled']);
+                if(scheduled < today) {
+                  snsEvents.push(markTransactionForCreation(rtObj));
+                }
+                rtObj.recurringTransactionsId = rtObj.sk;
+                rtObj.walletId = rtObj.pk;
+                delete rtObj.sk;
+                delete rtObj.pk;
               }
-              rtObj.recurringTransactionsId = rtObj.sk;
-              rtObj.walletId = rtObj.pk;
-              delete rtObj.sk;
-              delete rtObj.pk;
             }
             transactionData['RecurringTransactions'] = data.Items;
             resolve({"RecurringTransactions" : data.Items});
