@@ -47,6 +47,9 @@ function addNewWallet(event, userId, currency) {
             resolve({ "success" : data});
             if(isNotEmpty(event['body-json'])) {
               event['body-json'].id= randomValue; 
+              event['body-json']['wallet_balance'] = 0;
+              event['body-json']['total_debt_balance'] = 0;
+              event['body-json']['total_asset_balance'] = 0;
             }
           }
       });
