@@ -9,10 +9,10 @@ let walletData = {};
 
 
 exports.handler = async (event) => {
-  console.log("fetching item for the userId ", event.params.querystring.userId);
+  console.log("fetching item for the userId ", event['body-json'].userId);
   walletData = {};
   
-    await getWalletItem(event.params.querystring.userId).then(function(result) {
+    await getWalletItem(event['body-json'].userId).then(function(result) {
        console.log("Successfully retrieved all wallet information");
     }, function(err) {
        throw new Error("Unable error occured while fetching the Wallet " + err);
