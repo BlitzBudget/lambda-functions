@@ -52,7 +52,7 @@ function updatingBankAccounts(event) {
       }
       
       // Add a comma to update expression
-      if(i > 0 && i < len) {
+      if(includesStr(updateExp , '#variable')) {
         updateExp += ',';
       }
       
