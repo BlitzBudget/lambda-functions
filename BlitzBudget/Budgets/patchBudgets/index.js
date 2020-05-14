@@ -110,3 +110,7 @@ function  isEmpty(obj) {
       
   return true;
 }
+
+function includesStr(arr, val){
+  return isEmpty(arr) ? null : arr.includes(val); 
+}
