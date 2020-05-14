@@ -31,7 +31,7 @@ exports.handler = async (event) => {
   // Cognito does not store wallet information nor curreny. All are stored in wallet.
   if(isEmpty(walletId) && isNotEmpty(userId)) {
       await getWalletsData(userId).then(function(result) {
-        walletId = result.Wallet[0].sk;
+        walletId = result.Wallet[0].walletId;
         console.log("retrieved the wallet for the item ", walletId);
       }, function(err) {
          throw new Error("Unable error occured while fetching the transaction " + err);
