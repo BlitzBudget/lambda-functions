@@ -242,7 +242,7 @@ function addNewBudget(event) {
             reject(err);
           } else {
             resolve({ "success" : data});
-            event['body-json'].id= randomValue;
+            event['body-json'].budgetId= randomValue;
           }
       });
     });
