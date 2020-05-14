@@ -256,7 +256,7 @@ function getCategoryData(pk, startsWithDate, endsWithDate) {
           ":bt1": "Category#" + startsWithDate,
           ":bt2": "Category#" + endsWithDate,
       },
-      ProjectionExpression: "pk, sk, category_name, category_total"
+      ProjectionExpression: "pk, sk, category_name, category_total, category_type"
     };
     
     // Call DynamoDB to read the item from the table

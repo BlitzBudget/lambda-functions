@@ -198,7 +198,7 @@ function getCategoryData(pk, dateMeantFor) {
           ":pk": pk,
           ":sk": "Category#" + dateMeantFor
       },
-      ProjectionExpression: "pk, sk, category_name, category_total"
+      ProjectionExpression: "pk, sk, category_name, category_total, category_type"
     };
     
     // Call DynamoDB to read the item from the table
