@@ -14,12 +14,12 @@ let snsEvents = [];
 exports.handler = async (event) => {
     transactionData = {};
     percentage = 1;
-    console.log("fetching item for the walletId ", event.params.querystring.walletId);
+    console.log("fetching item for the walletId ", event['body-json'].walletId);
     let events = [];
-    let userId = event.params.querystring.userId;
-    let walletId = event.params.querystring.walletId;
-    let startsWithDate = event.params.querystring.startsWithDate;
-    let endsWithDate = event.params.querystring.endsWithDate;
+    let userId = event['body-json'].userId;
+    let walletId = event['body-json'].walletId;
+    let startsWithDate = event['body-json'].startsWithDate;
+    let endsWithDate = event['body-json'].endsWithDate;
     let fullMonth = isFullMonth(startsWithDate, endsWithDate);
     
     // Cognito does not store wallet information nor curreny. All are stored in wallet.
@@ -80,17 +80,15 @@ function getRecurringTransactions(walletId) {
           } else {
             console.log("data retrieved - RecurringTransactions ", data.Count);
             let today =  new Date();
-            if(data.Items) {
-              for(const rtObj of data.Items) {
-                let scheduled = new Date(rtObj['next_scheduled']);
-                if(scheduled < today) {
-                  snsEvents.push(markTransactionForCreation(rtObj));
-                }
-                rtObj.recurringTransactionsId = rtObj.sk;
-                rtObj.walletId = rtObj.pk;
-                delete rtObj.sk;
-                delete rtObj.pk;
+            for(const rtObj of data.Items) {
+              let scheduled = new Date(rtObj['next_scheduled']);
+              if(scheduled < today) {
+                snsEvents.push(markTransactionForCreation(rtObj));
               }
+              rtObj.recurringTransactionsId = rtObj.sk;
+              rtObj.walletId = rtObj.pk;
+              delete rtObj.sk;
+              delete rtObj.pk;
             }
             transactionData['RecurringTransactions'] = data.Items;
             resolve({"RecurringTransactions" : data.Items});

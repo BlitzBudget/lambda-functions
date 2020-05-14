@@ -1,12 +1,12 @@
 {
-  "body-json": {},
-  "params": {
-    "path": {},
-    "querystring": {
+  "body-json": {
       "userId": "User#2020-05-02T17:18:47.201Z",
       "startsWithDate": "2020-05-01",
-      "endsWithDate": "2020-05-31"
-    },
+      "endsWithDate": "2020-05-28"
+  },
+  "params": {
+    "path": {},
+    "querystring": {},
     "header": {
       "Accept": "*/*",
       "Accept-Encoding": "gzip, deflate, br",
