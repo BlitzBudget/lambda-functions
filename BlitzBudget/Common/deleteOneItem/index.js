@@ -2,19 +2,29 @@
 var AWS = require('aws-sdk');
 // Set the region 
 AWS.config.update({region: 'eu-west-1'});
+var sns = new AWS.SNS();
 
 // Create the DynamoDB service object
 var DB = new AWS.DynamoDB.DocumentClient();
 
 exports.handler = async (event) => {
-    let pk = isNotEmpty(event.Records) ? event.Records[0].Sns.Subject : event['body-json'].walletId;
-    let sk = isNotEmpty(event.Records) ? event.Records[0].Sns.Message : event['body-json'].itemId;
+    let fromSns = isNotEmpty(event.Records);
+    let pk = fromSns ? event.Records[0].Sns.Subject : event['body-json'].walletId;
+    let sk = fromSns ? event.Records[0].Sns.Message : event['body-json'].itemId;
     console.log( 'pk ', pk, ' sk ', sk);
     await deleteOneItem(pk, sk).then(function(result) {
        console.log("successfully deleted the item");
     }, function(err) {
        throw new Error("Unable to delete the item " + err);
     });
+    
+    if(fromSns) {
+        await publishToResetAccountsSNS(sk).then(function(result) {
+           console.log("successfully published the message with walletId %j", );
+        }, function(err) {
+           throw new Error("Unable to delete the item " + err);
+        });
+    }
         
     return event;
 };
@@ -42,6 +52,30 @@ function deleteOneItem(pk, sk) {
         });
     });
     
+}
+
+function publishToResetAccountsSNS(item) {
+    var params = {
+        Message: item,
+        MessageAttributes: {
+            "delete_all_items_in_wallet": {
+                "DataType": "String",
+                "StringValue": "execute"
+            }
+        },
+        TopicArn: 'arn:aws:sns:eu-west-1:064559090307:ResetAccountSubscriber'
+    };
+    
+    return new Promise((resolve, reject) => {
+        sns.publish(params,  function(err, data) {
+            if (err) {
+                console.log("Error ", err);
+                reject(err);
+            } else {
+                resolve( "Reset account to SNS published");
+            }
+        }); 
+    });
 }
 
 function  isEmpty(obj) {

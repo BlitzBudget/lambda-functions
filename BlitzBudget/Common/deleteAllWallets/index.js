@@ -12,12 +12,12 @@ let events = [];
 
 exports.handler = async (event) => {
     console.log( 'event ' + JSON.stringify(event.Records[0]));
-    let walletId = event.Records[0].Sns.Message;
+    let userId = event.Records[0].Sns.Message;
     let deleteParams = {};
     
-    await getAllItems(walletId).then(function(result) {
+    await getAllItems(userId).then(function(result) {
        console.log("successfully fetched all the wallets ", result);
-       deleteParams = buildParamsForDelete(result, walletId);
+       deleteParams = buildParamsForDelete(result, userId);
     }, function(err) {
        throw new Error("Unable to delete the goals " + err);
     });
@@ -37,7 +37,7 @@ exports.handler = async (event) => {
     return event;
 };
 
-function buildParamsForDelete(result, walletId) {
+function buildParamsForDelete(result, userId) {
     if(isEmpty(result.Items)){
         return;
     }
@@ -53,7 +53,7 @@ function buildParamsForDelete(result, walletId) {
         params.RequestItems.blitzbudget[i] = { 
                     "DeleteRequest": { 
                        "Key": {
-                           "pk": walletId,
+                           "pk": userId,
                            "sk": sk
                        }
                     }
@@ -69,12 +69,12 @@ function buildParamsForDelete(result, walletId) {
 }
 
 // Get goal Item
-function getAllItems(walletId) {
+function getAllItems(userId) {
     var params = {
       TableName: 'blitzbudget',
-      KeyConditionExpression   : "pk = :walletId",
+      KeyConditionExpression   : "pk = :userId",
       ExpressionAttributeValues: {
-          ":walletId": walletId
+          ":userId": userId
       },
       ProjectionExpression: "sk"
     };
@@ -135,10 +135,6 @@ function publishToResetAccountsSNS(item) {
     var params = {
         Message: item,
         MessageAttributes: {
-            "delete_one_wallet": {
-                "DataType": "String",
-                "StringValue": "execute"
-            },
             "delete_all_items_in_wallet": {
                 "DataType": "String",
                 "StringValue": "execute"
