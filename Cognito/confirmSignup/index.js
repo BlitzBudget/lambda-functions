@@ -2,7 +2,8 @@ const AWS = require('aws-sdk')
 AWS.config.update({region: 'eu-west-1'});
 let cognitoidentityserviceprovider = new AWS.CognitoIdentityServiceProvider();
 
-var sns = new AWS.SNS();
+// Create the DynamoDB service object
+var DB = new AWS.DynamoDB.DocumentClient();
 
 exports.handler = async (event) => {
     let response = {};
@@ -55,45 +56,53 @@ exports.handler = async (event) => {
     */
     currenyChosen = isEmpty(currenyChosen) ? '$' : currenyChosen;
     console.log("Fetching the country header from cloudfront ", currenyChosen);
-    await addWalletThroughSNS(response.UserAttributes, currenyChosen).then(function(result) {}, function(err) {
+    await addNewWallet(response.UserAttributes, currenyChosen).then(function(result) {}, function(err) {
       throw new Error("Unable to add new wallet" + err);
     });
     
     return response;
 };
 
-function addWalletThroughSNS(userAttributes, currency) {
-    let financialPortfolioId = '';
+function addNewWallet(userAttributes, currency) {
+    let userId = '';
     for(let i = 0, len = userAttributes.length; i < len; i++) {
       let attribute = userAttributes[i];
       
       if(isEqual(attribute.Name, 'custom:financialPortfolioId')) {
-        financialPortfolioId = attribute.Value;
+        userId = attribute.Value;
         break;
       }
     }
-
-    let params = {
-        Message: financialPortfolioId,
-        MessageAttributes: {
-            "currency": {
-                "DataType": "String",
-                "StringValue": currency
-            }
-        },
-        TopicArn: 'arn:aws:sns:eu-west-1:064559090307:addWallet'
+    
+    let today = new Date();
+    let randomValue = "Wallet#" + today.toISOString(); 
+        
+    var params = {
+      TableName:'blitzbudget',
+      Item:{
+            "pk": userId,
+            "sk": randomValue,
+            "currency": currency,
+            "wallet_balance": 0,
+            "total_asset_balance": 0,
+            "total_debt_balance": 0,
+            "creation_date": new Date().toISOString(),
+            "updated_date": new Date().toISOString()
+      }
     };
-
+    
+    console.log("Adding a new item...");
     return new Promise((resolve, reject) => {
-      sns.publish(params,  function(err, data) {
-            if (err) {
-                console.log("Error ", err);
-                reject(err);
-            } else {
-                resolve( "Reset account to SNS published");
-            }
-        });
+      DB.put(params, function(err, data) {
+          if (err) {
+            console.log("Error ", err);
+            reject(err);
+          } else {
+            resolve({ "success" : data});
+          }
+      });
     });
+    
 }
 
 function confirmSignUp(params) {
@@ -168,6 +177,10 @@ function isEmpty(obj) {
     }
 
     return true;
+}
+
+function isNotEmpty(obj) {
+  return !isEmpty(obj);
 }
 
 let localeToCurrency = {};

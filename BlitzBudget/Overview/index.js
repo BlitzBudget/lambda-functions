@@ -12,7 +12,8 @@ let overviewData = {};
 exports.handler = async (event) => {
   events = [];
   overviewData = {};
-  console.log("fetching item for the walletId ", event['body-json'].walletId);
+  console.log("fetching item for the walletId %j", event['body-json'].walletId);
+  console.log("fetching item with the userId %j", event['body-json'].userId);
   let walletId = event['body-json'].walletId;
   let today = new Date();
   let dateMeantFor = today.getFullYear() + '-' + ('0' + (today.getMonth() + 1)).slice(-2);

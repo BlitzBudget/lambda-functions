@@ -7,8 +7,8 @@ AWS.config.update({region: 'eu-west-1'});
 var DB = new AWS.DynamoDB.DocumentClient();
 
 exports.handler = async (event) => {
-    let userId = isEmpty(event.Records) ? event['body-json'].userId : event.Records[0].Sns.Message;
-    let currency = isEmpty(event.Records) ? event['body-json'].currency : event.Records[0].Sns.MessageAttributes.currency.Value;
+    let userId = event['body-json'].userId;
+    let currency = event['body-json'].currency;
     console.log("events ", JSON.stringify(event));
     await addNewWallet(event, userId, currency).then(function(result) {
        console.log("successfully saved the new wallet");
