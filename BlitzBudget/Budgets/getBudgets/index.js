@@ -267,6 +267,14 @@ function getCategoryData(pk, startsWithDate, endsWithDate) {
             reject(err);
           } else {
             console.log("data retrieved - Category %j", data.Count);
+            if(data.Items) {
+              for(const categoryObj of data.Items) {
+                categoryObj.categoryId = categoryObj.sk;
+                categoryObj.userId = categoryObj.pk;
+                delete categoryObj.sk;
+                delete categoryObj.pk;
+              }
+            }
             budgetData['Category'] = data.Items; 
             resolve({ "Category" : data.Items});
           }
