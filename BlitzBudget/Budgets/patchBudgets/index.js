@@ -17,7 +17,28 @@ const parameters = [{
 
 exports.handler = async (event) => {
     console.log("updating Budgets for ", JSON.stringify(event['body-json']));
-    await updatingBudgets(event).then(function(result) {
+    let events = [];
+    
+     /*
+    * If category Id is not present
+    */
+    let categoryName = event['body-json'].category;
+    if(notIncludesStr(categoryName, 'Category#')) {
+      let today = new Date();
+      today.setYear(event['body-json'].dateMeantFor.substring(5, 9));
+      today.setMonth(parseInt(event['body-json'].dateMeantFor.substring(10, 12)) -1);
+      let categoryId = "Category#" + today.toISOString();
+      // Assign Category to create the transactions with the category ID
+      event['body-json'].category = categoryId;
+      event['body-json'].categoryName = categoryName;
+      // If it is a newly created category then the category total is 0
+      event['body-json'].used = 0;
+      events.push(createCategoryItem(event, categoryId, categoryName));
+    }
+    
+    events.push(updatingBudgets(event));
+    
+    await Promise.all(events).then(function(result) {
        console.log("successfully saved the new Budgets");
     }, function(err) {
        throw new Error("Unable to add the Budgets " + err);
@@ -93,6 +114,41 @@ function updatingBudgets(event) {
     
 }
 
+function createCategoryItem(event, skForCategory, categoryName) {
+    
+    var params = {
+        TableName:'blitzbudget',
+        Key:{
+          "pk": event['body-json'].walletId,
+          "sk": skForCategory,
+        },
+        UpdateExpression: "set category_total = :r, category_name = :p, category_type = :q, date_meant_for = :s, creation_date = :c, updated_date = :u",
+        ExpressionAttributeValues:{
+            ":r": 0,
+            ":p": categoryName,
+            ":q": event['body-json'].categoryType,
+            ":s": event['body-json'].dateMeantFor,
+            ":c": new Date().toISOString(),
+            ":u": new Date().toISOString()
+        },
+        ReturnValues: 'ALL_NEW'
+    }
+    
+    console.log("Adding a new item...");
+    return new Promise((resolve, reject) => {
+      docClient.update(params, function(err, data) {
+          if (err) {
+            console.log("Error ", err);
+            reject(err);
+          } else {
+            console.log("Successfully created a new category %j", data.Attributes.sk)
+            event['body-json'].category = data.Attributes.sk;
+            resolve({ "Category" : data.Attributes});
+          }
+      });
+    });
+}
+
 function  isEmpty(obj) {
   // Check if objext is a number or a boolean
   if(typeof(obj) == 'number' || typeof(obj) == 'boolean') return false; 
@@ -113,4 +169,8 @@ function  isEmpty(obj) {
 
 function includesStr(arr, val){
   return isEmpty(arr) ? null : arr.includes(val); 
+}
+
+function notIncludesStr(arr, val){
+  return !includesStr(arr, val); 
 }
