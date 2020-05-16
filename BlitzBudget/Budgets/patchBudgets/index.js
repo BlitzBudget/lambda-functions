@@ -23,7 +23,7 @@ exports.handler = async (event) => {
     * If category Id is not present
     */
     let categoryName = event['body-json'].category;
-    if(notIncludesStr(categoryName, 'Category#')) {
+    if(isNotEmpty(categoryName) && notIncludesStr(categoryName, 'Category#')) {
       let today = new Date();
       today.setYear(event['body-json'].dateMeantFor.substring(5, 9));
       today.setMonth(parseInt(event['body-json'].dateMeantFor.substring(10, 12)) -1);
@@ -165,6 +165,10 @@ function  isEmpty(obj) {
     }
       
   return true;
+}
+
+function  isNotEmpty(obj) {
+  return !isEmpty(obj);
 }
 
 function includesStr(arr, val){
