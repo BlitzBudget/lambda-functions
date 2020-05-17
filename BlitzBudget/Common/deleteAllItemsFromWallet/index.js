@@ -57,6 +57,8 @@ exports.handler = async (event) => {
             console.log("Deleting a batch of %j items", params.RequestItems.blitzbudget.length);
             await deleteItems(params).then(function(result) {
                console.log("successfully deleted all the items");
+                params = {};
+                params.RequestItems = {};
                 params.RequestItems.blitzbudget = [];
             }, function(err) {
                throw new Error("Unable to delete all the items " + err);
@@ -107,3 +109,4 @@ function deleteItems(params) {
         });
     });
 }
+
