@@ -30,7 +30,7 @@ exports.handler = async (event) => {
       let categoryId = "Category#" + today.toISOString();
       
       /*
-      * Check if date is present before adding them
+      * Check if category is present before adding them
       */
       await getCategoryData(categoryId, event, today).then(function(result) {
         if(isNotEmpty(result.Category)) {

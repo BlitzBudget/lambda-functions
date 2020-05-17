@@ -5,6 +5,7 @@
     "amount": 54,
     "description": "adding this transaction",
     "category": "Save More",
+    "categoryType": "Income",
     "recurrence" : "NEVER"
   },
   "params": {
