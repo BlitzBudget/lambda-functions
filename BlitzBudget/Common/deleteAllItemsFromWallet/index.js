@@ -10,6 +10,7 @@ exports.handler = async (event) => {
     console.log( 'event ' + JSON.stringify(event.Records[0]));
     let walletId = event.Records[0].Sns.Message;
     let result = {};
+    let events = [];
     
     await getAllItems(walletId).then(function(res) {
        console.log("successfully fetched all the items ", res);
@@ -24,52 +25,52 @@ exports.handler = async (event) => {
     }
     
     console.log("Starting to process the batch delete request for the item for the wallet %j", result.Count);
-    let params = {};
-    params.RequestItems = {};
-    params.RequestItems.blitzbudget = [];
-    let processBatchDelete;
-    for(let i = 0, len = result.Items.length; i < len; i++) {
-        processBatchDelete = false;
-        let item = result.Items[i];
-        
-        if(params.RequestItems.blitzbudget.length < 25) {
-            console.log("Building the delete params for the item %j", item.sk);
-             params.RequestItems.blitzbudget[i] = { 
-                    "DeleteRequest": { 
-                       "Key": {
-                           "pk": walletId,
-                           "sk": item.sk
-                       }
-                    }
-                 };
-                 
-                 /*
-                 * If last iteration is running then
-                 */
-                 if(i == (len -1)) {
-                     processBatchDelete = true;
-                 }
-        } else {
-           processBatchDelete = true;
-        }
-        
-        if(processBatchDelete) {
-            console.log("Deleting a batch of %j items", params.RequestItems.blitzbudget.length);
-            await deleteItems(params).then(function(result) {
-               console.log("successfully deleted all the items");
-                params = {};
-                params.RequestItems = {};
-                params.RequestItems.blitzbudget = [];
-            }, function(err) {
-               throw new Error("Unable to delete all the items " + err);
-            });   
-        }
+    let requestArr = [];
+    for(const item of result.Items) {
+        console.log("Building the delete params for the item %j", item.sk);
+        requestArr.push({ 
+            "DeleteRequest": { 
+               "Key": {
+                   "pk": walletId,
+                   "sk": item.sk
+               }
+            }
+        });
     }
+    
+    // Split array into sizes of 25
+    let deleteRequests = chunkArrayInGroups(requestArr, 25);
+    
+    // Push Events  to be executed in bulk
+    for(const deleteRequest of deleteRequests) {
+        let params = {};
+        params.RequestItems = {};
+        params.RequestItems.blitzbudget = deleteRequest;
+        console.log("The delete request is in batch  with length %j", params.RequestItems.blitzbudget.length);
+        // Delete Items in batch
+        events.push(deleteItems(params));
+    }
+    
+    
+    await Promise.all(events).then(function(result) {
+       console.log("successfully deleted all the items");
+    }, function(err) {
+       throw new Error("Unable to delete all the items " + err);
+    });  
         
     return event;
 };
 
-// Get goal Item
+// Splits array into chunks
+function chunkArrayInGroups(arr, size) {
+  var myArray = [];
+  for(var i = 0; i < arr.length; i += size) {
+    myArray.push(arr.slice(i, i+size));
+  }
+  return myArray;
+}
+
+// Get all Items
 function getAllItems(walletId) {
     var params = {
       TableName: 'blitzbudget',
@@ -109,4 +110,3 @@ function deleteItems(params) {
         });
     });
 }
-
