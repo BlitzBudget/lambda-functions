@@ -19,7 +19,7 @@ exports.handler = async (event) => {
     console.log("updating Budgets for ", JSON.stringify(event['body-json']));
     let events = [];
     
-     /*
+    /*
     * If category Id is not present
     */
     let categoryName = event['body-json'].category;
@@ -28,18 +28,31 @@ exports.handler = async (event) => {
       today.setYear(event['body-json'].dateMeantFor.substring(5, 9));
       today.setMonth(parseInt(event['body-json'].dateMeantFor.substring(10, 12)) -1);
       let categoryId = "Category#" + today.toISOString();
-      // Assign Category to create the transactions with the category ID
-      event['body-json'].category = categoryId;
-      event['body-json'].categoryName = categoryName;
-      // If it is a newly created category then the category total is 0
-      event['body-json'].used = 0;
-      events.push(createCategoryItem(event, categoryId, categoryName));
+      
+      /*
+      * Check if date is present before adding them
+      */
+      await getCategoryData(categoryId, event, today).then(function(result) {
+        if(isNotEmpty(result.Category)) {
+          console.log("successfully assigned the existing category %j", result.Category.sk);
+          event['body-json'].category = result.Category.sk;
+        } else {
+          // Assign Category to create the transactions with the category ID
+          event['body-json'].category = categoryId;
+          event['body-json'].categoryName = categoryName;
+          // If it is a newly created category then the category total is 0
+          event['body-json'].used = 0;
+          events.push(createCategoryItem(event, categoryId, categoryName));
+        }
+      }, function(err) {
+         throw new Error("Unable to add the Budget " + err);
+      });
     }
     
     events.push(updatingBudgets(event));
     
     await Promise.all(events).then(function(result) {
-       console.log("successfully saved the new Budgets");
+       console.log("successfully saved the existing Budgets");
     }, function(err) {
        throw new Error("Unable to add the Budgets " + err);
     });
@@ -149,6 +162,41 @@ function createCategoryItem(event, skForCategory, categoryName) {
     });
 }
 
+function getCategoryData(categoryId, event, today) {
+  var params = {
+      TableName: 'blitzbudget',
+      KeyConditionExpression   : "pk = :pk AND begins_with(sk, :items)",
+      ExpressionAttributeValues: {
+          ":pk": event['body-json'].walletId,
+          ":items": "Category#" + today.getFullYear() + '-' + ('0' + (today.getMonth() + 1)).slice(-2)
+      },
+      ProjectionExpression: "pk, sk, category_name, category_type"
+    };
+    
+    // Call DynamoDB to read the item from the table
+    return new Promise((resolve, reject) => {
+        docClient.query(params, function(err, data) {
+          if (err) {
+            console.log("Error ", err);
+            reject(err);
+          } else {
+            console.log("data retrieved - Category %j", data.Count);
+            if(data.Items) {
+              for(const categoryObj of data.Items) {
+                if(isEqual(categoryObj['category_type'],event['body-json'].categoryType) 
+                && isEqual(categoryObj['category_name'],event['body-json'].category)) {
+                    resolve({ "Category" : categoryObj});
+                }
+              }
+            } else {
+              resolve({ "Category" : data.Items}); 
+            }
+          }
+        });
+    });
+}
+
+
 function  isEmpty(obj) {
   // Check if objext is a number or a boolean
   if(typeof(obj) == 'number' || typeof(obj) == 'boolean') return false; 
@@ -177,4 +225,11 @@ function includesStr(arr, val){
 
 function notIncludesStr(arr, val){
   return !includesStr(arr, val); 
+}
+
+function isEqual(obj1,obj2){
+  if (JSON.stringify(obj1) === JSON.stringify(obj2)) {
+      return true;
+  }
+  return false;
 }

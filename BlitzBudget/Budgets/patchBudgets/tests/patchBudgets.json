@@ -1,9 +1,10 @@
 {
   "body-json": {
-    "walletId": "Wallet#93202082911265",
-    "budgetId": "Budget#2015-03-25T00:10:00.000Z",
-    "category": "Pay Off Debt",
-    "planned": 52
+    "budgetId": "Budget#2020-05-17T10:21:03.662Z",
+    "category": "Bills & Fees",
+    "categoryType": "Expense",
+    "dateMeantFor": "Date#2020-05-17T09:54:00.211Z",
+    "walletId": "Wallet#2020-05-17T09:53:29.202Z"
   },
   "params": {
     "path": {},
