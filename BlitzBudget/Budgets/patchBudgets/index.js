@@ -18,9 +18,6 @@ const parameters = [{
 exports.handler = async (event) => {
     console.log("updating Budgets for ", JSON.stringify(event['body-json']));
     let events = [];
-    let today = new Date();
-    today.setYear(event['body-json'].dateMeantFor.substring(5, 9));
-    today.setMonth(parseInt(event['body-json'].dateMeantFor.substring(10, 12)) -1);
     let checkIfBudgetIsPresent = true;
     
     /*
@@ -28,6 +25,9 @@ exports.handler = async (event) => {
     */
     let categoryName = event['body-json'].category;
     if(isNotEmpty(categoryName) && notIncludesStr(categoryName, 'Category#')) {
+      let today = new Date();
+      today.setYear(event['body-json'].dateMeantFor.substring(5, 9));
+      today.setMonth(parseInt(event['body-json'].dateMeantFor.substring(10, 12)) -1);
       let categoryId = "Category#" + today.toISOString();
       
       /*
@@ -57,14 +57,17 @@ exports.handler = async (event) => {
     * For Simultaneous cross device creation compatability
     */
     if(isNotEmpty(categoryName) && checkIfBudgetIsPresent) {
-        // Check if the budget is present for the mentioned category
-        await getBudgetsItem(today, event).then(function(result) {
-            if(isNotEmpty(result.Budget)) {
-              throw new Error("Unable to create a new budget for an existing category");
-            }
-        }, function(err) {
-          throw new Error("Unable to get the budget item to check if the budget is present " + err);
-        });
+      let today = new Date();
+      today.setYear(event['body-json'].dateMeantFor.substring(5, 9));
+      today.setMonth(parseInt(event['body-json'].dateMeantFor.substring(10, 12)) -1);
+      // Check if the budget is present for the mentioned category
+      await getBudgetsItem(today, event).then(function(result) {
+          if(isNotEmpty(result.Budget)) {
+            throw new Error("Unable to create a new budget for an existing category");
+          }
+      }, function(err) {
+        throw new Error("Unable to get the budget item to check if the budget is present " + err);
+      });
     }
     events.push(updatingBudgets(event));
     
