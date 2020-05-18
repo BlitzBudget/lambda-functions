@@ -58,32 +58,153 @@ exports.handler = async (event) => {
         });
     }
     
+    let checkIfBudgetIsPresent = true;
+    let today = new Date();
+    today.setYear(event['body-json'].dateMeantFor.substring(5, 9));
+    today.setMonth(parseInt(event['body-json'].dateMeantFor.substring(10, 12)) -1);
+    
     /*
     * If category Id is not present
     */
     let categoryName = event['body-json'].category;
-    if(notIncludesStr(categoryName, 'Category#')) {
-      let today = new Date();
-      today.setYear(event['body-json'].dateMeantFor.substring(5, 9));
-      today.setMonth(parseInt(event['body-json'].dateMeantFor.substring(10, 12)) -1);
+    if(isNotEmpty(categoryName) && notIncludesStr(categoryName, 'Category#')) {
       let categoryId = "Category#" + today.toISOString();
-      // Assign Category to create the transactions with the category ID
-      event['body-json'].category = categoryId;
-      event['body-json'].categoryName = categoryName;
-      // If it is a newly created category then the category total is 0
-      event['body-json'].used = 0;
-      events.push(createCategoryItem(event,categoryId, categoryName));
+      
+      /*
+      * Check if category is present before adding them
+      */
+      await getCategoryData(categoryId, event, today).then(function(result) {
+        if(isNotEmpty(result.Category)) {
+          console.log("successfully assigned the existing category %j", result.Category.sk);
+          event['body-json'].category = result.Category.sk;
+        } else {
+          // Assign Category to create the transactions with the category ID
+          event['body-json'].category = categoryId;
+          event['body-json'].categoryName = categoryName;
+          // If it is a newly created category then the category total is 0
+          event['body-json'].used = 0;
+          events.push(createCategoryItem(event, categoryId, categoryName));
+          // Do not check the budget for a newly created category
+          checkIfBudgetIsPresent = false;
+        }
+      }, function(err) {
+         throw new Error("Unable to get the category " + err);
+      });
+    }
+    
+    /*
+    * Do not check if the budget is present for a newly created category
+    */
+    let addNewBudgetBl = true;
+    if(isNotEmpty(categoryName) && checkIfBudgetIsPresent) {
+        // Check if the budget is present for the mentioned category
+        await getBudgetsItem(today, event).then(function(result) {
+            if(isNotEmpty(result.Budget)) {
+              addNewBudgetBl = false;
+              event['body-json'].budgetId = result.Budget.sk;
+            }
+        }, function(err) {
+          throw new Error("Unable to get the budget item to check if the budget is present " + err);
+        });
+    }
+    
+    /*
+    * Only if the new budget has to be created
+    */
+    if(addNewBudgetBl) {
+      events.push(addNewBudget(event)); 
     }
 
-    events.push(addNewBudget(event));
-    await Promise.all(events).then(function(result) {
-       console.log("successfully saved the new Budget");
-    }, function(err) {
-       throw new Error("Unable to add the Budget " + err);
-    });
+    /*
+    * Only if there are items to be added
+    */
+    if(isNotEmpty(events)) {
+      await Promise.all(events).then(function(result) {
+         console.log("successfully saved the new Budget");
+      }, function(err) {
+         throw new Error("Unable to add the Budget " + err);
+      }); 
+    }
         
     return event;
 };
+
+// Get Budget Item
+function getBudgetsItem(today, event) {
+    var params = {
+      TableName: 'blitzbudget',
+      KeyConditionExpression   : "pk = :pk AND begins_with(sk, :items)",
+      ExpressionAttributeValues: {
+          ":pk": event['body-json'].walletId,
+          ":items": "Budget#" + today.getFullYear() + '-' + ('0' + (today.getMonth() + 1)).slice(-2)
+      },
+      ProjectionExpression: "category, date_meant_for, sk, pk"
+    };
+    
+    // Call DynamoDB to read the item from the table
+    return new Promise((resolve, reject) => {
+        docClient.query(params, function(err, data) {
+          if (err) {
+            console.log("Error ", err);
+            reject(err);
+          } else {
+            console.log("data retrieved - Budget", data.Count);
+            let matchingBudget;
+            if(isNotEmpty(data.Items)) {
+                for(const budgetItem of data.Items) {
+                    if(isEqual(budgetItem.category, event['body-json'].category) 
+                    && isEqual(budgetItem['date_meant_for'], event['body-json'].dateMeantFor)) {
+                      console.log("Matching budget found with the same date and category %j", budgetItem.sk);
+                      matchingBudget = budgetItem;
+                    }
+                }
+            }
+            
+            resolve({"Budget" : matchingBudget});
+          }
+        });
+    });
+}
+
+function getCategoryData(categoryId, event, today) {
+  var params = {
+      TableName: 'blitzbudget',
+      KeyConditionExpression   : "pk = :pk AND begins_with(sk, :items)",
+      ExpressionAttributeValues: {
+          ":pk": event['body-json'].walletId,
+          ":items": "Category#" + today.getFullYear() + '-' + ('0' + (today.getMonth() + 1)).slice(-2)
+      },
+      ProjectionExpression: "pk, sk, category_name, category_type"
+    };
+    
+    // Call DynamoDB to read the item from the table
+    return new Promise((resolve, reject) => {
+        docClient.query(params, function(err, data) {
+          if (err) {
+            console.log("Error ", err);
+            reject(err);
+          } else {
+            console.log("data retrieved - Category %j", data.Count);
+            let obj;
+            if(isNotEmpty(data.Items)) {
+              for(const categoryObj of data.Items) {
+                if(isEqual(categoryObj['category_type'],event['body-json'].categoryType) 
+                && isEqual(categoryObj['category_name'],event['body-json'].category)) {
+                    console.log("Found a match for the mentioned category %j", categoryObj.sk);
+                    obj = categoryObj;
+                }
+              }
+            } 
+            
+            if(isEmpty(obj)) {
+              console.log("No matching categories found");
+            }
+            
+            resolve({ "Category" : obj}); 
+          }
+        });
+    });
+}
 
 /*
 * Calculate difference between startdate and end date
@@ -243,7 +364,7 @@ function addNewBudget(event) {
             reject(err);
           } else {
             resolve({ "success" : data});
-            event['body-json'].budgetId= randomValue;
+            event['body-json'].budgetId = randomValue;
           }
       });
     });
