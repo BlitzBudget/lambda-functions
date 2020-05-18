@@ -181,16 +181,20 @@ function getCategoryData(categoryId, event, today) {
             reject(err);
           } else {
             console.log("data retrieved - Category %j", data.Count);
-            if(data.Items) {
+            let obj = data.items;
+            if(isNotEmpty(data.Items)) {
               for(const categoryObj of data.Items) {
                 if(isEqual(categoryObj['category_type'],event['body-json'].categoryType) 
                 && isEqual(categoryObj['category_name'],event['body-json'].category)) {
-                    resolve({ "Category" : categoryObj});
+                    console.log("Found a match for the mentioned category %j", categoryObj.sk);
+                    obj = categoryObj;
                 }
               }
             } else {
-              resolve({ "Category" : data.Items}); 
+              console.log("There are no categories assigned");
             }
+            
+            resolve({ "Category" : obj}); 
           }
         });
     });
