@@ -18,15 +18,16 @@ const parameters = [{
 exports.handler = async (event) => {
     console.log("updating Budgets for ", JSON.stringify(event['body-json']));
     let events = [];
+    let today = new Date();
+    today.setYear(event['body-json'].dateMeantFor.substring(5, 9));
+    today.setMonth(parseInt(event['body-json'].dateMeantFor.substring(10, 12)) -1);
+    let checkIfBudgetIsPresent = true;
     
     /*
     * If category Id is not present
     */
     let categoryName = event['body-json'].category;
     if(isNotEmpty(categoryName) && notIncludesStr(categoryName, 'Category#')) {
-      let today = new Date();
-      today.setYear(event['body-json'].dateMeantFor.substring(5, 9));
-      today.setMonth(parseInt(event['body-json'].dateMeantFor.substring(10, 12)) -1);
       let categoryId = "Category#" + today.toISOString();
       
       /*
@@ -43,12 +44,27 @@ exports.handler = async (event) => {
           // If it is a newly created category then the category total is 0
           event['body-json'].used = 0;
           events.push(createCategoryItem(event, categoryId, categoryName));
+          // Do not check the budget for a newly created category
+          checkIfBudgetIsPresent = false;
         }
       }, function(err) {
-         throw new Error("Unable to add the Budget " + err);
+         throw new Error("Unable to get the category " + err);
       });
     }
     
+    /*
+    * Do not check if the budget is present for a newly created category
+    */
+    if(isNotEmpty(categoryName) && checkIfBudgetIsPresent) {
+        // Check if the budget is present for the mentioned category
+        await getBudgetsItem(today, event).then(function(result) {
+            if(isNotEmpty(result.Budget)) {
+              throw new Error("Unable to create a new budget for an existing category");
+            }
+        }, function(err) {
+          throw new Error("Unable to get the budget item to check if the budget is present " + err);
+        });
+    }
     events.push(updatingBudgets(event));
     
     await Promise.all(events).then(function(result) {
@@ -59,6 +75,44 @@ exports.handler = async (event) => {
         
     return event;
 };
+
+
+// Get Budget Item
+function getBudgetsItem(today, event) {
+    var params = {
+      TableName: 'blitzbudget',
+      KeyConditionExpression   : "pk = :pk AND begins_with(sk, :items)",
+      ExpressionAttributeValues: {
+          ":pk": event['body-json'].walletId,
+          ":items": "Budget#" + today.getFullYear() + '-' + ('0' + (today.getMonth() + 1)).slice(-2)
+      },
+      ProjectionExpression: "category, date_meant_for, sk, pk"
+    };
+    
+    // Call DynamoDB to read the item from the table
+    return new Promise((resolve, reject) => {
+        docClient.query(params, function(err, data) {
+          if (err) {
+            console.log("Error ", err);
+            reject(err);
+          } else {
+            console.log("data retrieved - Budget", data.Count);
+            let matchingBudget;
+            if(isNotEmpty(data.Items)) {
+                for(const budgetItem of data.Items) {
+                    if(isEqual(budgetItem.category, event['body-json'].category) 
+                    && isEqual(budgetItem['date_meant_for'], event['body-json'].dateMeantFor)) {
+                      console.log("Matching budget found with the same date and category %j", budgetItem.sk);
+                      matchingBudget = budgetItem;
+                    }
+                }
+            }
+            
+            resolve({"Budget" : matchingBudget});
+          }
+        });
+    });
+}
 
 function updatingBudgets(event) {
   
@@ -181,7 +235,7 @@ function getCategoryData(categoryId, event, today) {
             reject(err);
           } else {
             console.log("data retrieved - Category %j", data.Count);
-            let obj = data.items;
+            let obj;
             if(isNotEmpty(data.Items)) {
               for(const categoryObj of data.Items) {
                 if(isEqual(categoryObj['category_type'],event['body-json'].categoryType) 
@@ -190,8 +244,10 @@ function getCategoryData(categoryId, event, today) {
                     obj = categoryObj;
                 }
               }
-            } else {
-              console.log("There are no categories assigned");
+            } 
+            
+            if(isEmpty(obj)) {
+              console.log("No matching categories found");
             }
             
             resolve({ "Category" : obj}); 
