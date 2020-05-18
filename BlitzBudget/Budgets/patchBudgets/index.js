@@ -54,6 +54,7 @@ exports.handler = async (event) => {
     
     /*
     * Do not check if the budget is present for a newly created category
+    * For Simultaneous cross device creation compatability
     */
     if(isNotEmpty(categoryName) && checkIfBudgetIsPresent) {
         // Check if the budget is present for the mentioned category
