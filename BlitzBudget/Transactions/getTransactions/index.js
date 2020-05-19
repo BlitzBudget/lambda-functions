@@ -201,9 +201,9 @@ function calculateDateAndCategoryTotal(fullMonth) {
        }
        
        if(isEqual(categoryObj['category_type'], 'Income')) {
-         incomeTotal += categoryList[categoryObj.sk];
+         incomeTotal += categoryObj['category_total'];
        } else if(isEqual(categoryObj['category_type'], 'Expense')) {
-         expenseTotal += categoryList[categoryObj.sk];
+         expenseTotal += categoryObj['category_total'];
        }
        periodBalance = incomeTotal - expenseTotal;
        categoryObj.categoryId = categoryObj.sk;
