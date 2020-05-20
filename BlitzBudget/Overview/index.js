@@ -304,7 +304,7 @@ function getTransactionsData(pk, dateMeantFor) {
           ":pk": pk,
           ":sk": "Transaction#" + dateMeantFor
       },
-      ProjectionExpression: "amount, description, category, recurrence, sk, pk",
+      ProjectionExpression: "amount, description, category, recurrence, sk, pk, creation_date",
       ScanIndexForward: false,
       Limit: 20
     };
