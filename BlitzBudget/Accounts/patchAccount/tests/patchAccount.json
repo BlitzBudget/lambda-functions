@@ -1,6 +1,7 @@
 {
   "body-json": {
     "walletId": "Wallets#93202082911265",
+    "bankAccountId": "BankAccount#123456789",
     "bankAccountName": "HDFC",
     "accountBalance": 23,
     "selectedAccount": true
