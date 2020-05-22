@@ -133,6 +133,7 @@ function updatingTransactions(event) {
             reject(err);
           } else {
             event['body-json'].category = data.Attributes.category;
+            event['body-json'].amount = data.Attributes.amount;
             resolve({ "success" : data});
           }
       });
