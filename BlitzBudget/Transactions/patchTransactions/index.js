@@ -20,6 +20,10 @@ const parameters = [{
   {
     "prmName" : 'recurrence',
     "prmValue" : 'recurrence'
+  },
+  {
+    "prmName" : 'account',
+    "prmValue" : 'account'
   }
 ]
 
@@ -117,7 +121,8 @@ function updatingTransactions(event) {
       },
       UpdateExpression: updateExp,
       ExpressionAttributeNames: expAttrNames,
-      ExpressionAttributeValues: expAttrVal
+      ExpressionAttributeValues: expAttrVal,
+      ReturnValues: 'ALL_NEW'
     };
     
     console.log("Updating an item...");
@@ -127,6 +132,7 @@ function updatingTransactions(event) {
             console.log("Error ", err);
             reject(err);
           } else {
+            event['body-json'].category = data.Attributes.category;
             resolve({ "success" : data});
           }
       });
@@ -189,7 +195,7 @@ function getCategoryData(categoryId, event, today) {
             reject(err);
           } else {
             console.log("data retrieved - Category %j", data.Count);
-            let obj = data.items;
+            let obj;
             if(isNotEmpty(data.Items)) {
               for(const categoryObj of data.Items) {
                 if(isEqual(categoryObj['category_type'],event['body-json'].categoryType) 
@@ -198,8 +204,10 @@ function getCategoryData(categoryId, event, today) {
                     obj = categoryObj;
                 }
               }
-            } else {
-              console.log("There are no categories assigned");
+            } 
+            
+            if(isEmpty(obj)) {
+              console.log("No matching categories found");
             }
             
             resolve({ "Category" : obj}); 
