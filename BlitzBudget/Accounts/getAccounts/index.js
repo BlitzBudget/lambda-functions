@@ -40,7 +40,7 @@ function getBankAccountItem(walletId) {
             console.log("Error ", err);
             reject(err);
           } else {
-            console.log("data retrieved ", data.Count);
+            console.log("data retrieved ", JSON.stringify(data.Items));
             resolve(data);
           }
         });

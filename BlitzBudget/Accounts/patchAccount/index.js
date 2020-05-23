@@ -20,15 +20,67 @@ const parameters = [{
 ]
 
 exports.handler = async (event) => {
+    let events = [];
     console.log("updating BankAccounts for ", JSON.stringify(event['body-json']));
-    await updatingBankAccounts(event).then(function(result) {
-       console.log("successfully saved the new BankAccounts");
+    /*
+    * Change all the selected account to false
+    */
+    if(isNotEmpty(event['body-json'].selectedAccount)) {
+       await getBankAccountItem(event['body-json'].walletId).then(function(result) {
+          let bankAccounts = result.Account;
+          if(isNotEmpty(bankAccounts)) {
+              for(const account of bankAccounts) {
+                if(account.selected) {
+                  let result = {};
+                  result['body-json'] = {};
+                  result['body-json'].selectedAccount = false;
+                  result['body-json'].walletId = account.pk;
+                  result['body-json'].bankAccountId = account.sk;
+                  events.push(updatingBankAccounts(result));
+                }
+              }
+          }
+       }, function(err) {
+           throw new Error("Unable error occured while fetching the BankAccount " + err);
+      });
+
+    }
+    
+    events.push(updatingBankAccounts(event)); 
+    await Promise.all(events).then(function(result) {
+       console.log("successfully patched the BankAccounts");
     }, function(err) {
        throw new Error("Unable to add the BankAccounts " + err);
     });
         
     return event;
 };
+
+// Get BankAccount Item
+function getBankAccountItem(walletId) {
+    var params = {
+      TableName: 'blitzbudget',
+      KeyConditionExpression   : "pk = :walletId and begins_with(sk, :items)",
+      ExpressionAttributeValues: {
+          ":walletId": walletId,
+          ":items": "BankAccount#"
+      },
+      ProjectionExpression: "bank_account_name, linked, bank_account_number, account_balance, sk, pk, selected_account, number_of_times_selected, account_type"
+    };
+    
+    // Call DynamoDB to read the item from the table
+    return new Promise((resolve, reject) => {
+        docClient.query(params, function(err, data) {
+          if (err) {
+            console.log("Error ", err);
+            reject(err);
+          } else {
+            console.log("data retrieved ", JSON.stringify(data.Items));
+            resolve({"Account" : data.Items});
+          }
+        });
+    });
+}
 
 function updatingBankAccounts(event) {
   
@@ -113,6 +165,10 @@ function  isEmpty(obj) {
     }
       
   return true;
+}
+
+function isNotEmpty(obj) {
+  return !isEmpty(obj);
 }
 
 function includesStr(arr, val){
