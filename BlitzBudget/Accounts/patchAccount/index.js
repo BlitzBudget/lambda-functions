@@ -128,7 +128,7 @@ function updatingBankAccounts(event) {
       TableName:'blitzbudget',
       Key: {
         "pk": event['body-json'].walletId,
-        "sk": event['body-json'].bankAccountId,
+        "sk": event['body-json'].accountId,
       },
       UpdateExpression: updateExp,
       ExpressionAttributeNames: expAttrNames,
