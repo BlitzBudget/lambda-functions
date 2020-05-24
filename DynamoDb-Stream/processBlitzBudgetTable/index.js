@@ -176,6 +176,7 @@ function addNewBankAccount(record) {
             "pk": record.dynamodb.Keys.sk.S,
             "sk": randomValue,
             "account_type": 'ASSET',
+            "account__sub_type": 'Cash',
             "bank_account_name": 'Cash',
             "linked": false,
             "account_balance": 0,
