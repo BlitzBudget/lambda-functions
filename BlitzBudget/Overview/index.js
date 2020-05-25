@@ -15,19 +15,19 @@ exports.handler = async (event) => {
   console.log("fetching item for the walletId %j", event['body-json'].walletId);
   console.log("fetching item with the userId %j", event['body-json'].userId);
   let walletId = event['body-json'].walletId;
-  let today = new Date();
-  let dateMeantFor = today.getFullYear() + '-' + ('0' + (today.getMonth() + 1)).slice(-2);
-  console.log("dateMeantFor %j", dateMeantFor);
   let userId = event['body-json'].userId;
 
   /*
   * Get all dates from one year ago
   */
-  let endsWithDate = today.toISOString();
-  let twelveMonthsAgo = today;
+  let endsWithDate = new Date(event['body-json'].endsWithDate);
+  let startsWithDate = new Date(event['body-json'].startsWithDate);
+  let twelveMonthsAgo = endsWithDate;
   twelveMonthsAgo.setMonth(twelveMonthsAgo.getMonth() - 12);
   twelveMonthsAgo.setDate(1);
-  let startsWithDate = twelveMonthsAgo.toISOString();
+  let oneYearAgo = twelveMonthsAgo.toISOString();
+  
+  console.log("dateMeantFor %j", oneYearAgo);
   
   // Cognito does not store wallet information nor curreny. All are stored in wallet.
   if(isEmpty(walletId) && isNotEmpty(userId)) {
@@ -40,17 +40,17 @@ exports.handler = async (event) => {
   } else if(isNotEmpty(walletId) && isNotEmpty(userId)) {
     events.push(getWalletData(userId, walletId));
   }
-  
+
   // To display Category name
-  events.push(getCategoryData(walletId, dateMeantFor));
+  events.push(getCategoryData(walletId, startsWithDate, endsWithDate));
   // To display first 20 transactions in reverse order
-  events.push(getTransactionsData(walletId, dateMeantFor));
+  events.push(getTransactionItem(walletId, startsWithDate, endsWithDate));
   // Get Bank account for preview
   events.push(getBankAccountData(walletId));
   // Get Budgets to calculate overspent budget
-  events.push(getBudgetsData(walletId, dateMeantFor));
+  events.push(getBudgetsItem(walletId, startsWithDate, endsWithDate));
   // Get Dates information to calculate the monthly Income / expense per month
-  events.push(getDateData(walletId, startsWithDate, endsWithDate));
+  events.push(getDateData(walletId, oneYearAgo, endsWithDate));
   
   await Promise.all(events).then(function(result) {
      console.log("Cumilative data retrieved ", overviewData);
@@ -191,13 +191,14 @@ function getBankAccountData(pk) {
     });
 }
 
-function getCategoryData(pk, dateMeantFor) {
-    var params = {
+function getCategoryData(pk, startsWithDate, endsWithDate) {
+  var params = {
       TableName: 'blitzbudget',
-      KeyConditionExpression   : "pk = :pk and begins_with(sk, :sk)",
+      KeyConditionExpression   : "pk = :pk and sk BETWEEN :bt1 AND :bt2",
       ExpressionAttributeValues: {
           ":pk": pk,
-          ":sk": "Category#" + dateMeantFor
+          ":bt1": "Category#" + startsWithDate,
+          ":bt2": "Category#" + endsWithDate
       },
       ProjectionExpression: "pk, sk, category_name, category_total, category_type"
     };
@@ -260,13 +261,15 @@ function getDateData(pk, startsWithDate, endsWithDate) {
     });
 }
 
-function getBudgetsData(pk, dateMeantFor) {
+// Get Budget Item
+function getBudgetsItem(walletId, startsWithDate, endsWithDate) {
     var params = {
       TableName: 'blitzbudget',
-      KeyConditionExpression   : "pk = :pk and begins_with(sk, :sk)",
+      KeyConditionExpression   : "pk = :walletId AND sk BETWEEN :bt1 AND :bt2",
       ExpressionAttributeValues: {
-          ":pk": pk,
-          ":sk": "Budget#" + dateMeantFor
+          ":walletId": walletId,
+          ":bt1": "Budget#" + startsWithDate,
+          ":bt2": "Budget#" + endsWithDate
       },
       ProjectionExpression: "category, planned, sk, pk"
     };
@@ -278,7 +281,7 @@ function getBudgetsData(pk, dateMeantFor) {
             console.log("Error ", err);
             reject(err);
           } else {
-            console.log("data retrieved - Budget %j", data.Count);
+             console.log("data retrieved - Budget %j", data.Count);
             if(data.Items) {
               for(const budgetObj of data.Items) {
                 budgetObj.budgetId = budgetObj.sk;
@@ -296,17 +299,16 @@ function getBudgetsData(pk, dateMeantFor) {
 
 
 // Get Transaction Item
-function getTransactionsData(pk, dateMeantFor) {
+function getTransactionItem(pk, startsWithDate, endsWithDate) {
     var params = {
       TableName: 'blitzbudget',
-      KeyConditionExpression   : "pk = :pk and begins_with(sk, :sk)",
+      KeyConditionExpression   : "pk = :pk and sk BETWEEN :bt1 AND :bt2",
       ExpressionAttributeValues: {
           ":pk": pk,
-          ":sk": "Transaction#" + dateMeantFor
+          ":bt1": "Transaction#" + startsWithDate,
+          ":bt2": "Transaction#" + endsWithDate
       },
-      ProjectionExpression: "amount, description, category, recurrence, sk, pk, creation_date",
-      ScanIndexForward: false,
-      Limit: 20
+      ProjectionExpression: "amount, description, category, recurrence, account, date_meant_for, sk, pk, creation_date"
     };
     
     // Call DynamoDB to read the item from the table
@@ -316,7 +318,7 @@ function getTransactionsData(pk, dateMeantFor) {
             console.log("Error ", err);
             reject(err);
           } else {
-            console.log("data retrieved - Transactions %j ", data.Count);
+             console.log("data retrieved - Transactions %j ", data.Count);
             if(data.Items) {
               for(const transObj of data.Items) {
                 transObj.transactionId = transObj.sk;
