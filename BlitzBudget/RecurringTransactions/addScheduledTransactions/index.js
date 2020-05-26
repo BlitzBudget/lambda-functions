@@ -47,7 +47,7 @@ exports.handler = async (event) => {
                 let month = parseInt(dateObj.dateToCreate.substring(5,7)) -1;
                 dateToCreate.setMonth(month);
                 let sk = "Date#" + dateToCreate.toISOString();
-                requestArr = buildParamsForDate(walletId, sk, requestArr);
+                requestArr.push(buildParamsForDate(walletId, sk));
                 /*
                 * Build date object to place the date in transactions
                 */
@@ -95,7 +95,7 @@ exports.handler = async (event) => {
         console.log("Processing Categories to create");
         for(const categoryItem of result) {
             categoryMap[categoryItem.dateMeantFor] = categoryItem.sortKey;
-            requestArr = buildParamsForCategory(walletId, categoryItem.sortKey, originalCategory, datesMap[categoryItem.dateMeantFor], requestArr);   
+            requestArr.push(buildParamsForCategory(walletId, categoryItem.sortKey, originalCategory, datesMap[categoryItem.dateMeantFor]));   
         }
     }, function(err) {
        throw new Error("Unable to fetch the date for the recurring transaction" + err);
@@ -103,11 +103,11 @@ exports.handler = async (event) => {
     
     events = [];
     console.log(" The number of dates and categories to create are %j", requestArr.length);
-    requestArr = constructTransactionsWithDateMeantForAndCategory(datesMap, categoryMap, event);
+    constructTransactionsWithDateMeantForAndCategory(datesMap, categoryMap, event, requestArr);
     console.log(" The number of transactions to create are %j", requestArr.length);
 
     // Split array into sizes of 25
-    let putRequests = putRequests(requestArr, 25);
+    let putRequests = chunkArrayInGroups(requestArr, 25);
     
     // Push Events  to be executed in bulk
     for(const putRequest of putRequests) {
@@ -133,9 +133,18 @@ exports.handler = async (event) => {
 }
 
 
-function buildParamsForCategory(pk, sk, categoryToCopy, dateMeantFor, requestArr) {
-    console.log(" Creating the date wrapper for %j", sk);
-    requestArr.push({ 
+// Splits array into chunks
+function chunkArrayInGroups(arr, size) {
+  var myArray = [];
+  for(var i = 0; i < arr.length; i += size) {
+    myArray.push(arr.slice(i, i+size));
+  }
+  return myArray;
+}
+
+function buildParamsForCategory(pk, sk, categoryToCopy, dateMeantFor) {
+    console.log("Creating the category with an sk %j", sk, " And with a date as ", dateMeantFor, " for the wallet ", pk);
+    return { 
         "PutRequest": { 
            "Item": {
                "pk": pk,
@@ -148,8 +157,7 @@ function buildParamsForCategory(pk, sk, categoryToCopy, dateMeantFor, requestArr
                "updated_date": new Date().toISOString()
            }
         }
-    });
-    console.log("Creating the category with an sk %j", sk, " And with a date as ", dateMeantFor, " for the wallet ", pk);
+    }
 }
 
 /*
@@ -240,7 +248,7 @@ function batchWriteItems(paramsPartial) {
 /*
 * Populate the date meant for attribute in the transactions
 */
-function constructTransactionsWithDateMeantForAndCategory(datesMap, categoryMap, event) {
+function constructTransactionsWithDateMeantForAndCategory(datesMap, categoryMap, event, requestArr) {
     let recurrence = event.Records[0].Sns.MessageAttributes.recurrence.Value;
     let walletId = event.Records[0].Sns.MessageAttributes.walletId.Value;
     let amount = parseInt(event.Records[0].Sns.MessageAttributes.amount.Value);
@@ -248,7 +256,6 @@ function constructTransactionsWithDateMeantForAndCategory(datesMap, categoryMap,
     let category = event.Records[0].Sns.MessageAttributes.category.Value;
     let account = event.Records[0].Sns.MessageAttributes.account.Value;
     let dateMeantFor;
-    let requestArr = [];
     
     let nextScheduled = event.Records[0].Sns.MessageAttributes["next_scheduled"].Value;
     let nextScheduledDate = new Date(nextScheduled);
@@ -300,8 +307,6 @@ function constructTransactionsWithDateMeantForAndCategory(datesMap, categoryMap,
             nextScheduledDate = new Date();
             break;
         }
-        
-        return requestArr;
     }
 }
 
@@ -310,7 +315,7 @@ function constructTransactionsWithDateMeantForAndCategory(datesMap, categoryMap,
 */
 function buildParamsForDate(walletId, sk, requestArr) {
     console.log(" Creating the date wrapper for %j", sk);
-    requestArr.push({ 
+    return { 
         "PutRequest": { 
            "Item": {
                "pk": walletId,
@@ -322,7 +327,7 @@ function buildParamsForDate(walletId, sk, requestArr) {
                "updated_date": new Date().toISOString()
            }
         }
-    });
+    };
 }
 
 function fetchDatesForWallet(walletId) {
