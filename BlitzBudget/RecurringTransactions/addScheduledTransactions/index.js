@@ -101,19 +101,11 @@ exports.handler = async (event) => {
        throw new Error("Unable to fetch the date for the recurring transaction" + err);
     });
     
+    events = [];
     console.log(" The number of dates and categories to create are %j", requestArr.length);
     requestArr = constructTransactionsWithDateMeantForAndCategory(datesMap, categoryMap, event);
     console.log(" The number of transactions to create are %j", requestArr.length);
 
-    /*
-    * Update recurring transactions
-    */
-    await updateRecurringTransactionsData(walletId, recurringTransactionsId).then(function(result) {
-      console.log("Successfully updated the recurring transactions field %j", recurringTransactionsNextSch);
-    }, function(err) {
-       throw new Error("Unable to update the recurring transactions field " + err);
-    });
-    
     // Split array into sizes of 25
     let putRequests = putRequests(requestArr, 25);
     
@@ -126,20 +118,17 @@ exports.handler = async (event) => {
         // Delete Items in batch
         events.push(batchWriteItems(params));
     }
-}
-
-function batchWriteItems(params) {
-   
-    return new Promise((resolve, reject) => {
-        DB.batchWrite(params, function(err, data) {
-          if (err) {
-            console.log("Error ", err);
-            reject(err);
-          } else {
-              console.log("All items are successfully deleted");
-            resolve({ "success" : data});
-          }
-        });
+    
+     
+    /*
+    * Update recurring transactions
+    */
+    events.push(updateRecurringTransactionsData(walletId, recurringTransactionsId));
+    
+    await Promise.all(events).then(function(result) {
+      console.log("Successfully updated the recurring transactions field %j", recurringTransactionsNextSch);
+    }, function(err) {
+       throw new Error("Unable to update the recurring transactions field " + err);
     });
 }
 
@@ -241,6 +230,7 @@ function batchWriteItems(paramsPartial) {
                 console.log("Error ", err);
                 reject(err);
               } else {
+                console.log("successfully added the batch of data to the database");
                 resolve({ "success" : data});
               }
             });
