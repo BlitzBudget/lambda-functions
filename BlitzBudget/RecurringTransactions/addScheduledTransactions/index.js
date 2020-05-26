@@ -7,13 +7,10 @@ AWS.config.update({region: 'eu-west-1'});
 var DB = new AWS.DynamoDB.DocumentClient();
 let nextSchArray = [];
 let events = [];
-let params = {};
 let recurringTransactionsNextSch;
 
 exports.handler = async (event) => {
-    params = {};
-    params.RequestItems = {};
-    params.RequestItems.blitzbudget = [];
+    let requestArr = [];
     nextSchArray = []; 
     events = [];
     let datesMap = {};
@@ -50,7 +47,7 @@ exports.handler = async (event) => {
                 let month = parseInt(dateObj.dateToCreate.substring(5,7)) -1;
                 dateToCreate.setMonth(month);
                 let sk = "Date#" + dateToCreate.toISOString();
-                buildParamsForDate(walletId, sk);
+                requestArr = buildParamsForDate(walletId, sk, requestArr);
                 /*
                 * Build date object to place the date in transactions
                 */
@@ -98,15 +95,15 @@ exports.handler = async (event) => {
         console.log("Processing Categories to create");
         for(const categoryItem of result) {
             categoryMap[categoryItem.dateMeantFor] = categoryItem.sortKey;
-            buildParamsForCategory(walletId, categoryItem.sortKey, originalCategory, datesMap[categoryItem.dateMeantFor]);   
+            requestArr = buildParamsForCategory(walletId, categoryItem.sortKey, originalCategory, datesMap[categoryItem.dateMeantFor], requestArr);   
         }
     }, function(err) {
        throw new Error("Unable to fetch the date for the recurring transaction" + err);
     });
     
-    console.log(" The number of dates and categories to create are %j", params.RequestItems.blitzbudget.length);
-    constructTransactionsWithDateMeantForAndCategory(datesMap, categoryMap, event);
-    console.log(" The number of transactions to create are %j", params.RequestItems.blitzbudget.length);
+    console.log(" The number of dates and categories to create are %j", requestArr.length);
+    requestArr = constructTransactionsWithDateMeantForAndCategory(datesMap, categoryMap, event);
+    console.log(" The number of transactions to create are %j", requestArr.length);
 
     /*
     * Update recurring transactions
@@ -117,65 +114,39 @@ exports.handler = async (event) => {
        throw new Error("Unable to update the recurring transactions field " + err);
     });
     
+    // Split array into sizes of 25
+    let putRequests = putRequests(requestArr, 25);
     
-    /*
-    * Processing 25 items at a time
-    */
-    if(params.RequestItems.blitzbudget.length < 25) {
-        console.log("Total batch items are less than 25, so adding them");
-        await batchWriteItems(params).then(function(result) {
-          console.log("Successfully processed adding transactions, dates & categories %j", JSON.stringify(result));
-        }, function(err) {
-           throw new Error("Unable to batch write all the transactions and dates " + err);
-        });
-    } else {
-        let processBatch = false;
-        /*
-        * Build partial params to handle 25 items at a time
-        */
-        let paramsPartial = {};
-        paramsPartial.RequestItems = {};
-        paramsPartial.RequestItems.blitzbudget = [];
-        for(let i = 0, len = params.RequestItems.blitzbudget.length; i < len; i++) {
-            processBatch = false;
-            let item =  params.RequestItems.blitzbudget[i];
-            
-            if(paramsPartial.RequestItems.blitzbudget.length < 25) {
-                console.log("Building the delete params for the item %j", item.sk);
-                paramsPartial.RequestItems.blitzbudget[i] = params.RequestItems.blitzbudget[i];
-                     
-                /*
-                * If last iteration is running then
-                */
-                if(i == (len -1)) {
-                    processBatch = true;
-                }
-            } else {
-               processBatch = true;
-            }
-            
-            if(processBatch) {
-               console.log("Processing the batch with %j items", paramsPartial.RequestItems.blitzbudget.length)
-               await batchWriteItems(paramsPartial).then(function(result) {
-                  console.log("Successfully processed adding transactions, dates & categories %j", JSON.stringify(result));
-                }, function(err) {
-                   throw new Error("Unable to batch write all the transactions and dates " + err);
-                });
-                /*
-                * Reinitialize the params
-                */
-                paramsPartial = {};
-                paramsPartial.RequestItems = {};
-                paramsPartial.RequestItems.blitzbudget = [];
-            }
-        }   
+    // Push Events  to be executed in bulk
+    for(const putRequest of putRequests) {
+        let params = {};
+        params.RequestItems = {};
+        params.RequestItems.blitzbudget = putRequest;
+        console.log("The put request is in batch  with length %j", params.RequestItems.blitzbudget.length);
+        // Delete Items in batch
+        events.push(batchWriteItems(params));
     }
-};
+}
 
-function buildParamsForCategory(pk, sk, categoryToCopy, dateMeantFor) {
-    let length = params.RequestItems.blitzbudget.length;
+function batchWriteItems(params) {
+   
+    return new Promise((resolve, reject) => {
+        DB.batchWrite(params, function(err, data) {
+          if (err) {
+            console.log("Error ", err);
+            reject(err);
+          } else {
+              console.log("All items are successfully deleted");
+            resolve({ "success" : data});
+          }
+        });
+    });
+}
+
+
+function buildParamsForCategory(pk, sk, categoryToCopy, dateMeantFor, requestArr) {
     console.log(" Creating the date wrapper for %j", sk);
-    params.RequestItems.blitzbudget[length] = { 
+    requestArr.push({ 
         "PutRequest": { 
            "Item": {
                "pk": pk,
@@ -188,7 +159,7 @@ function buildParamsForCategory(pk, sk, categoryToCopy, dateMeantFor) {
                "updated_date": new Date().toISOString()
            }
         }
-    }
+    });
     console.log("Creating the category with an sk %j", sk, " And with a date as ", dateMeantFor, " for the wallet ", pk);
 }
 
@@ -286,8 +257,8 @@ function constructTransactionsWithDateMeantForAndCategory(datesMap, categoryMap,
     let description = event.Records[0].Sns.MessageAttributes.description.Value;
     let category = event.Records[0].Sns.MessageAttributes.category.Value;
     let account = event.Records[0].Sns.MessageAttributes.account.Value;
-    let i = params.RequestItems.blitzbudget.length;
     let dateMeantFor;
+    let requestArr = [];
     
     let nextScheduled = event.Records[0].Sns.MessageAttributes["next_scheduled"].Value;
     let nextScheduledDate = new Date(nextScheduled);
@@ -307,7 +278,7 @@ function constructTransactionsWithDateMeantForAndCategory(datesMap, categoryMap,
             category = categoryMap[compareString];
         }
         
-        params.RequestItems.blitzbudget[i] = { 
+        requestArr.push({
             "PutRequest": { 
                "Item": {
                    "pk": walletId,
@@ -322,7 +293,7 @@ function constructTransactionsWithDateMeantForAndCategory(datesMap, categoryMap,
                    "updated_date": new Date().toISOString()
                }
             }
-        };
+        });
         
         // Update recurrence
         switch(recurrence) {
@@ -339,18 +310,17 @@ function constructTransactionsWithDateMeantForAndCategory(datesMap, categoryMap,
             nextScheduledDate = new Date();
             break;
         }
-        // Update counter
-        i++;
+        
+        return requestArr;
     }
 }
 
 /*
 * Build params for date
 */
-function buildParamsForDate(walletId, sk) {
-    let length = params.RequestItems.blitzbudget.length;
+function buildParamsForDate(walletId, sk, requestArr) {
     console.log(" Creating the date wrapper for %j", sk);
-    params.RequestItems.blitzbudget[length] = { 
+    requestArr.push({ 
         "PutRequest": { 
            "Item": {
                "pk": walletId,
@@ -362,7 +332,7 @@ function buildParamsForDate(walletId, sk) {
                "updated_date": new Date().toISOString()
            }
         }
-    }
+    });
 }
 
 function fetchDatesForWallet(walletId) {
