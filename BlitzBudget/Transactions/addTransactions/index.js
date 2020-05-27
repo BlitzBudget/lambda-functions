@@ -178,7 +178,7 @@ function addNewTransaction(event) {
             "recurrence": event['body-json'].recurrence,
             "account": event['body-json'].account,
             "date_meant_for": event['body-json'].dateMeantFor,
-            "creation_date": new Date().toISOString(),
+            "creation_date": today.toISOString(),
             "updated_date": new Date().toISOString()
       }
     };

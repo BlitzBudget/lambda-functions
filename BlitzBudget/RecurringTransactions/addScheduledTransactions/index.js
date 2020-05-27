@@ -286,7 +286,7 @@ function constructTransactionsWithDateMeantForAndCategory(datesMap, categoryMap,
                    "category": category,
                    "account": account,
                    "date_meant_for": dateMeantFor,
-                   "creation_date": new Date().toISOString(),
+                   "creation_date": nextScheduledDate.toISOString(),
                    "updated_date": new Date().toISOString()
                }
             }
@@ -313,7 +313,7 @@ function constructTransactionsWithDateMeantForAndCategory(datesMap, categoryMap,
 /*
 * Build params for date
 */
-function buildParamsForDate(walletId, sk, requestArr) {
+function buildParamsForDate(walletId, sk) {
     console.log(" Creating the date wrapper for %j", sk);
     return { 
         "PutRequest": { 
