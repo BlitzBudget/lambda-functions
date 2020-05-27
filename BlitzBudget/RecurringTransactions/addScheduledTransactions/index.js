@@ -31,6 +31,7 @@ exports.handler = async (event) => {
     * Publish events to get date data
     */
     await Promise.all(events).then(function(result) {
+        events = [];
         console.log("Successfully fetched all the relevant information %j", JSON.stringify(result));
         
         /*
@@ -78,7 +79,6 @@ exports.handler = async (event) => {
        throw new Error("Unable to fetch the date for the recurring transaction" + err);
     });
     
-    events = [];
     for(const dateMeantFor of nextSchArray) {
         /*
         * Check if 2020-03 == 2020-02
@@ -92,16 +92,26 @@ exports.handler = async (event) => {
     * Publish events to get category data
     */
     await Promise.all(events).then(function(result) {
+        events = [];
         console.log("Processing Categories to create");
         for(const categoryItem of result) {
             categoryMap[categoryItem.dateMeantFor] = categoryItem.sortKey;
             requestArr.push(buildParamsForCategory(walletId, categoryItem.sortKey, originalCategory, datesMap[categoryItem.dateMeantFor]));   
         }
     }, function(err) {
-       throw new Error("Unable to fetch the date for the recurring transaction" + err);
+       throw new Error("Unable to get the category for the recurring transaction" + err);
     });
     
-    events = [];
+    /*
+    * Add all categories and transactions first
+    */
+    await Promise.all(events).then(function(result) {
+      events = [];
+      console.log("Successfully inserted the categories field %j", recurringTransactionsNextSch);
+    }, function(err) {
+       throw new Error("Unable to update the recurring transactions field " + err);
+    });
+
     console.log(" The number of dates and categories to create are %j", requestArr.length);
     constructTransactionsWithDateMeantForAndCategory(datesMap, categoryMap, event, requestArr);
     console.log(" The number of transactions to create are %j", requestArr.length);
