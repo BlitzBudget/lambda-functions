@@ -20,9 +20,9 @@ exports.handler = async (event) => {
   /*
   * Get all dates from one year ago
   */
-  let endsWithDate = new Date(event['body-json'].endsWithDate);
-  let startsWithDate = new Date(event['body-json'].startsWithDate);
-  let twelveMonthsAgo = endsWithDate;
+  let endsWithDate = new Date(event['body-json'].endsWithDate).toISOString();
+  let startsWithDate = new Date(event['body-json'].startsWithDate).toISOString();
+  let twelveMonthsAgo = new Date(event['body-json'].endsWithDate);
   twelveMonthsAgo.setMonth(twelveMonthsAgo.getMonth() - 12);
   twelveMonthsAgo.setDate(1);
   let oneYearAgo = twelveMonthsAgo.toISOString();
@@ -308,7 +308,8 @@ function getTransactionItem(pk, startsWithDate, endsWithDate) {
           ":bt1": "Transaction#" + startsWithDate,
           ":bt2": "Transaction#" + endsWithDate
       },
-      ProjectionExpression: "amount, description, category, recurrence, account, date_meant_for, sk, pk, creation_date"
+      ProjectionExpression: "amount, description, category, recurrence, account, date_meant_for, sk, pk, creation_date",
+      ScanIndexForward: false
     };
     
     // Call DynamoDB to read the item from the table
@@ -354,11 +355,4 @@ function  isEmpty(obj) {
 
 function isNotEmpty(obj) {
   return !isEmpty(obj);
-}
-
-function isEqual(obj1,obj2){
-  if (JSON.stringify(obj1) === JSON.stringify(obj2)) {
-      return true;
-  }
-  return false;
 }
