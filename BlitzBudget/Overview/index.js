@@ -43,12 +43,8 @@ exports.handler = async (event) => {
 
   // To display Category name
   events.push(getCategoryData(walletId, startsWithDate, endsWithDate));
-  // To display first 20 transactions in reverse order
-  events.push(getTransactionItem(walletId, startsWithDate, endsWithDate));
   // Get Bank account for preview
   events.push(getBankAccountData(walletId));
-  // Get Budgets to calculate overspent budget
-  events.push(getBudgetsItem(walletId, startsWithDate, endsWithDate));
   // Get Dates information to calculate the monthly Income / expense per month
   events.push(getDateData(walletId, oneYearAgo, endsWithDate));
   
@@ -60,31 +56,6 @@ exports.handler = async (event) => {
   
   return overviewData;
 };
-
-function getGoalsData(pk) {
-  var params = {
-      TableName: 'blitzbudget',
-      KeyConditionExpression   : "pk = :pk and begins_with(sk, :items)",
-      ExpressionAttributeValues: {
-          ":pk": pk,
-          ":items": "Goal#"
-      },
-      ProjectionExpression: "preferable_target_date, target_id, target_type, goal_type, sk, pk, final_amount"
-    };
-    
-    // Call DynamoDB to read the item from the table
-    return new Promise((resolve, reject) => {
-        docClient.query(params, function(err, data) {
-          if (err) {
-            console.log("Error ", err);
-            reject(err);
-          } else {
-            console.log("data retrieved ", data.Count);
-            resolve({ "Goal" : data.Items});
-          }
-        });
-    });
-}
 
 function getWalletData(userId, walletId) {
     console.log("fetching the wallet information for the user %j", userId, " with the wallet ", walletId);
@@ -256,80 +227,6 @@ function getDateData(pk, startsWithDate, endsWithDate) {
             }
             overviewData['Date'] = data.Items;
             resolve({ "Date" : data.Items});
-          }
-        });
-    });
-}
-
-// Get Budget Item
-function getBudgetsItem(walletId, startsWithDate, endsWithDate) {
-    var params = {
-      TableName: 'blitzbudget',
-      KeyConditionExpression   : "pk = :walletId AND sk BETWEEN :bt1 AND :bt2",
-      ExpressionAttributeValues: {
-          ":walletId": walletId,
-          ":bt1": "Budget#" + startsWithDate,
-          ":bt2": "Budget#" + endsWithDate
-      },
-      ProjectionExpression: "category, planned, sk, pk"
-    };
-    
-    // Call DynamoDB to read the item from the table
-    return new Promise((resolve, reject) => {
-        docClient.query(params, function(err, data) {
-          if (err) {
-            console.log("Error ", err);
-            reject(err);
-          } else {
-             console.log("data retrieved - Budget %j", data.Count);
-            if(data.Items) {
-              for(const budgetObj of data.Items) {
-                budgetObj.budgetId = budgetObj.sk;
-                budgetObj.walletId = budgetObj.pk;
-                delete budgetObj.sk;
-                delete budgetObj.pk;
-              }
-            }
-            overviewData['Budget'] = data.Items;
-            resolve({ "Budget" : data.Items});
-          }
-        });
-    });
-}
-
-
-// Get Transaction Item
-function getTransactionItem(pk, startsWithDate, endsWithDate) {
-    var params = {
-      TableName: 'blitzbudget',
-      KeyConditionExpression   : "pk = :pk and sk BETWEEN :bt1 AND :bt2",
-      ExpressionAttributeValues: {
-          ":pk": pk,
-          ":bt1": "Transaction#" + startsWithDate,
-          ":bt2": "Transaction#" + endsWithDate
-      },
-      ProjectionExpression: "amount, description, category, recurrence, account, date_meant_for, sk, pk, creation_date",
-      ScanIndexForward: false
-    };
-    
-    // Call DynamoDB to read the item from the table
-    return new Promise((resolve, reject) => {
-        docClient.query(params, function(err, data) {
-          if (err) {
-            console.log("Error ", err);
-            reject(err);
-          } else {
-             console.log("data retrieved - Transactions %j ", data.Count);
-            if(data.Items) {
-              for(const transObj of data.Items) {
-                transObj.transactionId = transObj.sk;
-                transObj.walletId = transObj.pk;
-                delete transObj.sk;
-                delete transObj.pk;
-              }
-            }
-            overviewData['Transaction'] = data.Items;
-            resolve({ "Transaction" : data.Items});
           }
         });
     });
