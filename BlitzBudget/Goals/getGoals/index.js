@@ -12,11 +12,11 @@ var docClient = new AWS.DynamoDB.DocumentClient({
 let goalData = {};
 
 exports.handler = async (event) => {
-    console.log("fetching item for the walletId ", event.params.querystring.walletId);
+    console.log("fetching item for the walletId ", event['body-json'].walletId);
     goalData = {};
     let events = [];
-    let userId = event.params.querystring.userId;
-    let walletId = event.params.querystring.walletId;
+    let userId = event['body-json'].userId;
+    let walletId = event['body-json'].walletId;
     // Twelve months ago
     let today = new Date();
     let twelveMonthsAgo = new Date();
