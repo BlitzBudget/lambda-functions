@@ -129,7 +129,7 @@ function getGoalItem(walletId) {
             ":walletId": walletId,
             ":items": "Goal#"
         },
-        ProjectionExpression: "preferable_target_date, target_id, target_type, goal_type, sk, pk, final_amount"
+        ProjectionExpression: "preferable_target_date, target_id, target_type, goal_type, monthly_contribution, sk, pk, final_amount"
     };
 
     // Call DynamoDB to read the item from the table
