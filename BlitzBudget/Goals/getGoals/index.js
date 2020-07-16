@@ -32,6 +32,8 @@ exports.handler = async (event) => {
         }, function (err) {
             throw new Error("Unable error occured while fetching the transaction " + err);
         });
+    } else if (isNotEmpty(walletId) && isNotEmpty(userId)) {
+        events.push(getWalletData(userId, walletId));
     }
 
     events.push(getBankAccountData(walletId));
@@ -46,6 +48,48 @@ exports.handler = async (event) => {
 
     return goalData;
 };
+
+/*
+ * Wallet data
+ */
+function getWalletData(userId, walletId) {
+    console.log("fetching the wallet information for the user %j", userId, " with the wallet ", walletId);
+    var params = {
+        AttributesToGet: [
+        "currency",
+        "total_asset_balance",
+        "total_debt_balance",
+        "wallet_balance"
+      ],
+        TableName: 'blitzbudget',
+        Key: {
+            "pk": userId,
+            "sk": walletId
+        }
+    }
+
+    // Call DynamoDB to read the item from the table
+    return new Promise((resolve, reject) => {
+        docClient.get(params, function (err, data) {
+            if (err) {
+                console.log("Error ", err);
+                reject(err);
+            } else {
+                console.log("data retrieved - Wallet %j", JSON.stringify(data));
+                if (data.Item) {
+                    data.Item.walletId = data.Item.sk;
+                    data.Item.userId = data.Item.pk;
+                    delete data.Item.sk;
+                    delete data.Item.pk;
+                }
+                goalData['Wallet'] = data.Item;
+                resolve({
+                    "Wallet": data
+                });
+            }
+        });
+    });
+}
 
 function getBankAccountData(pk) {
     var params = {
