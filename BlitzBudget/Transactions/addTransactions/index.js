@@ -297,6 +297,7 @@ function addNewRecurringTransaction(event) {
             "category": event['body-json'].category,
             "recurrence": event['body-json'].recurrence,
             "account": event['body-json'].account,
+            "tags": event['body-json'].tags,
             "next_scheduled": event['body-json'].nextScheduled,
             "creation_date": new Date().toISOString(),
             "updated_date": new Date().toISOString()
