@@ -276,7 +276,8 @@ function constructTransactionsWithDateMeantForAndCategory(datesMap, categoryMap,
     let account = event.Records[0].Sns.MessageAttributes.account.Value;
     let tags = event.Records[0].Sns.MessageAttributes.tags;
     if (isNotEmpty(tags)) {
-        tags = tags.Value;
+        tags = JSON.parse(tags.Value);
+        console.log("The tags for the transaction is ", tags);
     }
     let dateMeantFor;
 

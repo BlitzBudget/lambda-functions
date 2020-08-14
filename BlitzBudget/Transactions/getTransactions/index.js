@@ -72,7 +72,7 @@ function getRecurringTransactions(walletId) {
             ":walletId": walletId,
             ":items": "RecurringTransactions#"
         },
-        ProjectionExpression: "sk, pk, amount, description, category, recurrence, account, next_scheduled"
+        ProjectionExpression: "sk, pk, amount, description, category, recurrence, account, next_scheduled, tags"
     };
 
     // Call DynamoDB to read the item from the table
@@ -110,6 +110,8 @@ function markTransactionForCreation(recurringTransaction) {
         recurringTransaction.description = 'No description';
     }
 
+    let currentTag = isEmpty(recurringTransaction.tags) ? [] : recurringTransaction.tags;
+
     let params = {
         Message: recurringTransaction.sk,
         MessageAttributes: {
@@ -140,6 +142,10 @@ function markTransactionForCreation(recurringTransaction) {
             "walletId": {
                 "DataType": "String",
                 "StringValue": recurringTransaction.pk
+            },
+            "tags": {
+                "DataType": 'String.Array',
+                "StringValue": JSON.stringify(currentTag)
             }
         },
         TopicArn: 'arn:aws:sns:eu-west-1:064559090307:addRecurringTransactions'
