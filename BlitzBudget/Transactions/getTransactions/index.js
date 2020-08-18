@@ -72,7 +72,7 @@ function getRecurringTransactions(walletId) {
             ":walletId": walletId,
             ":items": "RecurringTransactions#"
         },
-        ProjectionExpression: "sk, pk, amount, description, category, recurrence, account, next_scheduled, tags"
+        ProjectionExpression: "sk, pk, amount, description, category, recurrence, account, next_scheduled, tags, creation_date"
     };
 
     // Call DynamoDB to read the item from the table
