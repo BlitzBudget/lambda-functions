@@ -23,7 +23,7 @@ exports.handler = async (event) => {
         console.log("successfully fetched all the items ", res);
         result = res;
     }, function (err) {
-        throw new Error("Unable to delete the goals " + err);
+        throw new Error("Unable to delete the categories " + err);
     });
 
     if (result.Count == 0) {
@@ -143,6 +143,7 @@ function getBudgetItems(walletId, currentPeriod) {
         });
     });
 }
+
 
 function deleteItems(params) {
 
