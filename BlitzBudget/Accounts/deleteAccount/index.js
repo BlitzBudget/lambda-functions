@@ -41,7 +41,7 @@ exports.handler = async (event) => {
     });
 
     // Result contains both Transaction and Budget items
-    for (const item of result) {
+    for (const item of result.Items) {
         // If transactions and budgets contain the category.
         if (isEqual(item.account, accountToDelete)) {
             console.log("Building the delete params for the item %j", item.sk);
