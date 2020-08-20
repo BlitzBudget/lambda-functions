@@ -20,7 +20,7 @@ exports.handler = async (event) => {
     events.push(getBudgetItems(walletId, curentPeriod));
 
     await Promise.all(events).then(function (res) {
-        console.log("successfully fetched all the items ", res);
+        console.log("successfully fetched all the items ");
         result = res;
     }, function (err) {
         throw new Error("Unable to delete the categories " + err);
@@ -31,7 +31,7 @@ exports.handler = async (event) => {
         return event;
     }
 
-    console.log("Starting to process the batch delete request for the item for the wallet %j", result.Count);
+    console.log("Starting to process the batch delete request for the transactions %j", result[0].Count, " and for the budgets ", result[1].Count);
     let requestArr = [];
 
     // Remove Category
@@ -44,18 +44,22 @@ exports.handler = async (event) => {
         }
     });
 
-    for (const item of result.Items) {
-        // If transactions and budgets contain the category.
-        if (isEqual(item.category, event['body-json'].category)) {
-            console.log("Building the delete params for the item %j", item.sk);
-            requestArr.push({
-                "DeleteRequest": {
-                    "Key": {
-                        "pk": walletId,
-                        "sk": item.sk
+    // Result contains both Transaction and Budget items
+    for (const items of result) {
+        // Iterate through Transaction Item first and then Budget Item
+        for (const item of items.Items) {
+            // If transactions and budgets contain the category.
+            if (isEqual(item.category, event['body-json'].category)) {
+                console.log("Building the delete params for the item %j", item.sk);
+                requestArr.push({
+                    "DeleteRequest": {
+                        "Key": {
+                            "pk": walletId,
+                            "sk": item.sk
+                        }
                     }
-                }
-            });
+                });
+            }
         }
     }
 
