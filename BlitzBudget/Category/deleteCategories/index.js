@@ -28,7 +28,6 @@ exports.handler = async (event) => {
 
     if (result[0].Count == 0 && result[1].Count == 0) {
         console.log("There are no items to delete for the wallet %j", walletId);
-        return event;
     }
 
     console.log("Starting to process the batch delete request for the transactions %j", result[0].Count, " and for the budgets ", result[1].Count);
