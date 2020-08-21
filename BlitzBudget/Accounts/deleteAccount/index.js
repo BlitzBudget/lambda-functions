@@ -66,6 +66,7 @@ exports.handler = async (event) => {
     let deleteRequests = chunkArrayInGroups(requestArr, 25);
 
     // Push Events  to be executed in bulk
+    events = [];
     for (const deleteRequest of deleteRequests) {
         let params = {};
         params.RequestItems = {};
