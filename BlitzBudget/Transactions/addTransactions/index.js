@@ -14,11 +14,20 @@ exports.handler = async (event) => {
     let walletId = event['body-json'].walletId;
 
     /*
-     * If Account is empty
+     * If Account, Category, Amount or Date is empty
      */
     if (isEmpty(event['body-json'].account)) {
         console.log("The bank account is mandatory for adding a transaction %j", walletId);
-        throw new Error("Unable to add the transaction as bank account is mandatory ");
+        throw new Error("Unable to add the transaction as bank account is mandatory");
+    } else if (isEmpty(event['body-json'].category)) {
+        console.log("The category is mandatory for adding a transaction %j", walletId);
+        throw new Error("Unable to add the transaction as category is mandatory");
+    } else if (isEmpty(event['body-json'].amount)) {
+        console.log("The amount is mandatory for adding a transaction %j", walletId);
+        throw new Error("Unable to add the transaction as amount is mandatory");
+    } else if (isEmpty(event['body-json'].dateMeantFor)) {
+        console.log("The date is mandatory for adding a transaction %j", walletId);
+        throw new Error("Unable to add the transaction as date is mandatory");
     }
 
     /*
