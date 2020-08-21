@@ -15,19 +15,23 @@ exports.handler = async (event) => {
     let result = {};
     let events = [];
 
-    await getTransactionItems(walletId).then(function (res) {
+    // Recurring Transactions and Transactions
+    events.push(getTransactionItems(walletId));
+    events.push(getRecurringTransactionItems(walletId));
+
+    await Promise.all(events).then(function (res) {
         console.log("successfully fetched all the items");
         result = res;
     }, function (err) {
         throw new Error("Unable to delete the account " + err);
     });
 
-    if (result.Count == 0) {
+    if (result[0].Count == 0 && result[1].Count == 0) {
         console.log("There are no items to delete for the wallet %j", walletId);
         return event;
     }
 
-    console.log("Starting to process the batch delete request for the transactions %j", result.Count);
+    console.log("Starting to process the batch delete request for the transactions %j", result[0].Count, " and for the budgets ", result[1].Count);
     let requestArr = [];
 
     // Remove Account
@@ -40,19 +44,22 @@ exports.handler = async (event) => {
         }
     });
 
-    // Result contains both Transaction and Budget items
-    for (const item of result.Items) {
-        // If transactions and budgets contain the category.
-        if (isEqual(item.account, accountToDelete)) {
-            console.log("Building the delete params for the item %j", item.sk);
-            requestArr.push({
-                "DeleteRequest": {
-                    "Key": {
-                        "pk": walletId,
-                        "sk": item.sk
+    // Result contains both Transaction and RecurringTransactions items
+    for (const items of result) {
+        // Iterate through Transaction Item first and then recurringtransactions Item
+        for (const item of items.Items) {
+            // If transactions and budgets contain the category.
+            if (isEqual(item.account, accountToDelete)) {
+                console.log("Building the delete params for the item %j", item.sk);
+                requestArr.push({
+                    "DeleteRequest": {
+                        "Key": {
+                            "pk": walletId,
+                            "sk": item.sk
+                        }
                     }
-                }
-            });
+                });
+            }
         }
     }
 
@@ -96,6 +103,32 @@ function getTransactionItems(walletId) {
         ExpressionAttributeValues: {
             ":pk": walletId,
             ":items": "Transaction#"
+        },
+        ProjectionExpression: "amount, description, category, recurrence, account, date_meant_for, sk, pk, creation_date, tags"
+    };
+
+    // Call DynamoDB to read the item from the table
+    return new Promise((resolve, reject) => {
+        DB.query(params, function (err, data) {
+            if (err) {
+                console.log("Error ", err);
+                reject(err);
+            } else {
+                console.log("data retrieved ", JSON.stringify(data.Items));
+                resolve(data);
+            }
+        });
+    });
+}
+
+// Get all transaction Items
+function getRecurringTransactionItems(walletId) {
+    var params = {
+        TableName: 'blitzbudget',
+        KeyConditionExpression: "pk = :pk and begins_with(sk, :items)",
+        ExpressionAttributeValues: {
+            ":pk": walletId,
+            ":items": "RecurringTransactions#"
         },
         ProjectionExpression: "amount, description, category, recurrence, account, date_meant_for, sk, pk, creation_date, tags"
     };
