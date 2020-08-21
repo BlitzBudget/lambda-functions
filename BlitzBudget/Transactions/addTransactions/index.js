@@ -18,7 +18,7 @@ exports.handler = async (event) => {
      */
     if (isEmpty(event['body-json'].account)) {
         console.log("The bank account is mandatory for adding a transaction %j", walletId);
-        return event;
+        throw new Error("Unable to add the transaction as bank account is mandatory ");
     }
 
     /*
