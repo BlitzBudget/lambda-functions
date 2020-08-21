@@ -14,6 +14,14 @@ exports.handler = async (event) => {
     let walletId = event['body-json'].walletId;
 
     /*
+     * If Account is empty
+     */
+    if (isEmpty(event['body-json'].account)) {
+        console.log("The bank account is mandatory for adding a transaction %j", walletId);
+        return event;
+    }
+
+    /*
      * If Date Id is not present
      */
     let dateMeantFor = event['body-json'].dateMeantFor;
