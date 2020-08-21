@@ -26,7 +26,7 @@ exports.handler = async (event) => {
         throw new Error("Unable to delete the categories " + err);
     });
 
-    if (result.Count == 0) {
+    if (result[0].Count == 0 && result[1].Count == 0) {
         console.log("There are no items to delete for the wallet %j", walletId);
         return event;
     }
