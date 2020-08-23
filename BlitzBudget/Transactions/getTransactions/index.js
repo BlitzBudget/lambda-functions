@@ -139,11 +139,11 @@ function markTransactionForCreation(recurringTransaction) {
                 "DataType": "String",
                 "StringValue": recurringTransaction.account
             },
-            "category_type": {
+            "categoryType": {
                 "DataType": "String",
                 "StringValue": recurringTransaction['category_type']
             },
-            "category_name": {
+            "categoryName": {
                 "DataType": "String",
                 "StringValue": recurringTransaction['category_name']
             },

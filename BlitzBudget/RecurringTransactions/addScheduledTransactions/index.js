@@ -19,6 +19,8 @@ exports.handler = async (event) => {
     let categoryMap = {};
     let walletId = event.Records[0].Sns.MessageAttributes.walletId.Value;
     let category = event.Records[0].Sns.MessageAttributes.category.Value;
+    let categoryType = event.Records[0].Sns.MessageAttributes.categoryType.Value;
+    let categoryName = event.Records[0].Sns.MessageAttributes.categoryName.Value;
     let recurringTransactionsId = event.Records[0].Sns.Message;
     console.log('Creating transactions via recurring transactions for the walletId ' + walletId);
     buildParamsForPut(event);
@@ -76,19 +78,13 @@ exports.handler = async (event) => {
     /*
      * Start processing categories
      */
-    let originalCategory;
-    await fetchCategoryFromTransaction(walletId, category).then(function (result) {
-        originalCategory = result;
-    }, function (err) {
-        throw new Error("Unable to fetch the date for the recurring transaction" + err);
-    });
 
     for (const dateMeantFor of nextSchArray) {
         /*
          * Check if 2020-03 == 2020-02
          */
-        if (isNotEqual(dateMeantFor, originalCategory.CategoryToCopy.Item.sk.substring(9, 16))) {
-            events.push(getCategoryData(walletId, dateMeantFor, originalCategory));
+        if (isNotEqual(dateMeantFor, category.sk.substring(9, 16))) {
+            events.push(getCategoryData(walletId, dateMeantFor, categoryType, categoryName, category));
         }
     }
 
@@ -100,7 +96,7 @@ exports.handler = async (event) => {
         console.log("Processing Categories to create");
         for (const categoryItem of result) {
             categoryMap[categoryItem.dateMeantFor] = categoryItem.sortKey;
-            requestArr.push(buildParamsForCategory(walletId, categoryItem.sortKey, originalCategory, datesMap[categoryItem.dateMeantFor]));
+            requestArr.push(buildParamsForCategory(walletId, categoryItem.sortKey, categoryType, categoryName, datesMap[categoryItem.dateMeantFor]));
         }
     }, function (err) {
         throw new Error("Unable to get the category for the recurring transaction" + err);
@@ -157,7 +153,10 @@ function chunkArrayInGroups(arr, size) {
     return myArray;
 }
 
-function buildParamsForCategory(pk, sk, categoryToCopy, dateMeantFor) {
+/*
+ * Build Parameters for category
+ */
+function buildParamsForCategory(pk, sk, categoryType, categoryName, dateMeantFor) {
     console.log("Creating the category with an sk %j", sk, " And with a date as ", dateMeantFor, " for the wallet ", pk);
     return {
         "PutRequest": {
@@ -165,50 +164,14 @@ function buildParamsForCategory(pk, sk, categoryToCopy, dateMeantFor) {
                 "pk": pk,
                 "sk": sk,
                 "category_total": 0,
-                "category_name": categoryToCopy.CategoryToCopy.Item['category_name'],
-                "category_type": categoryToCopy.CategoryToCopy.Item['category_type'],
+                "category_name": categoryName,
+                "category_type": categoryType,
                 "date_meant_for": dateMeantFor,
                 "creation_date": new Date().toISOString(),
                 "updated_date": new Date().toISOString()
             }
         }
     }
-}
-
-/*
- * Fetch category
- */
-function fetchCategoryFromTransaction(pk, sk) {
-    console.log("Fetching the category %j", sk, " with the wallet id as ", pk)
-    var params = {
-        AttributesToGet: [
-        "category_name",
-        "category_total",
-        "category_type",
-        "pk",
-        "sk"
-      ],
-        TableName: 'blitzbudget',
-        Key: {
-            "pk": pk,
-            "sk": sk
-        }
-    };
-
-    // Call DynamoDB to read the item from the table
-    return new Promise((resolve, reject) => {
-        DB.get(params, function (err, data) {
-            if (err) {
-                console.log("Error ", err);
-                reject(err);
-            } else {
-                console.log("data retrieved - Category To Copy %j", JSON.stringify(data));
-                resolve({
-                    "CategoryToCopy": data
-                });
-            }
-        });
-    });
 }
 
 /*
@@ -364,7 +327,7 @@ function fetchDatesForWallet(walletId) {
 /*
  * Get Category Data
  */
-function getCategoryData(pk, today, originalCategory) {
+function getCategoryData(pk, today, categoryType, categoryName, category) {
     var params = {
         TableName: 'blitzbudget',
         KeyConditionExpression: "pk = :pk AND begins_with(sk, :items)",
@@ -392,14 +355,14 @@ function getCategoryData(pk, today, originalCategory) {
                 let sortKey = "Category#" + sortKeyDate.toISOString();
                 if (data.Count > 0) {
                     for (const item of data.Items) {
-                        if (item['category_name'] == originalCategory.CategoryToCopy.Item['category_name'] &&
-                            item['category_type'] == originalCategory.CategoryToCopy.Item['category_type']) {
+                        if (item['category_name'] == categoryName &&
+                            item['category_type'] == categoryType) {
                             sortKey = item.sk;
                             console.log("There is a positive match for the category %j", item.sk);
                         }
                     }
                 } else {
-                    console.log("Since the count is 0 for the month %j", today, " sending the originalcategory ", originalCategory.CategoryToCopy.Item.sk);
+                    console.log("Since the count is 0 for the month %j", today, " sending the originalcategory ", category);
                 }
 
                 resolve({
