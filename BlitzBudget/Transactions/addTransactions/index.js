@@ -312,6 +312,8 @@ function addNewRecurringTransaction(event) {
             "amount": event['body-json'].amount,
             "description": event['body-json'].description,
             "category": event['body-json'].category,
+            "category_type": event['body-json'].categoryType,
+            "category_name": event['body-json'].categoryName,
             "recurrence": event['body-json'].recurrence,
             "account": event['body-json'].account,
             "tags": event['body-json'].tags,
