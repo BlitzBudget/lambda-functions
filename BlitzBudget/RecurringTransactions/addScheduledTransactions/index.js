@@ -83,7 +83,7 @@ exports.handler = async (event) => {
         /*
          * Check if 2020-03 == 2020-02
          */
-        if (isNotEqual(dateMeantFor, category.sk.substring(9, 16))) {
+        if (isNotEqual(dateMeantFor, category.substring(9, 16))) {
             events.push(getCategoryData(walletId, dateMeantFor, categoryType, categoryName, category));
         }
     }
