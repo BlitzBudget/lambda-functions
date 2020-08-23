@@ -69,7 +69,7 @@ function addNewBankAccounts(event) {
                 resolve({
                     "success": data
                 });
-                event['body-json'].id = randomValue;
+                event['body-json'].accountId = randomValue;
             }
         });
     });
