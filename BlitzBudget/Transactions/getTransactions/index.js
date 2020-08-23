@@ -139,6 +139,14 @@ function markTransactionForCreation(recurringTransaction) {
                 "DataType": "String",
                 "StringValue": recurringTransaction.account
             },
+            "category_type": {
+                "DataType": "String",
+                "StringValue": recurringTransaction['category_type']
+            },
+            "category_name": {
+                "DataType": "String",
+                "StringValue": recurringTransaction['category_name']
+            },
             "walletId": {
                 "DataType": "String",
                 "StringValue": recurringTransaction.pk
