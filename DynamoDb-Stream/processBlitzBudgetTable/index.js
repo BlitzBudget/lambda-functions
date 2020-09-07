@@ -201,7 +201,9 @@ function addNewBankAccount(record) {
             "linked": false,
             "account_balance": 0,
             "selected_account": true,
-            "primary_wallet": record.dynamodb.Keys.pk.S
+            "primary_wallet": record.dynamodb.Keys.pk.S,
+            "creation_date": new Date().toISOString(),
+            "updated_date": new Date().toISOString()
         }
     };
 
