@@ -1,0 +1,1475 @@
+{
+  "interactionModel": {
+    "languageModel": {
+      "invocationName": "blitz budget",
+      "intents": [
+        {
+          "name": "AMAZON.CancelIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.HelpIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.StopIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.NavigateHomeIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.FallbackIntent",
+          "samples": []
+        },
+        {
+          "name": "getCategoryBalance",
+          "slots": [
+            {
+              "name": "category",
+              "type": "CATEGORY"
+            },
+            {
+              "name": "date",
+              "type": "AMAZON.DATE"
+            }
+          ],
+          "samples": [
+            "Whats the balance of {category} category for {date}",
+            "Whats the balance of {category} category",
+            "What is the balance of  {category} category",
+            "How much did I earn on {category}",
+            "How much did I spend on {category} ",
+            "What\u0027s the balance of {category}"
+          ]
+        },
+        {
+          "name": "addNewTransaction",
+          "slots": [
+            {
+              "name": "number",
+              "type": "AMAZON.NUMBER"
+            },
+            {
+              "name": "currency",
+              "type": "CURRENCY"
+            },
+            {
+              "name": "categories",
+              "type": "CATEGORY"
+            },
+            {
+              "name": "date",
+              "type": "AMAZON.DATE"
+            }
+          ],
+          "samples": [
+            "I spent {number} {currency} {date}",
+            "I earned {number} {currency} {date}",
+            "I received {number} {currency} {date}",
+            "I spent {number} {currency} on {categories}",
+            "I just received {number} {currency}"
+          ]
+        },
+        {
+          "name": "changeDefaultWallet",
+          "slots": [
+            {
+              "name": "wallet",
+              "type": "AMAZON.SearchQuery"
+            }
+          ],
+          "samples": [
+            "Change default wallet to {wallet}",
+            "Change the default wallet to {wallet}",
+            "I want to change my default wallet to {wallet}",
+            "Change my default wallet to {wallet}"
+          ]
+        },
+        {
+          "name": "changeDefaultAccount",
+          "slots": [
+            {
+              "name": "account",
+              "type": "AMAZON.SearchQuery"
+            }
+          ],
+          "samples": [
+            "Change default account to {account}",
+            "Change the default account to {account}",
+            "I want to change my default account to {account}",
+            "Change my default account to {account}"
+          ]
+        },
+        {
+          "name": "addNewBudget",
+          "slots": [
+            {
+              "name": "category",
+              "type": "CATEGORY"
+            },
+            {
+              "name": "amount",
+              "type": "AMAZON.NUMBER"
+            },
+            {
+              "name": "currency",
+              "type": "CURRENCY"
+            }
+          ],
+          "samples": [
+            "Add a new budget of {amount} for {category}",
+            "Add a new budget of {amount}  {currency}  for {category} ",
+            "Add a new budget for {category}"
+          ]
+        },
+        {
+          "name": "addNewGoal",
+          "slots": [
+            {
+              "name": "goaltype",
+              "type": "GOAL_TYPE"
+            },
+            {
+              "name": "amount",
+              "type": "AMAZON.NUMBER"
+            },
+            {
+              "name": "currency",
+              "type": "CURRENCY"
+            }
+          ],
+          "samples": [
+            "Add a new goal for {goaltype} with a goal of {amount} {currency}",
+            "Add a new goal for {goaltype} with a target amount of {amount} {currency}",
+            "Add a new goal for {goaltype} "
+          ]
+        },
+        {
+          "name": "getBudgetBalance",
+          "slots": [
+            {
+              "name": "category",
+              "type": "CATEGORY"
+            }
+          ],
+          "samples": [
+            "How much do I have in {category} to spend",
+            "How much do I have left in {category} to spend"
+          ]
+        },
+        {
+          "name": "getTagBalance",
+          "slots": [
+            {
+              "name": "tag",
+              "type": "AMAZON.SearchQuery"
+            }
+          ],
+          "samples": [
+            "Tell me the {tag} tags earnings",
+            "Tell me the {tag} tags expenditure",
+            " Tell me the expenditure of the {tag} tag",
+            "Tell me the {tag} tags amount ",
+            "How much did I spend on {tag} tag",
+            "How much did I earn on {tag} tag"
+          ]
+        },
+        {
+          "name": "changeBudgetBalance",
+          "slots": [
+            {
+              "name": "category",
+              "type": "CATEGORY"
+            },
+            {
+              "name": "amount",
+              "type": "AMAZON.NUMBER"
+            },
+            {
+              "name": "currency",
+              "type": "CURRENCY"
+            }
+          ],
+          "samples": [
+            "Change the {category} budgets balance to {amount}",
+            "Change the {category} budget to {amount}",
+            "Change the {category} budgets balance to {amount} {currency}",
+            "Change the {category} budget to {amount} {currency}",
+            "Change the budget balance of {category} to {amount} {currency}",
+            "Change the budget balance of {category} to {amount}"
+          ]
+        },
+        {
+          "name": "getDefaultWallet",
+          "slots": [],
+          "samples": [
+            "What is the default wallet",
+            "What is my default wallet"
+          ]
+        },
+        {
+          "name": "getDefaultAccount",
+          "slots": [],
+          "samples": [
+            "What is the default account",
+            "What is my default account"
+          ]
+        },
+        {
+          "name": "addNewWallet",
+          "slots": [
+            {
+              "name": "currency",
+              "type": "CURRENCY"
+            }
+          ],
+          "samples": [
+            "Add a new wallet with currency as {currency}",
+            "Can you add a {currency} wallet",
+            "Add a new {currency} wallet"
+          ]
+        },
+        {
+          "name": "getBudgetAmount",
+          "slots": [
+            {
+              "name": "category",
+              "type": "CATEGORY"
+            },
+            {
+              "name": "date",
+              "type": "AMAZON.DATE"
+            }
+          ],
+          "samples": [
+            "What is the budget amount for {category}",
+            "What is the budget for {category}",
+            "Whats the balance of {category} budget for {date}"
+          ]
+        },
+        {
+          "name": "sendFeatureRequest",
+          "slots": [
+            {
+              "name": "search",
+              "type": "AMAZON.SearchQuery"
+            }
+          ],
+          "samples": [
+            "Send a feature request to {search}"
+          ]
+        }
+      ],
+      "types": [
+        {
+          "values": [
+            {
+              "name": {
+                "value": "Salary",
+                "synonyms": [
+                  "Income"
+                ]
+              }
+            },
+            {
+              "name": {
+                "value": "Parential Leave"
+              }
+            },
+            {
+              "name": {
+                "value": "Others"
+              }
+            },
+            {
+              "name": {
+                "value": "Loan",
+                "synonyms": [
+                  "Debt"
+                ]
+              }
+            },
+            {
+              "name": {
+                "value": "Insurance Payout",
+                "synonyms": [
+                  "Insurance"
+                ]
+              }
+            },
+            {
+              "name": {
+                "value": "Gift"
+              }
+            },
+            {
+              "name": {
+                "value": "Extra Income"
+              }
+            },
+            {
+              "name": {
+                "value": "Business"
+              }
+            },
+            {
+              "name": {
+                "value": "Work"
+              }
+            },
+            {
+              "name": {
+                "value": "Travel"
+              }
+            },
+            {
+              "name": {
+                "value": "Transport"
+              }
+            },
+            {
+              "name": {
+                "value": "Sport and Hobbies",
+                "synonyms": [
+                  "Hobbies",
+                  "Sport"
+                ]
+              }
+            },
+            {
+              "name": {
+                "value": "Shopping"
+              }
+            },
+            {
+              "name": {
+                "value": "Other"
+              }
+            },
+            {
+              "name": {
+                "value": "Home",
+                "synonyms": [
+                  "House"
+                ]
+              }
+            },
+            {
+              "name": {
+                "value": "Healthcare"
+              }
+            },
+            {
+              "name": {
+                "value": "Groceries",
+                "synonyms": [
+                  "Grocery"
+                ]
+              }
+            },
+            {
+              "name": {
+                "value": "Gifts"
+              }
+            },
+            {
+              "name": {
+                "value": "Food and Drink",
+                "synonyms": [
+                  "Drinks",
+                  "Drink",
+                  "Foods",
+                  "Food",
+                  "Foods and Drink",
+                  "Foods and Drinks",
+                  "Food and Drinks"
+                ]
+              }
+            },
+            {
+              "name": {
+                "value": "Family and Personal",
+                "synonyms": [
+                  "Personal",
+                  "Family"
+                ]
+              }
+            },
+            {
+              "name": {
+                "value": "Entertainment"
+              }
+            },
+            {
+              "name": {
+                "value": "Education"
+              }
+            },
+            {
+              "name": {
+                "value": "Car"
+              }
+            },
+            {
+              "name": {
+                "value": "Bills and Fees"
+              }
+            },
+            {
+              "name": {
+                "value": "Beauty"
+              }
+            }
+          ],
+          "name": "CATEGORY"
+        },
+        {
+          "values": [
+            {
+              "name": {
+                "value": "Zimbabwe Dollar"
+              }
+            },
+            {
+              "name": {
+                "value": "Zambian Kwacha"
+              }
+            },
+            {
+              "name": {
+                "value": "Yemeni Rial"
+              }
+            },
+            {
+              "name": {
+                "value": "Moroccan Dirham"
+              }
+            },
+            {
+              "name": {
+                "value": "Vietnamese Dong",
+                "synonyms": [
+                  "Dong"
+                ]
+              }
+            },
+            {
+              "name": {
+                "value": "Venezuelan Bolívar",
+                "synonyms": [
+                  "Bolívar"
+                ]
+              }
+            },
+            {
+              "name": {
+                "value": "Vanuatu Vatu",
+                "synonyms": [
+                  "Vatu"
+                ]
+              }
+            },
+            {
+              "name": {
+                "value": "Uzbekistan Sum",
+                "synonyms": [
+                  "Sum"
+                ]
+              }
+            },
+            {
+              "name": {
+                "value": "Uruguayan Peso"
+              }
+            },
+            {
+              "name": {
+                "value": "Pound Sterling",
+                "synonyms": [
+                  "Sterling"
+                ]
+              }
+            },
+            {
+              "name": {
+                "value": "UAE Dirham"
+              }
+            },
+            {
+              "name": {
+                "value": "Ukrainian Hryvnia",
+                "synonyms": [
+                  "Hryvnia"
+                ]
+              }
+            },
+            {
+              "name": {
+                "value": "Uganda Shilling"
+              }
+            },
+            {
+              "name": {
+                "value": "Tuvaluan Dollar"
+              }
+            },
+            {
+              "name": {
+                "value": "Manat"
+              }
+            },
+            {
+              "name": {
+                "value": "Turkish Lira",
+                "synonyms": [
+                  "Lira"
+                ]
+              }
+            },
+            {
+              "name": {
+                "value": "Tunisian Dinar"
+              }
+            },
+            {
+              "name": {
+                "value": "Trinidad and Tobago Dollar"
+              }
+            },
+            {
+              "name": {
+                "value": "Paanga",
+                "synonyms": [
+                  "Paʻanga"
+                ]
+              }
+            },
+            {
+              "name": {
+                "value": "Thai Baht",
+                "synonyms": [
+                  "Baht"
+                ]
+              }
+            },
+            {
+              "name": {
+                "value": "Tanzanian Shilling"
+              }
+            },
+            {
+              "name": {
+                "value": "Somoni"
+              }
+            },
+            {
+              "name": {
+                "value": "New Taiwan Dollar"
+              }
+            },
+            {
+              "name": {
+                "value": "Syrian Pound"
+              }
+            },
+            {
+              "name": {
+                "value": "Swiss Franc"
+              }
+            },
+            {
+              "name": {
+                "value": "Swedish Krona"
+              }
+            },
+            {
+              "name": {
+                "value": "Lilangeni"
+              }
+            },
+            {
+              "name": {
+                "value": "Suriname Guilder"
+              }
+            },
+            {
+              "name": {
+                "value": "Sudanese Pound"
+              }
+            },
+            {
+              "name": {
+                "value": "Sri Lanka Rupee"
+              }
+            },
+            {
+              "name": {
+                "value": "South Sudanese pound"
+              }
+            },
+            {
+              "name": {
+                "value": "Rand"
+              }
+            },
+            {
+              "name": {
+                "value": "Somali Shilling"
+              }
+            },
+            {
+              "name": {
+                "value": "Solomon Islands Dollar"
+              }
+            },
+            {
+              "name": {
+                "value": "Singapore Dollar"
+              }
+            },
+            {
+              "name": {
+                "value": "Leone"
+              }
+            },
+            {
+              "name": {
+                "value": "Seychelles Rupee"
+              }
+            },
+            {
+              "name": {
+                "value": "Serbian Dinar"
+              }
+            },
+            {
+              "name": {
+                "value": "Saudi Riyal",
+                "synonyms": [
+                  "Riyal"
+                ]
+              }
+            },
+            {
+              "name": {
+                "value": "Dobra"
+              }
+            },
+            {
+              "name": {
+                "value": "Tala"
+              }
+            },
+            {
+              "name": {
+                "value": "Saint Helena Pound"
+              }
+            },
+            {
+              "name": {
+                "value": "Rwanda Franc"
+              }
+            },
+            {
+              "name": {
+                "value": "Russian Ruble"
+              }
+            },
+            {
+              "name": {
+                "value": "Leu"
+              }
+            },
+            {
+              "name": {
+                "value": "Qatari Rial"
+              }
+            },
+            {
+              "name": {
+                "value": "Polish Zloty",
+                "synonyms": [
+                  "Zloty"
+                ]
+              }
+            },
+            {
+              "name": {
+                "value": "Philippine Peso"
+              }
+            },
+            {
+              "name": {
+                "value": "Peruvian Sol",
+                "synonyms": [
+                  "Nuevo Sol",
+                  "Sol"
+                ]
+              }
+            },
+            {
+              "name": {
+                "value": "Paraguayan Guarani",
+                "synonyms": [
+                  "Guarani"
+                ]
+              }
+            },
+            {
+              "name": {
+                "value": "Papua New Guinean Kina",
+                "synonyms": [
+                  "PNG Kina",
+                  "Kina"
+                ]
+              }
+            },
+            {
+              "name": {
+                "value": "Panamanian Balboa",
+                "synonyms": [
+                  "Balboa"
+                ]
+              }
+            },
+            {
+              "name": {
+                "value": "Pakistan Rupee"
+              }
+            },
+            {
+              "name": {
+                "value": "Omani Rial"
+              }
+            },
+            {
+              "name": {
+                "value": "Macedonian Denar"
+              }
+            },
+            {
+              "name": {
+                "value": "Nigerian Naira",
+                "synonyms": [
+                  "Naira"
+                ]
+              }
+            },
+            {
+              "name": {
+                "value": "West African CFA Franc"
+              }
+            },
+            {
+              "name": {
+                "value": "Nicaraguan Córdoba",
+                "synonyms": [
+                  "Córdoba"
+                ]
+              }
+            },
+            {
+              "name": {
+                "value": "CFP Franc"
+              }
+            },
+            {
+              "name": {
+                "value": "Nepalese Rupee"
+              }
+            },
+            {
+              "name": {
+                "value": "Namibia Dollar"
+              }
+            },
+            {
+              "name": {
+                "value": "Burmese Kyat",
+                "synonyms": [
+                  "Kyat"
+                ]
+              }
+            },
+            {
+              "name": {
+                "value": "Mozambican Metical",
+                "synonyms": [
+                  "Metical"
+                ]
+              }
+            },
+            {
+              "name": {
+                "value": "Mongolia Tughrik",
+                "synonyms": [
+                  "Tughrik"
+                ]
+              }
+            },
+            {
+              "name": {
+                "value": "Moldovan Leu"
+              }
+            },
+            {
+              "name": {
+                "value": "Mexican Peso"
+              }
+            },
+            {
+              "name": {
+                "value": "Mauritius Rupee"
+              }
+            },
+            {
+              "name": {
+                "value": "Ouguiya"
+              }
+            },
+            {
+              "name": {
+                "value": "Rufiyaa"
+              }
+            },
+            {
+              "name": {
+                "value": "Malaysian Ringgit",
+                "synonyms": [
+                  "Ringgit"
+                ]
+              }
+            },
+            {
+              "name": {
+                "value": "Kwacha"
+              }
+            },
+            {
+              "name": {
+                "value": "Malagasy Franc"
+              }
+            },
+            {
+              "name": {
+                "value": "Macanese Pataca",
+                "synonyms": [
+                  "Pataca"
+                ]
+              }
+            },
+            {
+              "name": {
+                "value": "Lybian Dinar"
+              }
+            },
+            {
+              "name": {
+                "value": "Liberian Dollar"
+              }
+            },
+            {
+              "name": {
+                "value": "Loti"
+              }
+            },
+            {
+              "name": {
+                "value": "Lebanese Pound"
+              }
+            },
+            {
+              "name": {
+                "value": "Kip"
+              }
+            },
+            {
+              "name": {
+                "value": "Som"
+              }
+            },
+            {
+              "name": {
+                "value": "Kuwaiti Dinar"
+              }
+            },
+            {
+              "name": {
+                "value": "Won"
+              }
+            },
+            {
+              "name": {
+                "value": "North Korean Won"
+              }
+            },
+            {
+              "name": {
+                "value": "Kenyan Shilling"
+              }
+            },
+            {
+              "name": {
+                "value": "Tenge"
+              }
+            },
+            {
+              "name": {
+                "value": "Jordanian Dinar"
+              }
+            },
+            {
+              "name": {
+                "value": "Jersey pound"
+              }
+            },
+            {
+              "name": {
+                "value": "Yen"
+              }
+            },
+            {
+              "name": {
+                "value": "Jamaican Dollar"
+              }
+            },
+            {
+              "name": {
+                "value": "New Israeli Sheqel",
+                "synonyms": [
+                  "Sheqel"
+                ]
+              }
+            },
+            {
+              "name": {
+                "value": "Manx pound"
+              }
+            },
+            {
+              "name": {
+                "value": "Iraqi Dinar"
+              }
+            },
+            {
+              "name": {
+                "value": "Iranian Rial"
+              }
+            },
+            {
+              "name": {
+                "value": "Rupiah"
+              }
+            },
+            {
+              "name": {
+                "value": "Indian Rupee"
+              }
+            },
+            {
+              "name": {
+                "value": "Iceland Krona"
+              }
+            },
+            {
+              "name": {
+                "value": "Forint"
+              }
+            },
+            {
+              "name": {
+                "value": "Hong Kong Dollar"
+              }
+            },
+            {
+              "name": {
+                "value": "Lempira"
+              }
+            },
+            {
+              "name": {
+                "value": "Haitian Gourde",
+                "synonyms": [
+                  "Gourde"
+                ]
+              }
+            },
+            {
+              "name": {
+                "value": "Guyana Dollar"
+              }
+            },
+            {
+              "name": {
+                "value": "Guinea Franc"
+              }
+            },
+            {
+              "name": {
+                "value": "Guernsey pound"
+              }
+            },
+            {
+              "name": {
+                "value": "Quetzal"
+              }
+            },
+            {
+              "name": {
+                "value": "Danish Krone"
+              }
+            },
+            {
+              "name": {
+                "value": "Gibraltar Pound"
+              }
+            },
+            {
+              "name": {
+                "value": "Cedi"
+              }
+            },
+            {
+              "name": {
+                "value": "Lari"
+              }
+            },
+            {
+              "name": {
+                "value": "Dalasi"
+              }
+            },
+            {
+              "name": {
+                "value": "Fiji Dollar"
+              }
+            },
+            {
+              "name": {
+                "value": "Faroese króna"
+              }
+            },
+            {
+              "name": {
+                "value": "Falkland Islands pound"
+              }
+            },
+            {
+              "name": {
+                "value": "Ethiopian Birr",
+                "synonyms": [
+                  "Birr"
+                ]
+              }
+            },
+            {
+              "name": {
+                "value": "Swazi lilangeni"
+              }
+            },
+            {
+              "name": {
+                "value": "Nakfa"
+              }
+            },
+            {
+              "name": {
+                "value": "Euro"
+              }
+            },
+            {
+              "name": {
+                "value": "Egyptian Pound"
+              }
+            },
+            {
+              "name": {
+                "value": "Dominican Peso"
+              }
+            },
+            {
+              "name": {
+                "value": "Djibouti Franc"
+              }
+            },
+            {
+              "name": {
+                "value": "Danish Kroner",
+                "synonyms": [
+                  "Kroner"
+                ]
+              }
+            },
+            {
+              "name": {
+                "value": "Czech Koruna",
+                "synonyms": [
+                  "Koruna"
+                ]
+              }
+            },
+            {
+              "name": {
+                "value": "Antillean Guilder"
+              }
+            },
+            {
+              "name": {
+                "value": "Cuban Peso"
+              }
+            },
+            {
+              "name": {
+                "value": "Croatian Kuna"
+              }
+            },
+            {
+              "name": {
+                "value": "Costa Rican Colón",
+                "synonyms": [
+                  "Colón"
+                ]
+              }
+            },
+            {
+              "name": {
+                "value": "New Zealand Dollar"
+              }
+            },
+            {
+              "name": {
+                "value": "Franc Congolais",
+                "synonyms": [
+                  "Congolais"
+                ]
+              }
+            },
+            {
+              "name": {
+                "value": "Comoro Franc"
+              }
+            },
+            {
+              "name": {
+                "value": "Colombian Peso"
+              }
+            },
+            {
+              "name": {
+                "value": "Renminbi",
+                "synonyms": [
+                  "Yuan"
+                ]
+              }
+            },
+            {
+              "name": {
+                "value": "Chilean Peso"
+              }
+            },
+            {
+              "name": {
+                "value": "Cayman Islands Dollar"
+              }
+            },
+            {
+              "name": {
+                "value": "Canadian Dollar"
+              }
+            },
+            {
+              "name": {
+                "value": "CFA Franc BEAC"
+              }
+            },
+            {
+              "name": {
+                "value": "Cambodian Riel",
+                "synonyms": [
+                  "Riel"
+                ]
+              }
+            },
+            {
+              "name": {
+                "value": "Cape Verde Escudo",
+                "synonyms": [
+                  "Escudo"
+                ]
+              }
+            },
+            {
+              "name": {
+                "value": "Burundi Franc"
+              }
+            },
+            {
+              "name": {
+                "value": "CFA Franc BCEAO"
+              }
+            },
+            {
+              "name": {
+                "value": "Bulgarian Lev"
+              }
+            },
+            {
+              "name": {
+                "value": "Brunei Dollar"
+              }
+            },
+            {
+              "name": {
+                "value": "Brazilian Real"
+              }
+            },
+            {
+              "name": {
+                "value": "Norwegian Krone"
+              }
+            },
+            {
+              "name": {
+                "value": "Pula"
+              }
+            },
+            {
+              "name": {
+                "value": "Convertible Mark",
+                "synonyms": [
+                  "Mark"
+                ]
+              }
+            },
+            {
+              "name": {
+                "value": "Boliviano"
+              }
+            },
+            {
+              "name": {
+                "value": "Bhutanese Ngultrum",
+                "synonyms": [
+                  "Ngultrum"
+                ]
+              }
+            },
+            {
+              "name": {
+                "value": "Bermudian Dollar"
+              }
+            },
+            {
+              "name": {
+                "value": "CFA Franc"
+              }
+            },
+            {
+              "name": {
+                "value": "Belize Dollar"
+              }
+            },
+            {
+              "name": {
+                "value": "Belarusian Ruble"
+              }
+            },
+            {
+              "name": {
+                "value": "Barbados Dollar"
+              }
+            },
+            {
+              "name": {
+                "value": "Bangladeshi Taka",
+                "synonyms": [
+                  "Taka"
+                ]
+              }
+            },
+            {
+              "name": {
+                "value": "Bahraini Dinar"
+              }
+            },
+            {
+              "name": {
+                "value": "Bahamian Dollar"
+              }
+            },
+            {
+              "name": {
+                "value": "Azerbaijan Manat"
+              }
+            },
+            {
+              "name": {
+                "value": "Australian Dollar"
+              }
+            },
+            {
+              "name": {
+                "value": "Aruban Florin",
+                "synonyms": [
+                  "Florin"
+                ]
+              }
+            },
+            {
+              "name": {
+                "value": "Armenian Dram"
+              }
+            },
+            {
+              "name": {
+                "value": "Argentine Peso"
+              }
+            },
+            {
+              "name": {
+                "value": "East Caribbean Dollar"
+              }
+            },
+            {
+              "name": {
+                "value": "Angolan Kwanza",
+                "synonyms": [
+                  "Kwanza"
+                ]
+              }
+            },
+            {
+              "name": {
+                "value": "US Dollar"
+              }
+            },
+            {
+              "name": {
+                "value": "Algerian Dinar"
+              }
+            },
+            {
+              "name": {
+                "value": "Albanian Lek"
+              }
+            },
+            {
+              "name": {
+                "value": "Afghan Afghani",
+                "synonyms": [
+                  "Afghani"
+                ]
+              }
+            }
+          ],
+          "name": "CURRENCY"
+        },
+        {
+          "values": [
+            {
+              "name": {
+                "value": "Improve my home",
+                "synonyms": [
+                  "Fix my home",
+                  "Fix home",
+                  "Improve home"
+                ]
+              }
+            },
+            {
+              "name": {
+                "value": "Take a trip",
+                "synonyms": [
+                  "Travel",
+                  "Take a vacation",
+                  "trip"
+                ]
+              }
+            },
+            {
+              "name": {
+                "value": "Save for college",
+                "synonyms": [
+                  "Save for university",
+                  "Save for education",
+                  "college"
+                ]
+              }
+            },
+            {
+              "name": {
+                "value": "Buy an automobile",
+                "synonyms": [
+                  "Buy a two wheeler",
+                  "Buy a four wheeler",
+                  "Buy a three wheeler",
+                  "Buy a tractor",
+                  "Buy a truck",
+                  "Buy a bus",
+                  "Buy a bicycle",
+                  "Buy a moped",
+                  "Buy a motor bike",
+                  "Buy a bike",
+                  "Buy a car",
+                  "automobile"
+                ]
+              }
+            },
+            {
+              "name": {
+                "value": "Buy a home",
+                "synonyms": [
+                  "Buy home",
+                  "home"
+                ]
+              }
+            },
+            {
+              "name": {
+                "value": "Save for retirement",
+                "synonyms": [
+                  "retirement"
+                ]
+              }
+            },
+            {
+              "name": {
+                "value": "Save for an emergency",
+                "synonyms": [
+                  "Save for emergency",
+                  "emergency"
+                ]
+              }
+            },
+            {
+              "name": {
+                "value": "Pay off loans",
+                "synonyms": [
+                  "Pay loans",
+                  "loans"
+                ]
+              }
+            },
+            {
+              "name": {
+                "value": "Pay off credit card",
+                "synonyms": [
+                  "credit card"
+                ]
+              }
+            }
+          ],
+          "name": "GOAL_TYPE"
+        }
+      ],
+      "modelConfiguration": {
+        "fallbackIntentSensitivity": {
+          "level": "LOW"
+        }
+      }
+    }
+  },
+  "version": "28"
+}
