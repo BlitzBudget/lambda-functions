@@ -14,10 +14,6 @@ const parameters = [{
     {
         "prmName": "name",
         "prmValue": 'wallet_name'
-},
-    {
-        "prmName": "default_alexa",
-        "prmValue": 'default_alexa'
 }
 ]
 
