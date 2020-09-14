@@ -432,12 +432,14 @@ const changeDefaultAccount_Handler =  {
         const request = handlerInput.requestEnvelope.request;
         return request.type === 'IntentRequest' && request.intent.name === 'changeDefaultAccount' ;
     },
-    handle(handlerInput) {
+    async handle(handlerInput) {
         const request = handlerInput.requestEnvelope.request;
         const responseBuilder = handlerInput.responseBuilder;
         let sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
-
-        let say = 'Hello from changeDefaultAccount. ';
+        let wallet = await blitzbudgetDB.getDefaultAlexaWallet(sessionAttributes.userId, responseBuilder);
+        
+        console.log('The wallets obtained are ', JSON.stringify(wallet));
+        let say = '';
 
         let slotStatus = '';
         let resolvedSlot;
@@ -448,26 +450,11 @@ const changeDefaultAccount_Handler =  {
         // console.log('***** slotValues: ' +  JSON.stringify(slotValues, null, 2));
         //   SLOT: account 
         if (slotValues.account.heardAs && slotValues.account.heardAs !== '') {
-            slotStatus += ' slot account was heard as ' + slotValues.account.heardAs + '. ';
+            let allAccounts = await blitzbudgetDB.getAccountFromAlexa(wallet.sk.S);
+            let changeAccount = await blitzbudgetDB.changeDefaultAccountAlexa(allAccounts, slotValues.account.heardAs);
+            slotStatus = changeAccount;
         } else {
-            slotStatus += 'slot account is empty. ';
-        }
-        if (slotValues.account.ERstatus === 'ER_SUCCESS_MATCH') {
-            slotStatus += 'a valid ';
-            if(slotValues.account.resolved !== slotValues.account.heardAs) {
-                slotStatus += 'synonym for ' + slotValues.account.resolved + '. '; 
-                } else {
-                slotStatus += 'match. '
-            } // else {
-                //
-        }
-        if (slotValues.account.ERstatus === 'ER_SUCCESS_NO_MATCH') {
-            slotStatus += 'which did not match any slot value. ';
-            console.log('***** consider adding "' + slotValues.account.heardAs + '" to the custom slot type used by slot account! '); 
-        }
-
-        if( (slotValues.account.ERstatus === 'ER_SUCCESS_NO_MATCH') ||  (!slotValues.account.heardAs) ) {
-           // slotStatus += 'A few valid values are, ' + sayArray(getExampleSlotValues('changeDefaultAccount','account'), 'or');
+            slotStatus = 'I didn\'t quite get you. Please try again! ';
         }
 
         say += slotStatus;
@@ -485,88 +472,54 @@ const addNewBudget_Handler =  {
         const request = handlerInput.requestEnvelope.request;
         return request.type === 'IntentRequest' && request.intent.name === 'addNewBudget' ;
     },
-    handle(handlerInput) {
+    async handle(handlerInput) {
         const request = handlerInput.requestEnvelope.request;
         const responseBuilder = handlerInput.responseBuilder;
         let sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
 
-        let say = 'Hello from addNewBudget. ';
-
+        let say = '';
         let slotStatus = '';
-        let resolvedSlot;
+        let resolvedSlot, wallet;
 
         let slotValues = getSlotValues(request.intent.slots); 
+        if(isNotEmpty(slotValues.currency.heardAs)) {
+            let allWallets = await blitzbudgetDB.getWalletFromAlexa(sessionAttributes.userId, responseBuilder);
+            wallet = blitzbudgetDB.calculateWalletFromAlexa(allWallets, slotValues.currency.heardAs); 
+            console.log("The calculate wallet is ", JSON.stringify(wallet), ". The currency name is ", slotValues.currency.heardAs);
+        } else {
+            wallet = await blitzbudgetDB.getDefaultAlexaWallet(sessionAttributes.userId, responseBuilder);
+            console.log("The default wallet is ", wallet.currency.S);
+        }
+        
+        let currentDate =  new Date();
+        currentDate = currentDate.getFullYear() + '-' + ("0" + (Number(currentDate.getMonth()) + 1)).slice(-2);
         // getSlotValues returns .heardAs, .resolved, and .isValidated for each slot, according to request slot status codes ER_SUCCESS_MATCH, ER_SUCCESS_NO_MATCH, or traditional simple request slot without resolutions
 
         // console.log('***** slotValues: ' +  JSON.stringify(slotValues, null, 2));
         //   SLOT: category 
-        if (slotValues.category.heardAs && slotValues.category.heardAs !== '') {
-            slotStatus += ' slot category was heard as ' + slotValues.category.heardAs + '. ';
+        if(isEmpty(wallet)) {
+            slotStatus += 'The requested currency cannot be found. Do you want me to create them for you?';
         } else {
-            slotStatus += 'slot category is empty. ';
-        }
-        if (slotValues.category.ERstatus === 'ER_SUCCESS_MATCH') {
-            slotStatus += 'a valid ';
-            if(slotValues.category.resolved !== slotValues.category.heardAs) {
-                slotStatus += 'synonym for ' + slotValues.category.resolved + '. '; 
+            // getSlotValues returns .heardAs, .resolved, and .isValidated for each slot, according to request slot status codes ER_SUCCESS_MATCH, ER_SUCCESS_NO_MATCH, or traditional simple request slot without resolutions
+    
+            // console.log('***** slotValues: ' +  JSON.stringify(slotValues, null, 2));
+            //   SLOT: category 
+            if (slotValues.category.heardAs && slotValues.category.heardAs !== '') {
+                let category = await blitzbudgetDB.getCategoryAlexa(wallet.sk.S, slotValues.category.heardAs, currentDate, responseBuilder);
+                if(isEmpty(category)) {
+                    slotStatus += ' The ' + slotValues.category.heardAs + ' category has not been created. Do you want me to create it for the current month?';
                 } else {
-                slotStatus += 'match. '
-            } // else {
-                //
-        }
-        if (slotValues.category.ERstatus === 'ER_SUCCESS_NO_MATCH') {
-            slotStatus += 'which did not match any slot value. ';
-            console.log('***** consider adding "' + slotValues.category.heardAs + '" to the custom slot type used by slot category! '); 
-        }
-
-        if( (slotValues.category.ERstatus === 'ER_SUCCESS_NO_MATCH') ||  (!slotValues.category.heardAs) ) {
-           // slotStatus += 'A few valid values are, ' + sayArray(getExampleSlotValues('addNewBudget','category'), 'or');
-        }
-        //   SLOT: amount 
-        if (slotValues.amount.heardAs && slotValues.amount.heardAs !== '') {
-            slotStatus += ' slot amount was heard as ' + slotValues.amount.heardAs + '. ';
-        } else {
-            slotStatus += 'slot amount is empty. ';
-        }
-        if (slotValues.amount.ERstatus === 'ER_SUCCESS_MATCH') {
-            slotStatus += 'a valid ';
-            if(slotValues.amount.resolved !== slotValues.amount.heardAs) {
-                slotStatus += 'synonym for ' + slotValues.amount.resolved + '. '; 
-                } else {
-                slotStatus += 'match. '
-            } // else {
-                //
-        }
-        if (slotValues.amount.ERstatus === 'ER_SUCCESS_NO_MATCH') {
-            slotStatus += 'which did not match any slot value. ';
-            console.log('***** consider adding "' + slotValues.amount.heardAs + '" to the custom slot type used by slot amount! '); 
-        }
-
-        if( (slotValues.amount.ERstatus === 'ER_SUCCESS_NO_MATCH') ||  (!slotValues.amount.heardAs) ) {
-           // slotStatus += 'A few valid values are, ' + sayArray(getExampleSlotValues('addNewBudget','amount'), 'or');
-        }
-        //   SLOT: currency 
-        if (slotValues.currency.heardAs && slotValues.currency.heardAs !== '') {
-            slotStatus += ' slot currency was heard as ' + slotValues.currency.heardAs + '. ';
-        } else {
-            slotStatus += 'slot currency is empty. ';
-        }
-        if (slotValues.currency.ERstatus === 'ER_SUCCESS_MATCH') {
-            slotStatus += 'a valid ';
-            if(slotValues.currency.resolved !== slotValues.currency.heardAs) {
-                slotStatus += 'synonym for ' + slotValues.currency.resolved + '. '; 
-                } else {
-                slotStatus += 'match. '
-            } // else {
-                //
-        }
-        if (slotValues.currency.ERstatus === 'ER_SUCCESS_NO_MATCH') {
-            slotStatus += 'which did not match any slot value. ';
-            console.log('***** consider adding "' + slotValues.currency.heardAs + '" to the custom slot type used by slot currency! '); 
-        }
-
-        if( (slotValues.currency.ERstatus === 'ER_SUCCESS_NO_MATCH') ||  (!slotValues.currency.heardAs) ) {
-           // slotStatus += 'A few valid values are, ' + sayArray(getExampleSlotValues('addNewBudget','currency'), 'or');
+                    let budget = await blitzbudgetDB.getBudgetAlexaAmount(wallet.sk.S, category.sk.S, currentDate, responseBuilder);
+                    if(isEmpty(budget)) {
+                        slotStatus += await blitzbudgetDB.addBudgetAlexaAmount(wallet.sk.S, category.sk.S, slotValues.amount.heardAs, currentDate, slotValues.category.heardAs);
+                    } else {
+                        slotStatus += ' The ' + slotValues.category.heardAs + ' budget has already been created. Do you want me to update the existing budget amount?';
+                    }
+                }
+            } else {
+                slotStatus += 'I didn\'t quite get you. Please try again! ';
+            }
+            
         }
 
         say += slotStatus;
@@ -701,7 +654,7 @@ const getBudgetAmount_Handler = {
         
         // Date
         let currentDate =  new Date();
-        currentDate = currentDate.getFullYear() + '-' + ("0" + currentDate.getMonth()).slice(-2);
+        currentDate = currentDate.getFullYear() + '-' + ("0" + (Number(currentDate.getMonth()) + 1)).slice(-2);
         
         //   SLOT: category 
         if (slotValues.category.heardAs && slotValues.category.heardAs !== '') {
@@ -753,7 +706,7 @@ const getBudgetBalance_Handler =  {
         
         // Date
         let currentDate =  new Date();
-        currentDate = currentDate.getFullYear() + '-' + ("0" + currentDate.getMonth()).slice(-2);
+        currentDate = currentDate.getFullYear() + '-' + ("0" + (Number(currentDate.getMonth()) + 1)).slice(-2);
         
         //   SLOT: category 
         if (slotValues.category.heardAs && slotValues.category.heardAs !== '') {
@@ -830,93 +783,57 @@ const getTagBalance_Handler =  {
     },
 };
 
-const changeBudgetBalance_Handler =  {
+const changeBudgetAmount_Handler =  {
     canHandle(handlerInput) {
         const request = handlerInput.requestEnvelope.request;
-        return request.type === 'IntentRequest' && request.intent.name === 'changeBudgetBalance' ;
+        return request.type === 'IntentRequest' && request.intent.name === 'changeBudgetAmount' ;
     },
-    handle(handlerInput) {
+    async handle(handlerInput) {
+        let wallet;
         const request = handlerInput.requestEnvelope.request;
         const responseBuilder = handlerInput.responseBuilder;
         let sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
-
-        let say = 'Hello from changeBudgetBalance. ';
-
+        console.log("The Budget amount is ", JSON.stringify(request.intent.slots));
+        let slotValues = getSlotValues(request.intent.slots); 
+        if(isNotEmpty(slotValues.currency.heardAs)) {
+            let allWallets = await blitzbudgetDB.getWalletFromAlexa(sessionAttributes.userId, responseBuilder);
+            wallet = blitzbudgetDB.calculateWalletFromAlexa(allWallets, slotValues.currency.heardAs); 
+            console.log("The calculate wallet is ", JSON.stringify(wallet), ". The currency name is ", slotValues.currency.heardAs);
+        } else {
+            wallet = await blitzbudgetDB.getDefaultAlexaWallet(sessionAttributes.userId, responseBuilder);
+            console.log("The default wallet is ", wallet.currency.S);
+        }
+        
+        let say = '';
         let slotStatus = '';
         let resolvedSlot;
-
-        let slotValues = getSlotValues(request.intent.slots); 
-        // getSlotValues returns .heardAs, .resolved, and .isValidated for each slot, according to request slot status codes ER_SUCCESS_MATCH, ER_SUCCESS_NO_MATCH, or traditional simple request slot without resolutions
-
-        // console.log('***** slotValues: ' +  JSON.stringify(slotValues, null, 2));
-        //   SLOT: category 
-        if (slotValues.category.heardAs && slotValues.category.heardAs !== '') {
-            slotStatus += ' slot category was heard as ' + slotValues.category.heardAs + '. ';
+        
+        let currentDate =  new Date();
+        currentDate = currentDate.getFullYear() + '-' + ("0" + (Number(currentDate.getMonth()) + 1)).slice(-2);
+        
+        if(isEmpty(wallet)) {
+            slotStatus += 'The requested currency cannot be found. Do you want me to create them for you?';
         } else {
-            slotStatus += 'slot category is empty. ';
-        }
-        if (slotValues.category.ERstatus === 'ER_SUCCESS_MATCH') {
-            slotStatus += 'a valid ';
-            if(slotValues.category.resolved !== slotValues.category.heardAs) {
-                slotStatus += 'synonym for ' + slotValues.category.resolved + '. '; 
+            // getSlotValues returns .heardAs, .resolved, and .isValidated for each slot, according to request slot status codes ER_SUCCESS_MATCH, ER_SUCCESS_NO_MATCH, or traditional simple request slot without resolutions
+    
+            // console.log('***** slotValues: ' +  JSON.stringify(slotValues, null, 2));
+            //   SLOT: category 
+            if (slotValues.category.heardAs && slotValues.category.heardAs !== '') {
+                let category = await blitzbudgetDB.getCategoryAlexa(wallet.sk.S, slotValues.category.heardAs, currentDate, responseBuilder);
+                if(isEmpty(category)) {
+                    slotStatus += ' The ' + slotValues.category.heardAs + ' category has not been created. Do you want me to create it for the current month?';
                 } else {
-                slotStatus += 'match. '
-            } // else {
-                //
-        }
-        if (slotValues.category.ERstatus === 'ER_SUCCESS_NO_MATCH') {
-            slotStatus += 'which did not match any slot value. ';
-            console.log('***** consider adding "' + slotValues.category.heardAs + '" to the custom slot type used by slot category! '); 
-        }
-
-        if( (slotValues.category.ERstatus === 'ER_SUCCESS_NO_MATCH') ||  (!slotValues.category.heardAs) ) {
-           // slotStatus += 'A few valid values are, ' + sayArray(getExampleSlotValues('changeBudgetBalance','category'), 'or');
-        }
-        //   SLOT: amount 
-        if (slotValues.amount.heardAs && slotValues.amount.heardAs !== '') {
-            slotStatus += ' slot amount was heard as ' + slotValues.amount.heardAs + '. ';
-        } else {
-            slotStatus += 'slot amount is empty. ';
-        }
-        if (slotValues.amount.ERstatus === 'ER_SUCCESS_MATCH') {
-            slotStatus += 'a valid ';
-            if(slotValues.amount.resolved !== slotValues.amount.heardAs) {
-                slotStatus += 'synonym for ' + slotValues.amount.resolved + '. '; 
-                } else {
-                slotStatus += 'match. '
-            } // else {
-                //
-        }
-        if (slotValues.amount.ERstatus === 'ER_SUCCESS_NO_MATCH') {
-            slotStatus += 'which did not match any slot value. ';
-            console.log('***** consider adding "' + slotValues.amount.heardAs + '" to the custom slot type used by slot amount! '); 
-        }
-
-        if( (slotValues.amount.ERstatus === 'ER_SUCCESS_NO_MATCH') ||  (!slotValues.amount.heardAs) ) {
-           // slotStatus += 'A few valid values are, ' + sayArray(getExampleSlotValues('changeBudgetBalance','amount'), 'or');
-        }
-        //   SLOT: currency 
-        if (slotValues.currency.heardAs && slotValues.currency.heardAs !== '') {
-            slotStatus += ' slot currency was heard as ' + slotValues.currency.heardAs + '. ';
-        } else {
-            slotStatus += 'slot currency is empty. ';
-        }
-        if (slotValues.currency.ERstatus === 'ER_SUCCESS_MATCH') {
-            slotStatus += 'a valid ';
-            if(slotValues.currency.resolved !== slotValues.currency.heardAs) {
-                slotStatus += 'synonym for ' + slotValues.currency.resolved + '. '; 
-                } else {
-                slotStatus += 'match. '
-            } // else {
-                //
-        }
-        if (slotValues.currency.ERstatus === 'ER_SUCCESS_NO_MATCH') {
-            slotStatus += 'which did not match any slot value. ';
-            console.log('***** consider adding "' + slotValues.currency.heardAs + '" to the custom slot type used by slot currency! '); 
-        }
-
-        if( (slotValues.currency.ERstatus === 'ER_SUCCESS_NO_MATCH') ||  (!slotValues.currency.heardAs) ) {
-           // slotStatus += 'A few valid values are, ' + sayArray(getExampleSlotValues('changeBudgetBalance','currency'), 'or');
+                    let budget = await blitzbudgetDB.getBudgetAlexaAmount(wallet.sk.S, category.sk.S, currentDate, responseBuilder);
+                    if(isEmpty(budget)) {
+                        slotStatus += ' The ' + slotValues.category.heardAs + ' budget has not been created. Do you want me to create it for the current month?';
+                    } else {
+                        slotStatus += await blitzbudgetDB.changeBudgetAlexaAmount(wallet.sk.S, budget.sk.S, slotValues.amt.heardAs, wallet.currency.S);
+                    }
+                }
+            } else {
+                slotStatus += 'I didn\'t quite get you. Please try again! ';
+            }
+            
         }
 
         say += slotStatus;
@@ -984,8 +901,7 @@ const addNewWallet_Handler =  {
         const responseBuilder = handlerInput.responseBuilder;
         let sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
 
-        let say = 'Hello from addNewWallet. ';
-
+        let say = '';
         let slotStatus = '';
         let resolvedSlot;
 
@@ -995,28 +911,16 @@ const addNewWallet_Handler =  {
         // console.log('***** slotValues: ' +  JSON.stringify(slotValues, null, 2));
         //   SLOT: currency 
         if (slotValues.currency.heardAs && slotValues.currency.heardAs !== '') {
-            slotStatus += ' slot currency was heard as ' + slotValues.currency.heardAs + '. ';
+            let matchedCurrency = blitzbudgetDB.checkIfWalletIsInvalid(slotValues.currency.heardAs);
+            if(isEmpty(matchedCurrency)) {
+               slotStatus = 'I couldn\'t find the currency that you mentioned. Please try again!';
+            } else {
+                slotStatus = await blitzbudgetDB.addWalletFromAlexa(sessionAttributes.userId, matchedCurrency);   
+            }
         } else {
-            slotStatus += 'slot currency is empty. ';
+            slotStatus += 'I didn\'t quite get you. Please try again! ';
         }
-        if (slotValues.currency.ERstatus === 'ER_SUCCESS_MATCH') {
-            slotStatus += 'a valid ';
-            if(slotValues.currency.resolved !== slotValues.currency.heardAs) {
-                slotStatus += 'synonym for ' + slotValues.currency.resolved + '. '; 
-                } else {
-                slotStatus += 'match. '
-            } // else {
-                //
-        }
-        if (slotValues.currency.ERstatus === 'ER_SUCCESS_NO_MATCH') {
-            slotStatus += 'which did not match any slot value. ';
-            console.log('***** consider adding "' + slotValues.currency.heardAs + '" to the custom slot type used by slot currency! '); 
-        }
-
-        if( (slotValues.currency.ERstatus === 'ER_SUCCESS_NO_MATCH') ||  (!slotValues.currency.heardAs) ) {
-           // slotStatus += 'A few valid values are, ' + sayArray(getExampleSlotValues('addNewWallet','currency'), 'or');
-        }
-
+        
         say += slotStatus;
 
 
@@ -1639,6 +1543,10 @@ function isEmpty(obj) {
     return true;
 }
 
+function isNotEmpty(obj) {
+    return !isEmpty(obj);
+}
+
 //
 // GetLinkedInfoInterceptor: Interceptor function that is executed on every
 // request sent to the skill
@@ -1684,7 +1592,7 @@ exports.handler = skillBuilder
         getBudgetBalance_Handler,
         getBudgetAmount_Handler, 
         getTagBalance_Handler, 
-        changeBudgetBalance_Handler, 
+        changeBudgetAmount_Handler, 
         getDefaultWallet_Handler, 
         getDefaultAccount_Handler, 
         addNewWallet_Handler,

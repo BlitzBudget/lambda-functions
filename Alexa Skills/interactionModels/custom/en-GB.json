@@ -177,28 +177,28 @@
           ]
         },
         {
-          "name": "changeBudgetBalance",
+          "name": "changeBudgetAmount",
           "slots": [
             {
               "name": "category",
               "type": "CATEGORY"
             },
             {
-              "name": "amount",
-              "type": "AMAZON.NUMBER"
-            },
-            {
               "name": "currency",
               "type": "CURRENCY"
+            },
+            {
+              "name": "amt",
+              "type": "AMAZON.NUMBER"
             }
           ],
           "samples": [
-            "Change the {category} budgets balance to {amount}",
-            "Change the {category} budget to {amount}",
-            "Change the {category} budgets balance to {amount} {currency}",
-            "Change the {category} budget to {amount} {currency}",
-            "Change the budget balance of {category} to {amount} {currency}",
-            "Change the budget balance of {category} to {amount}"
+            "Change the {category} budgets amount to {amt}",
+            "Change the {category} budget to {amt}",
+            "Change the {category} budgets amount to {amt} {currency}",
+            "Change the {category} budget to {amt} {currency}",
+            "Change the budget amount of {category} to {amt} {currency}",
+            "Change the budget balance of {category} to {amt}"
           ]
         },
         {
@@ -429,28 +429,42 @@
           "values": [
             {
               "name": {
-                "value": "Zimbabwe Dollar"
+                "value": "Zimbabwe Dollar",
+                "synonyms": [
+                  "Zimbabwe Dollars"
+                ]
               }
             },
             {
               "name": {
-                "value": "Zambian Kwacha"
+                "value": "Zambian Kwacha",
+                "synonyms": [
+                  "Zambian Kwachas"
+                ]
               }
             },
             {
               "name": {
-                "value": "Yemeni Rial"
+                "value": "Yemeni Rial",
+                "synonyms": [
+                  "Yemeni Rials"
+                ]
               }
             },
             {
               "name": {
-                "value": "Moroccan Dirham"
+                "value": "Moroccan Dirham",
+                "synonyms": [
+                  "Moroccan Dirhams"
+                ]
               }
             },
             {
               "name": {
                 "value": "Vietnamese Dong",
                 "synonyms": [
+                  "Dongs",
+                  "Vietnamese Dongs",
                   "Dong"
                 ]
               }
@@ -459,6 +473,7 @@
               "name": {
                 "value": "Venezuelan Bolívar",
                 "synonyms": [
+                  "Venezuelan Bolívars",
                   "Bolívar"
                 ]
               }
@@ -467,6 +482,8 @@
               "name": {
                 "value": "Vanuatu Vatu",
                 "synonyms": [
+                  "Vatus",
+                  "Vanuatu Vatus",
                   "Vatu"
                 ]
               }
@@ -475,73 +492,102 @@
               "name": {
                 "value": "Uzbekistan Sum",
                 "synonyms": [
+                  "Sums",
+                  "Uzbekistan Sums",
                   "Sum"
                 ]
               }
             },
             {
               "name": {
-                "value": "Uruguayan Peso"
+                "value": "Uruguayan Peso",
+                "synonyms": [
+                  "Uruguayan Pesos"
+                ]
               }
             },
             {
               "name": {
                 "value": "Pound Sterling",
                 "synonyms": [
+                  "Pound Sterlings",
                   "Sterling"
                 ]
               }
             },
             {
               "name": {
-                "value": "UAE Dirham"
+                "value": "UAE Dirham",
+                "synonyms": [
+                  "UAE Dirhams"
+                ]
               }
             },
             {
               "name": {
                 "value": "Ukrainian Hryvnia",
                 "synonyms": [
+                  "Hryvnias",
+                  "Ukrainian Hryvnias",
                   "Hryvnia"
                 ]
               }
             },
             {
               "name": {
-                "value": "Uganda Shilling"
+                "value": "Uganda Shilling",
+                "synonyms": [
+                  "Uganda Shillings"
+                ]
               }
             },
             {
               "name": {
-                "value": "Tuvaluan Dollar"
+                "value": "Tuvaluan Dollar",
+                "synonyms": [
+                  "Tuvaluan Dollars"
+                ]
               }
             },
             {
               "name": {
-                "value": "Manat"
+                "value": "Manat",
+                "synonyms": [
+                  "Manats"
+                ]
               }
             },
             {
               "name": {
                 "value": "Turkish Lira",
                 "synonyms": [
+                  "Liras",
+                  "Turkish Liras",
                   "Lira"
                 ]
               }
             },
             {
               "name": {
-                "value": "Tunisian Dinar"
+                "value": "Tunisian Dinar",
+                "synonyms": [
+                  "Tunisian Dinars"
+                ]
               }
             },
             {
               "name": {
-                "value": "Trinidad and Tobago Dollar"
+                "value": "Trinidad and Tobago Dollar",
+                "synonyms": [
+                  "Trinidad and Tobago Dollars"
+                ]
               }
             },
             {
               "name": {
                 "value": "Paanga",
                 "synonyms": [
+                  "Paangas",
                   "Paʻanga"
                 ]
               }
@@ -550,160 +596,248 @@
               "name": {
                 "value": "Thai Baht",
                 "synonyms": [
+                  "Bahts",
+                  "Thai Bahts",
                   "Baht"
                 ]
               }
             },
             {
               "name": {
-                "value": "Tanzanian Shilling"
+                "value": "Tanzanian Shilling",
+                "synonyms": [
+                  "Tanzanian Shillings"
+                ]
               }
             },
             {
               "name": {
-                "value": "Somoni"
+                "value": "Somoni",
+                "synonyms": [
+                  "Somonies",
+                  "Somonis"
+                ]
               }
             },
             {
               "name": {
-                "value": "New Taiwan Dollar"
+                "value": "New Taiwan Dollar",
+                "synonyms": [
+                  "New Taiwan Dollars"
+                ]
               }
             },
             {
               "name": {
-                "value": "Syrian Pound"
+                "value": "Syrian Pound",
+                "synonyms": [
+                  "Syrian Pounds"
+                ]
               }
             },
             {
               "name": {
-                "value": "Swiss Franc"
+                "value": "Swiss Franc",
+                "synonyms": [
+                  "Swiss Francs"
+                ]
               }
             },
             {
               "name": {
-                "value": "Swedish Krona"
+                "value": "Swedish Krona",
+                "synonyms": [
+                  "Swedish Kronas"
+                ]
               }
             },
             {
               "name": {
-                "value": "Lilangeni"
+                "value": "Lilangeni",
+                "synonyms": [
+                  "Lilangenies",
+                  "Lilangenis"
+                ]
               }
             },
             {
               "name": {
-                "value": "Suriname Guilder"
+                "value": "Suriname Guilder",
+                "synonyms": [
+                  "Suriname Guilders"
+                ]
               }
             },
             {
               "name": {
-                "value": "Sudanese Pound"
+                "value": "Sudanese Pound",
+                "synonyms": [
+                  "Sudanese Pounds"
+                ]
               }
             },
             {
               "name": {
-                "value": "Sri Lanka Rupee"
+                "value": "Sri Lanka Rupee",
+                "synonyms": [
+                  "Sri Lanka Rupees"
+                ]
               }
             },
             {
               "name": {
-                "value": "South Sudanese pound"
+                "value": "South Sudanese pound",
+                "synonyms": [
+                  "South Sudanese pounds"
+                ]
               }
             },
             {
               "name": {
-                "value": "Rand"
+                "value": "Rand",
+                "synonyms": [
+                  "Rands"
+                ]
               }
             },
             {
               "name": {
-                "value": "Somali Shilling"
+                "value": "Somali Shilling",
+                "synonyms": [
+                  "Somali Shillings"
+                ]
               }
             },
             {
               "name": {
-                "value": "Solomon Islands Dollar"
+                "value": "Solomon Islands Dollar",
+                "synonyms": [
+                  "Solomon Islands Dollars"
+                ]
               }
             },
             {
               "name": {
-                "value": "Singapore Dollar"
+                "value": "Singapore Dollar",
+                "synonyms": [
+                  "Singapore Dollars"
+                ]
               }
             },
             {
               "name": {
-                "value": "Leone"
+                "value": "Leone",
+                "synonyms": [
+                  "Leones"
+                ]
               }
             },
             {
               "name": {
-                "value": "Seychelles Rupee"
+                "value": "Seychelles Rupee",
+                "synonyms": [
+                  "Seychelles Rupees"
+                ]
               }
             },
             {
               "name": {
-                "value": "Serbian Dinar"
+                "value": "Serbian Dinar",
+                "synonyms": [
+                  "Serbian Dinars"
+                ]
               }
             },
             {
               "name": {
                 "value": "Saudi Riyal",
                 "synonyms": [
+                  "Riyals",
+                  "Saudi Riyals",
                   "Riyal"
                 ]
               }
             },
             {
               "name": {
-                "value": "Dobra"
+                "value": "Dobra",
+                "synonyms": [
+                  "Dobras"
+                ]
               }
             },
             {
               "name": {
-                "value": "Tala"
+                "value": "Tala",
+                "synonyms": [
+                  "Talas"
+                ]
               }
             },
             {
               "name": {
-                "value": "Saint Helena Pound"
+                "value": "Saint Helena Pound",
+                "synonyms": [
+                  "Saint Helena Pounds"
+                ]
               }
             },
             {
               "name": {
-                "value": "Rwanda Franc"
+                "value": "Rwanda Franc",
+                "synonyms": [
+                  "Rwanda Francs"
+                ]
               }
             },
             {
               "name": {
-                "value": "Russian Ruble"
+                "value": "Russian Ruble",
+                "synonyms": [
+                  "Russian Rubles"
+                ]
               }
             },
             {
               "name": {
-                "value": "Leu"
+                "value": "Leu",
+                "synonyms": [
+                  "Leus"
+                ]
               }
             },
             {
               "name": {
-                "value": "Qatari Rial"
+                "value": "Qatari Rial",
+                "synonyms": [
+                  "Qatari Rials"
+                ]
               }
             },
             {
               "name": {
                 "value": "Polish Zloty",
                 "synonyms": [
+                  "Polish Zlotys",
                   "Zloty"
                 ]
               }
             },
             {
               "name": {
-                "value": "Philippine Peso"
+                "value": "Philippine Peso",
+                "synonyms": [
+                  "Philippine Pesos"
+                ]
               }
             },
             {
               "name": {
                 "value": "Peruvian Sol",
                 "synonyms": [
+                  "Sols",
+                  "Nuevo Sols",
+                  "Peruvian Sols",
                   "Nuevo Sol",
                   "Sol"
                 ]
@@ -713,6 +847,8 @@
               "name": {
                 "value": "Paraguayan Guarani",
                 "synonyms": [
+                  "Guaranis",
+                  "Paraguayan Guaranis",
                   "Guarani"
                 ]
               }
@@ -721,6 +857,9 @@
               "name": {
                 "value": "Papua New Guinean Kina",
                 "synonyms": [
+                  "Kinas",
+                  "PNG Kinas",
+                  "Papua New Guinean Kinas",
                   "PNG Kina",
                   "Kina"
                 ]
@@ -730,65 +869,94 @@
               "name": {
                 "value": "Panamanian Balboa",
                 "synonyms": [
+                  "Balboas",
+                  "Panamanian Balboas",
                   "Balboa"
                 ]
               }
             },
             {
               "name": {
-                "value": "Pakistan Rupee"
+                "value": "Pakistan Rupee",
+                "synonyms": [
+                  "Pakistan Rupees"
+                ]
               }
             },
             {
               "name": {
-                "value": "Omani Rial"
+                "value": "Omani Rial",
+                "synonyms": [
+                  "Omani Rials"
+                ]
               }
             },
             {
               "name": {
-                "value": "Macedonian Denar"
+                "value": "Macedonian Denar",
+                "synonyms": [
+                  "Macedonian Denars"
+                ]
               }
             },
             {
               "name": {
                 "value": "Nigerian Naira",
                 "synonyms": [
+                  "Nairas",
+                  "Nigerian Nairas",
                   "Naira"
                 ]
               }
             },
             {
               "name": {
-                "value": "West African CFA Franc"
+                "value": "West African CFA Franc",
+                "synonyms": [
+                  "West African CFA Francs"
+                ]
               }
             },
             {
               "name": {
                 "value": "Nicaraguan Córdoba",
                 "synonyms": [
+                  "Córdobas",
+                  "Nicaraguan Córdobas",
                   "Córdoba"
                 ]
               }
             },
             {
               "name": {
-                "value": "CFP Franc"
+                "value": "CFP Franc",
+                "synonyms": [
+                  "CFP Francs"
+                ]
               }
             },
             {
               "name": {
-                "value": "Nepalese Rupee"
+                "value": "Nepalese Rupee",
+                "synonyms": [
+                  "Nepalese Rupees"
+                ]
               }
             },
             {
               "name": {
-                "value": "Namibia Dollar"
+                "value": "Namibia Dollar",
+                "synonyms": [
+                  "Namibia Dollars"
+                ]
               }
             },
             {
               "name": {
                 "value": "Burmese Kyat",
                 "synonyms": [
+                  "Kyats",
+                  "Burmese Kyats",
                   "Kyat"
                 ]
               }
@@ -797,6 +965,8 @@
               "name": {
                 "value": "Mozambican Metical",
                 "synonyms": [
+                  "Meticals",
+                  "Mozambican Meticals",
                   "Metical"
                 ]
               }
@@ -805,299 +975,459 @@
               "name": {
                 "value": "Mongolia Tughrik",
                 "synonyms": [
+                  "Tughriks",
+                  "Mongolia Tughriks",
                   "Tughrik"
                 ]
               }
             },
             {
               "name": {
-                "value": "Moldovan Leu"
+                "value": "Moldovan Leu",
+                "synonyms": [
+                  "Moldovan Leus"
+                ]
               }
             },
             {
               "name": {
-                "value": "Mexican Peso"
+                "value": "Mexican Peso",
+                "synonyms": [
+                  "Mexican Pesos"
+                ]
               }
             },
             {
               "name": {
-                "value": "Mauritius Rupee"
+                "value": "Mauritius Rupee",
+                "synonyms": [
+                  "Mauritius Rupees"
+                ]
               }
             },
             {
               "name": {
-                "value": "Ouguiya"
+                "value": "Ouguiya",
+                "synonyms": [
+                  "Ouguiyas"
+                ]
               }
             },
             {
               "name": {
-                "value": "Rufiyaa"
+                "value": "Rufiyaa",
+                "synonyms": [
+                  "Rufiyaas"
+                ]
               }
             },
             {
               "name": {
                 "value": "Malaysian Ringgit",
                 "synonyms": [
+                  "Ringgits",
+                  "Malaysian Ringgits",
                   "Ringgit"
                 ]
               }
             },
             {
               "name": {
-                "value": "Kwacha"
+                "value": "Kwacha",
+                "synonyms": [
+                  "Kwachas"
+                ]
               }
             },
             {
               "name": {
-                "value": "Malagasy Franc"
+                "value": "Malagasy Franc",
+                "synonyms": [
+                  "Malagasy Francs"
+                ]
               }
             },
             {
               "name": {
                 "value": "Macanese Pataca",
                 "synonyms": [
+                  "Patacas",
+                  "Macanese Patacas",
                   "Pataca"
                 ]
               }
             },
             {
               "name": {
-                "value": "Lybian Dinar"
+                "value": "Lybian Dinar",
+                "synonyms": [
+                  "Lybian Dinars"
+                ]
               }
             },
             {
               "name": {
-                "value": "Liberian Dollar"
+                "value": "Liberian Dollar",
+                "synonyms": [
+                  "Liberian Dollars"
+                ]
               }
             },
             {
               "name": {
-                "value": "Loti"
+                "value": "Loti",
+                "synonyms": [
+                  "Loties",
+                  "Lotis"
+                ]
               }
             },
             {
               "name": {
-                "value": "Lebanese Pound"
+                "value": "Lebanese Pound",
+                "synonyms": [
+                  "Lebanese Pounds"
+                ]
               }
             },
             {
               "name": {
-                "value": "Kip"
+                "value": "Kip",
+                "synonyms": [
+                  "Kips"
+                ]
               }
             },
             {
               "name": {
-                "value": "Som"
+                "value": "Som",
+                "synonyms": [
+                  "Soms"
+                ]
               }
             },
             {
               "name": {
-                "value": "Kuwaiti Dinar"
+                "value": "Kuwaiti Dinar",
+                "synonyms": [
+                  "Kuwaiti Dinars"
+                ]
               }
             },
             {
               "name": {
-                "value": "Won"
+                "value": "Won",
+                "synonyms": [
+                  "Wons"
+                ]
               }
             },
             {
               "name": {
-                "value": "North Korean Won"
+                "value": "North Korean Won",
+                "synonyms": [
+                  "North Korean Wons"
+                ]
               }
             },
             {
               "name": {
-                "value": "Kenyan Shilling"
+                "value": "Kenyan Shilling",
+                "synonyms": [
+                  "Kenyan Shillings"
+                ]
               }
             },
             {
               "name": {
-                "value": "Tenge"
+                "value": "Tenge",
+                "synonyms": [
+                  "Tenges"
+                ]
               }
             },
             {
               "name": {
-                "value": "Jordanian Dinar"
+                "value": "Jordanian Dinar",
+                "synonyms": [
+                  "Jordanian Dinars"
+                ]
               }
             },
             {
               "name": {
-                "value": "Jersey pound"
+                "value": "Jersey pound",
+                "synonyms": [
+                  "Jersey pounds"
+                ]
               }
             },
             {
               "name": {
-                "value": "Yen"
+                "value": "Yen",
+                "synonyms": [
+                  "Yens"
+                ]
               }
             },
             {
               "name": {
-                "value": "Jamaican Dollar"
+                "value": "Jamaican Dollar",
+                "synonyms": [
+                  "Jamaican Dollars"
+                ]
               }
             },
             {
               "name": {
                 "value": "New Israeli Sheqel",
                 "synonyms": [
+                  "New Israeli Sheqels",
                   "Sheqel"
                 ]
               }
             },
             {
               "name": {
-                "value": "Manx pound"
+                "value": "Manx pound",
+                "synonyms": [
+                  "Manx pounds"
+                ]
               }
             },
             {
               "name": {
-                "value": "Iraqi Dinar"
+                "value": "Iraqi Dinar",
+                "synonyms": [
+                  "Manx pounds"
+                ]
               }
             },
             {
               "name": {
-                "value": "Iranian Rial"
+                "value": "Iranian Rial",
+                "synonyms": [
+                  "Iranian Rials"
+                ]
               }
             },
             {
               "name": {
-                "value": "Rupiah"
+                "value": "Rupiah",
+                "synonyms": [
+                  "Rupiahs"
+                ]
               }
             },
             {
               "name": {
-                "value": "Indian Rupee"
+                "value": "Indian Rupee",
+                "synonyms": [
+                  "Indian Rupees"
+                ]
               }
             },
             {
               "name": {
-                "value": "Iceland Krona"
+                "value": "Iceland Krona",
+                "synonyms": [
+                  "Iceland Kronas"
+                ]
               }
             },
             {
               "name": {
-                "value": "Forint"
+                "value": "Forint",
+                "synonyms": [
+                  "Forints"
+                ]
               }
             },
             {
               "name": {
-                "value": "Hong Kong Dollar"
+                "value": "Hong Kong Dollar",
+                "synonyms": [
+                  "Hong Kong Dollars"
+                ]
               }
             },
             {
               "name": {
-                "value": "Lempira"
+                "value": "Lempira",
+                "synonyms": [
+                  "Lempiras"
+                ]
               }
             },
             {
               "name": {
                 "value": "Haitian Gourde",
                 "synonyms": [
+                  "Gourdes",
+                  "Haitian Gourdes",
                   "Gourde"
                 ]
               }
             },
             {
               "name": {
-                "value": "Guyana Dollar"
+                "value": "Guyana Dollar",
+                "synonyms": [
+                  "Guyana Dollars"
+                ]
               }
             },
             {
               "name": {
-                "value": "Guinea Franc"
+                "value": "Guinea Franc",
+                "synonyms": [
+                  "Guinea Francs"
+                ]
               }
             },
             {
               "name": {
-                "value": "Guernsey pound"
+                "value": "Guernsey pound",
+                "synonyms": [
+                  "Guernsey pounds"
+                ]
               }
             },
             {
               "name": {
-                "value": "Quetzal"
+                "value": "Quetzal",
+                "synonyms": [
+                  "Quetzals"
+                ]
               }
             },
             {
               "name": {
-                "value": "Danish Krone"
+                "value": "Danish Krone",
+                "synonyms": [
+                  "Danish Krones"
+                ]
               }
             },
             {
               "name": {
-                "value": "Gibraltar Pound"
+                "value": "Gibraltar Pound",
+                "synonyms": [
+                  "Gibraltar Pounds"
+                ]
               }
             },
             {
               "name": {
-                "value": "Cedi"
+                "value": "Cedi",
+                "synonyms": [
+                  "Cedis"
+                ]
               }
             },
             {
               "name": {
-                "value": "Lari"
+                "value": "Lari",
+                "synonyms": [
+                  "Laris"
+                ]
               }
             },
             {
               "name": {
-                "value": "Dalasi"
+                "value": "Dalasi",
+                "synonyms": [
+                  "Dalasis"
+                ]
               }
             },
             {
               "name": {
-                "value": "Fiji Dollar"
+                "value": "Fiji Dollar",
+                "synonyms": [
+                  "Fiji Dollars"
+                ]
               }
             },
             {
               "name": {
-                "value": "Faroese króna"
+                "value": "Faroese króna",
+                "synonyms": [
+                  "Faroese krónas"
+                ]
               }
             },
             {
               "name": {
-                "value": "Falkland Islands pound"
+                "value": "Falkland Islands pound",
+                "synonyms": [
+                  "Falkland Islands pounds"
+                ]
               }
             },
             {
               "name": {
                 "value": "Ethiopian Birr",
                 "synonyms": [
+                  "Birrs",
+                  "Ethiopian Birrs",
                   "Birr"
                 ]
               }
             },
             {
               "name": {
-                "value": "Swazi lilangeni"
+                "value": "Swazi lilangeni",
+                "synonyms": [
+                  "Swazi lilangenis"
+                ]
               }
             },
             {
               "name": {
-                "value": "Nakfa"
+                "value": "Nakfa",
+                "synonyms": [
+                  "Nakfas"
+                ]
               }
             },
             {
               "name": {
-                "value": "Euro"
+                "value": "Euro",
+                "synonyms": [
+                  "Euros"
+                ]
               }
             },
             {
               "name": {
-                "value": "Egyptian Pound"
+                "value": "Egyptian Pound",
+                "synonyms": [
+                  "Egyptian Pounds"
+                ]
               }
             },
             {
               "name": {
-                "value": "Dominican Peso"
+                "value": "Dominican Peso",
+                "synonyms": [
+                  "Dominican Pesos"
+                ]
               }
             },
             {
               "name": {
-                "value": "Djibouti Franc"
+                "value": "Djibouti Franc",
+                "synonyms": [
+                  "Djibouti Francs"
+                ]
               }
             },
             {
               "name": {
                 "value": "Danish Kroner",
                 "synonyms": [
+                  "Danish Kroners",
                   "Kroner"
                 ]
               }
@@ -1106,36 +1436,52 @@
               "name": {
                 "value": "Czech Koruna",
                 "synonyms": [
+                  "Korunas",
+                  "Czech Korunas",
                   "Koruna"
                 ]
               }
             },
             {
               "name": {
-                "value": "Antillean Guilder"
+                "value": "Antillean Guilder",
+                "synonyms": [
+                  "Antillean Guilders"
+                ]
               }
             },
             {
               "name": {
-                "value": "Cuban Peso"
+                "value": "Cuban Peso",
+                "synonyms": [
+                  "Cuban Pesos"
+                ]
               }
             },
             {
               "name": {
-                "value": "Croatian Kuna"
+                "value": "Croatian Kuna",
+                "synonyms": [
+                  "Croatian Kunas"
+                ]
               }
             },
             {
               "name": {
                 "value": "Costa Rican Colón",
                 "synonyms": [
+                  "Colóns",
+                  "Costa Rican Colóns",
                   "Colón"
                 ]
               }
             },
             {
               "name": {
-                "value": "New Zealand Dollar"
+                "value": "New Zealand Dollar",
+                "synonyms": [
+                  "New Zealand Dollars"
+                ]
               }
             },
             {
@@ -1148,46 +1494,69 @@
             },
             {
               "name": {
-                "value": "Comoro Franc"
+                "value": "Comoro Franc",
+                "synonyms": [
+                  "Francs",
+                  "Comoro Francs"
+                ]
               }
             },
             {
               "name": {
-                "value": "Colombian Peso"
+                "value": "Colombian Peso",
+                "synonyms": [
+                  "Colombian Pesos"
+                ]
               }
             },
             {
               "name": {
                 "value": "Renminbi",
                 "synonyms": [
+                  "Yuans",
+                  "Renminbis",
                   "Yuan"
                 ]
               }
             },
             {
               "name": {
-                "value": "Chilean Peso"
+                "value": "Chilean Peso",
+                "synonyms": [
+                  "Chilean Pesos"
+                ]
               }
             },
             {
               "name": {
-                "value": "Cayman Islands Dollar"
+                "value": "Cayman Islands Dollar",
+                "synonyms": [
+                  "Cayman Islands Dollars"
+                ]
               }
             },
             {
               "name": {
-                "value": "Canadian Dollar"
+                "value": "Canadian Dollar",
+                "synonyms": [
+                  "Canadian Dollars"
+                ]
               }
             },
             {
               "name": {
-                "value": "CFA Franc BEAC"
+                "value": "CFA Franc BEAC",
+                "synonyms": [
+                  "CFA Franc BEACs"
+                ]
               }
             },
             {
               "name": {
                 "value": "Cambodian Riel",
                 "synonyms": [
+                  "Riels",
+                  "Cambodian Riels",
                   "Riel"
                 ]
               }
@@ -1196,169 +1565,254 @@
               "name": {
                 "value": "Cape Verde Escudo",
                 "synonyms": [
+                  "Escudos",
+                  "Cape Verde Escudos",
                   "Escudo"
                 ]
               }
             },
             {
               "name": {
-                "value": "Burundi Franc"
+                "value": "Burundi Franc",
+                "synonyms": [
+                  "Burundi Francs"
+                ]
               }
             },
             {
               "name": {
-                "value": "CFA Franc BCEAO"
+                "value": "CFA Franc BCEAO",
+                "synonyms": [
+                  "CFA Franc BCEAOs"
+                ]
               }
             },
             {
               "name": {
-                "value": "Bulgarian Lev"
+                "value": "Bulgarian Lev",
+                "synonyms": [
+                  "Bulgarian Levs"
+                ]
               }
             },
             {
               "name": {
-                "value": "Brunei Dollar"
+                "value": "Brunei Dollar",
+                "synonyms": [
+                  "Brunei Dollars"
+                ]
               }
             },
             {
               "name": {
-                "value": "Brazilian Real"
+                "value": "Brazilian Real",
+                "synonyms": [
+                  "Brazilian Reals"
+                ]
               }
             },
             {
               "name": {
-                "value": "Norwegian Krone"
+                "value": "Norwegian Krone",
+                "synonyms": [
+                  "Norwegian Krones"
+                ]
               }
             },
             {
               "name": {
-                "value": "Pula"
+                "value": "Pula",
+                "synonyms": [
+                  "Pulas"
+                ]
               }
             },
             {
               "name": {
                 "value": "Convertible Mark",
                 "synonyms": [
+                  "Marks",
+                  "Convertible Marks",
                   "Mark"
                 ]
               }
             },
             {
               "name": {
-                "value": "Boliviano"
+                "value": "Boliviano",
+                "synonyms": [
+                  "Bolivianos"
+                ]
               }
             },
             {
               "name": {
                 "value": "Bhutanese Ngultrum",
                 "synonyms": [
+                  "Ngultrums",
+                  "Bhutanese Ngultrums",
                   "Ngultrum"
                 ]
               }
             },
             {
               "name": {
-                "value": "Bermudian Dollar"
+                "value": "Bermudian Dollar",
+                "synonyms": [
+                  "Bermudian Dollars"
+                ]
               }
             },
             {
               "name": {
-                "value": "CFA Franc"
+                "value": "CFA Franc",
+                "synonyms": [
+                  "CFA Francs"
+                ]
               }
             },
             {
               "name": {
-                "value": "Belize Dollar"
+                "value": "Belize Dollar",
+                "synonyms": [
+                  "Belize Dollars"
+                ]
               }
             },
             {
               "name": {
-                "value": "Belarusian Ruble"
+                "value": "Belarusian Ruble",
+                "synonyms": [
+                  "Belarusian Rubles"
+                ]
               }
             },
             {
               "name": {
-                "value": "Barbados Dollar"
+                "value": "Barbados Dollar",
+                "synonyms": [
+                  "Barbados Dollars"
+                ]
               }
             },
             {
               "name": {
                 "value": "Bangladeshi Taka",
                 "synonyms": [
+                  "Takas",
+                  "Bangladeshi Takas",
                   "Taka"
                 ]
               }
             },
             {
               "name": {
-                "value": "Bahraini Dinar"
+                "value": "Bahraini Dinar",
+                "synonyms": [
+                  "Bahraini Dinars"
+                ]
               }
             },
             {
               "name": {
-                "value": "Bahamian Dollar"
+                "value": "Bahamian Dollar",
+                "synonyms": [
+                  "Bahamian Dollars"
+                ]
               }
             },
             {
               "name": {
-                "value": "Azerbaijan Manat"
+                "value": "Azerbaijan Manat",
+                "synonyms": [
+                  "Azerbaijan Manats"
+                ]
               }
             },
             {
               "name": {
-                "value": "Australian Dollar"
+                "value": "Australian Dollar",
+                "synonyms": [
+                  "Australian Dollars"
+                ]
               }
             },
             {
               "name": {
                 "value": "Aruban Florin",
                 "synonyms": [
+                  "Florins",
+                  "Aruban Florins",
                   "Florin"
                 ]
               }
             },
             {
               "name": {
-                "value": "Armenian Dram"
+                "value": "Armenian Dram",
+                "synonyms": [
+                  "Armenian Drams"
+                ]
               }
             },
             {
               "name": {
-                "value": "Argentine Peso"
+                "value": "Argentine Peso",
+                "synonyms": [
+                  "Argentine Pesos"
+                ]
               }
             },
             {
               "name": {
-                "value": "East Caribbean Dollar"
+                "value": "East Caribbean Dollar",
+                "synonyms": [
+                  "East Caribbean Dollars"
+                ]
               }
             },
             {
               "name": {
                 "value": "Angolan Kwanza",
                 "synonyms": [
+                  "Kwanzas",
+                  "Angolan Kwanzas",
                   "Kwanza"
                 ]
               }
             },
             {
               "name": {
-                "value": "US Dollar"
+                "value": "US Dollar",
+                "synonyms": [
+                  "US Dollars"
+                ]
               }
             },
             {
               "name": {
-                "value": "Algerian Dinar"
+                "value": "Algerian Dinar",
+                "synonyms": [
+                  "Algerian Dinars"
+                ]
               }
             },
             {
               "name": {
-                "value": "Albanian Lek"
+                "value": "Albanian Lek",
+                "synonyms": [
+                  "Albanian Leks"
+                ]
               }
             },
             {
               "name": {
                 "value": "Afghan Afghani",
                 "synonyms": [
+                  "Afghanies",
+                  "Afghanis",
+                  "Afghan Afghanies",
+                  "Afghan Afghanis",
                   "Afghani"
                 ]
               }
@@ -1471,5 +1925,5 @@
       }
     }
   },
-  "version": "28"
+  "version": "35"
 }
