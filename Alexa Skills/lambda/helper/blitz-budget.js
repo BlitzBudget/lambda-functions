@@ -49,44 +49,8 @@ blitzbudgetDB.prototype.getDefaultAlexaWallet = async function(userId, responseB
 /*
 * Fetch all default accounts
 */
-blitzbudgetDB.prototype.getDefaultAlexaAccount = async function(walletId, responseBuilder) {
-    console
-    const params = {
-            TableName: TABLE_NAME,
-            KeyConditionExpression: "pk = :pk and begins_with(sk, :items)",
-            ExpressionAttributeValues: {
-                ":pk": {
-                  S: walletId
-                },
-                ":items": {
-                  S: "BankAccount#"
-                }
-            },
-            ProjectionExpression: "bank_account_name, linked, bank_account_number, account_balance, sk, pk, selected_account, number_of_times_selected, account_type"
-        }
-    return dbHelper.getFromBlitzBudgetTable(params).then((data) => {
-        console.log('Successfully retrieved the account information from the DynamoDB. Item count is ' + data.length);
-        let defaultAccount = data[0];
-        // If length is empty
-        if(typeof (data.length) == 'undefined' || data.length == 0) {
-            // TODO
-        } else {
-            for(let i=0, len=data.length; i<len; i++) {
-                let ba = data[i];
-                if(ba['selected_account']) {
-                    defaultAccount = ba;
-                }
-            }
-        }
-        return defaultAccount;
-      })
-      .catch((err) => {
-        const speechText = `There were issues getting your account from Blitz Budget. Please try again.`
-        return responseBuilder
-          .speak(speechText)
-          .reprompt(speechText)
-          .getResponse();
-      })
+blitzbudgetDB.prototype.getDefaultAlexaAccount = async function(walletId) {
+    return await getDefaultAccount(walletId);
 }
 
 /*
@@ -217,6 +181,7 @@ blitzbudgetDB.prototype.getTagAlexaBalance = async function(walletId, tagName, s
                 for(let j=0, leng=tags.length; j<leng; j++) {
                     let tag = tags[j];
                     if(isEqual(tag.S.toUpperCase(), tagName.toUpperCase())) {
+                        console.log("The current tag has a balance of ", item['amount'].N);
                         tagBal += Number(item['amount'].N);
                         // Break the tags for loop
                         break;
@@ -374,17 +339,30 @@ blitzbudgetDB.prototype.changeDefaultAccountAlexa = async function(allAccounts, 
     return say;
 }
 
-blitzbudgetDB.prototype.calculateWalletFromAlexa = function(allWallets, walletCurrency) {
-    let data = allWallets, wallet;
-    // If length is empty
-    if(isNotEmpty(data)) {
-        for(let i=0, len=data.length; i<len; i++) {
-            let item = data[i];
-            if(isEqual(item['currency'].S.toUpperCase(), walletCurrency.toUpperCase())) {
-                wallet = item;
-            }
-        }
+blitzbudgetDB.prototype.calculateWalletFromAlexa = function(allWallets, slotValues) {
+    let data = allWallets, wallet, walletCurrency;
+    
+    if (slotValues.currency.ERstatus === 'ER_SUCCESS_MATCH') {
+        if(slotValues.currency.resolved !== slotValues.currency.heardAs) {
+            walletCurrency = slotValues.currency.resolved; 
+        } else {
+            walletCurrency = slotValues.currency.heardAs;
+        } 
     }
+    if (slotValues.currency.ERstatus === 'ER_SUCCESS_NO_MATCH') {
+        console.log('***** consider adding "' + slotValues.currency.heardAs + '" to the custom slot type used by slot category! '); 
+    } else {
+        // If length is empty
+        if(isNotEmpty(data)) {
+            for(let i=0, len=data.length; i<len; i++) {
+                let item = data[i];
+                if(isEqual(item['currency'].S.toUpperCase(), walletCurrency.toUpperCase())) {
+                    wallet = item;
+                }
+            }
+        }    
+    }
+    
     console.log("The wallet information calculated is ", wallet);
     return wallet;
 }
@@ -497,7 +475,8 @@ blitzbudgetDB.prototype.addBudgetAlexaAmount = async function(walletId, category
     if(isNotEmpty(dateObj)) {
         dateId = dateObj[0].sk.S;
     } else {
-        let dateObj = await addDateData(walletId, currentDate);
+        dateId = "Date#" + today.toISOString();
+        dateObj = await createDateData(walletId, dateId);
     }
     
     // If Amount if empty
@@ -547,13 +526,162 @@ blitzbudgetDB.prototype.addBudgetAlexaAmount = async function(walletId, category
     
 }
 
+blitzbudgetDB.prototype.addNewGoalFromAlexa = async function(walletId, amount, goalType) {
+    let today = new Date();
+    let randomValue = "Goal#" + today.toISOString();
+    
+    if(isEmpty(amount)) {
+        amount = "0";
+    }
+
+    var params = {
+        TableName: 'blitzbudget',
+        Item: {
+            "pk": {
+                S: walletId
+            },
+            "sk": {
+                S: randomValue
+            },
+            "goal_type": {
+                S: goalType
+            },
+            "final_amount": {
+                N: amount
+            },
+            /*"preferable_target_date": event['body-json'].targetDate,
+            "actual_target_date": event['body-json'].actualTargetDate,
+            "monthly_contribution": event['body-json'].monthlyContribution,*/
+            "target_id": {
+                S: walletId
+            },
+            "target_type": {
+                S: "Wallet"
+            },
+            "creation_date": {
+                S: new Date().toISOString()
+            },
+            "updated_date": {
+                S: new Date().toISOString()
+            }
+        }
+    };
+    
+    console.log("A new goal has the params ", params);
+    
+    return dbHelper.addToBlitzBudgetTable(params).then((data) => {
+        console.log('Successfully added the goal to the DynamoDB.');
+        return 'Successfully added a new goal for ' + goalType;
+      })
+      .catch((err) => {
+        return 'There was an error while adding a new goal! Please try again later.';
+      })
+}
+
+blitzbudgetDB.prototype.addTransactionAlexaAmount = async function(walletId, categoryId, amount, dateId, currencyName) {
+    let today = new Date();
+    let randomValue = "Transaction#" + today.toISOString();
+    let currentDate = today.getFullYear() + '-' + ("0" + (Number(today.getMonth()) + 1)).slice(-2);
+    let dateObj = await getDateData(walletId, currentDate);
+    
+    // If Date is not empty
+    if(isNotEmpty(dateObj)) {
+        dateId = dateObj[0].sk.S;
+    } else {
+        dateId = "Date#" + today.toISOString();
+        dateObj = await createDateData(walletId, dateId);
+    }
+    
+    let defaultAccount = await getDefaultAccount(walletId);
+    if(isEmpty(defaultAccount)) {
+       // TODO 
+       console.log("The default account is not present");
+    }
+
+    var params = {
+        TableName: 'blitzbudget',
+        Item: {
+            "pk": {
+                S: walletId
+            },
+            "sk": {
+                S: randomValue
+            },
+            "amount": {
+                N: amount
+            },
+            "category": {
+                S: categoryId
+            },
+            "recurrence": {
+                S: 'NEVER'
+            },
+            "account": {
+                S: defaultAccount.sk.S
+            },
+            "date_meant_for": {
+                S: dateId
+            },
+            "creation_date": {
+                S: today.toISOString()
+            },
+            "updated_date": {
+                S: today.toISOString()
+            }
+        }
+    };
+
+    console.log("Adding a new item...");
+    return dbHelper.addToBlitzBudgetTable(params).then((data) => {
+        console.log('Successfully added the transaction to the DynamoDB.');
+        return 'Successfully added a new transaction for ' + amount + ' ' + currencyName;
+      })
+      .catch((err) => {
+        return 'There was an error while adding a new transaction! Please try again later.';
+      })
+}
+
 /*
 * Handle Helper Functions
 */
 
+async function getDefaultAccount(walletId) {
+    const params = {
+            TableName: TABLE_NAME,
+            KeyConditionExpression: "pk = :pk and begins_with(sk, :items)",
+            ExpressionAttributeValues: {
+                ":pk": {
+                  S: walletId
+                },
+                ":items": {
+                  S: "BankAccount#"
+                }
+            },
+            ProjectionExpression: "bank_account_name, linked, bank_account_number, account_balance, sk, pk, selected_account, number_of_times_selected, account_type"
+        }
+    return dbHelper.getFromBlitzBudgetTable(params).then((data) => {
+        console.log('Successfully retrieved the account information from the DynamoDB. Item count is ' + data.length);
+        let defaultAccount = data[0];
+        // If length is empty
+        if(typeof (data.length) == 'undefined' || data.length == 0) {
+            // TODO
+        } else {
+            for(let i=0, len=data.length; i<len; i++) {
+                let ba = data[i];
+                if(ba['selected_account']) {
+                    defaultAccount = ba;
+                }
+            }
+        }
+        return defaultAccount;
+      })
+      .catch((err) => {
+        console.log(`There were issues getting your account from Blitz Budget. Please try again.`, err);
+        return;
+      })
+}
+
 async function createDateData(walletId, skForDate) {
-    
-    skForDate = "Date#" + skForDate;
     
     var params = {
         TableName: 'blitzbudget',

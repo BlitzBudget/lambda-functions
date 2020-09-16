@@ -65,11 +65,11 @@
             }
           ],
           "samples": [
-            "I spent {number} {currency} {date}",
-            "I earned {number} {currency} {date}",
-            "I received {number} {currency} {date}",
-            "I spent {number} {currency} on {categories}",
-            "I just received {number} {currency}"
+            "Add a new transaction of {categories} for {number} {currency}",
+            "I spent {number} {currency} {date} on {categories}",
+            "I earned {number} {currency} {date} on {categories}",
+            "I received {number} {currency} {date} on {categories}",
+            "I just received {number} {currency} on {categories}"
           ]
         },
         {
@@ -1925,5 +1925,5 @@
       }
     }
   },
-  "version": "35"
+  "version": "37"
 }
