@@ -36,6 +36,10 @@
             }
           ],
           "samples": [
+            "How much did I spend on {category} category {date}",
+            "How much did I earn on {category} category {date}",
+            "How much did I spend on {category} category",
+            "How much did I earn on {category} category",
             "Whats the balance of {category} category for {date}",
             "Whats the balance of {category} category",
             "What is the balance of  {category} category",
@@ -49,7 +53,10 @@
           "slots": [
             {
               "name": "number",
-              "type": "AMAZON.NUMBER"
+              "type": "AMAZON.NUMBER",
+              "samples": [
+                "{number}"
+              ]
             },
             {
               "name": "currency",
@@ -57,7 +64,10 @@
             },
             {
               "name": "categories",
-              "type": "CATEGORY"
+              "type": "CATEGORY",
+              "samples": [
+                "{categories}"
+              ]
             },
             {
               "name": "date",
@@ -65,6 +75,10 @@
             }
           ],
           "samples": [
+            "Add a new transaction with {number}",
+            "Add a new transaction with {number} {currency} {date}",
+            "Add a new transaction with {number} {currency}",
+            "Add a new transaction for {categories}",
             "Add a new transaction of {categories} for {number} {currency}",
             "I spent {number} {currency} {date} on {categories}",
             "I earned {number} {currency} {date} on {categories}",
@@ -77,7 +91,10 @@
           "slots": [
             {
               "name": "wallet",
-              "type": "AMAZON.SearchQuery"
+              "type": "CURRENCY",
+              "samples": [
+                "{wallet}"
+              ]
             }
           ],
           "samples": [
@@ -92,7 +109,10 @@
           "slots": [
             {
               "name": "account",
-              "type": "AMAZON.SearchQuery"
+              "type": "AMAZON.SearchQuery",
+              "samples": [
+                "{account}"
+              ]
             }
           ],
           "samples": [
@@ -107,7 +127,11 @@
           "slots": [
             {
               "name": "category",
-              "type": "CATEGORY"
+              "type": "CATEGORY",
+              "samples": [
+                "{category} category",
+                "{category}"
+              ]
             },
             {
               "name": "amount",
@@ -119,6 +143,8 @@
             }
           ],
           "samples": [
+            "Add a new budget for {amount}",
+            "Add a new budget for {amount} {currency}",
             "Add a new budget of {amount} for {category}",
             "Add a new budget of {amount}  {currency}  for {category} ",
             "Add a new budget for {category}"
@@ -141,6 +167,7 @@
             }
           ],
           "samples": [
+            "Add a new goal for {goaltype} with {amount} {currency}",
             "Add a new goal for {goaltype} with a goal of {amount} {currency}",
             "Add a new goal for {goaltype} with a target amount of {amount} {currency}",
             "Add a new goal for {goaltype} "
@@ -151,10 +178,25 @@
           "slots": [
             {
               "name": "category",
-              "type": "CATEGORY"
+              "type": "CATEGORY",
+              "samples": [
+                "The balance of {category} category",
+                "I would like to know the balance of {category} category",
+                "I want to know the budget balance for {category} category",
+                "{category} category",
+                "{category}"
+              ]
             }
           ],
           "samples": [
+            "Whats my budget balance in {category} category",
+            "What is my budget balance in {category} category ",
+            "Whats my budget balance in {category}",
+            "Whats my balance in {category} category",
+            "What is my balance in {category} category",
+            "How much have I earned in {category} category",
+            "How much have I earned on {category} category",
+            "How much can I spend on {category} category",
             "How much do I have in {category} to spend",
             "How much do I have left in {category} to spend"
           ]
@@ -164,10 +206,23 @@
           "slots": [
             {
               "name": "tag",
-              "type": "AMAZON.SearchQuery"
+              "type": "AMAZON.SearchQuery",
+              "samples": [
+                "I would like to know the balance for {tag}",
+                "I want to know the balance of {tag}",
+                "I would like to know the balance for {tag} tag",
+                "I want to know the balance of {tag} tag",
+                "{tag} tag",
+                "{tag}"
+              ]
             }
           ],
           "samples": [
+            "Get the {tag} tag balance",
+            "Whats the {tag} tag balance",
+            "Whats my {tag} tag balance",
+            "Tell the {tag} tag balance",
+            "Tel me the {tag} tag balance",
             "Tell me the {tag} tags earnings",
             "Tell me the {tag} tags expenditure",
             " Tell me the expenditure of the {tag} tag",
@@ -181,7 +236,11 @@
           "slots": [
             {
               "name": "category",
-              "type": "CATEGORY"
+              "type": "CATEGORY",
+              "samples": [
+                "{category} category",
+                "{category}"
+              ]
             },
             {
               "name": "currency",
@@ -189,10 +248,30 @@
             },
             {
               "name": "amt",
-              "type": "AMAZON.NUMBER"
+              "type": "AMAZON.NUMBER",
+              "samples": [
+                "The budget amount is {amt} {currency}",
+                "I would like tha budget amount to be {amt} {currency}",
+                "I would like tha budget amount to be {amt}",
+                "{amt} {currency}",
+                "{amt}"
+              ]
             }
           ],
           "samples": [
+            "Change my budget amount to {amt} {currency} for {category} category",
+            "Change my budget amount to {amt} {currency}",
+            "Change my budget amount to {amt} {currency} for {category}",
+            "Change my budget amount to {amt}",
+            "Change the budget amount for {category} category",
+            "Change the budget for {category} category",
+            "Change the budget amount for {category}",
+            "Change the budget for {category}",
+            "Change budget to {amt} {currency}",
+            "Change {category} budget amount to {amt} {currency}",
+            "Change {category} budget amount to {amt}",
+            "Change the {category} budget amount to {amt} {currency}",
+            "Change the {category} budget amount to {amt}",
             "Change the {category} budgets amount to {amt}",
             "Change the {category} budget to {amt}",
             "Change the {category} budgets amount to {amt} {currency}",
@@ -205,6 +284,10 @@
           "name": "getDefaultWallet",
           "slots": [],
           "samples": [
+            "Tell my default wallet",
+            "Whats the default wallet",
+            "Tell me my default wallet",
+            "Whas my default wallet",
             "What is the default wallet",
             "What is my default wallet"
           ]
@@ -213,6 +296,9 @@
           "name": "getDefaultAccount",
           "slots": [],
           "samples": [
+            "Tell me my default account",
+            "Whats the default account",
+            "Whats my default account",
             "What is the default account",
             "What is my default account"
           ]
@@ -222,10 +308,16 @@
           "slots": [
             {
               "name": "currency",
-              "type": "CURRENCY"
+              "type": "CURRENCY",
+              "multipleValues": {
+                "enabled": true
+              }
             }
           ],
           "samples": [
+            "I want to add a new {currency} wallet",
+            "Add a {currency} wallet",
+            "Add new {currency} wallet",
             "Add a new wallet with currency as {currency}",
             "Can you add a {currency} wallet",
             "Add a new {currency} wallet"
@@ -236,7 +328,10 @@
           "slots": [
             {
               "name": "category",
-              "type": "CATEGORY"
+              "type": "CATEGORY",
+              "samples": [
+                "{category}"
+              ]
             },
             {
               "name": "date",
@@ -244,9 +339,18 @@
             }
           ],
           "samples": [
+            "Whats the {category} budget amount",
+            "What is the budget amount {date}",
+            "What is the budget amount for {date}",
+            "Whats the budget amount for {date}",
+            "Whats the budget amount {date}",
+            "Whats the {category} budget amount {date}",
+            "Whats the {category} budget amount for  {date}",
+            "Whats the {category} budget",
+            "Whats the budget for {category}",
             "What is the budget amount for {category}",
             "What is the budget for {category}",
-            "Whats the balance of {category} budget for {date}"
+            "Whats the amount of {category} budget for {date}"
           ]
         },
         {
@@ -254,11 +358,68 @@
           "slots": [
             {
               "name": "search",
-              "type": "AMAZON.SearchQuery"
+              "type": "AMAZON.SearchQuery",
+              "samples": [
+                "{search}"
+              ]
             }
           ],
           "samples": [
+            "Send a new feature request to {search}",
+            "Send a new feature request for {search}",
+            "Send Blitz Budget a feature request to {search}",
             "Send a feature request to {search}"
+          ]
+        },
+        {
+          "name": "getTransactionTotalByDate",
+          "slots": [
+            {
+              "name": "date",
+              "type": "AMAZON.DATE",
+              "samples": [
+                "{date}"
+              ]
+            }
+          ],
+          "samples": [
+            "Whats my transaction total {date}",
+            "Whats my transaction total for {date}"
+          ]
+        },
+        {
+          "name": "getEarningsByDate",
+          "slots": [
+            {
+              "name": "date",
+              "type": "AMAZON.DATE",
+              "samples": [
+                "{date}"
+              ]
+            }
+          ],
+          "samples": [
+            "What is my income {date}",
+            "Whats my income {date}",
+            "What is my total income {date}",
+            "Whats my total income {date}",
+            "How much did I earn {date}"
+          ]
+        },
+        {
+          "name": "getExpenditureByDate",
+          "slots": [
+            {
+              "name": "date",
+              "type": "AMAZON.DATE",
+              "samples": [
+                "{date}"
+              ]
+            }
+          ],
+          "samples": [
+            "Whats my expenditure {date}",
+            "How much did I spend {date} "
           ]
         }
       ],
@@ -1785,6 +1946,8 @@
               "name": {
                 "value": "US Dollar",
                 "synonyms": [
+                  "American Dollars",
+                  "American Dollar",
                   "US Dollars"
                 ]
               }
@@ -1823,6 +1986,7 @@
         {
           "values": [
             {
+              "id": "ImproveMyHome",
               "name": {
                 "value": "Improve my home",
                 "synonyms": [
@@ -1833,6 +1997,7 @@
               }
             },
             {
+              "id": "PlanATrip",
               "name": {
                 "value": "Take a trip",
                 "synonyms": [
@@ -1843,6 +2008,7 @@
               }
             },
             {
+              "id": "University",
               "name": {
                 "value": "Save for college",
                 "synonyms": [
@@ -1853,6 +2019,7 @@
               }
             },
             {
+              "id": "BuyACar",
               "name": {
                 "value": "Buy an automobile",
                 "synonyms": [
@@ -1872,6 +2039,7 @@
               }
             },
             {
+              "id": "BuyAHome",
               "name": {
                 "value": "Buy a home",
                 "synonyms": [
@@ -1881,6 +2049,7 @@
               }
             },
             {
+              "id": "Retirement",
               "name": {
                 "value": "Save for retirement",
                 "synonyms": [
@@ -1889,24 +2058,30 @@
               }
             },
             {
+              "id": "EmergencyFund",
               "name": {
                 "value": "Save for an emergency",
                 "synonyms": [
+                  "Emergency Fund",
                   "Save for emergency",
                   "emergency"
                 ]
               }
             },
             {
+              "id": "PayLoan",
               "name": {
                 "value": "Pay off loans",
                 "synonyms": [
+                  "Liability",
+                  "Debt",
                   "Pay loans",
                   "loans"
                 ]
               }
             },
             {
+              "id": "CreditCard",
               "name": {
                 "value": "Pay off credit card",
                 "synonyms": [
@@ -1923,7 +2098,625 @@
           "level": "LOW"
         }
       }
-    }
+    },
+    "dialog": {
+      "intents": [
+        {
+          "name": "addNewBudget",
+          "confirmationRequired": false,
+          "prompts": {},
+          "slots": [
+            {
+              "name": "category",
+              "type": "CATEGORY",
+              "elicitationRequired": true,
+              "confirmationRequired": false,
+              "prompts": {
+                "elicitation": "Elicit.Slot.1572803288451.653219039053"
+              }
+            },
+            {
+              "name": "amount",
+              "type": "AMAZON.NUMBER",
+              "elicitationRequired": false,
+              "confirmationRequired": false,
+              "prompts": {}
+            },
+            {
+              "name": "currency",
+              "type": "CURRENCY",
+              "elicitationRequired": false,
+              "confirmationRequired": false,
+              "prompts": {},
+              "validations": [
+                {
+                  "type": "hasEntityResolutionMatch",
+                  "prompt": "Slot.Validation.1129060075904.577064916785.1580164394038"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "addNewWallet",
+          "confirmationRequired": false,
+          "prompts": {},
+          "slots": [
+            {
+              "name": "currency",
+              "type": "CURRENCY",
+              "elicitationRequired": true,
+              "confirmationRequired": false,
+              "prompts": {
+                "elicitation": "Elicit.Slot.126078473769.936258501570"
+              },
+              "validations": [
+                {
+                  "type": "hasEntityResolutionMatch",
+                  "prompt": "Slot.Validation.126078473769.936258501570.445248365880"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "changeBudgetAmount",
+          "confirmationRequired": false,
+          "prompts": {},
+          "slots": [
+            {
+              "name": "category",
+              "type": "CATEGORY",
+              "elicitationRequired": true,
+              "confirmationRequired": false,
+              "prompts": {
+                "elicitation": "Elicit.Slot.396466192562.329206124758"
+              }
+            },
+            {
+              "name": "currency",
+              "type": "CURRENCY",
+              "elicitationRequired": false,
+              "confirmationRequired": false,
+              "prompts": {},
+              "validations": [
+                {
+                  "type": "hasEntityResolutionMatch",
+                  "prompt": "Slot.Validation.945446746721.918205037511.1534950682026"
+                }
+              ]
+            },
+            {
+              "name": "amt",
+              "type": "AMAZON.NUMBER",
+              "elicitationRequired": true,
+              "confirmationRequired": false,
+              "prompts": {
+                "elicitation": "Elicit.Slot.673905738462.32554856956"
+              }
+            }
+          ]
+        },
+        {
+          "name": "addNewGoal",
+          "confirmationRequired": false,
+          "prompts": {},
+          "slots": [
+            {
+              "name": "goaltype",
+              "type": "GOAL_TYPE",
+              "elicitationRequired": false,
+              "confirmationRequired": false,
+              "prompts": {}
+            },
+            {
+              "name": "amount",
+              "type": "AMAZON.NUMBER",
+              "elicitationRequired": false,
+              "confirmationRequired": false,
+              "prompts": {}
+            },
+            {
+              "name": "currency",
+              "type": "CURRENCY",
+              "elicitationRequired": false,
+              "confirmationRequired": false,
+              "prompts": {},
+              "validations": [
+                {
+                  "type": "hasEntityResolutionMatch",
+                  "prompt": "Slot.Validation.1273377604667.761938519896.849834982373"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "addNewTransaction",
+          "confirmationRequired": false,
+          "prompts": {},
+          "slots": [
+            {
+              "name": "number",
+              "type": "AMAZON.NUMBER",
+              "elicitationRequired": true,
+              "confirmationRequired": false,
+              "prompts": {
+                "elicitation": "Elicit.Slot.626165973867.1565594286487"
+              }
+            },
+            {
+              "name": "currency",
+              "type": "CURRENCY",
+              "elicitationRequired": false,
+              "confirmationRequired": false,
+              "prompts": {},
+              "validations": [
+                {
+                  "type": "hasEntityResolutionMatch",
+                  "prompt": "Slot.Validation.248161463798.1385826118367.590575665407"
+                }
+              ]
+            },
+            {
+              "name": "categories",
+              "type": "CATEGORY",
+              "elicitationRequired": true,
+              "confirmationRequired": false,
+              "prompts": {
+                "elicitation": "Elicit.Slot.626165973867.1425520306897"
+              }
+            },
+            {
+              "name": "date",
+              "type": "AMAZON.DATE",
+              "elicitationRequired": false,
+              "confirmationRequired": false,
+              "prompts": {}
+            }
+          ]
+        },
+        {
+          "name": "sendFeatureRequest",
+          "confirmationRequired": false,
+          "prompts": {},
+          "slots": [
+            {
+              "name": "search",
+              "type": "AMAZON.SearchQuery",
+              "elicitationRequired": true,
+              "confirmationRequired": false,
+              "prompts": {
+                "elicitation": "Elicit.Slot.395655164651.1297234586386"
+              }
+            }
+          ]
+        },
+        {
+          "name": "getBudgetAmount",
+          "confirmationRequired": false,
+          "prompts": {},
+          "slots": [
+            {
+              "name": "category",
+              "type": "CATEGORY",
+              "elicitationRequired": true,
+              "confirmationRequired": false,
+              "prompts": {
+                "elicitation": "Elicit.Slot.585629519801.932705721217"
+              }
+            },
+            {
+              "name": "date",
+              "type": "AMAZON.DATE",
+              "elicitationRequired": false,
+              "confirmationRequired": false,
+              "prompts": {}
+            }
+          ]
+        },
+        {
+          "name": "getTagBalance",
+          "confirmationRequired": false,
+          "prompts": {},
+          "slots": [
+            {
+              "name": "tag",
+              "type": "AMAZON.SearchQuery",
+              "elicitationRequired": true,
+              "confirmationRequired": false,
+              "prompts": {
+                "elicitation": "Elicit.Slot.1506160743415.644787632733"
+              }
+            }
+          ]
+        },
+        {
+          "name": "getBudgetBalance",
+          "confirmationRequired": false,
+          "prompts": {},
+          "slots": [
+            {
+              "name": "category",
+              "type": "CATEGORY",
+              "elicitationRequired": true,
+              "confirmationRequired": false,
+              "prompts": {
+                "elicitation": "Elicit.Slot.511723411012.279150663564"
+              }
+            }
+          ]
+        },
+        {
+          "name": "changeDefaultAccount",
+          "confirmationRequired": false,
+          "prompts": {},
+          "slots": [
+            {
+              "name": "account",
+              "type": "AMAZON.SearchQuery",
+              "elicitationRequired": true,
+              "confirmationRequired": false,
+              "prompts": {
+                "elicitation": "Elicit.Slot.541762428353.669687826660"
+              }
+            }
+          ]
+        },
+        {
+          "name": "changeDefaultWallet",
+          "confirmationRequired": false,
+          "prompts": {},
+          "slots": [
+            {
+              "name": "wallet",
+              "type": "CURRENCY",
+              "elicitationRequired": true,
+              "confirmationRequired": false,
+              "prompts": {
+                "elicitation": "Elicit.Slot.346634771849.1513770348235"
+              },
+              "validations": [
+                {
+                  "type": "hasEntityResolutionMatch",
+                  "prompt": "Slot.Validation.346634771849.1513770348235.700952446545"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "getEarningsByDate",
+          "confirmationRequired": false,
+          "prompts": {},
+          "slots": [
+            {
+              "name": "date",
+              "type": "AMAZON.DATE",
+              "elicitationRequired": true,
+              "confirmationRequired": false,
+              "prompts": {
+                "elicitation": "Elicit.Slot.381042562362.852458958505"
+              }
+            }
+          ]
+        },
+        {
+          "name": "getExpenditureByDate",
+          "confirmationRequired": false,
+          "prompts": {},
+          "slots": [
+            {
+              "name": "date",
+              "type": "AMAZON.DATE",
+              "elicitationRequired": true,
+              "confirmationRequired": false,
+              "prompts": {
+                "elicitation": "Elicit.Slot.610467636534.762775694419"
+              }
+            }
+          ]
+        },
+        {
+          "name": "getTransactionTotalByDate",
+          "confirmationRequired": false,
+          "prompts": {},
+          "slots": [
+            {
+              "name": "date",
+              "type": "AMAZON.DATE",
+              "elicitationRequired": true,
+              "confirmationRequired": false,
+              "prompts": {
+                "elicitation": "Elicit.Slot.848184214161.1100567241740"
+              }
+            }
+          ]
+        }
+      ],
+      "delegationStrategy": "ALWAYS"
+    },
+    "prompts": [
+      {
+        "id": "Slot.Validation.126078473769.936258501570.445248365880",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "The {currency} is not a valid currency. Please tell me a currency instead."
+          }
+        ]
+      },
+      {
+        "id": "Elicit.Slot.126078473769.936258501570",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "Which currency should your new wallet be?"
+          }
+        ]
+      },
+      {
+        "id": "Elicit.Slot.945446746721.918205037511",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "The {currency} is not a valid currency. Please tell me a currency instead."
+          }
+        ]
+      },
+      {
+        "id": "Elicit.Slot.1273377604667.761938519896",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "The {currency} is not a valid currency. Please tell me a currency instead."
+          }
+        ]
+      },
+      {
+        "id": "Elicit.Slot.1022639083041.1139621051894",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "The {currency} is not a valid currency. Please tell me a currency instead."
+          }
+        ]
+      },
+      {
+        "id": "Elicit.Slot.248161463798.1385826118367",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "The {currency} is not a valid currency. Please tell me a currency instead."
+          }
+        ]
+      },
+      {
+        "id": "Slot.Validation.945446746721.918205037511.1534950682026",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "Which currency would you like to change the budget amount in?"
+          },
+          {
+            "type": "PlainText",
+            "value": "The {currency} is not a valid currency. Please tell me a currency instead."
+          }
+        ]
+      },
+      {
+        "id": "Slot.Validation.1273377604667.761938519896.849834982373",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "The {currency} is not a valid currency. Please tell me a currency instead."
+          }
+        ]
+      },
+      {
+        "id": "Slot.Validation.248161463798.1385826118367.590575665407",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "The {currency} is not a valid currency. Please tell me a currency instead."
+          }
+        ]
+      },
+      {
+        "id": "Elicit.Slot.240835436570.565958909487",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "The {currency} is not a valid currency. Please tell me a currency instead."
+          }
+        ]
+      },
+      {
+        "id": "Elicit.Slot.1074909252433.1267617469503",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "The {currency} is not a valid currency. Please tell me a valid currency instead."
+          }
+        ]
+      },
+      {
+        "id": "Elicit.Slot.1572803288451.653219039053",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "Which category would you like to add your budget to?"
+          }
+        ]
+      },
+      {
+        "id": "Elicit.Slot.396466192562.329206124758",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "What is the category that you would like to change?"
+          },
+          {
+            "type": "PlainText",
+            "value": "Which category would you like to change your amount to {amt}  ?"
+          },
+          {
+            "type": "PlainText",
+            "value": "Which category would you like to change your amount to {amt} {currency} ?"
+          }
+        ]
+      },
+      {
+        "id": "Elicit.Slot.395655164651.1297234586386",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "What would you love for us add as a new feature?"
+          }
+        ]
+      },
+      {
+        "id": "Elicit.Slot.585629519801.932705721217",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "Whats the category that you are thinking of?"
+          },
+          {
+            "type": "PlainText",
+            "value": "Which category are you looking for?"
+          }
+        ]
+      },
+      {
+        "id": "Elicit.Slot.673905738462.32554856956",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "Whats the budget amount that you would like to change to for {category} category ?"
+          },
+          {
+            "type": "PlainText",
+            "value": "Whats the budget amount that you would like to change to?"
+          },
+          {
+            "type": "PlainText",
+            "value": "Whats the budget amount that you would like for {category} ?"
+          }
+        ]
+      },
+      {
+        "id": "Elicit.Slot.1506160743415.644787632733",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "Whats the tag for which you would like to know the balance for?"
+          }
+        ]
+      },
+      {
+        "id": "Elicit.Slot.511723411012.279150663564",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "Which category do you want to know the budget balance for?"
+          }
+        ]
+      },
+      {
+        "id": "Slot.Validation.1129060075904.577064916785.1580164394038",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "The {currency} is not a valid currency. Please tell me a currency instead."
+          }
+        ]
+      },
+      {
+        "id": "Elicit.Slot.541762428353.669687826660",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "What would you like the default account to be?"
+          }
+        ]
+      },
+      {
+        "id": "Slot.Validation.346634771849.1513770348235.700952446545",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "The {wallet} is not a valid currency. Please tell me a currency instead."
+          }
+        ]
+      },
+      {
+        "id": "Elicit.Slot.346634771849.1513770348235",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "The {wallet} is not a valid currency. Please tell me a currency instead."
+          }
+        ]
+      },
+      {
+        "id": "Elicit.Slot.626165973867.1565594286487",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "Whats the transaction amount to add?"
+          }
+        ]
+      },
+      {
+        "id": "Elicit.Slot.626165973867.1425520306897",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "Whats the category for the transaction that you would like to add?"
+          }
+        ]
+      },
+      {
+        "id": "Elicit.Slot.381042562362.852458958505",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "Give me a time frame to work on"
+          },
+          {
+            "type": "PlainText",
+            "value": "Whats the time period to look for your earnings?"
+          }
+        ]
+      },
+      {
+        "id": "Elicit.Slot.610467636534.762775694419",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "Give me a time frame?"
+          },
+          {
+            "type": "PlainText",
+            "value": "Whats the time period to check for your expenditure?"
+          }
+        ]
+      },
+      {
+        "id": "Elicit.Slot.848184214161.1100567241740",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "Whats the time period you are looking for?"
+          },
+          {
+            "type": "PlainText",
+            "value": "Whats the time frame to check for transaction total?"
+          }
+        ]
+      }
+    ]
   },
-  "version": "37"
+  "version": "94"
 }

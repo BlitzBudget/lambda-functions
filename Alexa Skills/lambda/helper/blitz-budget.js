@@ -38,11 +38,8 @@ blitzbudgetDB.prototype.getDefaultAlexaWallet = async function(userId, responseB
         return wallet;
       })
       .catch((err) => {
-        const speechText = `There were issues getting your wallet from Blitz Budget. Please try again.`
-        return responseBuilder
-          .speak(speechText)
-          .reprompt(speechText)
-          .getResponse();
+        console.log("There was an error fetching the default wallet ", err);
+        return;
       })
 }
 
@@ -99,11 +96,8 @@ blitzbudgetDB.prototype.getCategoryAlexa = async function(walletId, categoryName
         return category;
       })
       .catch((err) => {
-        const speechText = `There were issues getting your category from Blitz Budget. Please try again.`
-        return responseBuilder
-          .speak(speechText)
-          .reprompt(speechText)
-          .getResponse();
+        console.log("There was an error getting the category from DynamoDB ", err);
+        return;
       })
 }
 
@@ -145,11 +139,8 @@ blitzbudgetDB.prototype.getBudgetAlexaAmount = async function(walletId, category
         return budget;
       })
       .catch((err) => {
-        const speechText = `There were issues getting your budget from Blitz Budget. Please try again.`
-        return responseBuilder
-          .speak(speechText)
-          .reprompt(speechText)
-          .getResponse();
+        console.log("There was an error getting the budget amount from DynamoDB ", err);
+        return;
       })
 }
 
@@ -177,11 +168,15 @@ blitzbudgetDB.prototype.getTagAlexaBalance = async function(walletId, tagName, s
         if(isNotEmpty(data)) {
             for(let i=0, len=data.length; i<len; i++) {
                 let item = data[i];
+                // If tag is not present then continue with the loop
+                if(isEmpty(item['tags'])) {
+                    continue;
+                }
+                
                 let tags = item['tags'].L;
                 for(let j=0, leng=tags.length; j<leng; j++) {
                     let tag = tags[j];
                     if(isEqual(tag.S.toUpperCase(), tagName.toUpperCase())) {
-                        console.log("The current tag has a balance of ", item['amount'].N);
                         tagBal += Number(item['amount'].N);
                         // Break the tags for loop
                         break;
@@ -189,15 +184,12 @@ blitzbudgetDB.prototype.getTagAlexaBalance = async function(walletId, tagName, s
                 }
             }
         }
-        console.log("The tag has a balance of ", tagBal);
+        
         return tagBal;
       })
       .catch((err) => {
-        const speechText = `There were issues getting your transaction from Blitz Budget. Please try again.`
-        return responseBuilder
-          .speak(speechText)
-          .reprompt(speechText)
-          .getResponse();
+          console.log("There was an error fetching the tag balance ", err);
+        return;
       })
 }
 
@@ -221,11 +213,8 @@ blitzbudgetDB.prototype.getWalletFromAlexa = async function(userId, responseBuil
         
       })
       .catch((err) => {
-        const speechText = `There were issues getting your account from Blitz Budget. Please try again.`
-        return responseBuilder
-          .speak(speechText)
-          .reprompt(speechText)
-          .getResponse();
+        console.log("There was an error getting the wallet from DynamoDB ", err);
+        return;
       })
 }
 
@@ -292,7 +281,8 @@ blitzbudgetDB.prototype.getAccountFromAlexa  = async function(walletId) {
         
       })
       .catch((err) => {
-        return '';
+        console.log("There was an error getting the account from DynamoDB ", err);
+        return;
       })
 }
 
@@ -402,6 +392,7 @@ blitzbudgetDB.prototype.changeBudgetAlexaAmount = async function(walletId, budge
         
       })
       .catch((err) => {
+        console.log("There was an error changing the budget from DynamoDB ", err);
         return 'There was an error while updating the budget amount! Please try again later.';
       })
 }
@@ -462,6 +453,7 @@ blitzbudgetDB.prototype.addWalletFromAlexa = async function(userId, currency) {
         
       })
       .catch((err) => {
+         console.log("There was an error adding a new wallet from DynamoDB ", err);
         return 'There was an error while adding a new wallet! Please try again later.';
       })
 }
@@ -521,6 +513,7 @@ blitzbudgetDB.prototype.addBudgetAlexaAmount = async function(walletId, category
         return 'Successfully added a new budget for ' + categoryName;
       })
       .catch((err) => {
+        console.log("There was an error adding a new budget from DynamoDB ", err);
         return 'There was an error while adding a new budget! Please try again later.';
       })
     
@@ -574,12 +567,23 @@ blitzbudgetDB.prototype.addNewGoalFromAlexa = async function(walletId, amount, g
         return 'Successfully added a new goal for ' + goalType;
       })
       .catch((err) => {
+        console.log("There was an error adding a new goal from DynamoDB ", err);
         return 'There was an error while adding a new goal! Please try again later.';
       })
 }
 
 blitzbudgetDB.prototype.addTransactionAlexaAmount = async function(walletId, categoryId, amount, dateId, currencyName) {
     let today = new Date();
+    // Date used to get the budget
+    if(isNotEmpty(dateId)) {
+        let dateMentioned = dateId;
+        console.log("The Date mentioned is ", dateMentioned);
+        if(dateMentioned.length < 6) {
+            // For example is 2019 then become 2019-09
+            dateMentioned = dateMentioned + '-' + (currentDate.getMonth() + 1);
+        }
+        today =  new Date(dateMentioned);
+    }
     let randomValue = "Transaction#" + today.toISOString();
     let currentDate = today.getFullYear() + '-' + ("0" + (Number(today.getMonth()) + 1)).slice(-2);
     let dateObj = await getDateData(walletId, currentDate);
@@ -594,8 +598,8 @@ blitzbudgetDB.prototype.addTransactionAlexaAmount = async function(walletId, cat
     
     let defaultAccount = await getDefaultAccount(walletId);
     if(isEmpty(defaultAccount)) {
-       // TODO 
        console.log("The default account is not present");
+       return 'You do not have a default account in assigned to your wallet!';
     }
 
     var params = {
@@ -637,8 +641,125 @@ blitzbudgetDB.prototype.addTransactionAlexaAmount = async function(walletId, cat
         return 'Successfully added a new transaction for ' + amount + ' ' + currencyName;
       })
       .catch((err) => {
+        console.log("There was an error adding a new transaction from DynamoDB ", err);
         return 'There was an error while adding a new transaction! Please try again later.';
       })
+}
+
+blitzbudgetDB.prototype.getEarningsByDateFromAlexa = async function(walletId, dateId, walletCurrency) {
+    
+    const params = {
+            TableName: TABLE_NAME,
+            KeyConditionExpression: "pk = :pk and begins_with(sk, :items)",
+            ExpressionAttributeValues: {
+                ":pk": {
+                  S: walletId
+                },
+                ":items": {
+                  S: "Transaction#" + dateId
+                }
+            },
+            ProjectionExpression: "amount, description, category, recurrence, account, date_meant_for, sk, pk, creation_date, tags"
+        }
+    console.log("The params to fetch the earnings are ", params);
+        
+    return dbHelper.getFromBlitzBudgetTable(params).then((data) => {
+        console.log('Successfully retrieved the transaction information from the DynamoDB. Item count is ' + data.length);
+        let transactionBalance = 0;
+        // If length is not empty
+        if(isNotEmpty(data)) {
+            for(let i=0, len=data.length; i<len; i++) {
+                let item = data[i];
+                let transactionAmount = Number(item.amount.N);
+                if(transactionAmount > 0) {
+                    transactionBalance += transactionAmount;   
+                }
+            }
+        }
+        return 'You earned ' + transactionBalance + ' ' + walletCurrency;
+    })
+      .catch((err) => {
+          console.log("There was an error fetching the earnings ", err);
+        return 'We couldn\'t calculate your earnings at this moment. Please try again later!';
+      })
+    
+}
+
+blitzbudgetDB.prototype.getExpenditureByDateFromAlexa = async function(walletId, dateId, walletCurrency) {
+    
+    const params = {
+            TableName: TABLE_NAME,
+            KeyConditionExpression: "pk = :pk and begins_with(sk, :items)",
+            ExpressionAttributeValues: {
+                ":pk": {
+                  S: walletId
+                },
+                ":items": {
+                  S: "Transaction#" + dateId
+                }
+            },
+            ProjectionExpression: "amount, description, category, recurrence, account, date_meant_for, sk, pk, creation_date, tags"
+        }
+    console.log("The params to fetch the expense is ", params);
+        
+    return dbHelper.getFromBlitzBudgetTable(params).then((data) => {
+        console.log('Successfully retrieved the transaction information from the DynamoDB. Item count is ' + data.length);
+        let transactionBalance = 0;
+        // If length is not empty
+        if(isNotEmpty(data)) {
+            for(let i=0, len=data.length; i<len; i++) {
+                let item = data[i];
+                let transactionAmount = Number(item.amount.N);
+                if(transactionAmount < 0) {
+                    transactionBalance += transactionAmount;   
+                }
+            }
+        }
+        return 'You spent ' + transactionBalance + ' ' + walletCurrency;
+    })
+      .catch((err) => {
+          console.log("There was an error fetching your expenditure ", err);
+        return 'We couldn\'t calculate your expenditure at this moment. Please try again later!';
+      })
+    
+}
+
+blitzbudgetDB.prototype.getTransactionTotalByDateFromAlexa = async function(walletId, dateId, walletCurrency) {
+    
+    const params = {
+            TableName: TABLE_NAME,
+            KeyConditionExpression: "pk = :pk and begins_with(sk, :items)",
+            ExpressionAttributeValues: {
+                ":pk": {
+                  S: walletId
+                },
+                ":items": {
+                  S: "Transaction#" + dateId
+                }
+            },
+            ProjectionExpression: "amount, description, category, recurrence, account, date_meant_for, sk, pk, creation_date, tags"
+        }
+    
+    console.log("The params to fetch the transaction total are ", params);
+        
+    return dbHelper.getFromBlitzBudgetTable(params).then((data) => {
+        console.log('Successfully retrieved the transaction information from the DynamoDB. Item count is ' + data.length);
+        let transactionBalance = 0;
+        // If length is not empty
+        if(isNotEmpty(data)) {
+            for(let i=0, len=data.length; i<len; i++) {
+                let item = data[i];
+                let transactionAmount = Number(item.amount.N);
+                transactionBalance += transactionAmount;   
+            }
+        }
+        return 'You transaction total is ' + transactionBalance + ' ' + walletCurrency;
+    })
+      .catch((err) => {
+          console.log("There was an error fetching the tag balance ", err);
+        return 'We couldn\'t calculate your transaction total at this moment. Please try again later!';
+      })
+    
 }
 
 /*
@@ -663,8 +784,8 @@ async function getDefaultAccount(walletId) {
         console.log('Successfully retrieved the account information from the DynamoDB. Item count is ' + data.length);
         let defaultAccount = data[0];
         // If length is empty
-        if(typeof (data.length) == 'undefined' || data.length == 0) {
-            // TODO
+        if(isEmpty(data)) {
+            return;
         } else {
             for(let i=0, len=data.length; i<len; i++) {
                 let ba = data[i];
@@ -733,7 +854,7 @@ async function getDateData(walletId, currentDate) {
       })
       .catch((err) => {
         console.log("There was an error fetching the date information ", err);
-        return '';
+        return;
       })
     
 }
