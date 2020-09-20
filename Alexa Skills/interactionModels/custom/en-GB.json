@@ -315,6 +315,8 @@
             }
           ],
           "samples": [
+            "Add a new wallet for {currency} currency",
+            "Add a new wallet for {currency}",
             "I want to add a new {currency} wallet",
             "Add a {currency} wallet",
             "Add new {currency} wallet",
@@ -420,6 +422,49 @@
           "samples": [
             "Whats my expenditure {date}",
             "How much did I spend {date} "
+          ]
+        },
+        {
+          "name": "addCategoryByDate",
+          "slots": [
+            {
+              "name": "category",
+              "type": "CATEGORY",
+              "samples": [
+                "I want to add {category} category",
+                "I want to add {category}",
+                "{category}"
+              ]
+            },
+            {
+              "name": "date",
+              "type": "AMAZON.DATE"
+            },
+            {
+              "name": "categoryType",
+              "type": "CATEGORY_TYPE",
+              "samples": [
+                "I choose {categoryType}",
+                "I want to choose {categoryType}",
+                "{categoryType}"
+              ]
+            }
+          ],
+          "samples": [
+            "Add a new category for {category} in {categoryType} type",
+            "Add a new category for {category} in {categoryType} type for {date}",
+            "Add a new category for {category} in {date}",
+            "Add a new category for {category} for {date}",
+            "Add a new category for {category} with {categoryType} type for {date}",
+            "Add a new category for {category} with {categoryType} type",
+            "Add a new {category} category for the  {categoryType} type",
+            "Add a new {category} category for {categoryType} type",
+            "Add a new {category} category for the {date}",
+            "Add a new {category} category with {categoryType} for the  {date}",
+            "Add a new {category} category with {categoryType} for {date}",
+            "Add a new {category} category for {date}",
+            "Add a new category for {date}",
+            "Add a new category for {category}"
           ]
         }
       ],
@@ -2091,6 +2136,34 @@
             }
           ],
           "name": "GOAL_TYPE"
+        },
+        {
+          "values": [
+            {
+              "id": "Expense",
+              "name": {
+                "value": "Expense",
+                "synonyms": [
+                  "Expenses",
+                  "Expenditure"
+                ]
+              }
+            },
+            {
+              "id": "Income",
+              "name": {
+                "value": "Income",
+                "synonyms": [
+                  "Salaries",
+                  "Wages",
+                  "Extra Income",
+                  "Salary",
+                  "Earnings"
+                ]
+              }
+            }
+          ],
+          "name": "CATEGORY_TYPE"
         }
       ],
       "modelConfiguration": {
@@ -2432,6 +2505,44 @@
               }
             }
           ]
+        },
+        {
+          "name": "addCategoryByDate",
+          "confirmationRequired": false,
+          "prompts": {},
+          "slots": [
+            {
+              "name": "category",
+              "type": "CATEGORY",
+              "elicitationRequired": true,
+              "confirmationRequired": false,
+              "prompts": {
+                "elicitation": "Elicit.Slot.682453814796.527801239848"
+              }
+            },
+            {
+              "name": "date",
+              "type": "AMAZON.DATE",
+              "elicitationRequired": false,
+              "confirmationRequired": false,
+              "prompts": {}
+            },
+            {
+              "name": "categoryType",
+              "type": "CATEGORY_TYPE",
+              "elicitationRequired": true,
+              "confirmationRequired": false,
+              "prompts": {
+                "elicitation": "Elicit.Slot.416555313843.1568611264650"
+              },
+              "validations": [
+                {
+                  "type": "hasEntityResolutionMatch",
+                  "prompt": "Slot.Validation.416555313843.1568611264650.321694946056"
+                }
+              ]
+            }
+          ]
         }
       ],
       "delegationStrategy": "ALWAYS"
@@ -2715,8 +2826,35 @@
             "value": "Whats the time frame to check for transaction total?"
           }
         ]
+      },
+      {
+        "id": "Elicit.Slot.682453814796.527801239848",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "Whats the category that you would like to create?"
+          }
+        ]
+      },
+      {
+        "id": "Elicit.Slot.416555313843.1568611264650",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "Income or Expense. Choose a category type."
+          }
+        ]
+      },
+      {
+        "id": "Slot.Validation.416555313843.1568611264650.321694946056",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "The category type {categoryType} is not a valid type. Income or Expense, Choose a category type."
+          }
+        ]
       }
     ]
   },
-  "version": "94"
+  "version": "104"
 }

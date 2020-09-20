@@ -1,10 +1,34 @@
 var blitzbudgetDB = function () { };
 
-
 const dbHelper = require('./dbHelper');
 const currencyInfo = require('./currency');
 const TABLE_NAME = "blitzbudget";
-
+const YOU_EARNED = 'You earned ';
+const SUCCESS_SPENT = 'You spent ';
+const SUCCESS_WALLET_TWO = ' wallet.';
+const SUCCESS_WALLET_ONE = 'Successfully added a ';
+const SUCCESS_TRANSACTION_TOTAL = 'You transaction total is ';
+const SUCCESS_ADDED_GOAL = 'Successfully added a new goal for ';
+const SUCCESS_BUDGET_ADD = 'Successfully added a new budget for ';
+const ADDED_NEW_CATEGORY = 'Successfully added a new category for ';
+const ADDED_NEW_TRANSACTION = 'Successfully added a new transaction for ';
+const BUDGET_AMOUNT_SUCCESS = 'Successfully updated the budget amount to ';
+const SUCCESS_DEFAULT_ACCOUNT = 'Successfully updated the default account to ';
+const SUCCESSFUL_DEFAULT_WALLET = 'Successfully updated the default wallet to ';
+const ERROR_ADDING_CATEGORY = 'Error adding a new category. Please try again later!';
+const ERROR_ADDING_GOAL = 'There was an error while adding a new goal! Please try again later.';
+const ERROR_BUDGET_ADD = 'There was an error while adding a new budget! Please try again later.';
+const DEFAULT_ACCOUNT_NOTPRESENT = 'You do not have a default account in assigned to your wallet!';
+const ERROR_ADDING_WALLET = 'There was an error while adding a new wallet! Please try again later.';
+const ERROR_EARNED = 'We couldn\'t calculate your earnings at this moment. Please try again later!';
+const WALLET_NOT_PRESENT = 'The requested wallet is not present. Do you want me to create them for you?';
+const ACCOUNT_NOT_PRESENT = 'The requested account is not present. Do you want me to create them for you?';
+const ERROR_BUDGET_AMOUNT = 'There was an error while updating the budget amount! Please try again later.';
+const ERROR_EXPENDITURE = 'We couldn\'t calculate your expenditure at this moment. Please try again later!';
+const ERROR_ADDING_TRANSACTION = 'There was an error while adding a new transaction! Please try again later.';
+const CHANGING_DEFAULT_WALLET = 'Oops! there was an error changing the default wallet. Please try again later!';
+const ERROR_CHANGING_ACCOUNT = 'Oops! there was an error changing the default account. Please try again later!';
+const ERROR_TRANSACTION_TOTAL = 'We couldn\'t calculate your transaction total at this moment. Please try again later!';
 
 /*
 * Fetch all default wallets
@@ -243,17 +267,17 @@ blitzbudgetDB.prototype.changeDefaultWalletAlexa = async function(userId, data, 
     * Is Empty Events 
     */
     if(isEmpty(events)) {
-        say = 'The requested wallet is not present. Do you want me to create them for you?'
+        say = WALLET_NOT_PRESENT;
     } else {
         /*
         * Patch Wallet
         */
         await Promise.all(events).then(function (result) {
             console.log("Successfully updated the wallet information");
-            say = 'Successfully updated the default wallet to ' + currencyName;
+            say = SUCCESSFUL_DEFAULT_WALLET + currencyName;
         }, function (err) {
             throw new Error("Unable error occured while fetching the Wallet " + err);
-            say = 'Oops! there was an error changing the default wallet. Please try again later!'
+            say = CHANGING_DEFAULT_WALLET;
         });   
     }
     
@@ -312,17 +336,17 @@ blitzbudgetDB.prototype.changeDefaultAccountAlexa = async function(allAccounts, 
     * Is Empty Events 
     */
     if(isEmpty(events)) {
-        say = 'The requested account is not present. Do you want me to create them for you?';
+        say = ACCOUNT_NOT_PRESENT;
     } else {
         /*
         * Patch Wallet
         */
         await Promise.all(events).then(function (result) {
             console.log("Successfully updated the account information");
-            say = 'Successfully updated the default account to ' + accountName;
+            say = SUCCESS_DEFAULT_ACCOUNT + accountName;
         }, function (err) {
-            throw new Error("Unable error occured while fetching the account " + err);
-            say = 'Oops! there was an error changing the default account. Please try again later!';
+            console.log("Unable error occured while fetching the account " + err);
+            say = ERROR_CHANGING_ACCOUNT;
         });   
     }
 
@@ -388,12 +412,12 @@ blitzbudgetDB.prototype.changeBudgetAlexaAmount = async function(walletId, budge
                 
     return dbHelper.patchFromBlitzBudgetTable(params).then((data) => {
         console.log('Successfully retrieved the budget information from the DynamoDB. Item count is ' + data.length);
-        return 'Successfully updated the budget amount to ' + amount + ' ' + currencyName;
+        return BUDGET_AMOUNT_SUCCESS + amount + ' ' + currencyName;
         
       })
       .catch((err) => {
         console.log("There was an error changing the budget from DynamoDB ", err);
-        return 'There was an error while updating the budget amount! Please try again later.';
+        return ERROR_BUDGET_AMOUNT;
       })
 }
 
@@ -449,12 +473,12 @@ blitzbudgetDB.prototype.addWalletFromAlexa = async function(userId, currency) {
                 
     return dbHelper.addToBlitzBudgetTable(params).then((data) => {
         console.log('Successfully added the wallet to the DynamoDB. Item count is ' + data.length);
-        return 'Successfully added a ' + currency + ' wallet.';
+        return SUCCESS_WALLET_ONE + currency + SUCCESS_WALLET_TWO;
         
       })
       .catch((err) => {
          console.log("There was an error adding a new wallet from DynamoDB ", err);
-        return 'There was an error while adding a new wallet! Please try again later.';
+        return ERROR_ADDING_WALLET;
       })
 }
 
@@ -510,11 +534,11 @@ blitzbudgetDB.prototype.addBudgetAlexaAmount = async function(walletId, category
     
     return dbHelper.addToBlitzBudgetTable(params).then((data) => {
         console.log('Successfully added the budget to the DynamoDB.');
-        return 'Successfully added a new budget for ' + categoryName;
+        return SUCCESS_BUDGET_ADD + categoryName;
       })
       .catch((err) => {
         console.log("There was an error adding a new budget from DynamoDB ", err);
-        return 'There was an error while adding a new budget! Please try again later.';
+        return ERROR_BUDGET_ADD;
       })
     
 }
@@ -564,11 +588,11 @@ blitzbudgetDB.prototype.addNewGoalFromAlexa = async function(walletId, amount, g
     
     return dbHelper.addToBlitzBudgetTable(params).then((data) => {
         console.log('Successfully added the goal to the DynamoDB.');
-        return 'Successfully added a new goal for ' + goalType;
+        return SUCCESS_ADDED_GOAL + goalType;
       })
       .catch((err) => {
         console.log("There was an error adding a new goal from DynamoDB ", err);
-        return 'There was an error while adding a new goal! Please try again later.';
+        return ERROR_ADDING_GOAL;
       })
 }
 
@@ -599,7 +623,7 @@ blitzbudgetDB.prototype.addTransactionAlexaAmount = async function(walletId, cat
     let defaultAccount = await getDefaultAccount(walletId);
     if(isEmpty(defaultAccount)) {
        console.log("The default account is not present");
-       return 'You do not have a default account in assigned to your wallet!';
+       return DEFAULT_ACCOUNT_NOTPRESENT;
     }
 
     var params = {
@@ -638,11 +662,11 @@ blitzbudgetDB.prototype.addTransactionAlexaAmount = async function(walletId, cat
     console.log("Adding a new item...");
     return dbHelper.addToBlitzBudgetTable(params).then((data) => {
         console.log('Successfully added the transaction to the DynamoDB.');
-        return 'Successfully added a new transaction for ' + amount + ' ' + currencyName;
+        return ADDED_NEW_TRANSACTION + amount + ' ' + currencyName;
       })
       .catch((err) => {
         console.log("There was an error adding a new transaction from DynamoDB ", err);
-        return 'There was an error while adding a new transaction! Please try again later.';
+        return ERROR_ADDING_TRANSACTION;
       })
 }
 
@@ -662,7 +686,7 @@ blitzbudgetDB.prototype.getEarningsByDateFromAlexa = async function(walletId, da
             ProjectionExpression: "amount, description, category, recurrence, account, date_meant_for, sk, pk, creation_date, tags"
         }
     console.log("The params to fetch the earnings are ", params);
-        
+
     return dbHelper.getFromBlitzBudgetTable(params).then((data) => {
         console.log('Successfully retrieved the transaction information from the DynamoDB. Item count is ' + data.length);
         let transactionBalance = 0;
@@ -676,11 +700,11 @@ blitzbudgetDB.prototype.getEarningsByDateFromAlexa = async function(walletId, da
                 }
             }
         }
-        return 'You earned ' + transactionBalance + ' ' + walletCurrency;
+        return YOU_EARNED + transactionBalance + ' ' + walletCurrency;
     })
       .catch((err) => {
           console.log("There was an error fetching the earnings ", err);
-        return 'We couldn\'t calculate your earnings at this moment. Please try again later!';
+        return ERROR_EARNED;
       })
     
 }
@@ -715,11 +739,11 @@ blitzbudgetDB.prototype.getExpenditureByDateFromAlexa = async function(walletId,
                 }
             }
         }
-        return 'You spent ' + transactionBalance + ' ' + walletCurrency;
+        return SUCCESS_SPENT + transactionBalance + ' ' + walletCurrency;
     })
       .catch((err) => {
           console.log("There was an error fetching your expenditure ", err);
-        return 'We couldn\'t calculate your expenditure at this moment. Please try again later!';
+        return ERROR_EXPENDITURE;
       })
     
 }
@@ -753,11 +777,75 @@ blitzbudgetDB.prototype.getTransactionTotalByDateFromAlexa = async function(wall
                 transactionBalance += transactionAmount;   
             }
         }
-        return 'You transaction total is ' + transactionBalance + ' ' + walletCurrency;
+        return SUCCESS_TRANSACTION_TOTAL + transactionBalance + ' ' + walletCurrency;
     })
       .catch((err) => {
           console.log("There was an error fetching the tag balance ", err);
-        return 'We couldn\'t calculate your transaction total at this moment. Please try again later!';
+        return ERROR_TRANSACTION_TOTAL;
+      })
+    
+}
+
+blitzbudgetDB.prototype.addCategoryByDateFromAlexa = async function(walletId, currentDate, categoryName, categoryType) {
+    let today = new Date();
+    
+    if(isNotEmpty(currentDate)) {
+        let chosenYear = currentDate.slice(0,4);
+        today.setFullYear(chosenYear);
+        
+        // If month is present
+        if(currentDate.length > 4) {
+            let chosenMonth = currentDate.slice(5,7);
+            // Javascript month is 0 -11 while alexa is 0-12
+            chosenMonth = Number(chosenMonth) - 1;
+            today.setMonth(chosenMonth);
+        }
+        
+        // If date is present then
+        if(currentDate.length > 7) {
+            let chosenDay = currentDate.slice(8,10);
+            today.setDate(chosenDay);
+        }
+    }
+    let randomValue = "Category#" + today.toISOString(); 
+    
+    if(isNotEmpty(categoryName)) {
+        if(categoryName.length > 1) {
+            categoryName = categoryName.charAt(0).toUpperCase() + categoryName.slice(1);
+        } else {
+            categoryName = categoryName.charAt(0).toUpperCase();
+        }
+    }
+    
+     var params = {
+        TableName: 'blitzbudget',
+        Item: {
+            "pk": {
+                S: walletId
+            },
+            "sk": {
+                S: randomValue
+            },
+            "category_name": {
+                S: categoryName
+            },
+            "category_total": {
+                N: "0"
+            },
+            "category_type": {
+                S: categoryType
+            }
+        }
+     }
+    
+    console.log("Adding a new item with param... ", params);
+    return dbHelper.addToBlitzBudgetTable(params).then((data) => {
+        console.log('Successfully added the category to the DynamoDB.');
+        return ADDED_NEW_CATEGORY + categoryName;
+      })
+      .catch((err) => {
+        console.log("There was an error adding a new category from DynamoDB ", err);
+        return ERROR_ADDING_CATEGORY;
       })
     
 }
