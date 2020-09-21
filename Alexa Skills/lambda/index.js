@@ -226,7 +226,7 @@ const getCategoryBalance_Handler =  {
         const responseBuilder = handlerInput.responseBuilder;
         let sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
         console.log('The User id retrieved is {0}', sessionAttributes.userId);
-        let wallet = await blitzbudgetDB.getDefaultAlexaWallet(sessionAttributes.userId, responseBuilder);
+        let wallet = await blitzbudgetDB.getDefaultAlexaWallet(sessionAttributes.userId);
         
         console.log('The wallets obtained are ', JSON.stringify(wallet));
         let say = '';
@@ -240,7 +240,7 @@ const getCategoryBalance_Handler =  {
         // console.log('***** slotValues: ' +  JSON.stringify(slotValues, null, 2));
         //   SLOT: category 
         if (slotValues.category.heardAs && slotValues.category.heardAs !== '') {
-            let category = await blitzbudgetDB.getCategoryAlexa(wallet.sk.S, slotValues.category.heardAs, slotValues.date.heardAs, responseBuilder);
+            let category = await blitzbudgetDB.getCategoryAlexa(wallet.sk.S, slotValues.category.heardAs, slotValues.date.heardAs);
             if(isEmpty(category)) {
                 slotStatus += THE_MESSAGE + slotValues.category.heardAs + CATEGORY_EMPTY;
             } else {
@@ -281,11 +281,11 @@ const addNewTransaction_Handler =  {
         //   SLOT: goaltype 
         let slotValues = getSlotValues(request.intent.slots); 
         if(isNotEmpty(slotValues.currency.heardAs)) {
-            let allWallets = await blitzbudgetDB.getWalletFromAlexa(sessionAttributes.userId, responseBuilder);
+            let allWallets = await blitzbudgetDB.getWalletFromAlexa(sessionAttributes.userId);
             wallet = blitzbudgetDB.calculateWalletFromAlexa(allWallets, slotValues); 
             console.log("The calculate wallet is ", JSON.stringify(wallet), ". The currency name is ", slotValues.currency.heardAs);
         } else {
-            wallet = await blitzbudgetDB.getDefaultAlexaWallet(sessionAttributes.userId, responseBuilder);
+            wallet = await blitzbudgetDB.getDefaultAlexaWallet(sessionAttributes.userId);
             console.log("The default wallet is ", wallet.currency.S, " Heard as ", slotValues.currency.heardAs);
         }
         
@@ -305,7 +305,7 @@ const addNewTransaction_Handler =  {
                 // console.log('***** slotValues: ' +  JSON.stringify(slotValues, null, 2));
                 //   SLOT: category 
                 if (slotValues.categories.heardAs && slotValues.categories.heardAs !== '') {
-                    let category = await blitzbudgetDB.getCategoryAlexa(wallet.sk.S, slotValues.categories.heardAs, slotValues.date.heardAs, responseBuilder);
+                    let category = await blitzbudgetDB.getCategoryAlexa(wallet.sk.S, slotValues.categories.heardAs, slotValues.date.heardAs);
                     if(isEmpty(category)) {
                         slotStatus = THE_MESSAGE + slotValues.categories.heardAs + CATEGORY_EMPTY;
                     } else {
@@ -370,7 +370,7 @@ const changeDefaultWallet_Handler =  {
                 slotStatus += ERR_MESSAGE;
             } else {
                 console.log("The wallet currency to change is ", walletCurrency);
-                let allWallets = await blitzbudgetDB.getWalletFromAlexa(sessionAttributes.userId, responseBuilder);
+                let allWallets = await blitzbudgetDB.getWalletFromAlexa(sessionAttributes.userId);
                 let changeWallet = await blitzbudgetDB.changeDefaultWalletAlexa(sessionAttributes.userId, allWallets, walletCurrency);
                 slotStatus += changeWallet;   
             }
@@ -397,7 +397,7 @@ const changeDefaultAccount_Handler =  {
         const request = handlerInput.requestEnvelope.request;
         const responseBuilder = handlerInput.responseBuilder;
         let sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
-        let wallet = await blitzbudgetDB.getDefaultAlexaWallet(sessionAttributes.userId, responseBuilder);
+        let wallet = await blitzbudgetDB.getDefaultAlexaWallet(sessionAttributes.userId);
         
         console.log('The wallets obtained are ', JSON.stringify(wallet));
         let say = '';
@@ -444,11 +444,11 @@ const addNewBudget_Handler =  {
 
         let slotValues = getSlotValues(request.intent.slots); 
         if(isNotEmpty(slotValues.currency.heardAs)) {
-            let allWallets = await blitzbudgetDB.getWalletFromAlexa(sessionAttributes.userId, responseBuilder);
+            let allWallets = await blitzbudgetDB.getWalletFromAlexa(sessionAttributes.userId);
             wallet = blitzbudgetDB.calculateWalletFromAlexa(allWallets, slotValues); 
             console.log("The calculate wallet is ", JSON.stringify(wallet), ". The currency name is ", slotValues.currency.heardAs);
         } else {
-            wallet = await blitzbudgetDB.getDefaultAlexaWallet(sessionAttributes.userId, responseBuilder);
+            wallet = await blitzbudgetDB.getDefaultAlexaWallet(sessionAttributes.userId);
             console.log("The default wallet is ", wallet.currency.S);
         }
         
@@ -466,11 +466,11 @@ const addNewBudget_Handler =  {
             // console.log('***** slotValues: ' +  JSON.stringify(slotValues, null, 2));
             //   SLOT: category 
             if (slotValues.category.heardAs && slotValues.category.heardAs !== '') {
-                let category = await blitzbudgetDB.getCategoryAlexa(wallet.sk.S, slotValues.category.heardAs, currentDate, responseBuilder);
+                let category = await blitzbudgetDB.getCategoryAlexa(wallet.sk.S, slotValues.category.heardAs, currentDate);
                 if(isEmpty(category)) {
                     slotStatus += THE_MESSAGE + slotValues.category.heardAs + CATEGORY_EMPTY;
                 } else {
-                    let budget = await blitzbudgetDB.getBudgetAlexaAmount(wallet.sk.S, category.sk.S, currentDate, responseBuilder);
+                    let budget = await blitzbudgetDB.getBudgetAlexaAmount(wallet.sk.S, category.sk.S, currentDate);
                     if(isEmpty(budget)) {
                         slotStatus += await blitzbudgetDB.addBudgetAlexaAmount(wallet.sk.S, category.sk.S, slotValues.amount.heardAs, currentDate, slotValues.category.heardAs);
                     } else {
@@ -513,11 +513,11 @@ const addNewGoal_Handler =  {
         //   SLOT: goaltype 
         let slotValues = getSlotValues(request.intent.slots); 
         if(isNotEmpty(slotValues.currency.heardAs)) {
-            let allWallets = await blitzbudgetDB.getWalletFromAlexa(sessionAttributes.userId, responseBuilder);
+            let allWallets = await blitzbudgetDB.getWalletFromAlexa(sessionAttributes.userId);
             wallet = blitzbudgetDB.calculateWalletFromAlexa(allWallets, slotValues); 
             console.log("The calculate wallet is ", JSON.stringify(wallet), ". The currency name is ", slotValues.currency.heardAs);
         } else {
-            wallet = await blitzbudgetDB.getDefaultAlexaWallet(sessionAttributes.userId, responseBuilder);
+            wallet = await blitzbudgetDB.getDefaultAlexaWallet(sessionAttributes.userId);
             console.log("The default wallet is ", wallet.currency.S);
         }
         
@@ -531,7 +531,7 @@ const addNewGoal_Handler =  {
             if(isEmpty(slotValues.goaltype.heardAs)) {
                 slotStatus = GOAL_TYPE_ERROR;
             } else {
-                slotStatus = await blitzbudgetDB.addNewGoalFromAlexa(wallet.sk.S, slotValues.amount.heardAs, slotValues.goaltype.heardAs);
+                slotStatus = await blitzbudgetDB.addNewGoalFromAlexa(wallet.sk.S, slotValues.amount.heardAs, slotValues.goaltype.id, slotValues.monthlyContribution.heardAs, slotValues.targetDate.heardAs);
             }
         }
 
@@ -554,7 +554,7 @@ const getBudgetAmount_Handler = {
         const request = handlerInput.requestEnvelope.request;
         const responseBuilder = handlerInput.responseBuilder;
         let sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
-        let wallet = await blitzbudgetDB.getDefaultAlexaWallet(sessionAttributes.userId, responseBuilder);
+        let wallet = await blitzbudgetDB.getDefaultAlexaWallet(sessionAttributes.userId);
         
         let say = '';
 
@@ -582,11 +582,11 @@ const getBudgetAmount_Handler = {
         
         //   SLOT: category 
         if (slotValues.category.heardAs && slotValues.category.heardAs !== '') {
-            let category = await blitzbudgetDB.getCategoryAlexa(wallet.sk.S, slotValues.category.heardAs, currentDate, responseBuilder);
+            let category = await blitzbudgetDB.getCategoryAlexa(wallet.sk.S, slotValues.category.heardAs, currentDate);
             if(isEmpty(category)) {
                 slotStatus += THE_MESSAGE + slotValues.category.heardAs + CATEGORY_EMPTY;
             } else {
-                let budget = await blitzbudgetDB.getBudgetAlexaAmount(wallet.sk.S, category.sk.S, currentDate, responseBuilder);
+                let budget = await blitzbudgetDB.getBudgetAlexaAmount(wallet.sk.S, category.sk.S, currentDate);
                 if(isEmpty(budget)) {
                     slotStatus += THE_MESSAGE + slotValues.category.heardAs + BUDGET_CREATED_ERROR;
                 } else {
@@ -616,7 +616,7 @@ const getBudgetBalance_Handler =  {
         const request = handlerInput.requestEnvelope.request;
         const responseBuilder = handlerInput.responseBuilder;
         let sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
-        let wallet = await blitzbudgetDB.getDefaultAlexaWallet(sessionAttributes.userId, responseBuilder);
+        let wallet = await blitzbudgetDB.getDefaultAlexaWallet(sessionAttributes.userId);
         
         let say = '';
 
@@ -634,11 +634,11 @@ const getBudgetBalance_Handler =  {
         
         //   SLOT: category 
         if (slotValues.category.heardAs && slotValues.category.heardAs !== '') {
-            let category = await blitzbudgetDB.getCategoryAlexa(wallet.sk.S, slotValues.category.heardAs, currentDate, responseBuilder);
+            let category = await blitzbudgetDB.getCategoryAlexa(wallet.sk.S, slotValues.category.heardAs, currentDate);
             if(isEmpty(category)) {
                 slotStatus += THE_MESSAGE + slotValues.category.heardAs + CATEGORY_EMPTY;
             } else {
-                let budget = await blitzbudgetDB.getBudgetAlexaAmount(wallet.sk.S, category.sk.S, currentDate, responseBuilder);
+                let budget = await blitzbudgetDB.getBudgetAlexaAmount(wallet.sk.S, category.sk.S, currentDate);
                 if(isEmpty(budget)) {
                     slotStatus += THE_MESSAGE + slotValues.category.heardAs + BUDGET_NOT_CREATED + category['category_name'].S + BUDGET_NOT_CREATED_TWO + category['category_name'].S ;
                 } else {
@@ -669,7 +669,7 @@ const getTagBalance_Handler =  {
         const request = handlerInput.requestEnvelope.request;
         const responseBuilder = handlerInput.responseBuilder;
         let sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
-        let wallet = await blitzbudgetDB.getDefaultAlexaWallet(sessionAttributes.userId, responseBuilder);
+        let wallet = await blitzbudgetDB.getDefaultAlexaWallet(sessionAttributes.userId);
         
         let say = '';
 
@@ -687,7 +687,7 @@ const getTagBalance_Handler =  {
         
         //   SLOT: tag 
         if (slotValues.tag.heardAs && slotValues.tag.heardAs !== '') {
-            let tagBalance = await blitzbudgetDB.getTagAlexaBalance(wallet.sk.S, slotValues.tag.heardAs, currentDate, responseBuilder);
+            let tagBalance = await blitzbudgetDB.getTagAlexaBalance(wallet.sk.S, slotValues.tag.heardAs, currentDate);
             if(isEmpty(tagBalance)) {
                 slotStatus += THE_MESSAGE + slotValues.tag.heardAs + EMPTY_TAG;
             } else {
@@ -721,11 +721,11 @@ const changeBudgetAmount_Handler =  {
         console.log("The Budget amount is ", JSON.stringify(request.intent.slots));
         let slotValues = getSlotValues(request.intent.slots); 
         if(isNotEmpty(slotValues.currency.heardAs)) {
-            let allWallets = await blitzbudgetDB.getWalletFromAlexa(sessionAttributes.userId, responseBuilder);
+            let allWallets = await blitzbudgetDB.getWalletFromAlexa(sessionAttributes.userId);
             wallet = blitzbudgetDB.calculateWalletFromAlexa(allWallets, slotValues); 
             console.log("The calculate wallet is ", JSON.stringify(wallet), ". The currency name is ", slotValues.currency.heardAs);
         } else {
-            wallet = await blitzbudgetDB.getDefaultAlexaWallet(sessionAttributes.userId, responseBuilder);
+            wallet = await blitzbudgetDB.getDefaultAlexaWallet(sessionAttributes.userId);
             console.log("The default wallet is ", wallet.currency.S);
         }
         
@@ -744,11 +744,11 @@ const changeBudgetAmount_Handler =  {
             // console.log('***** slotValues: ' +  JSON.stringify(slotValues, null, 2));
             //   SLOT: category 
             if (slotValues.category.heardAs && slotValues.category.heardAs !== '') {
-                let category = await blitzbudgetDB.getCategoryAlexa(wallet.sk.S, slotValues.category.heardAs, currentDate, responseBuilder);
+                let category = await blitzbudgetDB.getCategoryAlexa(wallet.sk.S, slotValues.category.heardAs, currentDate);
                 if(isEmpty(category)) {
                     slotStatus += THE_MESSAGE + slotValues.category.heardAs + CATEGORY_EMPTY;
                 } else {
-                    let budget = await blitzbudgetDB.getBudgetAlexaAmount(wallet.sk.S, category.sk.S, currentDate, responseBuilder);
+                    let budget = await blitzbudgetDB.getBudgetAlexaAmount(wallet.sk.S, category.sk.S, currentDate);
                     if(isEmpty(budget)) {
                         slotStatus += THE_MESSAGE + slotValues.category.heardAs + BUDGET_NOT_CREATED + category['category_name'].S + BUDGET_NOT_CREATED_TWO + category['category_name'].S;
                     } else {
@@ -781,7 +781,7 @@ const getDefaultWallet_Handler =  {
         const responseBuilder = handlerInput.responseBuilder;
         let sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
 
-        let wallet = await blitzbudgetDB.getDefaultAlexaWallet(sessionAttributes.userId, responseBuilder);
+        let wallet = await blitzbudgetDB.getDefaultAlexaWallet(sessionAttributes.userId);
         
         let say = DEFAULT_WALLET + wallet.currency.S;
 
@@ -801,7 +801,7 @@ const getDefaultAccount_Handler =  {
         const request = handlerInput.requestEnvelope.request;
         const responseBuilder = handlerInput.responseBuilder;
         let sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
-        let wallet = await blitzbudgetDB.getDefaultAlexaWallet(sessionAttributes.userId, responseBuilder);
+        let wallet = await blitzbudgetDB.getDefaultAlexaWallet(sessionAttributes.userId);
         console.log('The wallets obtained are ', JSON.stringify(wallet));
         let say;
         
@@ -910,7 +910,7 @@ const getEarningsByDate_Handler =  {
         const request = handlerInput.requestEnvelope.request;
         const responseBuilder = handlerInput.responseBuilder;
         let sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
-        let wallet = await blitzbudgetDB.getDefaultAlexaWallet(sessionAttributes.userId, responseBuilder);
+        let wallet = await blitzbudgetDB.getDefaultAlexaWallet(sessionAttributes.userId);
         
         let say = '';
         let slotStatus = '';
@@ -952,7 +952,7 @@ const getExpenditureByDate_Handler =  {
         const request = handlerInput.requestEnvelope.request;
         const responseBuilder = handlerInput.responseBuilder;
         let sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
-        let wallet = await blitzbudgetDB.getDefaultAlexaWallet(sessionAttributes.userId, responseBuilder);
+        let wallet = await blitzbudgetDB.getDefaultAlexaWallet(sessionAttributes.userId);
         
         let say = '';
         let slotStatus = '';
@@ -993,7 +993,7 @@ const getTransactionTotalByDate_Handler =  {
         const request = handlerInput.requestEnvelope.request;
         const responseBuilder = handlerInput.responseBuilder;
         let sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
-        let wallet = await blitzbudgetDB.getDefaultAlexaWallet(sessionAttributes.userId, responseBuilder);
+        let wallet = await blitzbudgetDB.getDefaultAlexaWallet(sessionAttributes.userId);
         
         let say = '';
         let slotStatus = '';
@@ -1034,7 +1034,7 @@ const addCategoryByDate_Handler =  {
         const request = handlerInput.requestEnvelope.request;
         const responseBuilder = handlerInput.responseBuilder;
         let sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
-        let wallet = await blitzbudgetDB.getDefaultAlexaWallet(sessionAttributes.userId, responseBuilder);
+        let wallet = await blitzbudgetDB.getDefaultAlexaWallet(sessionAttributes.userId);
         
         let say = '';
         let slotStatus = '';
@@ -1071,7 +1071,7 @@ const addCategoryByDate_Handler =  {
                 // console.log('***** slotValues: ' +  JSON.stringify(slotValues, null, 2));
                 //   SLOT: category
                 if (slotValues.category.heardAs && slotValues.category.heardAs !== '') {
-                    let category = await blitzbudgetDB.getCategoryAlexa(wallet.sk.S, slotValues.category.heardAs, currentDate, responseBuilder);
+                    let category = await blitzbudgetDB.getCategoryAlexa(wallet.sk.S, slotValues.category.heardAs, currentDate);
                     if(isEmpty(category)) {
                         slotStatus = await blitzbudgetDB.addCategoryByDateFromAlexa(wallet.sk.S, slotValues.date.heardAs, slotValues.category.heardAs, slotValues.categoryType.id);
                     } else {

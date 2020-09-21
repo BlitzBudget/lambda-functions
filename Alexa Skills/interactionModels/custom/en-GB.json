@@ -75,6 +75,19 @@
             }
           ],
           "samples": [
+            "Add a transaction with {number} {currency} in {categories} category",
+            "Add a transaction for {categories}",
+            "Add a transaction with {number} {currency} for {categories} category",
+            "Add a transaction with {number} {currency} for {categories}",
+            "Add a transaction with {number} {currency} in {categories} category for the {date} ",
+            "Add a transaction with {number} {currency} in {categories} category for {date}",
+            "Add a transaction with {number} {currency} in {categories}",
+            "Add a transaction with {number} {currency}",
+            "Add a new transaction with {number} {currency} in {categories} category for {date}",
+            "Add a new transaction with {number} {currency} in {categories} category for the {date}",
+            "Add a new transaction with {number} {currency} in {categories} category",
+            "Add a new transaction with {number} {currency} for {categories} category",
+            "Add a new transaction for {number} {currency} {date}",
             "Add a new transaction with {number}",
             "Add a new transaction with {number} {currency} {date}",
             "Add a new transaction with {number} {currency}",
@@ -116,6 +129,8 @@
             }
           ],
           "samples": [
+            "Change my default account to {account} instead",
+            "My default account is {account}",
             "Change default account to {account}",
             "Change the default account to {account}",
             "I want to change my default account to {account}",
@@ -143,6 +158,20 @@
             }
           ],
           "samples": [
+            "Add a new budget with {category} category for {amount} {currency}",
+            "Add a budget with {category} category for {amount} {currency} ",
+            "Add a new budget in {category}",
+            "Add a new budget with {category}",
+            "Add a new budget with {category} category",
+            "Add a budget in {category} category for {amount} {currency}",
+            "Add a new budget in {category} category for {amount} {currency}",
+            "Add a budget in {category} category",
+            "Add a new budget in {category} category ",
+            "Add a budget for {category}",
+            "Add a budget of {amount}  {currency}  for {category}",
+            "Add a budget of {amount} for {category}",
+            "Add a budget for {amount} {currency}",
+            "Add a budget for {amount}",
             "Add a new budget for {amount}",
             "Add a new budget for {amount} {currency}",
             "Add a new budget of {amount} for {category}",
@@ -159,14 +188,61 @@
             },
             {
               "name": "amount",
-              "type": "AMAZON.NUMBER"
+              "type": "AMAZON.NUMBER",
+              "samples": [
+                "I want my target amount to be {amount} {currency}",
+                "{amount} {currency}",
+                "I want my target amount to be {amount}",
+                "{amount}"
+              ]
             },
             {
               "name": "currency",
               "type": "CURRENCY"
+            },
+            {
+              "name": "monthlyContribution",
+              "type": "AMAZON.NUMBER",
+              "samples": [
+                "I want my monthly conribution to be {monthlyContribution} {currency}",
+                "I want my monthly conribution to be {monthlyContribution} ",
+                "I want to contribute {monthlyContribution} {currency}",
+                "I want to contribute {monthlyContribution}",
+                "{monthlyContribution}",
+                "{monthlyContribution} {currency}"
+              ]
+            },
+            {
+              "name": "targetDate",
+              "type": "AMAZON.DATE",
+              "samples": [
+                "I want to fulfil my goal by {targetDate}",
+                "{targetDate}"
+              ]
             }
           ],
           "samples": [
+            "Add a new goal for {goaltype} with a goal of {amount} {currency} and a monthly contribution of {monthlyContribution} {currency}",
+            "Add a goal for {goaltype} with a goal of {amount} {currency} and a monthly contribution of {monthlyContribution} {currency}",
+            "Add a {goaltype} goal with a target amount of {amount} {currency} with a target date of {targetDate} and a monthly contribution of {monthlyContribution} {currency}",
+            "Add a new goal with a monthly contribution of {monthlyContribution} {currency}",
+            "Add a goal with a monthly contribution of {monthlyContribution} {currency}",
+            "Add a {goaltype} goal with a target amount of {amount} {currency} with a target date of {targetDate} and a monthly contribution of {monthlyContribution} ",
+            "Add a {goaltype} goal with a target amount of {amount} {currency} with a target date of {targetDate}",
+            "Add a new {goaltype} goal with a target amount of {amount} {currency} with a target date of {targetDate}",
+            "Add a new goal with a target amount of {amount} {currency} with a target date of {targetDate}",
+            "Add a goal with a target amount of {amount} {currency} with a target date of {targetDate}",
+            "Add a goal for {goaltype} with a goal of {amount} {currency} and a monthly contribution of {monthlyContribution}",
+            "Add a goal for {goaltype} with a target amount of {amount} {currency}",
+            "Add a goal for {goaltype} with {amount} {currency}",
+            "Add a goal with a target date of {targetDate}",
+            "Add a goal with a monthly contribution of {monthlyContribution}",
+            "Add a goal with a target amount of {amount} {currency}",
+            "Add a new goal with a target amount of {amount} {currency}",
+            "Add a new goal with a final amount of {amount} {currency}",
+            "Add a new goal for {goaltype} with a goal of {amount} {currency} and a monthly contribution of {monthlyContribution}",
+            "Add a new goal with a monthly contribution of {monthlyContribution}",
+            "Add a new goal with a target date of {goaltype}",
             "Add a new goal for {goaltype} with {amount} {currency}",
             "Add a new goal for {goaltype} with a goal of {amount} {currency}",
             "Add a new goal for {goaltype} with a target amount of {amount} {currency}",
@@ -189,16 +265,18 @@
             }
           ],
           "samples": [
+            "Tell my budget balance for {category} category",
+            "Tell my budget balance for {category}",
+            "Tell me my budget balance for {category} category",
+            "Whats my budget balance for {category} category",
+            "Whats the budget balance for {category} category",
+            "Tell me my budget balance in {category} category",
+            "Tell me my budget balance in {category}",
+            "Whats the budget balance in {category} category",
+            "Whats the budget balance in {category}",
             "Whats my budget balance in {category} category",
             "What is my budget balance in {category} category ",
-            "Whats my budget balance in {category}",
-            "Whats my balance in {category} category",
-            "What is my balance in {category} category",
-            "How much have I earned in {category} category",
-            "How much have I earned on {category} category",
-            "How much can I spend on {category} category",
-            "How much do I have in {category} to spend",
-            "How much do I have left in {category} to spend"
+            "Whats my budget balance in {category}"
           ]
         },
         {
@@ -218,6 +296,12 @@
             }
           ],
           "samples": [
+            "How much did I earn on {tag} tags",
+            "How much did I spend on {tag} tags",
+            "Tell me the expenditure of the {tag} tags",
+            "Whats my {tag} tags balance",
+            "Whats the {tag} tags balance",
+            "Get the {tag} tags balance",
             "Get the {tag} tag balance",
             "Whats the {tag} tag balance",
             "Whats my {tag} tag balance",
@@ -296,6 +380,7 @@
           "name": "getDefaultAccount",
           "slots": [],
           "samples": [
+            "Tell my default account",
             "Tell me my default account",
             "Whats the default account",
             "Whats my default account",
@@ -341,6 +426,7 @@
             }
           ],
           "samples": [
+            "Whats the budget for {category} category",
             "Whats the {category} budget amount",
             "What is the budget amount {date}",
             "What is the budget amount for {date}",
@@ -367,6 +453,9 @@
             }
           ],
           "samples": [
+            "Send Blitz Budget a new feature to {search}",
+            "Send a new feature to {search}",
+            "Send a new feature for {search}",
             "Send a new feature request to {search}",
             "Send a new feature request for {search}",
             "Send Blitz Budget a feature request to {search}",
@@ -385,6 +474,11 @@
             }
           ],
           "samples": [
+            "What is the transaction total {date}",
+            "What is the transaction total for {date}",
+            "Whats the transaction total for {date}",
+            "What is my transaction total for {date}",
+            "What is my transaction total {date}",
             "Whats my transaction total {date}",
             "Whats my transaction total for {date}"
           ]
@@ -420,6 +514,10 @@
             }
           ],
           "samples": [
+            "How much did I spend in {date}",
+            "What is my expenditure {date}",
+            "Whats the expenditure {date}",
+            "What is the expenditure for {date}",
             "Whats my expenditure {date}",
             "How much did I spend {date} "
           ]
@@ -451,6 +549,13 @@
             }
           ],
           "samples": [
+            "Add a {category} category for {date}",
+            "Add a {category} category with {categoryType} for {date}",
+            "Add a {category} category for {categoryType} type",
+            "Add a category for {category} with {categoryType} type",
+            "Add a category for {category} in {categoryType} type for {date}",
+            "Add a category for {category} in {categoryType} type",
+            "Add a category for {category}",
             "Add a new category for {category} in {categoryType} type",
             "Add a new category for {category} in {categoryType} type for {date}",
             "Add a new category for {category} in {date}",
@@ -2285,9 +2390,11 @@
             {
               "name": "amount",
               "type": "AMAZON.NUMBER",
-              "elicitationRequired": false,
+              "elicitationRequired": true,
               "confirmationRequired": false,
-              "prompts": {}
+              "prompts": {
+                "elicitation": "Elicit.Slot.1365840513225.676487504825"
+              }
             },
             {
               "name": "currency",
@@ -2301,6 +2408,24 @@
                   "prompt": "Slot.Validation.1273377604667.761938519896.849834982373"
                 }
               ]
+            },
+            {
+              "name": "monthlyContribution",
+              "type": "AMAZON.NUMBER",
+              "elicitationRequired": true,
+              "confirmationRequired": false,
+              "prompts": {
+                "elicitation": "Elicit.Slot.1547585249960.1145824131150"
+              }
+            },
+            {
+              "name": "targetDate",
+              "type": "AMAZON.DATE",
+              "elicitationRequired": true,
+              "confirmationRequired": false,
+              "prompts": {
+                "elicitation": "Elicit.Slot.1547585249960.1220913629347"
+              }
             }
           ]
         },
@@ -2853,8 +2978,43 @@
             "value": "The category type {categoryType} is not a valid type. Income or Expense, Choose a category type."
           }
         ]
+      },
+      {
+        "id": "Elicit.Slot.1547585249960.1145824131150",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "What is your monthly contribution for your goal?"
+          },
+          {
+            "type": "PlainText",
+            "value": "What is your monthly contribution for {goaltype} goal?"
+          }
+        ]
+      },
+      {
+        "id": "Elicit.Slot.1547585249960.1220913629347",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "When are you planning to achieve your goal?"
+          }
+        ]
+      },
+      {
+        "id": "Elicit.Slot.1365840513225.676487504825",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "What is the target amount to achieve for your {goaltype} goal?"
+          },
+          {
+            "type": "PlainText",
+            "value": "What is the target amount to achieve for your goal?"
+          }
+        ]
       }
     ]
   },
-  "version": "104"
+  "version": "127"
 }

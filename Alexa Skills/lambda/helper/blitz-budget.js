@@ -33,7 +33,7 @@ const ERROR_TRANSACTION_TOTAL = 'We couldn\'t calculate your transaction total a
 /*
 * Fetch all default wallets
 */
-blitzbudgetDB.prototype.getDefaultAlexaWallet = async function(userId, responseBuilder) {
+blitzbudgetDB.prototype.getDefaultAlexaWallet = async function(userId) {
     const params = {
             TableName: TABLE_NAME,
             KeyConditionExpression: "pk = :pk and begins_with(sk, :items)",
@@ -77,7 +77,7 @@ blitzbudgetDB.prototype.getDefaultAlexaAccount = async function(walletId) {
 /*
 * Fetch all category
 */
-blitzbudgetDB.prototype.getCategoryAlexa = async function(walletId, categoryName, date, responseBuilder) {
+blitzbudgetDB.prototype.getCategoryAlexa = async function(walletId, categoryName, date) {
     console.log('The Category name is ', categoryName, ' and the date is ', date);
     let selectedDate;
     if(isEmpty(date)) {
@@ -128,7 +128,7 @@ blitzbudgetDB.prototype.getCategoryAlexa = async function(walletId, categoryName
 /*
 * Fetch all budget
 */
-blitzbudgetDB.prototype.getBudgetAlexaAmount = async function(walletId, categoryId, selectedDate, responseBuilder) {
+blitzbudgetDB.prototype.getBudgetAlexaAmount = async function(walletId, categoryId, selectedDate) {
     console.log(' The date chosen for getting the budget with wallet', walletId, ' is ', selectedDate);
     
     const params = {
@@ -168,7 +168,7 @@ blitzbudgetDB.prototype.getBudgetAlexaAmount = async function(walletId, category
       })
 }
 
-blitzbudgetDB.prototype.getTagAlexaBalance = async function(walletId, tagName, selectedDate, responseBuilder) {
+blitzbudgetDB.prototype.getTagAlexaBalance = async function(walletId, tagName, selectedDate) {
     console.log(' The date chosen for getting the transaction with wallet', walletId, ' is ', selectedDate);
     
     const params = {
@@ -217,7 +217,7 @@ blitzbudgetDB.prototype.getTagAlexaBalance = async function(walletId, tagName, s
       })
 }
 
-blitzbudgetDB.prototype.getWalletFromAlexa = async function(userId, responseBuilder) {
+blitzbudgetDB.prototype.getWalletFromAlexa = async function(userId) {
     const params = {
             TableName: TABLE_NAME,
             KeyConditionExpression: "pk = :pk and begins_with(sk, :items)",
@@ -543,9 +543,10 @@ blitzbudgetDB.prototype.addBudgetAlexaAmount = async function(walletId, category
     
 }
 
-blitzbudgetDB.prototype.addNewGoalFromAlexa = async function(walletId, amount, goalType) {
+blitzbudgetDB.prototype.addNewGoalFromAlexa = async function(walletId, amount, goalType, monthlyContribution, targetDate) {
     let today = new Date();
     let randomValue = "Goal#" + today.toISOString();
+    targetDate = new Date(targetDate);
     
     if(isEmpty(amount)) {
         amount = "0";
@@ -566,9 +567,15 @@ blitzbudgetDB.prototype.addNewGoalFromAlexa = async function(walletId, amount, g
             "final_amount": {
                 N: amount
             },
-            /*"preferable_target_date": event['body-json'].targetDate,
-            "actual_target_date": event['body-json'].actualTargetDate,
-            "monthly_contribution": event['body-json'].monthlyContribution,*/
+            "preferable_target_date": {
+                S: targetDate.toISOString()
+            },
+            "actual_target_date": {
+                S: targetDate.toISOString()
+            },
+            "monthly_contribution": {
+                S: monthlyContribution
+            },
             "target_id": {
                 S: walletId
             },
@@ -600,13 +607,22 @@ blitzbudgetDB.prototype.addTransactionAlexaAmount = async function(walletId, cat
     let today = new Date();
     // Date used to get the budget
     if(isNotEmpty(dateId)) {
-        let dateMentioned = dateId;
-        console.log("The Date mentioned is ", dateMentioned);
-        if(dateMentioned.length < 6) {
-            // For example is 2019 then become 2019-09
-            dateMentioned = dateMentioned + '-' + (currentDate.getMonth() + 1);
+        let chosenYear = dateId.slice(0,4);
+        today.setFullYear(chosenYear);
+        
+        // If month is present
+        if(dateId.length > 4) {
+            let chosenMonth = dateId.slice(5,7);
+            // Javascript month is 0 -11 while alexa is 0-12
+            chosenMonth = Number(chosenMonth) - 1;
+            today.setMonth(chosenMonth);
         }
-        today =  new Date(dateMentioned);
+        
+        // If date is present then
+        if(dateId.length > 7) {
+            let chosenDay = dateId.slice(8,10);
+            today.setDate(chosenDay);
+        }
     }
     let randomValue = "Transaction#" + today.toISOString();
     let currentDate = today.getFullYear() + '-' + ("0" + (Number(today.getMonth()) + 1)).slice(-2);
