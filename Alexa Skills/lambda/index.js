@@ -43,42 +43,10 @@ const EMPTY_ACCOUNT = 'Sorry, There was an error while getting you default accou
 const BUDGET_NOT_CREATED = ' budget has not been created. Consider creating a budget for ';
 const BUDGET_NOT_CREATED_TWO = ' by saying "Add a new budget for "';
 const BUDGET_CREATED_ERROR = ' budget has already been created.';
+const BUDGET_EMPTY_ERROR = ' budget is not created';
 const NEED_TO_LINK_MESSAGE = 'Before we can continue, you will need to link your account to the %s skill using the card that I have sent to the Alexa app.';
 const CATEGORY_EXISTS = 'The selected category is already present for the mentioned dates. Please use the existing category.';
 const EMPTY_CATEGORY_TYPE = 'The category type cannot be empty. Please try again!';
-
-
-// Session Attributes 
-//   Alexa will track attributes for you, by default only during the lifespan of your session.
-//   The history[] array will track previous request(s), used for contextual Help/Yes/No handling.
-//   Set up DynamoDB persistence to have the skill save and reload these attributes between skill sessions.
-
-function getMemoryAttributes() {   const memoryAttributes = {
-       "history":[],
-
-
-       "launchCount":0,
-       "lastUseTimestamp":0,
-
-       "lastSpeechOutput":{},
-       // "nextIntent":[]
-
-       // "favoriteColor":"",
-       // "name":"",
-       // "namePronounce":"",
-       // "email":"",
-       // "mobileNumber":"",
-       // "city":"",
-       // "state":"",
-       // "postcode":"",
-       // "birthday":"",
-       // "bookmark":0,
-       // "wishlist":[],
-   };
-   return memoryAttributes;
-};
-
-const maxHistorySize = 20; // remember only latest 20 intents 
 
 
 // 1. Intent Handlers =============================================
@@ -528,10 +496,11 @@ const addNewGoal_Handler =  {
         if(isEmpty(wallet)) {
             slotStatus += EMPTY_WALLET;
         } else {
-            if(isEmpty(slotValues.goaltype.heardAs)) {
+            let goalType = isEmpty(slotValues.goaltype.id) ? slotValues.goaltype.heardAs : slotValues.goaltype.id;
+            if(isEmpty(slotValues.goaltype.heardAs) && isEmpty(slotValues.goaltype.id)) {
                 slotStatus = GOAL_TYPE_ERROR;
             } else {
-                slotStatus = await blitzbudgetDB.addNewGoalFromAlexa(wallet.sk.S, slotValues.amount.heardAs, slotValues.goaltype.id, slotValues.monthlyContribution.heardAs, slotValues.targetDate.heardAs);
+                slotStatus = await blitzbudgetDB.addNewGoalFromAlexa(wallet.sk.S, slotValues.amount.heardAs, goalType, slotValues.monthlyContribution.heardAs, slotValues.targetDate.heardAs);
             }
         }
 
@@ -588,7 +557,7 @@ const getBudgetAmount_Handler = {
             } else {
                 let budget = await blitzbudgetDB.getBudgetAlexaAmount(wallet.sk.S, category.sk.S, currentDate);
                 if(isEmpty(budget)) {
-                    slotStatus += THE_MESSAGE + slotValues.category.heardAs + BUDGET_CREATED_ERROR;
+                    slotStatus += THE_MESSAGE + slotValues.category.heardAs + BUDGET_EMPTY_ERROR;
                 } else {
                     slotStatus += YOUR_MESSAGE + slotValues.category.heardAs + BUDGET_RETRIEVED + budget['planned'].N + ' ' + wallet.currency.S;   
                 }
@@ -844,7 +813,7 @@ const addNewWallet_Handler =  {
         // console.log('***** slotValues: ' +  JSON.stringify(slotValues, null, 2));
         //   SLOT: currency 
         if (slotValues.currency.heardAs && slotValues.currency.heardAs !== '') {
-            let matchedCurrency = blitzbudgetDB.checkIfWalletIsInvalid(slotValues.currency.heardAs);
+            let matchedCurrency = blitzbudgetDB.checkIfWalletIsInvalid(slotValues);
             if(isEmpty(matchedCurrency)) {
                slotStatus = CURRENCY_NOTFOUND;
             } else {
@@ -1146,8 +1115,6 @@ const ErrorHandler =  {
     //    const myArray  = [ "orange", "grape", "strawberry" ];
     //    const myObject = { "city": "Boston",  "state":"Massachusetts" };
 
-const APP_ID = undefined;  // TODO replace with your Skill ID (OPTIONAL).
-
 // 3.  Helper Functions ===================================================================
 
 function capitalize(myString) {
@@ -1218,89 +1185,6 @@ function getSlotValues(filledSlots) {
     return slotValues; 
 } 
  
-function getExampleSlotValues(intentName, slotName) { 
- 
-    let examples = []; 
-    let slotType = ''; 
-    let slotValuesFull = []; 
- 
-    let intents = model.interactionModel.languageModel.intents; 
-    for (let i = 0; i < intents.length; i++) { 
-        if (intents[i].name == intentName) { 
-            let slots = intents[i].slots; 
-            for (let j = 0; j < slots.length; j++) { 
-                if (slots[j].name === slotName) { 
-                    slotType = slots[j].type; 
- 
-                } 
-            } 
-        } 
- 
-    } 
-    let types = model.interactionModel.languageModel.types; 
-    for (let i = 0; i < types.length; i++) { 
-        if (types[i].name === slotType) { 
-            slotValuesFull = types[i].values; 
-        } 
-    } 
- 
-    slotValuesFull = shuffleArray(slotValuesFull); 
- 
-    examples.push(slotValuesFull[0].name.value); 
-    examples.push(slotValuesFull[1].name.value); 
-    if (slotValuesFull.length > 2) { 
-        examples.push(slotValuesFull[2].name.value); 
-    } 
- 
- 
-    return examples; 
-} 
- 
-function sayArray(myData, penultimateWord = 'and') { 
-    let result = ''; 
- 
-    myData.forEach(function(element, index, arr) { 
- 
-        if (index === 0) { 
-            result = element; 
-        } else if (index === myData.length - 1) { 
-            result += ` ${penultimateWord} ${element}`; 
-        } else { 
-            result += `, ${element}`; 
-        } 
-    }); 
-    return result; 
-} 
-function supportsDisplay(handlerInput) // returns true if the skill is running on a device with a display (Echo Show, Echo Spot, etc.) 
-{                                      //  Enable your skill for display as shown here: https://alexa.design/enabledisplay 
-    const hasDisplay = 
-        handlerInput.requestEnvelope.context && 
-        handlerInput.requestEnvelope.context.System && 
-        handlerInput.requestEnvelope.context.System.device && 
-        handlerInput.requestEnvelope.context.System.device.supportedInterfaces && 
-        handlerInput.requestEnvelope.context.System.device.supportedInterfaces.Display; 
- 
-    return hasDisplay; 
-} 
- 
- 
-const welcomeCardImg = { 
-    smallImageUrl: "https://s3.amazonaws.com/skill-images-789/cards/card_plane720_480.png", 
-    largeImageUrl: "https://s3.amazonaws.com/skill-images-789/cards/card_plane1200_800.png" 
- 
- 
-}; 
- 
-const DisplayImg1 = { 
-    title: 'Jet Plane', 
-    url: 'https://s3.amazonaws.com/skill-images-789/display/plane340_340.png' 
-}; 
-const DisplayImg2 = { 
-    title: 'Starry Sky', 
-    url: 'https://s3.amazonaws.com/skill-images-789/display/background1024_600.png' 
- 
-}; 
- 
 function getCustomIntents() { 
     const modelIntents = model.interactionModel.languageModel.intents; 
  
@@ -1342,34 +1226,7 @@ function getPreviousSpeechOutput(attrs) {
         return false; 
     } 
  
-} 
- 
-function timeDelta(t1, t2) { 
- 
-    const dt1 = new Date(t1); 
-    const dt2 = new Date(t2); 
-    const timeSpanMS = dt2.getTime() - dt1.getTime(); 
-    const span = { 
-        "timeSpanMIN": Math.floor(timeSpanMS / (1000 * 60 )), 
-        "timeSpanHR": Math.floor(timeSpanMS / (1000 * 60 * 60)), 
-        "timeSpanDAY": Math.floor(timeSpanMS / (1000 * 60 * 60 * 24)), 
-        "timeSpanDesc" : "" 
-    }; 
- 
- 
-    if (span.timeSpanHR < 2) { 
-        span.timeSpanDesc = span.timeSpanMIN + " minutes"; 
-    } else if (span.timeSpanDAY < 2) { 
-        span.timeSpanDesc = span.timeSpanHR + " hours"; 
-    } else { 
-        span.timeSpanDesc = span.timeSpanDAY + " days"; 
-    } 
- 
- 
-    return span; 
- 
-} 
- 
+}
  
 const InitMemoryAttributesInterceptor = { 
     process(handlerInput) { 
@@ -1521,6 +1378,38 @@ const ResponsePersistenceInterceptor = {
     } 
 }; 
 
+// Session Attributes 
+//   Alexa will track attributes for you, by default only during the lifespan of your session.
+//   The history[] array will track previous request(s), used for contextual Help/Yes/No handling.
+//   Set up DynamoDB persistence to have the skill save and reload these attributes between skill sessions.
+
+function getMemoryAttributes() {   const memoryAttributes = {
+       "history":[],
+
+
+       "launchCount":0,
+       "lastUseTimestamp":0,
+
+       "lastSpeechOutput":{},
+       // "nextIntent":[]
+
+       // "favoriteColor":"",
+       // "name":"",
+       // "namePronounce":"",
+       // "email":"",
+       // "mobileNumber":"",
+       // "city":"",
+       // "state":"",
+       // "postcode":"",
+       // "birthday":"",
+       // "bookmark":0,
+       // "wishlist":[],
+   };
+   return memoryAttributes;
+};
+
+const maxHistorySize = 20; // remember only latest 20 intents 
+
 //
 // HelpHandler: Handle a user request for help.
 //
@@ -1637,23 +1526,6 @@ function getEnvVar(envVarName, defaultValue) {
   }
   return defaultValue;
 }
-
-function shuffleArray(array) {  // Fisher Yates shuffle! 
- 
-    let currentIndex = array.length, temporaryValue, randomIndex; 
- 
-    while (0 !== currentIndex) { 
- 
-        randomIndex = Math.floor(Math.random() * currentIndex); 
-        currentIndex -= 1; 
- 
-        temporaryValue = array[currentIndex]; 
-        array[currentIndex] = array[randomIndex]; 
-        array[randomIndex] = temporaryValue; 
-    } 
- 
-    return array; 
-} 
 
 // Is Empty Check
 function isEmpty(obj) {

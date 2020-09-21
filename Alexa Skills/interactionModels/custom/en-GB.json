@@ -265,6 +265,8 @@
             }
           ],
           "samples": [
+            "Get budget balance for {category} category",
+            "Get budget balance for {category}",
             "Tell my budget balance for {category} category",
             "Tell my budget balance for {category}",
             "Tell me my budget balance for {category} category",
@@ -296,6 +298,7 @@
             }
           ],
           "samples": [
+            "Get the tag balance for {tag}",
             "How much did I earn on {tag} tags",
             "How much did I spend on {tag} tags",
             "Tell me the expenditure of the {tag} tags",
@@ -343,6 +346,8 @@
             }
           ],
           "samples": [
+            "Change budget amount for {category} category",
+            "Change budget amount for {category}",
             "Change my budget amount to {amt} {currency} for {category} category",
             "Change my budget amount to {amt} {currency}",
             "Change my budget amount to {amt} {currency} for {category}",
@@ -368,6 +373,7 @@
           "name": "getDefaultWallet",
           "slots": [],
           "samples": [
+            "Get default wallet",
             "Tell my default wallet",
             "Whats the default wallet",
             "Tell me my default wallet",
@@ -380,6 +386,7 @@
           "name": "getDefaultAccount",
           "slots": [],
           "samples": [
+            "Get default account",
             "Tell my default account",
             "Tell me my default account",
             "Whats the default account",
@@ -426,6 +433,8 @@
             }
           ],
           "samples": [
+            "Whats the amount for {category} budget",
+            "Whats the budget amount for {category}",
             "Whats the budget for {category} category",
             "Whats the {category} budget amount",
             "What is the budget amount {date}",
@@ -474,6 +483,11 @@
             }
           ],
           "samples": [
+            "Whats my total transaction for {date}",
+            "What is my total transaction for {date}",
+            "Whats the total transaction for {date}",
+            "What is the total transaction {date}",
+            "Whats my total transaction {date}",
             "What is the transaction total {date}",
             "What is the transaction total for {date}",
             "Whats the transaction total for {date}",
@@ -3016,5 +3030,5 @@
       }
     ]
   },
-  "version": "127"
+  "version": "133"
 }

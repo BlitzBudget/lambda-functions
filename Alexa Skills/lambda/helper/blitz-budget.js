@@ -335,7 +335,7 @@ blitzbudgetDB.prototype.changeDefaultAccountAlexa = async function(allAccounts, 
     /*
     * Is Empty Events 
     */
-    if(isEmpty(events)) {
+    if(isEmpty(events) || events.length == 1) {
         say = ACCOUNT_NOT_PRESENT;
     } else {
         /*
@@ -421,12 +421,22 @@ blitzbudgetDB.prototype.changeBudgetAlexaAmount = async function(walletId, budge
       })
 }
 
-blitzbudgetDB.prototype.checkIfWalletIsInvalid = function(currency) {
-    let matchedCurrency;
+blitzbudgetDB.prototype.checkIfWalletIsInvalid = function(slotValues) {
+    let walletCurrency, matchedCurrency;
+    if (slotValues.currency.ERstatus === 'ER_SUCCESS_MATCH') {
+        if(slotValues.currency.resolved !== slotValues.currency.heardAs) {
+            walletCurrency = slotValues.currency.resolved; 
+        } else {
+            walletCurrency = slotValues.currency.heardAs;
+        } 
+    }
+    if (slotValues.currency.ERstatus === 'ER_SUCCESS_NO_MATCH') {
+        console.log('***** consider adding "' + slotValues.currency.heardAs + '" to the custom slot type used by slot category! '); 
+    } 
+    
     for(let i=0, len=currencyInfo.length; i<len; i++) {
         let defaultCurrency = currencyInfo[i];
-        console.log("The currency information is ", JSON.stringify(defaultCurrency));
-        if(isEqual(defaultCurrency.currency.toUpperCase(),currency.toUpperCase())) {
+        if(isEqual(defaultCurrency.currency.toUpperCase(),walletCurrency.toUpperCase())) {
             matchedCurrency = defaultCurrency.currency;
         }
     }
