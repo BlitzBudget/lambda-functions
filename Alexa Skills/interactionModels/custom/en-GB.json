@@ -36,6 +36,9 @@
             }
           ],
           "samples": [
+            "How much I spent on {category}",
+            "Get my category balance for {category} category",
+            "Get my category balance for {date}",
             "How much did I spend on {category} category {date}",
             "How much did I earn on {category} category {date}",
             "How much did I spend on {category} category",
@@ -158,6 +161,10 @@
             }
           ],
           "samples": [
+            "Add a budget for {category} category for {amount} {currency} ",
+            "Add a new budget for {category} category for {amount} {currency}",
+            "Add a budget with {category} category",
+            "Add a new budget for {category} category",
             "Add a new budget with {category} category for {amount} {currency}",
             "Add a budget with {category} category for {amount} {currency} ",
             "Add a new budget in {category}",
@@ -222,9 +229,6 @@
             }
           ],
           "samples": [
-            "Add a new goal for {goaltype} with a goal of {amount} {currency} and a monthly contribution of {monthlyContribution} {currency}",
-            "Add a goal for {goaltype} with a goal of {amount} {currency} and a monthly contribution of {monthlyContribution} {currency}",
-            "Add a {goaltype} goal with a target amount of {amount} {currency} with a target date of {targetDate} and a monthly contribution of {monthlyContribution} {currency}",
             "Add a new goal with a monthly contribution of {monthlyContribution} {currency}",
             "Add a goal with a monthly contribution of {monthlyContribution} {currency}",
             "Add a {goaltype} goal with a target amount of {amount} {currency} with a target date of {targetDate} and a monthly contribution of {monthlyContribution} ",
@@ -265,6 +269,7 @@
             }
           ],
           "samples": [
+            "Get my budget balance for {category} category",
             "Get budget balance for {category} category",
             "Get budget balance for {category}",
             "Tell my budget balance for {category} category",
@@ -433,6 +438,7 @@
             }
           ],
           "samples": [
+            "Get my budget amount for {category} category",
             "Whats the amount for {category} budget",
             "Whats the budget amount for {category}",
             "Whats the budget for {category} category",
@@ -509,6 +515,8 @@
             }
           ],
           "samples": [
+            "Get my income {date}",
+            "Get my income for {date}",
             "What is my income {date}",
             "Whats my income {date}",
             "What is my total income {date}",
@@ -528,6 +536,8 @@
             }
           ],
           "samples": [
+            "Get my expense for {date}",
+            "Get my expense {date}",
             "How much did I spend in {date}",
             "What is my expenditure {date}",
             "Whats the expenditure {date}",
@@ -3030,5 +3040,5 @@
       }
     ]
   },
-  "version": "133"
+  "version": "140"
 }
