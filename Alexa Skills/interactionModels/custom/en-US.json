@@ -2305,8 +2305,10 @@
       "intents": [
         {
           "name": "addNewBudget",
-          "confirmationRequired": false,
-          "prompts": {},
+          "confirmationRequired": true,
+          "prompts": {
+            "confirmation": "Confirm.Intent.497901107795"
+          },
           "slots": [
             {
               "name": "category",
@@ -2341,8 +2343,10 @@
         },
         {
           "name": "addNewWallet",
-          "confirmationRequired": false,
-          "prompts": {},
+          "confirmationRequired": true,
+          "prompts": {
+            "confirmation": "Confirm.Intent.181654331410"
+          },
           "slots": [
             {
               "name": "currency",
@@ -2363,8 +2367,10 @@
         },
         {
           "name": "changeBudgetAmount",
-          "confirmationRequired": false,
-          "prompts": {},
+          "confirmationRequired": true,
+          "prompts": {
+            "confirmation": "Confirm.Intent.173111156483"
+          },
           "slots": [
             {
               "name": "category",
@@ -2401,8 +2407,10 @@
         },
         {
           "name": "addNewGoal",
-          "confirmationRequired": false,
-          "prompts": {},
+          "confirmationRequired": true,
+          "prompts": {
+            "confirmation": "Confirm.Intent.380424211475"
+          },
           "slots": [
             {
               "name": "goaltype",
@@ -2455,8 +2463,10 @@
         },
         {
           "name": "addNewTransaction",
-          "confirmationRequired": false,
-          "prompts": {},
+          "confirmationRequired": true,
+          "prompts": {
+            "confirmation": "Confirm.Intent.1261102169726"
+          },
           "slots": [
             {
               "name": "number",
@@ -2571,8 +2581,10 @@
         },
         {
           "name": "changeDefaultAccount",
-          "confirmationRequired": false,
-          "prompts": {},
+          "confirmationRequired": true,
+          "prompts": {
+            "confirmation": "Confirm.Intent.537869266860"
+          },
           "slots": [
             {
               "name": "account",
@@ -2587,8 +2599,10 @@
         },
         {
           "name": "changeDefaultWallet",
-          "confirmationRequired": false,
-          "prompts": {},
+          "confirmationRequired": true,
+          "prompts": {
+            "confirmation": "Confirm.Intent.74939878293"
+          },
           "slots": [
             {
               "name": "wallet",
@@ -2657,8 +2671,10 @@
         },
         {
           "name": "addCategoryByDate",
-          "confirmationRequired": false,
-          "prompts": {},
+          "confirmationRequired": true,
+          "prompts": {
+            "confirmation": "Confirm.Intent.514225768095"
+          },
           "slots": [
             {
               "name": "category",
@@ -3037,8 +3053,104 @@
             "value": "What is the target amount to achieve for your goal?"
           }
         ]
+      },
+      {
+        "id": "Confirm.Intent.514225768095",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "I\u0027m saving your {category} category with {categoryType} for {date} , is that okay?"
+          },
+          {
+            "type": "PlainText",
+            "value": "I\u0027m saving your {category} category with {categoryType} , is that okay?"
+          }
+        ]
+      },
+      {
+        "id": "Confirm.Intent.181654331410",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "You said you want to add a {currency} wallet, right?"
+          },
+          {
+            "type": "PlainText",
+            "value": "I\u0027m saving your {currency} wallet, is that okay?"
+          }
+        ]
+      },
+      {
+        "id": "Confirm.Intent.173111156483",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "You said you want to change your {category} budget to {amt} {currency} , right?"
+          }
+        ]
+      },
+      {
+        "id": "Confirm.Intent.380424211475",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "I\u0027m saving your {goaltype} goal with target amount as {amount} {currency} , is that okay?"
+          },
+          {
+            "type": "PlainText",
+            "value": "I\u0027m saving your {goaltype} goal, is that okay?"
+          }
+        ]
+      },
+      {
+        "id": "Confirm.Intent.497901107795",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "I\u0027m saving a new {category} budget for {amount} {currency} , is that okay?"
+          },
+          {
+            "type": "PlainText",
+            "value": "You said, you want to add a new {category} budget for {amount} , right?"
+          },
+          {
+            "type": "PlainText",
+            "value": "You said you want to add a new {category} budget for {amount} {currency} , right?"
+          }
+        ]
+      },
+      {
+        "id": "Confirm.Intent.537869266860",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "I\u0027m changing you default account to {account} , is that okay?"
+          }
+        ]
+      },
+      {
+        "id": "Confirm.Intent.74939878293",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "You said, You want to change your default wallet to {wallet} , Right?"
+          }
+        ]
+      },
+      {
+        "id": "Confirm.Intent.1261102169726",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "You said, You want to add a new transaction for {categories} category, right?"
+          },
+          {
+            "type": "PlainText",
+            "value": "I\u0027m saving a new transaction for {categories} category with {number} {currency} , is that OK?"
+          }
+        ]
       }
     ]
   },
-  "version": "140"
+  "version": "8"
 }

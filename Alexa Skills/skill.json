@@ -2,7 +2,7 @@
   "manifest": {
     "publishingInformation": {
       "locales": {
-        "en-GB": {
+        "en-US": {
           "summary": "The BlitzBudget skill provides ways to manage your personal finances including budgets, transactions, goals and more.",
           "examplePhrases": [
             "Alexa, tell Blitz Budget to add a new euro wallet",
@@ -28,17 +28,16 @@
           ],
           "name": "BlitzBudget",
           "description": "The BlitzBudget skill provides yet another means to manage your personal finances including budgets, transactions, goals and more.\n\nYou can ask the BlitzBudget skill for information about:\n\nAsk for information\n- Expense by date\n- Earnings by date\n- Transaction total by date\n- Get your current budget\n- Get your default wallet for Alexa\n- Get your default account for the wallet\n- Get your tag\u0027s transaction balance\n- See how much you have left to spend in a category\n- See how much you have spend in a category\n- Send a new feature request\n\nAdd information\n- Add a new category by date\n- Add a new wallet with a currency\n- Add a new goal for the wallet\n- Add a new budget for the wallet\n- Add a new transaction for in the wallet.\n\nChange information:\n- Change your budget for the default wallet\n- Change your default account for your wallet\n- Change your default wallet for Alexa\n\nDisclaimer: Your financial information will be read aloud and/or displayed visually.\n\nNote: A BlitzBudget account might be required to use this skill",
-          "smallIconUri": "file://assets/images/en-GB_smallIconUri.png",
-          "updatesDescription": "",
-          "largeIconUri": "file://assets/images/en-GB_largeIconUri.png"
+          "smallIconUri": "file://assets/images/en-US_smallIconUri.png",
+          "updatesDescription": "Add confirmation for any addition or changes to transactions, budgets, default accounts, default wallets,  goals and categories.\nSend home card to Alexa app to inform any addition or changes to transactions, budgets, default accounts, default wallets, goals and categories.",
+          "largeIconUri": "file://assets/images/en-US_largeIconUri.png"
         }
       },
       "automaticDistribution": {
-        "sourceLocaleForLanguages": [],
         "isActive": false
       },
       "isAvailableWorldwide": false,
-      "testingInstructions": "Login to Blitz Budget account first using the below credentials for Alexa.\n\nLogin - nagarjun_nagesh@outlook.com\nPassword - TestAlexa123.\n\nThere are no permission requests.  \n\nTest phrases : \n\n- Open blitz budget, Add a new Euro wallet\n- Add a new transaction for ten Euros\n- How much did I spend on Beauty category\n- Send a feature request to add a new budget for income categories. \n- What is my default wallet?\n- What is my default account?\n- Add a new category for car\n- Add a new budget for car category\n- What is the budget for car category?",
+      "testingInstructions": "Login to Blitz Budget account first using the below credentials for Alexa.\n\nLogin - nagarjun_nagesh@outlook.com\nPassword:TestAlexa123.\n\nLogin - narjun.1465@gmail.com\nPassword:TestAlexa123.\n\nThere are no permission requests.  \n\nTest phrases : \n\n- Open blitz budget, Add a new Euro wallet\n- Add a new transaction for ten Euros\n- How much did I spend on Beauty category\n- Send a feature request to add a new budget for income categories. \n- What is my default wallet?\n- What is my default account?\n- Add a new category for car\n- Add a new budget for car category\n- What is the budget for car category?\n\n\nThe confirmation is present for \"any addition or changes to transactions, budgets, default accounts, default wallets, goals and categories\".\nA simple Card is sent to the Alexa app while adding or changing transactions, budgets, default accounts, default wallets, goals and categories.\n\nA confirmation of the skill can be checked with the following email ids:\n1) admin@blitzbudget.com\n2) nagarjun_nagesh@blitzbudget.com",
       "category": "BUSINESS_AND_FINANCE",
       "distributionCountries": [
         "US"
@@ -73,7 +72,7 @@
     "privacyAndCompliance": {
       "allowsPurchases": false,
       "locales": {
-        "en-GB": {
+        "en-US": {
           "termsOfUseUrl": "https://www.blitzbudget.com/terms",
           "privacyPolicyUrl": "https://www.blitzbudget.com/privacy"
         }

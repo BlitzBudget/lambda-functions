@@ -20,34 +20,46 @@ const COGNITO_REGION = getEnvVar('COGNITO_REGION', 'eu-west-1');
 const THE_MESSAGE = ' The ';
 const YOUR_MESSAGE = ' Your ';
 const HELLO_MESSAGE = 'Hello ';
-const SKILL_NAME = 'Blitz Budget';
+const SKILL_NAME =  'Blitz Budget';
 const BUDGET_BALANCE_ONE = ' budget has ';
 const BUDGET_BALANCE_TWO = " remaining";
 const TAG_MESSAGE = ' tag has a balance of ';
 const BUDGET_RETRIEVED = ' budget amount is ';
 const DEFAULT_WALLET = 'Your default wallet is ';
 const DEFAULT_ACCOUNT_SUCCESS = 'Your default account is ';
-const GREETING_MESSAGE = '. What can I do for you today? ';
+const GREETING_MESSAGE =  '. What can I do for you today? ';
 const CATEGORY_BALANCE_ERROR_TWO = ' category has a balance of ';
 const GOODBYE_MESSAGE = 'Good bye. It was nice talking to you. ';
 const GOAL_TYPE_ERROR = 'I didn\'t get the goal type. Please try again!';
-const ERR_MESSAGE = 'Sorry, I can\'t understand that request. Please try again.';
-const EMPTY_AMOUNT = 'I didn\'t get the amount entered for the transaction. Please try again!';
+const ERR_MESSAGE =  'Sorry, I can\'t understand that request. Please try again!';
+const EMPTY_AMOUNT  = 'I didn\'t get the amount entered for the transaction. Please try again!';
 const CURRENCY_NOTFOUND = 'I couldn\'t find the currency that you mentioned. Please try again!';
-const EMPTY_TAG = ' tag is not present in any of the transactions.';
+const EMPTY_TAG = ' tag is not present in any of the transactions. Please try again!';
 const EMPTY_CATEGORY = 'I didn\'t get the category entered for the transaction. Please try again!';
 const EMPTY_WALLET = 'The requested currency cannot be found. Consider creating a wallet by saying "Create a new wallet for" followed by the currency name as you find it in the blitz budget application. ';
 const HELP_MESSAGE = 'You can say: \'alexa, hello\', \'alexa, tell me my info\' or \'alexa, who am I\'.';
-const CATEGORY_EMPTY = ' category has not been created. Consider creating a new category by saying "Create a new category for" followed by the category name';
-const EMPTY_ACCOUNT = 'Sorry, There was an error while getting you default account. Please try again later!';
+const CATEGORY_EMPTY = ' category has not been created. Consider creating a new category by saying "Create a new category for "';
+const EMPTY_ACCOUNT = 'Sorry, There was an error while getting you default account. Please try again!';
 const BUDGET_NOT_CREATED = ' budget has not been created. Consider creating a budget for ';
 const BUDGET_NOT_CREATED_TWO = ' by saying "Add a new budget for "';
 const BUDGET_CREATED_ERROR = ' budget has already been created.';
-const BUDGET_EMPTY_ERROR = ' budget is not created';
+const BUDGET_EMPTY_ERROR = ' budget is not created. Consider creating a new budget by saying "Create a new budget for "';
 const NEED_TO_LINK_MESSAGE = 'Before we can continue, you will need to link your account to the skill using the card that I have sent to the Alexa app.';
-const CATEGORY_EXISTS = 'The selected category is already present for the mentioned dates. Please use the existing category.';
+const CATEGORY_EXISTS = 'The selected category is already present for the mentioned dates. Consider creating a new category by saying "Create a new category for "';
 const EMPTY_CATEGORY_TYPE = 'The category type cannot be empty. Please try again!';
-const INCOME_CATEGORY_ERROR = 'Sorry! it is not possible to create a budget for an income category.';
+const INCOME_CATEGORY_ERROR = 'Sorry! it is not possible to create a budget for an income category. Please try again!';
+
+
+const SUCCESSFUL_TITLE = 'Successfully';
+const CARD_SECURITY_TITLE = "BlitzBudget Security Information";
+const ADDED_NEW_TRANSACTION_SIMPLE_CARD = "A new transaction was added through Alexa.";
+const CHANGED_DEFAULT_WALLET_SIMPLE_CARD = "The default wallet for Alexa has been changed.";
+const CHANGED_DEFAULT_ACCOUNT_SIMPLE_CARD = "The default account for Alexa has been changed.";
+const ADDED_NEW_CATEGORY_SIMPLE_CARD = "A new category has been added through Alexa.";
+const ADDED_NEW_WALLET_SIMPLE_CARD = "A new wallet has been added through Alexa.";
+const CHANGED_BUDGET_AMOUNT_SIMPLE_CARD = "A budget's amount has been changed through Alexa.";
+const ADDED_NEW_GOAL_SIMPLE_CARD = "A new goal has been added through Alexa.";
+const ADDED_NEW_BUDGET_SIMPLE_CARD = "A new budget has been added through Alexa.";
 
 
 // 1. Intent Handlers =============================================
@@ -57,28 +69,28 @@ const INCOME_CATEGORY_ERROR = 'Sorry! it is not possible to create a budget for 
 // If no access token is present, then send the Link Account Card.
 //``
 const CheckAccountLinkedHandler = {
-    canHandle(handlerInput) {
-        // If accessToken does not exist (ie, account is not linked),
-        // then return true, which triggers the "need to link" card.
-        // This should not be used unless the skill cannot function without
-        // a linked account.  If there's some functionality which is available without
-        // linking an account, do this check "just-in-time"
-        return isAccountLinked(handlerInput);
-    },
-    handle(handlerInput) {
-        const requestAttributes = handlerInput.attributesManager.getRequestAttributes();
-        const speakOutput = NEED_TO_LINK_MESSAGE + SKILL_NAME;
-        return handlerInput.responseBuilder
-            .speak(speakOutput)
-            .withLinkAccountCard()
-            .getResponse();
-    },
+  canHandle(handlerInput) {
+    // If accessToken does not exist (ie, account is not linked),
+    // then return true, which triggers the "need to link" card.
+    // This should not be used unless the skill cannot function without
+    // a linked account.  If there's some functionality which is available without
+    // linking an account, do this check "just-in-time"
+    return isAccountLinked(handlerInput);
+  },
+  handle(handlerInput) {
+    const requestAttributes = handlerInput.attributesManager.getRequestAttributes();
+    const speakOutput = NEED_TO_LINK_MESSAGE;
+    return handlerInput.responseBuilder
+      .speak(speakOutput)
+      .withLinkAccountCard()
+      .getResponse();
+  },
 };
 
-const AMAZON_CancelIntent_Handler = {
+const AMAZON_CancelIntent_Handler =  {
     canHandle(handlerInput) {
         const request = handlerInput.requestEnvelope.request;
-        return request.type === 'IntentRequest' && request.intent.name === 'AMAZON.CancelIntent';
+        return request.type === 'IntentRequest' && request.intent.name === 'AMAZON.CancelIntent' ;
     },
     handle(handlerInput) {
         const request = handlerInput.requestEnvelope.request;
@@ -95,10 +107,10 @@ const AMAZON_CancelIntent_Handler = {
     },
 };
 
-const AMAZON_HelpIntent_Handler = {
+const AMAZON_HelpIntent_Handler =  {
     canHandle(handlerInput) {
         const request = handlerInput.requestEnvelope.request;
-        return request.type === 'IntentRequest' && request.intent.name === 'AMAZON.HelpIntent';
+        return request.type === 'IntentRequest' && request.intent.name === 'AMAZON.HelpIntent' ;
     },
     handle(handlerInput) {
         const request = handlerInput.requestEnvelope.request;
@@ -109,7 +121,7 @@ const AMAZON_HelpIntent_Handler = {
         let intents = getCustomIntents();
         let sampleIntent = randomElement(intents);
 
-        let say = '';
+        let say = ''; 
 
         say += ' Here is something you can ask me, ' + getSampleUtterance(sampleIntent);
 
@@ -120,10 +132,10 @@ const AMAZON_HelpIntent_Handler = {
     },
 };
 
-const AMAZON_StopIntent_Handler = {
+const AMAZON_StopIntent_Handler =  {
     canHandle(handlerInput) {
         const request = handlerInput.requestEnvelope.request;
-        return request.type === 'IntentRequest' && request.intent.name === 'AMAZON.StopIntent';
+        return request.type === 'IntentRequest' && request.intent.name === 'AMAZON.StopIntent' ;
     },
     handle(handlerInput) {
         const request = handlerInput.requestEnvelope.request;
@@ -140,10 +152,10 @@ const AMAZON_StopIntent_Handler = {
     },
 };
 
-const AMAZON_NavigateHomeIntent_Handler = {
+const AMAZON_NavigateHomeIntent_Handler =  {
     canHandle(handlerInput) {
         const request = handlerInput.requestEnvelope.request;
-        return request.type === 'IntentRequest' && request.intent.name === 'AMAZON.NavigateHomeIntent';
+        return request.type === 'IntentRequest' && request.intent.name === 'AMAZON.NavigateHomeIntent' ;
     },
     handle(handlerInput) {
         const request = handlerInput.requestEnvelope.request;
@@ -160,10 +172,10 @@ const AMAZON_NavigateHomeIntent_Handler = {
     },
 };
 
-const AMAZON_FallbackIntent_Handler = {
+const AMAZON_FallbackIntent_Handler =  {
     canHandle(handlerInput) {
         const request = handlerInput.requestEnvelope.request;
-        return request.type === 'IntentRequest' && request.intent.name === 'AMAZON.FallbackIntent';
+        return request.type === 'IntentRequest' && request.intent.name === 'AMAZON.FallbackIntent' ;
     },
     handle(handlerInput) {
         const request = handlerInput.requestEnvelope.request;
@@ -179,38 +191,40 @@ const AMAZON_FallbackIntent_Handler = {
     },
 };
 
-const getCategoryBalance_Handler = {
+const getCategoryBalance_Handler =  {
     canHandle(handlerInput) {
         const request = handlerInput.requestEnvelope.request;
-        return request.type === 'IntentRequest' && request.intent.name === 'getCategoryBalance';
+        return request.type === 'IntentRequest' && request.intent.name === 'getCategoryBalance' ;
     },
     async handle(handlerInput) {
         const request = handlerInput.requestEnvelope.request;
         const responseBuilder = handlerInput.responseBuilder;
         let sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
-        console.log('The User id retrieved is {0}', sessionAttributes.userId);
+        console.log('The User id retrieved is ', sessionAttributes.userId);
         let wallet = await blitzbudgetDB.getDefaultAlexaWallet(sessionAttributes.userId);
-
+        
         console.log('The wallets obtained are ', JSON.stringify(wallet));
         let say = '';
 
         let slotStatus = '';
-        let resolvedSlot;
+        let resolvedSlot, shouldEndSession = true;
 
-        let slotValues = getSlotValues(request.intent.slots);
+        let slotValues = getSlotValues(request.intent.slots); 
         // getSlotValues returns .heardAs, .resolved, and .isValidated for each slot, according to request slot status codes ER_SUCCESS_MATCH, ER_SUCCESS_NO_MATCH, or traditional simple request slot without resolutions
 
         // console.log('***** slotValues: ' +  JSON.stringify(slotValues, null, 2));
         //   SLOT: category 
         if (slotValues.category.heardAs && slotValues.category.heardAs !== '') {
             let category = await blitzbudgetDB.getCategoryAlexa(wallet.sk.S, slotValues.category.heardAs, slotValues.date.heardAs);
-            if (isEmpty(category)) {
-                slotStatus += THE_MESSAGE + slotValues.category.heardAs + CATEGORY_EMPTY;
+            if(isEmpty(category)) {
+                slotStatus += THE_MESSAGE + slotValues.category.heardAs + CATEGORY_EMPTY + slotValues.category.heardAs;
+                shouldEndSession = false;
             } else {
-                slotStatus += YOUR_MESSAGE + slotValues.category.heardAs + CATEGORY_BALANCE_ERROR_TWO + category['category_total'].N + ' ' + wallet.currency.S;
+                slotStatus += YOUR_MESSAGE + slotValues.category.heardAs + CATEGORY_BALANCE_ERROR_TWO + category['category_total'].N + ' ' + wallet.currency.S;   
             }
         } else {
             slotStatus += ERR_MESSAGE;
+            shouldEndSession = false;
         }
 
         say += slotStatus;
@@ -219,16 +233,16 @@ const getCategoryBalance_Handler = {
         return responseBuilder
             .speak(say)
             .reprompt('try again, ' + say)
-            .withShouldEndSession(true) // End session for security purposes
+            .withShouldEndSession(shouldEndSession) // End session for security purposes
             .getResponse();
     },
 };
 
 
-const addNewTransaction_Handler = {
+const addNewTransaction_Handler =  {
     canHandle(handlerInput) {
         const request = handlerInput.requestEnvelope.request;
-        return request.type === 'IntentRequest' && request.intent.name === 'addNewTransaction';
+        return request.type === 'IntentRequest' && request.intent.name === 'addNewTransaction' ;
     },
     async handle(handlerInput) {
         const request = handlerInput.requestEnvelope.request;
@@ -237,58 +251,66 @@ const addNewTransaction_Handler = {
         let say = '';
 
         let slotStatus = '';
-        let resolvedSlot, wallet;
-
+        let resolvedSlot, wallet, shouldEndSession = true;
+        
         // getSlotValues returns .heardAs, .resolved, and .isValidated for each slot, according to request slot status codes ER_SUCCESS_MATCH, ER_SUCCESS_NO_MATCH, or traditional simple request slot without resolutions
 
         // console.log('***** slotValues: ' +  JSON.stringify(slotValues, null, 2));
         //   SLOT: goaltype 
-        let slotValues = getSlotValues(request.intent.slots);
-        if (isNotEmpty(slotValues.currency.heardAs)) {
+        let slotValues = getSlotValues(request.intent.slots); 
+        if(isNotEmpty(slotValues.currency.heardAs)) {
             let allWallets = await blitzbudgetDB.getWalletFromAlexa(sessionAttributes.userId);
-            wallet = blitzbudgetDB.calculateWalletFromAlexa(allWallets, slotValues);
+            wallet = blitzbudgetDB.calculateWalletFromAlexa(allWallets, slotValues); 
             console.log("The calculate wallet is ", JSON.stringify(wallet), ". The currency name is ", slotValues.currency.heardAs);
         } else {
             wallet = await blitzbudgetDB.getDefaultAlexaWallet(sessionAttributes.userId);
             console.log("The default wallet is ", wallet.currency.S, " Heard as ", slotValues.currency.heardAs);
         }
-
+        
         // getSlotValues returns .heardAs, .resolved, and .isValidated for each slot, according to request slot status codes ER_SUCCESS_MATCH, ER_SUCCESS_NO_MATCH, or traditional simple request slot without resolutions
 
         // console.log('***** slotValues: ' +  JSON.stringify(slotValues, null, 2));
         //   SLOT: category 
-        if (isEmpty(wallet)) {
+        if(isEmpty(wallet)) {
             slotStatus += EMPTY_WALLET;
+            shouldEndSession = false;
         } else {
-            console.log("The number of transaction is ", slotValues.number, " The category is ", slotValues.category);
-            if (isEmpty(slotValues.number.heardAs)) {
+            console.log("The number of transaction is ",slotValues.number, " The category is ", slotValues.category);
+            if(isEmpty(slotValues.number.heardAs)) {
                 slotStatus = EMPTY_AMOUNT;
             } else {
                 // getSlotValues returns .heardAs, .resolved, and .isValidated for each slot, according to request slot status codes ER_SUCCESS_MATCH, ER_SUCCESS_NO_MATCH, or traditional simple request slot without resolutions
-
+    
                 // console.log('***** slotValues: ' +  JSON.stringify(slotValues, null, 2));
                 //   SLOT: category 
                 if (slotValues.categories.heardAs && slotValues.categories.heardAs !== '') {
                     let category = await blitzbudgetDB.getCategoryAlexa(wallet.sk.S, slotValues.categories.heardAs, slotValues.date.heardAs);
-                    if (isEmpty(category)) {
-                        slotStatus = THE_MESSAGE + slotValues.categories.heardAs + CATEGORY_EMPTY;
+                    if(isEmpty(category)) {
+                        slotStatus = THE_MESSAGE + slotValues.categories.heardAs + CATEGORY_EMPTY + slotValues.categories.heardAs;
+                        shouldEndSession = false;
                     } else {
                         // If the category type is expense then
                         let categoryType = category['category_type'].S;
                         let transactionTotal = Number(slotValues.number.heardAs);
-                        switch (categoryType) {
+                        switch(categoryType) {
                             case 'Expense':
                                 transactionTotal *= -1;
                                 break;
                         }
                         slotStatus = await blitzbudgetDB.addTransactionAlexaAmount(wallet.sk.S, category.sk.S, transactionTotal.toString(), slotValues.date.heardAs, wallet.currency.S);
+                        // Successfully Added the transaction then
+                        if(includesStr(slotStatus, SUCCESSFUL_TITLE)) {
+                            // Send a simple card to Alexa on Success
+                            responseBuilder.withSimpleCard(CARD_SECURITY_TITLE, ADDED_NEW_TRANSACTION_SIMPLE_CARD);   
+                        }
                     }
                 } else {
                     slotStatus = EMPTY_CATEGORY;
+                    shouldEndSession = false;
                 }
-
+                
             }
-        }
+        } 
 
         say += slotStatus;
 
@@ -296,26 +318,25 @@ const addNewTransaction_Handler = {
         return responseBuilder
             .speak(say)
             .reprompt('try again, ' + say)
-            .withShouldEndSession(true) // End session for security purposes
+            .withShouldEndSession(shouldEndSession) // End session for security purposes
             .getResponse();
     },
 };
 
-const changeDefaultWallet_Handler = {
+const changeDefaultWallet_Handler =  {
     canHandle(handlerInput) {
         const request = handlerInput.requestEnvelope.request;
-        return request.type === 'IntentRequest' && request.intent.name === 'changeDefaultWallet';
+        return request.type === 'IntentRequest' && request.intent.name === 'changeDefaultWallet' ;
     },
     async handle(handlerInput) {
         const request = handlerInput.requestEnvelope.request;
         const responseBuilder = handlerInput.responseBuilder;
         let sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
-
         let say = '';
         let slotStatus = '';
-        let resolvedSlot;
+        let resolvedSlot, shouldEndSession = true;
 
-        let slotValues = getSlotValues(request.intent.slots);
+        let slotValues = getSlotValues(request.intent.slots); 
         // getSlotValues returns .heardAs, .resolved, and .isValidated for each slot, according to request slot status codes ER_SUCCESS_MATCH, ER_SUCCESS_NO_MATCH, or traditional simple request slot without resolutions
 
         // console.log('***** slotValues: ' +  JSON.stringify(slotValues, null, 2));
@@ -323,24 +344,31 @@ const changeDefaultWallet_Handler = {
         if (slotValues.wallet.heardAs && slotValues.wallet.heardAs !== '') {
             let walletCurrency;
             if (slotValues.wallet.ERstatus === 'ER_SUCCESS_MATCH') {
-                if (slotValues.wallet.resolved !== slotValues.wallet.heardAs) {
-                    walletCurrency = slotValues.wallet.resolved;
+                if(slotValues.wallet.resolved !== slotValues.wallet.heardAs) {
+                    walletCurrency = slotValues.wallet.resolved; 
                 } else {
                     walletCurrency = slotValues.wallet.heardAs;
-                }
+                } 
             }
-
+            
             if (slotValues.wallet.ERstatus === 'ER_SUCCESS_NO_MATCH') {
-                console.log('***** consider adding "' + slotValues.wallet.heardAs + '" to the custom slot type used by slot wallet! ');
+                console.log('***** consider adding "' + slotValues.wallet.heardAs + '" to the custom slot type used by slot wallet! '); 
                 slotStatus += ERR_MESSAGE;
+                shouldEndSession = false;
             } else {
                 console.log("The wallet currency to change is ", walletCurrency);
                 let allWallets = await blitzbudgetDB.getWalletFromAlexa(sessionAttributes.userId);
                 let changeWallet = await blitzbudgetDB.changeDefaultWalletAlexa(sessionAttributes.userId, allWallets, walletCurrency);
                 slotStatus += changeWallet;
+                // Successfully Changed the default wallet then
+                if(includesStr(slotStatus, SUCCESSFUL_TITLE)) {
+                    // Send a simple card to Alexa on Success
+                    responseBuilder.withSimpleCard(CARD_SECURITY_TITLE, CHANGED_DEFAULT_WALLET_SIMPLE_CARD);   
+                }
             }
         } else {
             slotStatus += ERR_MESSAGE;
+            shouldEndSession = false;
         }
 
         say += slotStatus;
@@ -349,29 +377,27 @@ const changeDefaultWallet_Handler = {
         return responseBuilder
             .speak(say)
             .reprompt('try again, ' + say)
-            .withShouldEndSession(true) // End session for security purposes
+            .withShouldEndSession(shouldEndSession) // End session for security purposes
             .getResponse();
     },
 };
 
-const changeDefaultAccount_Handler = {
+const changeDefaultAccount_Handler =  {
     canHandle(handlerInput) {
         const request = handlerInput.requestEnvelope.request;
-        return request.type === 'IntentRequest' && request.intent.name === 'changeDefaultAccount';
+        return request.type === 'IntentRequest' && request.intent.name === 'changeDefaultAccount' ;
     },
     async handle(handlerInput) {
         const request = handlerInput.requestEnvelope.request;
         const responseBuilder = handlerInput.responseBuilder;
         let sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
         let wallet = await blitzbudgetDB.getDefaultAlexaWallet(sessionAttributes.userId);
-
         console.log('The wallets obtained are ', JSON.stringify(wallet));
         let say = '';
-
         let slotStatus = '';
-        let resolvedSlot;
+        let resolvedSlot, shouldEndSession = true;
 
-        let slotValues = getSlotValues(request.intent.slots);
+        let slotValues = getSlotValues(request.intent.slots); 
         // getSlotValues returns .heardAs, .resolved, and .isValidated for each slot, according to request slot status codes ER_SUCCESS_MATCH, ER_SUCCESS_NO_MATCH, or traditional simple request slot without resolutions
 
         // console.log('***** slotValues: ' +  JSON.stringify(slotValues, null, 2));
@@ -380,8 +406,14 @@ const changeDefaultAccount_Handler = {
             let allAccounts = await blitzbudgetDB.getAccountFromAlexa(wallet.sk.S);
             let changeAccount = await blitzbudgetDB.changeDefaultAccountAlexa(allAccounts, slotValues.account.heardAs);
             slotStatus = changeAccount;
+            // Successfully Changed the default wallet then
+            if(includesStr(slotStatus, SUCCESSFUL_TITLE)) {
+                // Send a simple card to Alexa on Success
+                responseBuilder.withSimpleCard(CARD_SECURITY_TITLE, CHANGED_DEFAULT_ACCOUNT_SIMPLE_CARD);   
+            }
         } else {
             slotStatus = ERR_MESSAGE;
+            shouldEndSession = false;
         }
 
         say += slotStatus;
@@ -390,66 +422,76 @@ const changeDefaultAccount_Handler = {
         return responseBuilder
             .speak(say)
             .reprompt('try again, ' + say)
-            .withShouldEndSession(true) // End session for security purposes
+            .withShouldEndSession(shouldEndSession) // End session for security purposes
             .getResponse();
     },
 };
 
-const addNewBudget_Handler = {
+const addNewBudget_Handler =  {
     canHandle(handlerInput) {
         const request = handlerInput.requestEnvelope.request;
-        return request.type === 'IntentRequest' && request.intent.name === 'addNewBudget';
+        return request.type === 'IntentRequest' && request.intent.name === 'addNewBudget' ;
     },
     async handle(handlerInput) {
         const request = handlerInput.requestEnvelope.request;
         const responseBuilder = handlerInput.responseBuilder;
         let sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
+        let shouldEndSession = true;
 
         let say = '';
         let slotStatus = '';
         let resolvedSlot, wallet;
 
-        let slotValues = getSlotValues(request.intent.slots);
-        if (isNotEmpty(slotValues.currency.heardAs)) {
+        let slotValues = getSlotValues(request.intent.slots); 
+        if(isNotEmpty(slotValues.currency.heardAs)) {
             let allWallets = await blitzbudgetDB.getWalletFromAlexa(sessionAttributes.userId);
-            wallet = blitzbudgetDB.calculateWalletFromAlexa(allWallets, slotValues);
+            wallet = blitzbudgetDB.calculateWalletFromAlexa(allWallets, slotValues); 
             console.log("The calculate wallet is ", JSON.stringify(wallet), ". The currency name is ", slotValues.currency.heardAs);
         } else {
             wallet = await blitzbudgetDB.getDefaultAlexaWallet(sessionAttributes.userId);
             console.log("The default wallet is ", wallet.currency.S);
         }
-
-        let currentDate = new Date();
+        
+        let currentDate =  new Date();
         currentDate = currentDate.getFullYear() + '-' + ("0" + (Number(currentDate.getMonth()) + 1)).slice(-2);
         // getSlotValues returns .heardAs, .resolved, and .isValidated for each slot, according to request slot status codes ER_SUCCESS_MATCH, ER_SUCCESS_NO_MATCH, or traditional simple request slot without resolutions
 
         // console.log('***** slotValues: ' +  JSON.stringify(slotValues, null, 2));
         //   SLOT: category 
-        if (isEmpty(wallet)) {
+        if(isEmpty(wallet)) {
             slotStatus += EMPTY_WALLET;
+            shouldEndSession = false;
         } else {
             // getSlotValues returns .heardAs, .resolved, and .isValidated for each slot, according to request slot status codes ER_SUCCESS_MATCH, ER_SUCCESS_NO_MATCH, or traditional simple request slot without resolutions
-
+    
             // console.log('***** slotValues: ' +  JSON.stringify(slotValues, null, 2));
             //   SLOT: category 
             if (slotValues.category.heardAs && slotValues.category.heardAs !== '') {
                 let category = await blitzbudgetDB.getCategoryAlexa(wallet.sk.S, slotValues.category.heardAs, currentDate);
-                if (isEmpty(category)) {
-                    slotStatus += THE_MESSAGE + slotValues.category.heardAs + CATEGORY_EMPTY;
-                } else if (isEqual(category['category_type'].S, 'Income')) {
-                    slotStatus = INCOME_CATEGORY_ERROR
+                if(isEmpty(category)) {
+                    slotStatus += THE_MESSAGE + slotValues.category.heardAs + CATEGORY_EMPTY + slotValues.category.heardAs;
+                    shouldEndSession = false;
+                } else if(isEqual(category['category_type'].S, 'Income')) {
+                    slotStatus = INCOME_CATEGORY_ERROR;
+                    shouldEndSession = false;
                 } else {
                     let budget = await blitzbudgetDB.getBudgetAlexaAmount(wallet.sk.S, category.sk.S, currentDate);
-                    if (isEmpty(budget)) {
+                    if(isEmpty(budget)) {
                         slotStatus += await blitzbudgetDB.addBudgetAlexaAmount(wallet.sk.S, category.sk.S, slotValues.amount.heardAs, currentDate, slotValues.category.heardAs);
+                        // Successfully added a new budget then
+                        if(includesStr(slotStatus, SUCCESSFUL_TITLE)) {
+                            // Send a simple card to Alexa on Success
+                            responseBuilder.withSimpleCard(CARD_SECURITY_TITLE, ADDED_NEW_BUDGET_SIMPLE_CARD);   
+                        }
                     } else {
                         slotStatus += THE_MESSAGE + slotValues.category.heardAs + BUDGET_CREATED_ERROR;
                     }
                 }
             } else {
                 slotStatus += ERR_MESSAGE;
+                shouldEndSession = false;
             }
-
+            
         }
 
         say += slotStatus;
@@ -458,51 +500,58 @@ const addNewBudget_Handler = {
         return responseBuilder
             .speak(say)
             .reprompt('try again, ' + say)
-            .withShouldEndSession(true) // End session for security purposes
+            .withShouldEndSession(shouldEndSession) // End session for security purposes
             .getResponse();
     },
 };
 
-const addNewGoal_Handler = {
+const addNewGoal_Handler =  {
     canHandle(handlerInput) {
         const request = handlerInput.requestEnvelope.request;
-        return request.type === 'IntentRequest' && request.intent.name === 'addNewGoal';
+        return request.type === 'IntentRequest' && request.intent.name === 'addNewGoal' ;
     },
     async handle(handlerInput) {
         const request = handlerInput.requestEnvelope.request;
         const responseBuilder = handlerInput.responseBuilder;
         let sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
-
+        let shouldEndSession = true;
         let say = '';
         let slotStatus = '';
         let wallet;
-
+  
         // getSlotValues returns .heardAs, .resolved, and .isValidated for each slot, according to request slot status codes ER_SUCCESS_MATCH, ER_SUCCESS_NO_MATCH, or traditional simple request slot without resolutions
 
         // console.log('***** slotValues: ' +  JSON.stringify(slotValues, null, 2));
         //   SLOT: goaltype 
-        let slotValues = getSlotValues(request.intent.slots);
-        if (isNotEmpty(slotValues.currency.heardAs)) {
+        let slotValues = getSlotValues(request.intent.slots); 
+        if(isNotEmpty(slotValues.currency.heardAs)) {
             let allWallets = await blitzbudgetDB.getWalletFromAlexa(sessionAttributes.userId);
-            wallet = blitzbudgetDB.calculateWalletFromAlexa(allWallets, slotValues);
+            wallet = blitzbudgetDB.calculateWalletFromAlexa(allWallets, slotValues); 
             console.log("The calculate wallet is ", JSON.stringify(wallet), ". The currency name is ", slotValues.currency.heardAs);
         } else {
             wallet = await blitzbudgetDB.getDefaultAlexaWallet(sessionAttributes.userId);
             console.log("The default wallet is ", wallet.currency.S);
         }
-
+        
         // getSlotValues returns .heardAs, .resolved, and .isValidated for each slot, according to request slot status codes ER_SUCCESS_MATCH, ER_SUCCESS_NO_MATCH, or traditional simple request slot without resolutions
 
         // console.log('***** slotValues: ' +  JSON.stringify(slotValues, null, 2));
         //   SLOT: category 
-        if (isEmpty(wallet)) {
+        if(isEmpty(wallet)) {
             slotStatus += EMPTY_WALLET;
+            shouldEndSession = false;
         } else {
             let goalType = isEmpty(slotValues.goaltype.id) ? slotValues.goaltype.heardAs : slotValues.goaltype.id;
-            if (isEmpty(slotValues.goaltype.heardAs) && isEmpty(slotValues.goaltype.id)) {
+            if(isEmpty(slotValues.goaltype.heardAs) && isEmpty(slotValues.goaltype.id)) {
                 slotStatus = GOAL_TYPE_ERROR;
+                shouldEndSession = false;
             } else {
                 slotStatus = await blitzbudgetDB.addNewGoalFromAlexa(wallet.sk.S, slotValues.amount.heardAs, goalType, slotValues.monthlyContribution.heardAs, slotValues.targetDate.heardAs);
+                // Successfully added a new goal then
+                if(includesStr(slotStatus, SUCCESSFUL_TITLE)) {
+                    // Send a simple card to Alexa on Success
+                    responseBuilder.withSimpleCard(CARD_SECURITY_TITLE, ADDED_NEW_GOAL_SIMPLE_CARD);   
+                }
             }
         }
 
@@ -512,7 +561,7 @@ const addNewGoal_Handler = {
         return responseBuilder
             .speak(say)
             .reprompt('try again, ' + say)
-            .withShouldEndSession(true) // End session for security purposes
+            .withShouldEndSession(shouldEndSession) // End session for security purposes
             .getResponse();
     },
 };
@@ -520,53 +569,57 @@ const addNewGoal_Handler = {
 const getBudgetAmount_Handler = {
     canHandle(handlerInput) {
         const request = handlerInput.requestEnvelope.request;
-        return request.type === 'IntentRequest' && request.intent.name === 'getBudgetAmount';
+        return request.type === 'IntentRequest' && request.intent.name === 'getBudgetAmount' ;
     },
     async handle(handlerInput) {
         const request = handlerInput.requestEnvelope.request;
         const responseBuilder = handlerInput.responseBuilder;
         let sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
         let wallet = await blitzbudgetDB.getDefaultAlexaWallet(sessionAttributes.userId);
-
+        
         let say = '';
 
         let slotStatus = '';
         let resolvedSlot;
+        let shouldEndSession = true;
 
-        let slotValues = getSlotValues(request.intent.slots);
+        let slotValues = getSlotValues(request.intent.slots); 
         // getSlotValues returns .heardAs, .resolved, and .isValidated for each slot, according to request slot status codes ER_SUCCESS_MATCH, ER_SUCCESS_NO_MATCH, or traditional simple request slot without resolutions
 
         // console.log('***** slotValues: ' +  JSON.stringify(slotValues, null, 2));
-
+        
         // Date
-        let currentDate = new Date();
+        let currentDate =  new Date();
         // Date used to get the budget
-        if (isNotEmpty(slotValues.date.heardAs)) {
+        if(isNotEmpty(slotValues.date.heardAs)) {
             let dateMentioned = slotValues.date.heardAs;
             console.log("The Date mentioned is ", dateMentioned);
-            if (dateMentioned.length < 6) {
+            if(dateMentioned.length < 6) {
                 // For example is 2019 then become 2019-09
                 dateMentioned = dateMentioned + '-' + (currentDate.getMonth() + 1);
             }
-            currentDate = new Date(dateMentioned);
+            currentDate =  new Date(dateMentioned);
         }
         currentDate = currentDate.getFullYear() + '-' + ("0" + (Number(currentDate.getMonth()) + 1)).slice(-2);
-
+        
         //   SLOT: category 
         if (slotValues.category.heardAs && slotValues.category.heardAs !== '') {
             let category = await blitzbudgetDB.getCategoryAlexa(wallet.sk.S, slotValues.category.heardAs, currentDate);
-            if (isEmpty(category)) {
-                slotStatus += THE_MESSAGE + slotValues.category.heardAs + CATEGORY_EMPTY;
+            if(isEmpty(category)) {
+                slotStatus += THE_MESSAGE + slotValues.category.heardAs + CATEGORY_EMPTY + slotValues.category.heardAs;
+                shouldEndSession = false;
             } else {
                 let budget = await blitzbudgetDB.getBudgetAlexaAmount(wallet.sk.S, category.sk.S, currentDate);
-                if (isEmpty(budget)) {
-                    slotStatus += THE_MESSAGE + slotValues.category.heardAs + BUDGET_EMPTY_ERROR;
+                if(isEmpty(budget)) {
+                    slotStatus += THE_MESSAGE + slotValues.category.heardAs + BUDGET_EMPTY_ERROR + slotValues.category.heardAs;
+                    shouldEndSession = false;
                 } else {
                     slotStatus += YOUR_MESSAGE + slotValues.category.heardAs + BUDGET_RETRIEVED + budget['planned'].N + ' ' + wallet.currency.S;
                 }
             }
         } else {
             slotStatus += ERR_MESSAGE;
+            shouldEndSession = false;
         }
 
         say += slotStatus;
@@ -575,52 +628,54 @@ const getBudgetAmount_Handler = {
         return responseBuilder
             .speak(say)
             .reprompt('try again, ' + say)
-            .withShouldEndSession(true) // End session for security purposes
+            .withShouldEndSession(shouldEndSession) // End session for security purposes
             .getResponse();
     },
 }
 
-const getBudgetBalance_Handler = {
+const getBudgetBalance_Handler =  {
     canHandle(handlerInput) {
         const request = handlerInput.requestEnvelope.request;
-        return request.type === 'IntentRequest' && request.intent.name === 'getBudgetBalance';
+        return request.type === 'IntentRequest' && request.intent.name === 'getBudgetBalance' ;
     },
     async handle(handlerInput) {
         const request = handlerInput.requestEnvelope.request;
         const responseBuilder = handlerInput.responseBuilder;
         let sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
         let wallet = await blitzbudgetDB.getDefaultAlexaWallet(sessionAttributes.userId);
-
+        let shouldEndSession = true;
+        
         let say = '';
-
         let slotStatus = '';
         let resolvedSlot;
-
-        let slotValues = getSlotValues(request.intent.slots);
+        let slotValues = getSlotValues(request.intent.slots); 
         // getSlotValues returns .heardAs, .resolved, and .isValidated for each slot, according to request slot status codes ER_SUCCESS_MATCH, ER_SUCCESS_NO_MATCH, or traditional simple request slot without resolutions
 
         // console.log('***** slotValues: ' +  JSON.stringify(slotValues, null, 2));
-
+        
         // Date
-        let currentDate = new Date();
+        let currentDate =  new Date();
         currentDate = currentDate.getFullYear() + '-' + ("0" + (Number(currentDate.getMonth()) + 1)).slice(-2);
-
+        
         //   SLOT: category 
         if (slotValues.category.heardAs && slotValues.category.heardAs !== '') {
             let category = await blitzbudgetDB.getCategoryAlexa(wallet.sk.S, slotValues.category.heardAs, currentDate);
-            if (isEmpty(category)) {
-                slotStatus += THE_MESSAGE + slotValues.category.heardAs + CATEGORY_EMPTY;
+            if(isEmpty(category)) {
+                slotStatus += THE_MESSAGE + slotValues.category.heardAs + CATEGORY_EMPTY + slotValues.category.heardAs;
+                shouldEndSession = false;
             } else {
                 let budget = await blitzbudgetDB.getBudgetAlexaAmount(wallet.sk.S, category.sk.S, currentDate);
-                if (isEmpty(budget)) {
-                    slotStatus += THE_MESSAGE + slotValues.category.heardAs + BUDGET_NOT_CREATED + category['category_name'].S + BUDGET_NOT_CREATED_TWO + category['category_name'].S;
+                if(isEmpty(budget)) {
+                    slotStatus += THE_MESSAGE + slotValues.category.heardAs + BUDGET_NOT_CREATED + category['category_name'].S + BUDGET_NOT_CREATED_TWO + category['category_name'].S ;
+                    shouldEndSession = false;
                 } else {
                     let budgetBalance = Number(budget['planned'].N) + Number(category['category_total'].N);
-                    slotStatus += YOUR_MESSAGE + slotValues.category.heardAs + BUDGET_BALANCE_ONE + budgetBalance + ' ' + wallet.currency.S + BUDGET_BALANCE_TWO;
+                    slotStatus += YOUR_MESSAGE + slotValues.category.heardAs + BUDGET_BALANCE_ONE + budgetBalance + ' ' + wallet.currency.S + BUDGET_BALANCE_TWO;   
                 }
             }
         } else {
             slotStatus += ERR_MESSAGE;
+            shouldEndSession = false;
         }
 
         say += slotStatus;
@@ -629,47 +684,48 @@ const getBudgetBalance_Handler = {
         return responseBuilder
             .speak(say)
             .reprompt('try again, ' + say)
-            .withShouldEndSession(true) // End session for security purposes
+            .withShouldEndSession(shouldEndSession) // End session for security purposes
             .getResponse();
     },
 };
 
-const getTagBalance_Handler = {
+const getTagBalance_Handler =  {
     canHandle(handlerInput) {
         const request = handlerInput.requestEnvelope.request;
-        return request.type === 'IntentRequest' && request.intent.name === 'getTagBalance';
+        return request.type === 'IntentRequest' && request.intent.name === 'getTagBalance' ;
     },
     async handle(handlerInput) {
         const request = handlerInput.requestEnvelope.request;
         const responseBuilder = handlerInput.responseBuilder;
         let sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
         let wallet = await blitzbudgetDB.getDefaultAlexaWallet(sessionAttributes.userId);
-
+        
         let say = '';
-
         let slotStatus = '';
-        let resolvedSlot;
+        let resolvedSlot, shouldEndSession = true;
 
-        let slotValues = getSlotValues(request.intent.slots);
+        let slotValues = getSlotValues(request.intent.slots); 
         // getSlotValues returns .heardAs, .resolved, and .isValidated for each slot, according to request slot status codes ER_SUCCESS_MATCH, ER_SUCCESS_NO_MATCH, or traditional simple request slot without resolutions
 
         // console.log('***** slotValues: ' +  JSON.stringify(slotValues, null, 2));
-
+        
         // Date
-        let currentDate = new Date();
+        let currentDate =  new Date();
         currentDate = currentDate.getFullYear() + '-' + ("0" + (Number(currentDate.getMonth()) + 1)).slice(-2);
-
+        
         //   SLOT: tag 
         if (slotValues.tag.heardAs && slotValues.tag.heardAs !== '') {
             let tagBalance = await blitzbudgetDB.getTagAlexaBalance(wallet.sk.S, slotValues.tag.heardAs, currentDate);
-            if (isEmpty(tagBalance)) {
+            if(isEmpty(tagBalance)) {
                 slotStatus += THE_MESSAGE + slotValues.tag.heardAs + EMPTY_TAG;
+                shouldEndSession = false;
             } else {
-                slotStatus += YOUR_MESSAGE + slotValues.tag.heardAs + TAG_MESSAGE + tagBalance + ' ' + wallet.currency.S;
+                slotStatus += YOUR_MESSAGE + slotValues.tag.heardAs + TAG_MESSAGE + tagBalance + ' ' + wallet.currency.S;   
             }
             console.log("The", slotValues.tag.heardAs, " tag has a balance of ", tagBalance);
         } else {
             slotStatus += ERR_MESSAGE;
+            shouldEndSession = false;
         }
 
         say += slotStatus;
@@ -678,62 +734,71 @@ const getTagBalance_Handler = {
         return responseBuilder
             .speak(say)
             .reprompt('try again, ' + say)
-            .withShouldEndSession(true) // End session for security purposes
+            .withShouldEndSession(shouldEndSession) // End session for security purposes
             .getResponse();
     },
 };
 
-const changeBudgetAmount_Handler = {
+const changeBudgetAmount_Handler =  {
     canHandle(handlerInput) {
         const request = handlerInput.requestEnvelope.request;
-        return request.type === 'IntentRequest' && request.intent.name === 'changeBudgetAmount';
+        return request.type === 'IntentRequest' && request.intent.name === 'changeBudgetAmount' ;
     },
     async handle(handlerInput) {
-        let wallet;
+        let wallet, shouldEndSession = true;
         const request = handlerInput.requestEnvelope.request;
         const responseBuilder = handlerInput.responseBuilder;
         let sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
         console.log("The Budget amount is ", JSON.stringify(request.intent.slots));
-        let slotValues = getSlotValues(request.intent.slots);
-        if (isNotEmpty(slotValues.currency.heardAs)) {
+        let slotValues = getSlotValues(request.intent.slots); 
+        if(isNotEmpty(slotValues.currency.heardAs)) {
             let allWallets = await blitzbudgetDB.getWalletFromAlexa(sessionAttributes.userId);
-            wallet = blitzbudgetDB.calculateWalletFromAlexa(allWallets, slotValues);
+            wallet = blitzbudgetDB.calculateWalletFromAlexa(allWallets, slotValues); 
             console.log("The calculate wallet is ", JSON.stringify(wallet), ". The currency name is ", slotValues.currency.heardAs);
         } else {
             wallet = await blitzbudgetDB.getDefaultAlexaWallet(sessionAttributes.userId);
             console.log("The default wallet is ", wallet.currency.S);
         }
-
+        
         let say = '';
         let slotStatus = '';
         let resolvedSlot;
-
-        let currentDate = new Date();
+        
+        let currentDate =  new Date();
         currentDate = currentDate.getFullYear() + '-' + ("0" + (Number(currentDate.getMonth()) + 1)).slice(-2);
-
-        if (isEmpty(wallet)) {
+        
+        if(isEmpty(wallet)) {
             slotStatus += EMPTY_WALLET;
+            shouldEndSession = false;
         } else {
             // getSlotValues returns .heardAs, .resolved, and .isValidated for each slot, according to request slot status codes ER_SUCCESS_MATCH, ER_SUCCESS_NO_MATCH, or traditional simple request slot without resolutions
-
+    
             // console.log('***** slotValues: ' +  JSON.stringify(slotValues, null, 2));
             //   SLOT: category 
             if (slotValues.category.heardAs && slotValues.category.heardAs !== '') {
                 let category = await blitzbudgetDB.getCategoryAlexa(wallet.sk.S, slotValues.category.heardAs, currentDate);
-                if (isEmpty(category)) {
-                    slotStatus += THE_MESSAGE + slotValues.category.heardAs + CATEGORY_EMPTY;
+                if(isEmpty(category)) {
+                    slotStatus += THE_MESSAGE + slotValues.category.heardAs + CATEGORY_EMPTY + slotValues.category.heardAs;
+                    shouldEndSession = false;
                 } else {
                     let budget = await blitzbudgetDB.getBudgetAlexaAmount(wallet.sk.S, category.sk.S, currentDate);
-                    if (isEmpty(budget)) {
+                    if(isEmpty(budget)) {
                         slotStatus += THE_MESSAGE + slotValues.category.heardAs + BUDGET_NOT_CREATED + category['category_name'].S + BUDGET_NOT_CREATED_TWO + category['category_name'].S;
+                        shouldEndSession = false;
                     } else {
                         slotStatus += await blitzbudgetDB.changeBudgetAlexaAmount(wallet.sk.S, budget.sk.S, slotValues.amt.heardAs, wallet.currency.S);
+                        // Successfully change budget amount then
+                        if(includesStr(slotStatus, SUCCESSFUL_TITLE)) {
+                            // Send a simple card to Alexa on Success
+                            responseBuilder.withSimpleCard(CARD_SECURITY_TITLE, CHANGED_BUDGET_AMOUNT_SIMPLE_CARD);   
+                        }
                     }
                 }
             } else {
                 slotStatus += ERR_MESSAGE;
+                shouldEndSession = false;
             }
-
+            
         }
 
         say += slotStatus;
@@ -742,15 +807,15 @@ const changeBudgetAmount_Handler = {
         return responseBuilder
             .speak(say)
             .reprompt('try again, ' + say)
-            .withShouldEndSession(true) // End session for security purposes
+            .withShouldEndSession(shouldEndSession) // End session for security purposes
             .getResponse();
     },
 };
 
-const getDefaultWallet_Handler = {
+const getDefaultWallet_Handler =  {
     canHandle(handlerInput) {
         const request = handlerInput.requestEnvelope.request;
-        return request.type === 'IntentRequest' && request.intent.name === 'getDefaultWallet';
+        return request.type === 'IntentRequest' && request.intent.name === 'getDefaultWallet' ;
     },
     async handle(handlerInput) {
         const request = handlerInput.requestEnvelope.request;
@@ -758,7 +823,7 @@ const getDefaultWallet_Handler = {
         let sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
 
         let wallet = await blitzbudgetDB.getDefaultAlexaWallet(sessionAttributes.userId);
-
+        
         let say = DEFAULT_WALLET + wallet.currency.S;
 
         return responseBuilder
@@ -769,10 +834,10 @@ const getDefaultWallet_Handler = {
     },
 };
 
-const getDefaultAccount_Handler = {
+const getDefaultAccount_Handler =  {
     canHandle(handlerInput) {
         const request = handlerInput.requestEnvelope.request;
-        return request.type === 'IntentRequest' && request.intent.name === 'getDefaultAccount';
+        return request.type === 'IntentRequest' && request.intent.name === 'getDefaultAccount' ;
     },
     async handle(handlerInput) {
         const request = handlerInput.requestEnvelope.request;
@@ -780,15 +845,17 @@ const getDefaultAccount_Handler = {
         let sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
         let wallet = await blitzbudgetDB.getDefaultAlexaWallet(sessionAttributes.userId);
         console.log('The wallets obtained are ', JSON.stringify(wallet));
-        let say;
-
-        if (isEmpty(wallet)) {
+        let say, shouldEndSession = true;
+        
+        if(isEmpty(wallet)) {
             slotStatus += EMPTY_WALLET;
+            shouldEndSession = false;
         } else {
             let defaultAccount = await blitzbudgetDB.getDefaultAlexaAccount(wallet.sk.S);
 
-            if (isEmpty(defaultAccount)) {
+            if(isEmpty(defaultAccount)) {
                 say = EMPTY_ACCOUNT;
+                shouldEndSession = false;
             } else {
                 say = DEFAULT_ACCOUNT_SUCCESS + defaultAccount['bank_account_name'].S;
             }
@@ -797,77 +864,84 @@ const getDefaultAccount_Handler = {
         return responseBuilder
             .speak(say)
             .reprompt('try again, ' + say)
-            .withShouldEndSession(true) // End session for security purposes
+            .withShouldEndSession(shouldEndSession) // End session for security purposes
             .getResponse();
     },
 };
 
-const addNewWallet_Handler = {
+const addNewWallet_Handler =  {
     canHandle(handlerInput) {
         const request = handlerInput.requestEnvelope.request;
-        return request.type === 'IntentRequest' && request.intent.name === 'addNewWallet';
+        return request.type === 'IntentRequest' && request.intent.name === 'addNewWallet' ;
     },
     async handle(handlerInput) {
         const request = handlerInput.requestEnvelope.request;
         const responseBuilder = handlerInput.responseBuilder;
         let sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
-
         let say = '';
         let slotStatus = '';
-        let resolvedSlot;
+        let resolvedSlot, shouldEndSession = true;
 
-        let slotValues = getSlotValues(request.intent.slots);
+        let slotValues = getSlotValues(request.intent.slots); 
         // getSlotValues returns .heardAs, .resolved, and .isValidated for each slot, according to request slot status codes ER_SUCCESS_MATCH, ER_SUCCESS_NO_MATCH, or traditional simple request slot without resolutions
 
         // console.log('***** slotValues: ' +  JSON.stringify(slotValues, null, 2));
         //   SLOT: currency 
         if (slotValues.currency.heardAs && slotValues.currency.heardAs !== '') {
             let matchedCurrency = blitzbudgetDB.checkIfWalletIsInvalid(slotValues);
-            if (isEmpty(matchedCurrency)) {
-                slotStatus = CURRENCY_NOTFOUND;
+            if(isEmpty(matchedCurrency)) {
+               slotStatus = CURRENCY_NOTFOUND;
+               shouldEndSession = false;
             } else {
                 slotStatus = await blitzbudgetDB.addWalletFromAlexa(sessionAttributes.userId, matchedCurrency);
+                // Successfully change budget amount then
+                if(includesStr(slotStatus, SUCCESSFUL_TITLE)) {
+                    // Send a simple card to Alexa on Success
+                    responseBuilder.withSimpleCard(CARD_SECURITY_TITLE, ADDED_NEW_WALLET_SIMPLE_CARD);   
+                }
             }
         } else {
             slotStatus += ERR_MESSAGE;
+            shouldEndSession = false;
         }
-
+        
         say += slotStatus;
 
 
         return responseBuilder
             .speak(say)
             .reprompt('try again, ' + say)
-            .withShouldEndSession(true) // End session for security purposes
+            .withShouldEndSession(shouldEndSession) // End session for security purposes
             .getResponse();
     },
 };
 
-const sendFeatureRequest_Handler = {
+const sendFeatureRequest_Handler =  {
     canHandle(handlerInput) {
         const request = handlerInput.requestEnvelope.request;
-        return request.type === 'IntentRequest' && request.intent.name === 'sendFeatureRequest';
+        return request.type === 'IntentRequest' && request.intent.name === 'sendFeatureRequest' ;
     },
     async handle(handlerInput) {
         const request = handlerInput.requestEnvelope.request;
         const responseBuilder = handlerInput.responseBuilder;
         let sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
-
+        
         let say = '';
 
         let slotStatus = '';
-        let resolvedSlot;
+        let resolvedSlot, shouldEndSession = true;
 
-        let slotValues = getSlotValues(request.intent.slots);
+        let slotValues = getSlotValues(request.intent.slots); 
         // getSlotValues returns .heardAs, .resolved, and .isValidated for each slot, according to request slot status codes ER_SUCCESS_MATCH, ER_SUCCESS_NO_MATCH, or traditional simple request slot without resolutions
 
         // console.log('***** slotValues: ' +  JSON.stringify(slotValues, null, 2));
-
+        
         //   SLOT: tag 
         if (slotValues.search.heardAs && slotValues.search.heardAs !== '') {
             slotStatus = await featureRequest.sendFeatureRequest(slotValues.search.heardAs, sessionAttributes.email);
         } else {
             slotStatus += ERR_MESSAGE;
+            shouldEndSession = false;
         }
 
         say += slotStatus;
@@ -876,40 +950,42 @@ const sendFeatureRequest_Handler = {
         return responseBuilder
             .speak(say)
             .reprompt('try again, ' + say)
-            .withShouldEndSession(true) // End session for security purposes
+            .withShouldEndSession(shouldEndSession) // End session for security purposes
             .getResponse();
     },
 };
 
-const getEarningsByDate_Handler = {
+const getEarningsByDate_Handler =  {
     canHandle(handlerInput) {
         const request = handlerInput.requestEnvelope.request;
-        return request.type === 'IntentRequest' && request.intent.name === 'getEarningsByDate';
+        return request.type === 'IntentRequest' && request.intent.name === 'getEarningsByDate' ;
     },
     async handle(handlerInput) {
         const request = handlerInput.requestEnvelope.request;
         const responseBuilder = handlerInput.responseBuilder;
         let sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
         let wallet = await blitzbudgetDB.getDefaultAlexaWallet(sessionAttributes.userId);
-
+        
         let say = '';
         let slotStatus = '';
-        let resolvedSlot;
-
-        if (isEmpty(wallet)) {
+        let resolvedSlot, shouldEndSession = true;
+        
+        if(isEmpty(wallet)) {
             slotStatus += EMPTY_WALLET;
+            shouldEndSession = false;
         } else {
 
-            let slotValues = getSlotValues(request.intent.slots);
+            let slotValues = getSlotValues(request.intent.slots); 
             // getSlotValues returns .heardAs, .resolved, and .isValidated for each slot, according to request slot status codes ER_SUCCESS_MATCH, ER_SUCCESS_NO_MATCH, or traditional simple request slot without resolutions
-
+    
             // console.log('***** slotValues: ' +  JSON.stringify(slotValues, null, 2));
-
+            
             //   SLOT: date 
             if (slotValues.date.heardAs && slotValues.date.heardAs !== '') {
                 slotStatus = await blitzbudgetDB.getEarningsByDateFromAlexa(wallet.sk.S, slotValues.date.heardAs, wallet.currency.S);
             } else {
                 slotStatus += ERR_MESSAGE;
+                shouldEndSession = false;
             }
         }
 
@@ -919,39 +995,41 @@ const getEarningsByDate_Handler = {
         return responseBuilder
             .speak(say)
             .reprompt('try again, ' + say)
-            .withShouldEndSession(true) // End session for security purposes
+            .withShouldEndSession(shouldEndSession) // End session for security purposes
             .getResponse();
     }
 }
 
-const getExpenditureByDate_Handler = {
+const getExpenditureByDate_Handler =  {
     canHandle(handlerInput) {
         const request = handlerInput.requestEnvelope.request;
-        return request.type === 'IntentRequest' && request.intent.name === 'getExpenditureByDate';
+        return request.type === 'IntentRequest' && request.intent.name === 'getExpenditureByDate' ;
     },
     async handle(handlerInput) {
         const request = handlerInput.requestEnvelope.request;
         const responseBuilder = handlerInput.responseBuilder;
         let sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
         let wallet = await blitzbudgetDB.getDefaultAlexaWallet(sessionAttributes.userId);
-
+        
         let say = '';
         let slotStatus = '';
-        let resolvedSlot;
-
-        if (isEmpty(wallet)) {
+        let resolvedSlot, shouldEndSession = true;
+        
+        if(isEmpty(wallet)) {
             slotStatus += EMPTY_WALLET;
+            shouldEndSession = false;
         } else {
-            let slotValues = getSlotValues(request.intent.slots);
+            let slotValues = getSlotValues(request.intent.slots); 
             // getSlotValues returns .heardAs, .resolved, and .isValidated for each slot, according to request slot status codes ER_SUCCESS_MATCH, ER_SUCCESS_NO_MATCH, or traditional simple request slot without resolutions
-
+    
             // console.log('***** slotValues: ' +  JSON.stringify(slotValues, null, 2));
-
+            
             //   SLOT: date 
             if (slotValues.date.heardAs && slotValues.date.heardAs !== '') {
                 slotStatus = await blitzbudgetDB.getExpenditureByDateFromAlexa(wallet.sk.S, slotValues.date.heardAs, wallet.currency.S);
             } else {
                 slotStatus += ERR_MESSAGE;
+                shouldEndSession = false;
             }
         }
 
@@ -961,39 +1039,41 @@ const getExpenditureByDate_Handler = {
         return responseBuilder
             .speak(say)
             .reprompt('try again, ' + say)
-            .withShouldEndSession(true) // End session for security purposes
+            .withShouldEndSession(shouldEndSession) // End session for security purposes
             .getResponse();
     }
 }
 
-const getTransactionTotalByDate_Handler = {
+const getTransactionTotalByDate_Handler =  {
     canHandle(handlerInput) {
         const request = handlerInput.requestEnvelope.request;
-        return request.type === 'IntentRequest' && request.intent.name === 'getTransactionTotalByDate';
+        return request.type === 'IntentRequest' && request.intent.name === 'getTransactionTotalByDate' ;
     },
     async handle(handlerInput) {
         const request = handlerInput.requestEnvelope.request;
         const responseBuilder = handlerInput.responseBuilder;
         let sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
         let wallet = await blitzbudgetDB.getDefaultAlexaWallet(sessionAttributes.userId);
-
+        
         let say = '';
         let slotStatus = '';
-        let resolvedSlot;
-
-        if (isEmpty(wallet)) {
+        let resolvedSlot, shouldEndSession = true;
+        
+        if(isEmpty(wallet)) {
             slotStatus += EMPTY_WALLET;
+            shouldEndSession = false;
         } else {
-            let slotValues = getSlotValues(request.intent.slots);
+            let slotValues = getSlotValues(request.intent.slots); 
             // getSlotValues returns .heardAs, .resolved, and .isValidated for each slot, according to request slot status codes ER_SUCCESS_MATCH, ER_SUCCESS_NO_MATCH, or traditional simple request slot without resolutions
-
+    
             // console.log('***** slotValues: ' +  JSON.stringify(slotValues, null, 2));
-
+            
             //   SLOT: date 
             if (slotValues.date.heardAs && slotValues.date.heardAs !== '') {
                 slotStatus = await blitzbudgetDB.getTransactionTotalByDateFromAlexa(wallet.sk.S, slotValues.date.heardAs, wallet.currency.S);
             } else {
                 slotStatus += ERR_MESSAGE;
+                shouldEndSession = false;
             }
         }
 
@@ -1003,67 +1083,76 @@ const getTransactionTotalByDate_Handler = {
         return responseBuilder
             .speak(say)
             .reprompt('try again, ' + say)
-            .withShouldEndSession(true) // End session for security purposes
+            .withShouldEndSession(shouldEndSession) // End session for security purposes
             .getResponse();
     }
 }
 
-const addCategoryByDate_Handler = {
+const addCategoryByDate_Handler =  {
     canHandle(handlerInput) {
         const request = handlerInput.requestEnvelope.request;
-        return request.type === 'IntentRequest' && request.intent.name === 'addCategoryByDate';
+        return request.type === 'IntentRequest' && request.intent.name === 'addCategoryByDate' ;
     },
     async handle(handlerInput) {
         const request = handlerInput.requestEnvelope.request;
         const responseBuilder = handlerInput.responseBuilder;
         let sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
         let wallet = await blitzbudgetDB.getDefaultAlexaWallet(sessionAttributes.userId);
-
+        
         let say = '';
         let slotStatus = '';
-        let resolvedSlot;
+        let resolvedSlot, shouldEndSession = true;
 
         let slotValues = getSlotValues(request.intent.slots);
-
-        if (isEmpty(slotValues.categoryType.heardAs)) {
+        
+        if(isEmpty(slotValues.categoryType.heardAs)) {
             slotStatus = EMPTY_CATEGORY_TYPE;
+            shouldEndSession = false;
         } else {
-
-            if (isEmpty(wallet)) {
+            
+            if(isEmpty(wallet)) {
                 slotStatus += EMPTY_WALLET;
+                shouldEndSession = false;
             } else {
                 // getSlotValues returns .heardAs, .resolved, and .isValidated for each slot, according to request slot status codes ER_SUCCESS_MATCH, ER_SUCCESS_NO_MATCH, or traditional simple request slot without resolutions
 
                 // console.log('***** slotValues: ' +  JSON.stringify(slotValues, null, 2));
-
+                
                 // Date
-                let currentDate = new Date();
+                let currentDate =  new Date();
                 // Date used to get the budget
-                if (isNotEmpty(slotValues.date.heardAs)) {
+                if(isNotEmpty(slotValues.date.heardAs)) {
                     let dateMentioned = slotValues.date.heardAs;
                     console.log("The Date mentioned is ", dateMentioned);
-                    if (dateMentioned.length < 6) {
+                    if(dateMentioned.length < 6) {
                         // For example is 2019 then become 2019-09
                         dateMentioned = dateMentioned + '-' + (currentDate.getMonth() + 1);
                     }
-                    currentDate = new Date(dateMentioned);
+                    currentDate =  new Date(dateMentioned);
                 }
                 currentDate = currentDate.getFullYear() + '-' + ("0" + (Number(currentDate.getMonth()) + 1)).slice(-2);
                 // getSlotValues returns .heardAs, .resolved, and .isValidated for each slot, according to request slot status codes ER_SUCCESS_MATCH, ER_SUCCESS_NO_MATCH, or traditional simple request slot without resolutions
-
+        
                 // console.log('***** slotValues: ' +  JSON.stringify(slotValues, null, 2));
                 //   SLOT: category
                 if (slotValues.category.heardAs && slotValues.category.heardAs !== '') {
                     let category = await blitzbudgetDB.getCategoryAlexa(wallet.sk.S, slotValues.category.heardAs, currentDate);
-                    if (isEmpty(category)) {
+                    if(isEmpty(category)) {
                         slotStatus = await blitzbudgetDB.addCategoryByDateFromAlexa(wallet.sk.S, slotValues.date.heardAs, slotValues.category.heardAs, slotValues.categoryType.id);
+                        // Successfully change budget amount then
+                        if(includesStr(slotStatus, SUCCESSFUL_TITLE)) {
+                            // Send a simple card to Alexa on Success
+                            responseBuilder.withSimpleCard(CARD_SECURITY_TITLE, ADDED_NEW_CATEGORY_SIMPLE_CARD);   
+                        }
                     } else {
-                        slotStatus += CATEGORY_EXISTS;
+                        slotStatus += CATEGORY_EXISTS + slotValues.category.heardAs;
+                        shouldEndSession = false;
                     }
                 } else {
                     slotStatus += ERR_MESSAGE;
+                    shouldEndSession = false;
                 }
-            }
+            }   
         }
 
         say += slotStatus;
@@ -1071,12 +1160,12 @@ const addCategoryByDate_Handler = {
         return responseBuilder
             .speak(say)
             .reprompt('try again, ' + say)
-            .withShouldEndSession(true) // End session for security purposes
+            .withShouldEndSession(shouldEndSession) // End session for security purposes
             .getResponse();
     }
 }
 
-const LaunchRequest_Handler = {
+const LaunchRequest_Handler =  {
     canHandle(handlerInput) {
         const request = handlerInput.requestEnvelope.request;
         return request.type === 'LaunchRequest';
@@ -1087,13 +1176,13 @@ const LaunchRequest_Handler = {
         const repromptOutput = GREETING_MESSAGE;
         const speakOutput = HELLO_MESSAGE + sessionAttributes.firstName + repromptOutput;
         return handlerInput.responseBuilder
-            .speak(speakOutput)
-            .reprompt(repromptOutput)
-            .getResponse();
+          .speak(speakOutput)
+          .reprompt(repromptOutput)
+          .getResponse();
     },
 };
 
-const SessionEndedHandler = {
+const SessionEndedHandler =  {
     canHandle(handlerInput) {
         const request = handlerInput.requestEnvelope.request;
         return request.type === 'SessionEndedRequest';
@@ -1104,7 +1193,7 @@ const SessionEndedHandler = {
     }
 };
 
-const ErrorHandler = {
+const ErrorHandler =  {
     canHandle() {
         return true;
     },
@@ -1125,296 +1214,291 @@ const ErrorHandler = {
 
 // 2. Constants ===========================================================================
 
-// Here you can define static data, to be used elsewhere in your code.  For example: 
-//    const myString = "Hello World";
-//    const myArray  = [ "orange", "grape", "strawberry" ];
-//    const myObject = { "city": "Boston",  "state":"Massachusetts" };
+    // Here you can define static data, to be used elsewhere in your code.  For example: 
+    //    const myString = "Hello World";
+    //    const myArray  = [ "orange", "grape", "strawberry" ];
+    //    const myObject = { "city": "Boston",  "state":"Massachusetts" };
 
 // 3.  Helper Functions ===================================================================
 
 function capitalize(myString) {
 
-    return myString.replace(/(?:^|\s)\S/g, function (a) {
-        return a.toUpperCase();
-    });
+     return myString.replace(/(?:^|\s)\S/g, function(a) { return a.toUpperCase(); }) ;
 }
 
-
-function randomElement(myArray) {
-    return (myArray[Math.floor(Math.random() * myArray.length)]);
-}
-
-function stripSpeak(str) {
-    return (str.replace('<speak>', '').replace('</speak>', ''));
-}
-
-
-
-
-function getSlotValues(filledSlots) {
-    const slotValues = {};
-
-    Object.keys(filledSlots).forEach((item) => {
-        const name = filledSlots[item].name;
+ 
+function randomElement(myArray) { 
+    return(myArray[Math.floor(Math.random() * myArray.length)]); 
+} 
+ 
+function stripSpeak(str) { 
+    return(str.replace('<speak>', '').replace('</speak>', '')); 
+} 
+ 
+ 
+ 
+ 
+function getSlotValues(filledSlots) { 
+    const slotValues = {}; 
+ 
+    Object.keys(filledSlots).forEach((item) => { 
+        const name  = filledSlots[item].name; 
         console.log("The Slot Values calculated are", JSON.stringify(filledSlots[item]));
-
-        if (filledSlots[item] &&
-            filledSlots[item].resolutions &&
-            filledSlots[item].resolutions.resolutionsPerAuthority[0] &&
-            filledSlots[item].resolutions.resolutionsPerAuthority[0].status &&
-            filledSlots[item].resolutions.resolutionsPerAuthority[0].status.code) {
-
-            let slotId = '';
-            if (filledSlots[item].resolutions.resolutionsPerAuthority[0].values &&
-                filledSlots[item].resolutions.resolutionsPerAuthority[0].values[0].value.id) {
-                slotId = filledSlots[item].resolutions.resolutionsPerAuthority[0].values[0].value.id;
-            }
-
-            switch (filledSlots[item].resolutions.resolutionsPerAuthority[0].status.code) {
-                case 'ER_SUCCESS_MATCH':
-                    slotValues[name] = {
-                        heardAs: filledSlots[item].value,
-                        resolved: filledSlots[item].resolutions.resolutionsPerAuthority[0].values[0].value.name,
-                        id: slotId,
-                        ERstatus: 'ER_SUCCESS_MATCH'
-                    };
-                    break;
-                case 'ER_SUCCESS_NO_MATCH':
-                    slotValues[name] = {
-                        heardAs: filledSlots[item].value,
-                        resolved: '',
-                        id: slotId,
-                        ERstatus: 'ER_SUCCESS_NO_MATCH'
-                    };
-                    break;
-                default:
-                    break;
-            }
-        } else {
-            slotValues[name] = {
-                heardAs: filledSlots[item].value || '', // may be null 
-                resolved: '',
-                ERstatus: ''
-            };
-        }
-    }, this);
-
-    return slotValues;
-}
-
-function getCustomIntents() {
-    const modelIntents = model.interactionModel.languageModel.intents;
-
-    let customIntents = [];
-
-
-    for (let i = 0; i < modelIntents.length; i++) {
-
-        if (modelIntents[i].name.substring(0, 7) != "AMAZON." && modelIntents[i].name !== "LaunchRequest") {
-            customIntents.push(modelIntents[i]);
-        }
-    }
-    return customIntents;
-}
-
-function getSampleUtterance(intent) {
-
-    return randomElement(intent.samples);
-
-}
-
-function getPreviousSpeechOutput(attrs) {
-
-    if (attrs.lastSpeechOutput && attrs.history.length > 1) {
-        return attrs.lastSpeechOutput;
-
-    } else {
-        return false;
-    }
-
-}
-
-const InitMemoryAttributesInterceptor = {
-    process(handlerInput) {
-        let sessionAttributes = {};
-        if (handlerInput.requestEnvelope.session['new']) {
-
-            sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
-
-            let memoryAttributes = getMemoryAttributes();
-
-            if (Object.keys(sessionAttributes).length === 0) {
-
-                Object.keys(memoryAttributes).forEach(function (key) { // initialize all attributes from global list 
-
-                    sessionAttributes[key] = memoryAttributes[key];
-
-                });
-
-            }
-            handlerInput.attributesManager.setSessionAttributes(sessionAttributes);
-
-
-        }
-    }
-};
-
-const RequestHistoryInterceptor = {
-    process(handlerInput) {
-
-        const thisRequest = handlerInput.requestEnvelope.request;
-        let sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
-
-        let history = sessionAttributes['history'] || [];
-
-        let IntentRequest = {};
-        if (thisRequest.type === 'IntentRequest') {
-
-            let slots = [];
-
-            IntentRequest = {
-                'IntentRequest': thisRequest.intent.name
-            };
-
-            if (thisRequest.intent.slots) {
-
-                for (let slot in thisRequest.intent.slots) {
-                    let slotObj = {};
-                    slotObj[slot] = thisRequest.intent.slots[slot].value;
-                    slots.push(slotObj);
+        
+        if (filledSlots[item] && 
+            filledSlots[item].resolutions && 
+            filledSlots[item].resolutions.resolutionsPerAuthority[0] && 
+            filledSlots[item].resolutions.resolutionsPerAuthority[0].status && 
+            filledSlots[item].resolutions.resolutionsPerAuthority[0].status.code) { 
+                
+                let slotId = '';
+                if(filledSlots[item].resolutions.resolutionsPerAuthority[0].values
+                && filledSlots[item].resolutions.resolutionsPerAuthority[0].values[0].value.id) {
+                    slotId = filledSlots[item].resolutions.resolutionsPerAuthority[0].values[0].value.id;
                 }
-
-                IntentRequest = {
-                    'IntentRequest': thisRequest.intent.name,
-                    'slots': slots
-                };
-
-            }
-
-        } else {
-            IntentRequest = {
-                'IntentRequest': thisRequest.type
-            };
-        }
-        if (history.length > maxHistorySize - 1) {
-            history.shift();
-        }
-        history.push(IntentRequest);
-
-        handlerInput.attributesManager.setSessionAttributes(sessionAttributes);
-
-    }
-
-};
-
-
-const RequestPersistenceInterceptor = {
-    process(handlerInput) {
-
-        if (handlerInput.requestEnvelope.session['new']) {
-
-            return new Promise((resolve, reject) => {
-
-                handlerInput.attributesManager.getPersistentAttributes()
-
-                    .then((sessionAttributes) => {
-                        sessionAttributes = sessionAttributes || {};
-
-
-                        sessionAttributes['launchCount'] += 1;
-
-                        handlerInput.attributesManager.setSessionAttributes(sessionAttributes);
-
-                        handlerInput.attributesManager.savePersistentAttributes()
-                            .then(() => {
-                                resolve();
-                            })
-                            .catch((err) => {
-                                reject(err);
-                            });
-                    });
-
-            });
-
+                
+                switch (filledSlots[item].resolutions.resolutionsPerAuthority[0].status.code) { 
+                    case 'ER_SUCCESS_MATCH': 
+                        slotValues[name] = { 
+                            heardAs: filledSlots[item].value, 
+                            resolved: filledSlots[item].resolutions.resolutionsPerAuthority[0].values[0].value.name, 
+                            id: slotId, 
+                            ERstatus: 'ER_SUCCESS_MATCH' 
+                        }; 
+                        break; 
+                    case 'ER_SUCCESS_NO_MATCH': 
+                        slotValues[name] = { 
+                            heardAs: filledSlots[item].value, 
+                            resolved: '',
+                            id: slotId, 
+                            ERstatus: 'ER_SUCCESS_NO_MATCH' 
+                        }; 
+                        break; 
+                    default: 
+                        break; 
+                } 
+        } else { 
+            slotValues[name] = { 
+                heardAs: filledSlots[item].value || '', // may be null 
+                resolved: '', 
+                ERstatus: '' 
+            }; 
+        } 
+    }, this); 
+ 
+    return slotValues; 
+} 
+ 
+function getCustomIntents() { 
+    const modelIntents = model.interactionModel.languageModel.intents; 
+ 
+    let customIntents = []; 
+ 
+ 
+    for (let i = 0; i < modelIntents.length; i++) { 
+ 
+        if(modelIntents[i].name.substring(0,7) != "AMAZON." && modelIntents[i].name !== "LaunchRequest" ) { 
+            customIntents.push(modelIntents[i]); 
+        } 
+    } 
+    return customIntents; 
+} 
+ 
+function getSampleUtterance(intent) { 
+ 
+    return randomElement(intent.samples); 
+ 
+} 
+ 
+function getPreviousSpeechOutput(attrs) { 
+ 
+    if (attrs.lastSpeechOutput && attrs.history.length > 1) { 
+        return attrs.lastSpeechOutput; 
+ 
+    } else { 
+        return false; 
+    } 
+ 
+}
+ 
+const InitMemoryAttributesInterceptor = { 
+    process(handlerInput) { 
+        let sessionAttributes = {}; 
+        if(handlerInput.requestEnvelope.session['new']) { 
+ 
+            sessionAttributes = handlerInput.attributesManager.getSessionAttributes(); 
+ 
+            let memoryAttributes = getMemoryAttributes(); 
+ 
+            if(Object.keys(sessionAttributes).length === 0) { 
+ 
+                Object.keys(memoryAttributes).forEach(function(key) {  // initialize all attributes from global list 
+ 
+                    sessionAttributes[key] = memoryAttributes[key]; 
+ 
+                }); 
+ 
+            } 
+            handlerInput.attributesManager.setSessionAttributes(sessionAttributes); 
+ 
+ 
+        } 
+    } 
+}; 
+ 
+const RequestHistoryInterceptor = { 
+    process(handlerInput) { 
+ 
+        const thisRequest = handlerInput.requestEnvelope.request; 
+        let sessionAttributes = handlerInput.attributesManager.getSessionAttributes(); 
+ 
+        let history = sessionAttributes['history'] || []; 
+ 
+        let IntentRequest = {}; 
+        if (thisRequest.type === 'IntentRequest' ) { 
+ 
+            let slots = []; 
+ 
+            IntentRequest = { 
+                'IntentRequest' : thisRequest.intent.name 
+            }; 
+ 
+            if (thisRequest.intent.slots) { 
+ 
+                for (let slot in thisRequest.intent.slots) { 
+                    let slotObj = {}; 
+                    slotObj[slot] = thisRequest.intent.slots[slot].value; 
+                    slots.push(slotObj); 
+                } 
+ 
+                IntentRequest = { 
+                    'IntentRequest' : thisRequest.intent.name, 
+                    'slots' : slots 
+                }; 
+ 
+            } 
+ 
+        } else { 
+            IntentRequest = {'IntentRequest' : thisRequest.type}; 
+        } 
+        if(history.length > maxHistorySize - 1) { 
+            history.shift(); 
+        } 
+        history.push(IntentRequest); 
+ 
+        handlerInput.attributesManager.setSessionAttributes(sessionAttributes); 
+ 
+    } 
+ 
+}; 
+ 
+ 
+const RequestPersistenceInterceptor = { 
+    process(handlerInput) { 
+ 
+        if(handlerInput.requestEnvelope.session['new']) { 
+ 
+            return new Promise((resolve, reject) => { 
+ 
+                handlerInput.attributesManager.getPersistentAttributes() 
+ 
+                    .then((sessionAttributes) => { 
+                        sessionAttributes = sessionAttributes || {}; 
+ 
+ 
+                        sessionAttributes['launchCount'] += 1; 
+ 
+                        handlerInput.attributesManager.setSessionAttributes(sessionAttributes); 
+ 
+                        handlerInput.attributesManager.savePersistentAttributes() 
+                            .then(() => { 
+                                resolve(); 
+                            }) 
+                            .catch((err) => { 
+                                reject(err); 
+                            }); 
+                    }); 
+ 
+            }); 
+ 
         } // end session['new'] 
-    }
-};
-
-
-const ResponseRecordSpeechOutputInterceptor = {
-    process(handlerInput, responseOutput) {
-
-        let sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
-        let lastSpeechOutput = {
-            "outputSpeech": responseOutput.outputSpeech.ssml,
-            "reprompt": responseOutput.reprompt.outputSpeech.ssml
-        };
-
-        sessionAttributes['lastSpeechOutput'] = lastSpeechOutput;
-
-        handlerInput.attributesManager.setSessionAttributes(sessionAttributes);
-
-    }
-};
-
-const ResponsePersistenceInterceptor = {
-    process(handlerInput, responseOutput) {
-
-        const ses = (typeof responseOutput.shouldEndSession == "undefined" ? true : responseOutput.shouldEndSession);
-
-        if (ses || handlerInput.requestEnvelope.request.type == 'SessionEndedRequest') { // skill was stopped or timed out 
-
-            let sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
-
-            sessionAttributes['lastUseTimestamp'] = new Date(handlerInput.requestEnvelope.request.timestamp).getTime();
-
-            handlerInput.attributesManager.setPersistentAttributes(sessionAttributes);
-
-            return new Promise((resolve, reject) => {
-                handlerInput.attributesManager.savePersistentAttributes()
-                    .then(() => {
-                        resolve();
-                    })
-                    .catch((err) => {
-                        reject(err);
-                    });
-
-            });
-
-        }
-
-    }
-};
+    } 
+}; 
+ 
+ 
+const ResponseRecordSpeechOutputInterceptor = { 
+    process(handlerInput, responseOutput) { 
+ 
+        let sessionAttributes = handlerInput.attributesManager.getSessionAttributes(); 
+        let lastSpeechOutput = { 
+            "outputSpeech":responseOutput.outputSpeech.ssml, 
+            "reprompt":responseOutput.reprompt.outputSpeech.ssml 
+        }; 
+ 
+        sessionAttributes['lastSpeechOutput'] = lastSpeechOutput; 
+ 
+        handlerInput.attributesManager.setSessionAttributes(sessionAttributes); 
+ 
+    } 
+}; 
+ 
+const ResponsePersistenceInterceptor = { 
+    process(handlerInput, responseOutput) { 
+ 
+        const ses = (typeof responseOutput.shouldEndSession == "undefined" ? true : responseOutput.shouldEndSession); 
+ 
+        if(ses || handlerInput.requestEnvelope.request.type == 'SessionEndedRequest') { // skill was stopped or timed out 
+ 
+            let sessionAttributes = handlerInput.attributesManager.getSessionAttributes(); 
+ 
+            sessionAttributes['lastUseTimestamp'] = new Date(handlerInput.requestEnvelope.request.timestamp).getTime(); 
+ 
+            handlerInput.attributesManager.setPersistentAttributes(sessionAttributes); 
+ 
+            return new Promise((resolve, reject) => { 
+                handlerInput.attributesManager.savePersistentAttributes() 
+                    .then(() => { 
+                        resolve(); 
+                    }) 
+                    .catch((err) => { 
+                        reject(err); 
+                    }); 
+ 
+            }); 
+ 
+        } 
+ 
+    } 
+}; 
 
 // Session Attributes 
 //   Alexa will track attributes for you, by default only during the lifespan of your session.
 //   The history[] array will track previous request(s), used for contextual Help/Yes/No handling.
 //   Set up DynamoDB persistence to have the skill save and reload these attributes between skill sessions.
 
-function getMemoryAttributes() {
-    const memoryAttributes = {
-        "history": [],
+function getMemoryAttributes() {   const memoryAttributes = {
+       "history":[],
 
 
-        "launchCount": 0,
-        "lastUseTimestamp": 0,
+       "launchCount":0,
+       "lastUseTimestamp":0,
 
-        "lastSpeechOutput": {},
-        // "nextIntent":[]
+       "lastSpeechOutput":{},
+       // "nextIntent":[]
 
-        // "favoriteColor":"",
-        // "name":"",
-        // "namePronounce":"",
-        // "email":"",
-        // "mobileNumber":"",
-        // "city":"",
-        // "state":"",
-        // "postcode":"",
-        // "birthday":"",
-        // "bookmark":0,
-        // "wishlist":[],
-    };
-    return memoryAttributes;
+       // "favoriteColor":"",
+       // "name":"",
+       // "namePronounce":"",
+       // "email":"",
+       // "mobileNumber":"",
+       // "city":"",
+       // "state":"",
+       // "postcode":"",
+       // "birthday":"",
+       // "bookmark":0,
+       // "wishlist":[],
+   };
+   return memoryAttributes;
 };
 
 const maxHistorySize = 20; // remember only latest 20 intents 
@@ -1423,37 +1507,37 @@ const maxHistorySize = 20; // remember only latest 20 intents
 // HelpHandler: Handle a user request for help.
 //
 const HelpHandler = {
-    canHandle(handlerInput) {
-        const request = handlerInput.requestEnvelope.request;
-        return request.type === 'IntentRequest' && request.intent.name === 'AMAZON.HelpIntent';
-    },
-    handle(handlerInput) {
-        const requestAttributes = handlerInput.attributesManager.getRequestAttributes();
-        return handlerInput.responseBuilder
-            .speak(HELP_MESSAGE)
-            .reprompt(HELP_MESSAGE)
-            .getResponse();
-    },
+  canHandle(handlerInput) {
+    const request = handlerInput.requestEnvelope.request;
+    return request.type === 'IntentRequest' && request.intent.name === 'AMAZON.HelpIntent';
+  },
+  handle(handlerInput) {
+    const requestAttributes = handlerInput.attributesManager.getRequestAttributes();
+    return handlerInput.responseBuilder
+      .speak(HELP_MESSAGE)
+      .reprompt(HELP_MESSAGE)
+      .getResponse();
+  },
 };
 
 //
 // ExitHandler: Handle the cancel and stop intents.
 //
 const ExitHandler = {
-    canHandle(handlerInput) {
-        const request = handlerInput.requestEnvelope.request;
-        return request.type === 'IntentRequest' &&
-            (request.intent.name === 'AMAZON.CancelIntent' || request.intent.name === 'AMAZON.StopIntent');
-    },
-    handle(handlerInput) {
-        const requestAttributes = handlerInput.attributesManager.getRequestAttributes();
-        const sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
-        const speakOutput = GOODBYE_MESSAGE + sessionAttributes.firstName;
-        return handlerInput.responseBuilder
-            .speak(speakOutput)
-            .withShouldEndSession(true)
-            .getResponse();
-    },
+  canHandle(handlerInput) {
+    const request = handlerInput.requestEnvelope.request;
+    return request.type === 'IntentRequest' &&
+      (request.intent.name === 'AMAZON.CancelIntent' || request.intent.name === 'AMAZON.StopIntent');
+  },
+  handle(handlerInput) {
+    const requestAttributes = handlerInput.attributesManager.getRequestAttributes();
+    const sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
+    const speakOutput = GOODBYE_MESSAGE + sessionAttributes.firstName;
+    return handlerInput.responseBuilder
+      .speak(speakOutput)
+      .withShouldEndSession(true)
+      .getResponse();
+  },
 };
 
 // Helper functions ========================================================
@@ -1462,80 +1546,83 @@ const ExitHandler = {
 // return the attribute value corresponding to the provided attribute name.
 //
 function getAttribute(attrArray, attrName) {
-    let value = 'NOTFOUND';
-    for (let i = 0; i < attrArray.length; i += 1) {
-        if (attrArray[i].Name === attrName) {
-            value = attrArray[i].Value;
-            break;
-        }
+  let value = 'NOTFOUND';
+  for (let i = 0; i < attrArray.length; i += 1) {
+    if (attrArray[i].Name === attrName) {
+      value = attrArray[i].Value;
+      break;
     }
-    return value;
+  }
+  return value;
 }
 
 
 // getUserData: Retrieve user details from Cognito IdSP
 //
 function getUserData(accToken) {
-    return new Promise(((resolve, reject) => {
-        const cognitoISP = new AWS.CognitoIdentityServiceProvider({
-            region: COGNITO_REGION
-        });
-        const cognitoParams = {
-            AccessToken: accToken,
-        };
-        cognitoISP.getUser(cognitoParams, (error, data) => {
-            if (error) {
-                console.log('getUserData error : ', error);
-                reject(error);
-            } else {
-                console.log('getUserData success : ', data);
-                resolve(data);
-            }
-        });
-    }));
+  return new Promise(((resolve, reject) => {
+    const cognitoISP = new AWS.CognitoIdentityServiceProvider({ region: COGNITO_REGION });
+    const cognitoParams = {
+      AccessToken: accToken,
+    };
+    cognitoISP.getUser(cognitoParams, (error, data) => {
+      if (error) {
+        console.log('getUserData error : ', error);
+        reject(error);
+      } else {
+        console.log('getUserData success : ', data);
+        resolve(data);
+      }
+    });
+  }));
 }
 
 function getResolvedSlotIDValue(request, slotName) {
-    // assumes the first resolved value's id is the desired one
-    const slot = request.intent.slots[slotName];
+  // assumes the first resolved value's id is the desired one
+  const slot = request.intent.slots[slotName];
 
-    if (slot &&
-        slot.value &&
-        slot.resolutions &&
-        slot.resolutions.resolutionsPerAuthority &&
-        slot.resolutions.resolutionsPerAuthority[0] &&
-        slot.resolutions.resolutionsPerAuthority[0].values &&
-        slot.resolutions.resolutionsPerAuthority[0].values[0] &&
-        slot.resolutions.resolutionsPerAuthority[0].values[0].value &&
-        slot.resolutions.resolutionsPerAuthority[0].values[0].value.name) {
-        return slot.resolutions.resolutionsPerAuthority[0].values[0].value.id;
-    }
-    return null;
+  if (slot &&
+    slot.value &&
+    slot.resolutions &&
+    slot.resolutions.resolutionsPerAuthority &&
+    slot.resolutions.resolutionsPerAuthority[0] &&
+    slot.resolutions.resolutionsPerAuthority[0].values &&
+    slot.resolutions.resolutionsPerAuthority[0].values[0] &&
+    slot.resolutions.resolutionsPerAuthority[0].values[0].value &&
+    slot.resolutions.resolutionsPerAuthority[0].values[0].value.name) {
+    return slot.resolutions.resolutionsPerAuthority[0].values[0].value.id;
+  }
+  return null;
 }
 
 function isAccountLinked(handlerInput) {
-    // if there is an access token, then assumed linked
-    return (handlerInput.requestEnvelope.session.user.accessToken === undefined);
+  // if there is an access token, then assumed linked
+  return (handlerInput.requestEnvelope.session.user.accessToken === undefined);
 }
 
 const RequestLog = {
-    process(handlerInput) {
-        console.log(`REQUEST ENVELOPE = ${JSON.stringify(handlerInput.requestEnvelope)}`);
-    },
+  process(handlerInput) {
+    console.log(`REQUEST ENVELOPE = ${JSON.stringify(handlerInput.requestEnvelope)}`);
+  },
 };
 
 const ResponseLog = {
-    process(handlerInput) {
-        console.log(`RESPONSE BUILDER = ${JSON.stringify(handlerInput)}`);
-        console.log(`RESPONSE = ${JSON.stringify(handlerInput.responseBuilder.getResponse())}`);
-    },
+  process(handlerInput) {
+    console.log(`RESPONSE BUILDER = ${JSON.stringify(handlerInput)}`);
+    console.log(`RESPONSE = ${JSON.stringify(handlerInput.responseBuilder.getResponse())}`);
+  },
 };
 
 function getEnvVar(envVarName, defaultValue) {
-    if (process.env[envVarName]) {
-        return process.env[envVarName];
-    }
-    return defaultValue;
+  if (process.env[envVarName]) {
+    return process.env[envVarName];
+  }
+  return defaultValue;
+}
+
+// Includes String 
+function includesStr(arr, val) {
+    return isEmpty(arr) ? null : arr.includes(val);
 }
 
 // Is Empty Check
@@ -1576,25 +1663,25 @@ function isEqual(obj1, obj2) {
 // request sent to the skill
 //
 const GetLinkedInfoInterceptor = {
-    async process(handlerInput) {
-        if (handlerInput.requestEnvelope.session.new &&
-            handlerInput.requestEnvelope.session.user.accessToken) {
-            // This is a new session and we have an access token,
-            // so get the user details from Cognito and persist in session attributes
-            const userData = await getUserData(handlerInput.requestEnvelope.session.user.accessToken);
-            // console.log('GetLinkedInfoInterceptor: getUserData: ', userData);
-            if (userData.Username !== undefined) {
-                const sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
-                sessionAttributes.firstName = getAttribute(userData.UserAttributes, 'name');
-                sessionAttributes.surname = getAttribute(userData.UserAttributes, 'family_name');
-                sessionAttributes.email = getAttribute(userData.UserAttributes, 'email');
-                sessionAttributes.userId = getAttribute(userData.UserAttributes, 'custom:financialPortfolioId');
-                handlerInput.attributesManager.setSessionAttributes(sessionAttributes);
-            } else {
-                console.log('GetLinkedInfoInterceptor: No user data was found.');
-            }
-        }
-    },
+  async process(handlerInput) {
+    if (handlerInput.requestEnvelope.session.new
+      && handlerInput.requestEnvelope.session.user.accessToken) {
+      // This is a new session and we have an access token,
+      // so get the user details from Cognito and persist in session attributes
+      const userData = await getUserData(handlerInput.requestEnvelope.session.user.accessToken);
+      // console.log('GetLinkedInfoInterceptor: getUserData: ', userData);
+      if (userData.Username !== undefined) {
+        const sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
+        sessionAttributes.firstName = getAttribute(userData.UserAttributes, 'name');
+        sessionAttributes.surname = getAttribute(userData.UserAttributes, 'family_name');
+        sessionAttributes.email = getAttribute(userData.UserAttributes, 'email');
+        sessionAttributes.userId = getAttribute(userData.UserAttributes, 'custom:financialPortfolioId');
+        handlerInput.attributesManager.setSessionAttributes(sessionAttributes);
+      } else {
+        console.log('GetLinkedInfoInterceptor: No user data was found.');
+      }
+    }
+  },
 };
 
 // 4. Exports handler function and setup ===================================================
@@ -1602,30 +1689,30 @@ const skillBuilder = Alexa.SkillBuilders.custom();
 exports.handler = skillBuilder
     .addRequestHandlers(
         CheckAccountLinkedHandler,
-        AMAZON_CancelIntent_Handler,
-        AMAZON_HelpIntent_Handler,
-        AMAZON_StopIntent_Handler,
-        AMAZON_NavigateHomeIntent_Handler,
-        AMAZON_FallbackIntent_Handler,
-        getCategoryBalance_Handler,
-        addNewTransaction_Handler,
-        changeDefaultWallet_Handler,
-        changeDefaultAccount_Handler,
-        addNewBudget_Handler,
-        addNewGoal_Handler,
+        AMAZON_CancelIntent_Handler, 
+        AMAZON_HelpIntent_Handler, 
+        AMAZON_StopIntent_Handler, 
+        AMAZON_NavigateHomeIntent_Handler, 
+        AMAZON_FallbackIntent_Handler, 
+        getCategoryBalance_Handler, 
+        addNewTransaction_Handler, 
+        changeDefaultWallet_Handler, 
+        changeDefaultAccount_Handler, 
+        addNewBudget_Handler, 
+        addNewGoal_Handler, 
         getBudgetBalance_Handler,
-        getBudgetAmount_Handler,
-        getTagBalance_Handler,
-        changeBudgetAmount_Handler,
-        getDefaultWallet_Handler,
-        getDefaultAccount_Handler,
+        getBudgetAmount_Handler, 
+        getTagBalance_Handler, 
+        changeBudgetAmount_Handler, 
+        getDefaultWallet_Handler, 
+        getDefaultAccount_Handler, 
         addNewWallet_Handler,
         sendFeatureRequest_Handler,
         getTransactionTotalByDate_Handler,
         getExpenditureByDate_Handler,
         getEarningsByDate_Handler,
         addCategoryByDate_Handler,
-        LaunchRequest_Handler,
+        LaunchRequest_Handler, 
         HelpHandler,
         ExitHandler,
         SessionEndedHandler
@@ -1635,13 +1722,13 @@ exports.handler = skillBuilder
     .addRequestInterceptors(RequestHistoryInterceptor)
     .addRequestInterceptors(GetLinkedInfoInterceptor)
 
-    // .addResponseInterceptors(ResponseRecordSpeechOutputInterceptor)
+   // .addResponseInterceptors(ResponseRecordSpeechOutputInterceptor)
 
-    // .addRequestInterceptors(RequestPersistenceInterceptor)
-    // .addResponseInterceptors(ResponsePersistenceInterceptor)
+ // .addRequestInterceptors(RequestPersistenceInterceptor)
+ // .addResponseInterceptors(ResponsePersistenceInterceptor)
 
-    // .withTableName("askMemorySkillTable")
-    // .withAutoCreateTable(true)
+ // .withTableName("askMemorySkillTable")
+ // .withAutoCreateTable(true)
 
     .lambda();
 
