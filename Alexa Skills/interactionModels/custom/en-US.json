@@ -36,6 +36,9 @@
             }
           ],
           "samples": [
+            "What\u0027s my category balance of {category}",
+            "What\u0027s my balance of {category} category",
+            "What\u0027s my balance of {category}",
             "How much I spent on {category}",
             "Get my category balance for {category} category",
             "Get my category balance for {date}",
@@ -78,6 +81,14 @@
             }
           ],
           "samples": [
+            "Add a transaction for {categories} category for {number} {currency} {date}",
+            "Add a transaction for {categories} category with {number} {currency} {date}",
+            "Add a new transaction for {categories} category with {number} {currency} {date}",
+            "Add a new transaction for {categories} category for {number} {currency} {date}",
+            "Add a transaction for {categories} category with {number} {currency}",
+            "Add a transaction for {categories} category for {number} {currency}",
+            "Add a new transaction for {categories} category for {number} {currency}",
+            "Add a new transaction for {categories} category with {number} {currency}",
             "Add a transaction with {number} {currency} in {categories} category",
             "Add a transaction for {categories}",
             "Add a transaction with {number} {currency} for {categories} category",
@@ -303,6 +314,9 @@
             }
           ],
           "samples": [
+            "What\u0027s the tag balance of {tag}",
+            "What\u0027s my tag balance of {tag}",
+            "What\u0027s my {tag} tags balance",
             "Get the tag balance for {tag}",
             "How much did I earn on {tag} tags",
             "How much did I spend on {tag} tags",
@@ -515,6 +529,7 @@
             }
           ],
           "samples": [
+            "What is my income for {date}",
             "Get my income {date}",
             "Get my income for {date}",
             "What is my income {date}",
@@ -594,6 +609,25 @@
             "Add a new {category} category for {date}",
             "Add a new category for {date}",
             "Add a new category for {category}"
+          ]
+        },
+        {
+          "name": "getRecentTransactions",
+          "slots": [],
+          "samples": [
+            "What are my recent transactions"
+          ]
+        },
+        {
+          "name": "getWalletBalance",
+          "slots": [
+            {
+              "name": "wallet",
+              "type": "CURRENCY"
+            }
+          ],
+          "samples": [
+            "What\u0027s my {wallet}  wallet balance"
           ]
         }
       ],
@@ -3152,5 +3186,5 @@
       }
     ]
   },
-  "version": "8"
+  "version": "16"
 }
