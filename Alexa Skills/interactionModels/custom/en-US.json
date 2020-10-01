@@ -615,6 +615,9 @@
           "name": "getRecentTransactions",
           "slots": [],
           "samples": [
+            "What did I spend on recently",
+            "Give me all my recent transactions",
+            "Tell my recent transactions",
             "What are my recent transactions"
           ]
         },
@@ -627,6 +630,7 @@
             }
           ],
           "samples": [
+            "What\u0027s my balance",
             "What\u0027s my {wallet}  wallet balance"
           ]
         }
@@ -3186,5 +3190,5 @@
       }
     ]
   },
-  "version": "16"
+  "version": "18"
 }

@@ -2,6 +2,13 @@ var blitzbudgetDB = function () { };
 
 const dbHelper = require('./dbHelper');
 const currencyInfo = require('./currency');
+
+const ON = ' on ';
+const YOU = 'You ';
+const ALSO = ' also ';
+const SPENT = 'spent ';
+const EARNED = 'earned ';
+const CATEGORY = ' category.';
 const TABLE_NAME = "blitzbudget";
 const YOU_EARNED = 'You earned ';
 const SUCCESS_SPENT = 'You spent ';
@@ -10,6 +17,7 @@ const SUCCESS_WALLET_ONE = 'Successfully added a ';
 const SUCCESS_TRANSACTION_TOTAL = 'You transaction total is ';
 const SUCCESS_ADDED_GOAL = 'Successfully added a new goal for ';
 const SUCCESS_BUDGET_ADD = 'Successfully added a new budget for ';
+const NO_TRANSACTIONS = 'You do not have any recent transactions.';
 const ADDED_NEW_CATEGORY = 'Successfully added a new category for ';
 const ADDED_NEW_TRANSACTION = 'Successfully added a new transaction for ';
 const BUDGET_AMOUNT_SUCCESS = 'Successfully updated the budget amount to ';
@@ -872,6 +880,100 @@ blitzbudgetDB.prototype.addCategoryByDateFromAlexa = async function(walletId, cu
       .catch((err) => {
         console.log("There was an error adding a new category from DynamoDB ", err);
         return ERROR_ADDING_CATEGORY;
+      })
+    
+}
+
+blitzbudgetDB.prototype.getMatchingWalletAlexa = function(allWallets, walletCurrency) {
+    let data = allWallets, wallet;
+    
+    // If length is empty
+    if(isNotEmpty(data)) {
+        for(let i=0, len=data.length; i<len; i++) {
+            let item = data[i];
+            if(isEqual(item['currency'].S.toUpperCase(), walletCurrency.toUpperCase())) {
+                wallet = item;
+            }
+        }
+    }
+    
+    return wallet;
+}
+
+blitzbudgetDB.prototype.getRecentTransactions = async function(walletId, dateId, walletCurrency) {
+    
+    const params = {
+            TableName: TABLE_NAME,
+            KeyConditionExpression: "pk = :pk and begins_with(sk, :items)",
+            ExpressionAttributeValues: {
+                ":pk": {
+                  S: walletId
+                },
+                ":items": {
+                  S: "Transaction#" + dateId
+                }
+            },
+            ProjectionExpression: "amount, description, category, recurrence, account, date_meant_for, sk, pk, creation_date, tags",
+            ScanIndexForward: false
+        }
+    
+    console.log("The params to fetch the transaction total are ", params);
+        
+    return dbHelper.getFromBlitzBudgetTable(params).then((data) => {
+        console.log('Successfully retrieved the transaction information from the DynamoDB. Item count is ' + data.length);
+        let slotStatus = NO_TRANSACTIONS;
+        // If length is not empty
+        if(isNotEmpty(data)) {
+            let recentTransactions = '';
+            // Maximum of 3 transactions
+            let length = data.length < 3 ? data.length : 3;
+            for(let i=0, len=length; i<len; i++) {
+                
+                let item = data[i];
+                let transactionAmount = Number(item.amount.N);
+                let description = isEmpty(item.description) ? '' : item.description.S;
+                let dateMeantFor = item['date_meant_for'].S;
+                
+                if(isNotEmpty(dateMeantFor)) {
+                    recentTransactions += 'On the <say-as interpret-as="date" format="md">' + dateMeantFor.slice(10, 15) + '</say-as> <break time="0.20s"/>';
+                }
+                
+                recentTransactions += YOU;
+                
+                // Append also from the second transaction onwards
+                if(i > 0) {
+                    recentTransactions += ALSO;
+                }
+                
+                if(transactionAmount < 0) {
+                    recentTransactions += SPENT;
+                } else {
+                    recentTransactions += EARNED;
+                }
+                
+                recentTransactions += Math.abs(transactionAmount) + ' ' + walletCurrency;
+                
+                // If plural
+                if(Math.abs(transactionAmount) > 1) {
+                    recentTransactions += 's';
+                }
+                
+                // Add description if present
+                if(isNotEmpty(description)) {
+                    recentTransactions += ON + description;
+                }
+                
+                
+                recentTransactions += '<break time="0.75s"/> '
+                
+            }
+            slotStatus = recentTransactions;
+        }
+        return slotStatus;
+    })
+      .catch((err) => {
+          console.log("There was an error fetching the tag balance ", err);
+        return NO_TRANSACTIONS;
       })
     
 }

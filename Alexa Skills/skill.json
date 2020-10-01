@@ -65,6 +65,13 @@
               "uri": "arn:aws:lambda:us-west-2:988822515657:function:8f07fc4a-a9f5-4b3b-9e79-e6e9377838c2:Release_0"
             }
           }
+        },
+        "dialogManagement": {
+          "dialogManagers": [
+            {
+              "type": "AMAZON.Conversations"
+            }
+          ]
         }
       }
     },
