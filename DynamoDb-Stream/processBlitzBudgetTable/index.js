@@ -62,11 +62,11 @@ function updateDateTotal(record) {
     if (isEqual(record.eventName, 'INSERT')) {
         return;
     } else if (isEqual(record.eventName, 'REMOVE')) {
-        balance = parseInt(record.dynamodb.OldImage['category_total'].N) * -1;
+        balance = parseFloat(record.dynamodb.OldImage['category_total'].N) * -1;
         categoryType = record.dynamodb.OldImage['category_type'].S;
         date = record.dynamodb.OldImage['date_meant_for'].S;
     } else if (isEqual(record.eventName, 'MODIFY')) {
-        balance = parseInt(record.dynamodb.NewImage['category_total'].N) + (parseInt(record.dynamodb.OldImage['category_total'].N) * -1);
+        balance = parseFloat(record.dynamodb.NewImage['category_total'].N) + (parseFloat(record.dynamodb.OldImage['category_total'].N) * -1);
         categoryType = record.dynamodb.NewImage['category_type'].S;
         date = record.dynamodb.NewImage['date_meant_for'].S;
     }
@@ -124,25 +124,25 @@ function updateCategoryTotal(record) {
         category;
     console.log("event is %j", record.eventName);
     if (isEqual(record.eventName, 'INSERT')) {
-        balance = parseInt(record.dynamodb.NewImage.amount.N);
+        balance = parseFloat(record.dynamodb.NewImage.amount.N);
         category = record.dynamodb.NewImage.category.S;
     } else if (isEqual(record.eventName, 'REMOVE')) {
-        balance = parseInt(record.dynamodb.OldImage.amount.N) * -1;
+        balance = parseFloat(record.dynamodb.OldImage.amount.N) * -1;
         category = record.dynamodb.OldImage.category.S;
     } else if (isEqual(record.eventName, 'MODIFY')) {
         // If the balance has changed
-        balance = parseInt(record.dynamodb.NewImage.amount.N) + (parseInt(record.dynamodb.OldImage.amount.N) * -1);
+        balance = parseFloat(record.dynamodb.NewImage.amount.N) + (parseFloat(record.dynamodb.OldImage.amount.N) * -1);
         category = record.dynamodb.NewImage.category.S;
         // If the category has changed
         if (isNotEqual(category, record.dynamodb.OldImage.category.S)) {
             // The old balance is deducted from the old category
-            balance = (parseInt(record.dynamodb.OldImage.amount.N) * -1);
+            balance = (parseFloat(record.dynamodb.OldImage.amount.N) * -1);
             category = record.dynamodb.OldImage.category.S;
             // Event is pushed to the array
             console.log("adding the difference %j", balance, "to the category %j", category);
             events.push(updateCategoryItem(pk, category, balance));
             // The new balance is added to the new category
-            balance = parseInt(record.dynamodb.NewImage.amount.N);
+            balance = parseFloat(record.dynamodb.NewImage.amount.N);
             category = record.dynamodb.NewImage.category.S;
         }
     }
@@ -232,15 +232,15 @@ function updateWalletBalance(record) {
     console.log("event is %j for updating the wallet balance", JSON.stringify(record.dynamodb));
 
     if (isEqual(record.eventName, 'INSERT')) {
-        balance = parseInt(record.dynamodb.NewImage['account_balance'].N);
+        balance = parseFloat(record.dynamodb.NewImage['account_balance'].N);
         primaryWalletId = record.dynamodb.NewImage['primary_wallet'].S;
         accountType = record.dynamodb.NewImage['account_type'].S;
     } else if (isEqual(record.eventName, 'REMOVE')) {
-        balance = parseInt(record.dynamodb.OldImage['account_balance'].N) * -1;
+        balance = parseFloat(record.dynamodb.OldImage['account_balance'].N) * -1;
         primaryWalletId = record.dynamodb.OldImage['primary_wallet'].S;
         accountType = record.dynamodb.OldImage['account_type'].S;
     } else if (isEqual(record.eventName, 'MODIFY')) {
-        balance = parseInt(record.dynamodb.NewImage['account_balance'].N) + (parseInt(record.dynamodb.OldImage['account_balance'].N) * -1);
+        balance = parseFloat(record.dynamodb.NewImage['account_balance'].N) + (parseFloat(record.dynamodb.OldImage['account_balance'].N) * -1);
         primaryWalletId = record.dynamodb.NewImage['primary_wallet'].S;
         accountType = record.dynamodb.NewImage['account_type'].S;
     }
@@ -298,18 +298,18 @@ function updateAccountBalance(record) {
         account;
     console.log("event is %j", record.eventName);
     if (isEqual(record.eventName, 'INSERT')) {
-        balance = parseInt(record.dynamodb.NewImage.amount.N);
+        balance = parseFloat(record.dynamodb.NewImage.amount.N);
         account = record.dynamodb.NewImage.account.S;
     } else if (isEqual(record.eventName, 'REMOVE')) {
-        balance = parseInt(record.dynamodb.OldImage.amount.N) * -1;
+        balance = parseFloat(record.dynamodb.OldImage.amount.N) * -1;
         account = record.dynamodb.OldImage.account.S;
     } else if (isEqual(record.eventName, 'MODIFY')) {
-        balance = parseInt(record.dynamodb.NewImage.amount.N) + (parseInt(record.dynamodb.OldImage.amount.N) * -1);
+        balance = parseFloat(record.dynamodb.NewImage.amount.N) + (parseFloat(record.dynamodb.OldImage.amount.N) * -1);
         account = record.dynamodb.NewImage.account.S;
         let oldAccount = record.dynamodb.OldImage.account.S;
         if (isNotEqual(account, oldAccount)) {
-            let oldBalance = (parseInt(record.dynamodb.OldImage.amount.N) * -1);
-            let newBalance = parseInt(record.dynamodb.NewImage.amount.N);
+            let oldBalance = (parseFloat(record.dynamodb.OldImage.amount.N) * -1);
+            let newBalance = parseFloat(record.dynamodb.NewImage.amount.N);
             events.push(updateAccountBalanceItem(pk, account, newBalance));
             events.push(updateAccountBalanceItem(pk, oldAccount, oldBalance));
             return;
