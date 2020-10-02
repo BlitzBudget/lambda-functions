@@ -9,7 +9,7 @@ exports.handler = async (event) => {
     let response = {};
     let params = {
       AuthFlow:  'USER_PASSWORD_AUTH',
-      ClientId: 'l7nmpavlqp3jcfjbr237prqae', /* required */
+      ClientId: '2ftlbs1kfmr2ub0e4p15tsag8g', /* required */
       AuthParameters: {
           USERNAME: event['body-json'].username,
           PASSWORD: event['body-json'].password

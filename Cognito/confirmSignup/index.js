@@ -8,7 +8,7 @@ var DB = new AWS.DynamoDB.DocumentClient();
 exports.handler = async (event) => {
     let response = {};
     let params = {
-      ClientId: 'l7nmpavlqp3jcfjbr237prqae', /* required */
+      ClientId: '2ftlbs1kfmr2ub0e4p15tsag8g', /* required */
       ConfirmationCode: event['body-json'].confirmationCode, /* required */
       Username: event['body-json'].username, /* required */
     };
@@ -19,7 +19,7 @@ exports.handler = async (event) => {
     
     let loginParams = {
       AuthFlow:  'USER_PASSWORD_AUTH',
-      ClientId: 'l7nmpavlqp3jcfjbr237prqae', /* required */
+      ClientId: '2ftlbs1kfmr2ub0e4p15tsag8g', /* required */
       AuthParameters: {
           USERNAME: event['body-json'].username,
           PASSWORD: event['body-json'].password

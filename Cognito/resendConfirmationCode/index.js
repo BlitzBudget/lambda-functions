@@ -5,7 +5,7 @@ let cognitoidentityserviceprovider = new AWS.CognitoIdentityServiceProvider();
 exports.handler = async (event) => {
     let response = {};
     let params = {
-      ClientId: 'l7nmpavlqp3jcfjbr237prqae', /* required */
+      ClientId: '2ftlbs1kfmr2ub0e4p15tsag8g', /* required */
       Username: event['body-json'].username, /* required */
     };
     

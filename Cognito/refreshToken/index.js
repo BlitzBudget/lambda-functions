@@ -6,7 +6,7 @@ exports.handler = async (event) => {
     let response = {};
     let params = {
       AuthFlow:  'REFRESH_TOKEN_AUTH',
-      ClientId: 'l7nmpavlqp3jcfjbr237prqae', /* required */
+      ClientId: '2ftlbs1kfmr2ub0e4p15tsag8g', /* required */
       AuthParameters: {
            "REFRESH_TOKEN" : event['body-json'].refreshToken
       }

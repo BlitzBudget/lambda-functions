@@ -18,7 +18,7 @@ from jose.utils import base64url_decode
 f_p_i_s = 'financialPortfolioId'
 region = 'eu-west-1'
 userpool_id = 'eu-west-1_cjfC8qNiB'
-app_client_id = 'l7nmpavlqp3jcfjbr237prqae'
+app_client_id = '2ftlbs1kfmr2ub0e4p15tsag8g'
 keys_url = 'https://cognito-idp.eu-west-1.amazonaws.com/eu-west-1_cjfC8qNiB/.well-known/jwks.json'.format(region, userpool_id)
 # instead of re-downloading the public keys every time
 # we download them only on cold start
