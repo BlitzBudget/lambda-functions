@@ -1,4 +1,3 @@
-const request = require('request');
 const crypto = require('crypto');
 
 const AWS = require('aws-sdk')
@@ -7,12 +6,6 @@ AWS.config.update({
 });
 let cognitoidentityserviceprovider = new AWS.CognitoIdentityServiceProvider();
 
-const options = {
-    uri: 'https://racing.hkjc.com/racing/information/Chinese/Trackwork/TrackworkResult.aspx?Horseno=S001',
-    headers: {
-        'User-Agent': 'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Mobile Safari/537.36'
-    }
-};
 
 const clientId = '18he7k81dv7k6fccf7giiuo84r';
 const clientSecret = 'ar8dgqr8e2jma0ojrkq5cu13bntnb624132uboirg9v6m1h4ge5';
@@ -49,14 +42,13 @@ exports.handler = async (event) => {
 
     await adminInitiateAuth(params).then(function (result) {
         console.log("The result of the initiate Auth is", result);
+        event = result;
     }, function (err) {
         throw new Error("Unable to signin from cognito  " + err);
     });
 
-    const response = await get(options);
 
-
-    return response;
+    return event;
 };
 
 function adminInitiateAuth(params) {
@@ -71,18 +63,6 @@ function adminInitiateAuth(params) {
             }
         });
     });
-}
-
-/*
- * Get HTTPS
- */
-function get(options) {
-
-    return new Promise(((resolve, reject) => {
-        request(options, (error, response, body) => {
-            console.log(response.request.uri.href);
-        });
-    }));
 }
 
 function isEmpty(obj) {
