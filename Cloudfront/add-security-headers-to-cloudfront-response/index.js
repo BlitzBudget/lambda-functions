@@ -36,7 +36,7 @@ exports.handler = async function (event, context) {
     // WWW.BLITZBUDGET.COM
     headers['content-security-policy'] = [{
         key: 'Content-Security-Policy',
-        value: "default-src https://www.blitzbudget.com/; img-src 'self'; script-src 'strict-dynamic' 'nonce-2726d7e26r' https:; style-src 'nonce-2726f7e26d' https://www.blitzbudget.com/  https://blitzbudget.com/ https://fonts.googleapis.com 'sha256-+7g9GIVwIQyRW5AWmV3tOknRu/VejUoNtGLu4+COYXU='; object-src 'none'; connect-src https://api.blitzbudget.com/; font-src 'self' https://fonts.gstatic.com; style-src-elem 'nonce-2726f7e26d' https://www.blitzbudget.com/ https://blitzbudget.com/ https://fonts.googleapis.com 'sha256-+7g9GIVwIQyRW5AWmV3tOknRu/VejUoNtGLu4+COYXU=';"
+        value: "default-src https://www.blitzbudget.com/; img-src 'self'; script-src 'strict-dynamic' 'nonce-2726d7e26r' https:; style-src 'nonce-2726f7e26d' https://www.blitzbudget.com/  https://blitzbudget.com/ https://fonts.googleapis.com 'sha256-+7g9GIVwIQyRW5AWmV3tOknRu/VejUoNtGLu4+COYXU='; object-src 'none'; connect-src 'self' https://api.blitzbudget.com/; font-src 'self' https://fonts.gstatic.com; style-src-elem 'nonce-2726f7e26d' https://www.blitzbudget.com/ https://blitzbudget.com/ https://fonts.googleapis.com 'sha256-+7g9GIVwIQyRW5AWmV3tOknRu/VejUoNtGLu4+COYXU=';"
     }];
 
     // HELP.BLITZBUDGET.COM
