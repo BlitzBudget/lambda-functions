@@ -36,6 +36,9 @@
             }
           ],
           "samples": [
+            "What\u0027s my category balance for {category}",
+            "What\u0027s my category balance for {category} category",
+            "What\u0027s my category balance of {category} category",
             "What\u0027s my category balance of {category}",
             "What\u0027s my balance of {category} category",
             "What\u0027s my balance of {category}",
@@ -396,7 +399,7 @@
             "Tell my default wallet",
             "Whats the default wallet",
             "Tell me my default wallet",
-            "Whas my default wallet",
+            "Whats my default wallet",
             "What is the default wallet",
             "What is my default wallet"
           ]
@@ -419,10 +422,7 @@
           "slots": [
             {
               "name": "currency",
-              "type": "CURRENCY",
-              "multipleValues": {
-                "enabled": true
-              }
+              "type": "CURRENCY"
             }
           ],
           "samples": [
@@ -630,8 +630,36 @@
             }
           ],
           "samples": [
+            "Whats my balance",
             "What\u0027s my balance",
             "What\u0027s my {wallet}  wallet balance"
+          ]
+        },
+        {
+          "name": "lostVoiceCode",
+          "slots": [],
+          "samples": [
+            "I forgot my voice code",
+            "I lost my voice code"
+          ]
+        },
+        {
+          "name": "verifyVoiceCode",
+          "slots": [
+            {
+              "name": "voicecode",
+              "type": "AMAZON.FOUR_DIGIT_NUMBER",
+              "samples": [
+                "Verify Blitz Budget {voicecode}",
+                "Authorize Blitz Budget {voicecode}",
+                "My voice code is {voicecode}",
+                "{voicecode}"
+              ]
+            }
+          ],
+          "samples": [
+            "Authorize Blitz Budget {voicecode}",
+            "Verify Blitz Budget {voicecode}"
           ]
         }
       ],
@@ -2746,6 +2774,22 @@
               ]
             }
           ]
+        },
+        {
+          "name": "verifyVoiceCode",
+          "confirmationRequired": false,
+          "prompts": {},
+          "slots": [
+            {
+              "name": "voicecode",
+              "type": "AMAZON.FOUR_DIGIT_NUMBER",
+              "elicitationRequired": true,
+              "confirmationRequired": false,
+              "prompts": {
+                "elicitation": "Elicit.Slot.1407121178495.885840110052"
+              }
+            }
+          ]
         }
       ],
       "delegationStrategy": "ALWAYS"
@@ -3187,8 +3231,17 @@
             "value": "I\u0027m saving a new transaction for {categories} category with {number} {currency} , is that OK?"
           }
         ]
+      },
+      {
+        "id": "Elicit.Slot.1407121178495.885840110052",
+        "variations": [
+          {
+            "type": "PlainText",
+            "value": "Please reaffirm your voice code for blitzbudget?"
+          }
+        ]
       }
     ]
   },
-  "version": "18"
+  "version": "21"
 }

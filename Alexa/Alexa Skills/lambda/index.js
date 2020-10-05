@@ -15,6 +15,7 @@ const featureRequest = require('./helper/feature-request');
 // TODO: clean up debugging code
 // const DEBUG = getEnvVar('DEBUG', false); // true = log to CloudWatch Logs ; false = no logging
 const invocationName = "blitz budget";
+const OPTED_OUT_VOICE_CODE = 'OPTED_OUT_VOICE_CODE';
 const COGNITO_REGION = getEnvVar('COGNITO_REGION', 'eu-west-1');
 
 const THE_MESSAGE = ' The ';
@@ -50,6 +51,9 @@ const EMPTY_CATEGORY_TYPE = 'The category type cannot be empty. Please try again
 const INCOME_CATEGORY_ERROR = 'Sorry! it is not possible to create a budget for an income category. Please try again!';
 const GET_WALLET_BALANCE = "Your wallet balance is ";
 const WALLET_IS_NOT_PRESENT = 'The wallet that you mentioned is not present. Consider adding a wallet by saying <break time="0.20s"/> "Add a new wallet for" ';
+const LOST_VOICE_CODE = 'Sorry to hear that! You could disable the blitzbudget skill in Alexa and then re-enable it again.';
+const VERIFY_VOICE_CODE = '<amazon:emotion name="disappointed" intensity="medium"> You need to verify your voice code. </amazon:emotion> Verify by saying <break time="0.20s"/> "Verify Blitz Budget " followed by your four digit voice code';
+const SESSION_VERIFIED = '<amazon:emotion name="excited" intensity="low">Great! You session has been successfully verified. </amazon:emotion> How can I help you today?';
 
 
 const SUCCESSFUL_TITLE = 'Successfully';
@@ -77,7 +81,7 @@ const CheckAccountLinkedHandler = {
     // This should not be used unless the skill cannot function without
     // a linked account.  If there's some functionality which is available without
     // linking an account, do this check "just-in-time"
-    return isAccountLinked(handlerInput);
+    return triggerNeedToLinkAccounted(handlerInput);
   },
   handle(handlerInput) {
     const requestAttributes = handlerInput.attributesManager.getRequestAttributes();
@@ -85,6 +89,25 @@ const CheckAccountLinkedHandler = {
     return handlerInput.responseBuilder
       .speak(speakOutput)
       .withLinkAccountCard()
+      .getResponse();
+  },
+};
+
+// CheckVoiceCodeVerifiedHandler: This handler is always run second,
+// based on the order defined in the skillBuilder.
+// If verification code is not set, then request it from the user.
+//``
+const CheckVoiceCodeVerifiedHandler = {
+  canHandle(handlerInput) {
+    // If voice code is required, 
+    // then return true
+    return checkIfVoiceCodeRequired(handlerInput);
+  },
+  handle(handlerInput) {
+    const requestAttributes = handlerInput.attributesManager.getRequestAttributes();
+    const speakOutput = VERIFY_VOICE_CODE;
+    return handlerInput.responseBuilder
+      .speak(speakOutput)
       .getResponse();
   },
 };
@@ -1270,6 +1293,62 @@ const addCategoryByDate_Handler =  {
     }
 }
 
+const verifyVoiceCode_Handler = {
+    canHandle(handlerInput) {
+        const request = handlerInput.requestEnvelope.request;
+        return request.type === 'IntentRequest' && request.intent.name === 'lostVoiceCode' ;
+    },
+    async handle(handlerInput) {
+        const request = handlerInput.requestEnvelope.request;
+        const responseBuilder = handlerInput.responseBuilder;
+        let sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
+        console.log('The User id retrieved is ', sessionAttributes.userId);
+
+        let say = '';
+        let slotStatus = '';
+        let shouldEndSession = true;
+
+        let slotValues = getSlotValues(request.intent.slots); 
+        
+        if (slotValues.voicecode.heardAs && slotValues.voicecode.heardAs !== '') {
+            if(isEqual(slotValues.voicecode.heardAs, sessionAttributes.voiceCode)) {
+                sessionAttributes.voiceCodeVerified = true;
+            } else {
+                // TODO Store number of failed attempts
+                // TODO say back if the attempt has failed
+                sessionAttributes.voiceCodeVerified = false;
+            }
+        }
+        
+        let say = SESSION_VERIFIED;
+        
+        return responseBuilder
+            .speak(say)
+            .withShouldEndSession(shouldEndSession) // End session for security purposes
+            .getResponse();
+        
+    }
+}
+
+const lostVoiceCode_Handler =  {
+    canHandle(handlerInput) {
+        const request = handlerInput.requestEnvelope.request;
+        return request.type === 'IntentRequest' && request.intent.name === 'lostVoiceCode' ;
+    },
+    async handle(handlerInput) {
+        const request = handlerInput.requestEnvelope.request;
+        const responseBuilder = handlerInput.responseBuilder;
+        
+        let say = LOST_VOICE_CODE;
+        
+        return responseBuilder
+            .speak(say)
+            .withShouldEndSession(shouldEndSession) // End session for security purposes
+            .getResponse();
+        
+    }
+}
+
 const LaunchRequest_Handler =  {
     canHandle(handlerInput) {
         const request = handlerInput.requestEnvelope.request;
@@ -1339,8 +1418,6 @@ function randomElement(myArray) {
 function stripSpeak(str) { 
     return(str.replace('<speak>', '').replace('</speak>', '')); 
 } 
- 
- 
  
  
 function getSlotValues(filledSlots) { 
@@ -1700,9 +1777,18 @@ function getResolvedSlotIDValue(request, slotName) {
   return null;
 }
 
-function isAccountLinked(handlerInput) {
+function triggerNeedToLinkAccounted(handlerInput) {
   // if there is an access token, then assumed linked
   return (handlerInput.requestEnvelope.session.user.accessToken === undefined);
+}
+
+/*
+* Check if voice code is verified
+* If voice code is empty -- It needs verification
+*/
+function checkIfVoiceCodeRequired(handlerInput) {
+    let sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
+    return sessionAttributes.voiceCodeVerified;
 }
 
 const RequestLog = {
@@ -1781,6 +1867,16 @@ const GetLinkedInfoInterceptor = {
         sessionAttributes.surname = getAttribute(userData.UserAttributes, 'family_name');
         sessionAttributes.email = getAttribute(userData.UserAttributes, 'email');
         sessionAttributes.userId = getAttribute(userData.UserAttributes, 'custom:financialPortfolioId');
+        // Get Alexa Voice Code
+        const alexaVoiceCode = await blitzbudgetDB.getAlexaVoiceCode(sessionAttributes.userId);
+        sessionAttributes.voiceCode = alexaVoiceCode['voice_code'].S;
+        // Set Session Verified if user opted out
+        if(isEqual(sessionAttributes.voiceCode, OPTED_OUT_VOICE_CODE)) {
+            sessionAttributes.voiceCodeVerified = true;
+        } else {
+            // If not then set verification to false
+            sessionAttributes.voiceCodeVerified = false;
+        }
         handlerInput.attributesManager.setSessionAttributes(sessionAttributes);
       } else {
         console.log('GetLinkedInfoInterceptor: No user data was found.');
@@ -1794,6 +1890,7 @@ const skillBuilder = Alexa.SkillBuilders.custom();
 exports.handler = skillBuilder
     .addRequestHandlers(
         CheckAccountLinkedHandler,
+        CheckVoiceCodeVerifiedHandler,
         AMAZON_CancelIntent_Handler, 
         AMAZON_HelpIntent_Handler, 
         AMAZON_StopIntent_Handler, 
@@ -1819,6 +1916,8 @@ exports.handler = skillBuilder
         getExpenditureByDate_Handler,
         getEarningsByDate_Handler,
         addCategoryByDate_Handler,
+        lostVoiceCode_Handler,
+        verifyVoiceCode_Handler,
         LaunchRequest_Handler, 
         HelpHandler,
         ExitHandler,

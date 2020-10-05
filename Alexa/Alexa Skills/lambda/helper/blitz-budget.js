@@ -318,6 +318,32 @@ blitzbudgetDB.prototype.getAccountFromAlexa  = async function(walletId) {
       })
 }
 
+blitzbudgetDB.prototype.getAlexaVoiceCode  = async function(userId) {
+    console.log("The alexa voice code to retrieve are for ", userId);
+    const params = {
+            TableName: TABLE_NAME,
+            KeyConditionExpression: "pk = :pk and begins_with(sk, :items)",
+            ExpressionAttributeValues: {
+                ":pk": {
+                  S: userId
+                },
+                ":items": {
+                  S: "AlexaVoiceCode#"
+                }
+            },
+            ProjectionExpression: "voice_code, sk, pk"
+        }
+    return dbHelper.getFromBlitzBudgetTable(params).then((data) => {
+        console.log('Successfully retrieved the voice code from the DynamoDB. Item count is ' + data.length);
+        return data;
+        
+      })
+      .catch((err) => {
+        console.log("There was an error getting the voice code from DynamoDB ", err);
+        return;
+      })
+}
+
 blitzbudgetDB.prototype.changeDefaultAccountAlexa = async function(allAccounts, accountName) {
     let events = [], say, data = allAccounts;
     
