@@ -639,6 +639,8 @@
           "name": "lostVoiceCode",
           "slots": [],
           "samples": [
+            "lost voice code",
+            "forgot voice code",
             "I forgot my voice code",
             "I lost my voice code"
           ]
@@ -3243,5 +3245,5 @@
       }
     ]
   },
-  "version": "21"
+  "version": "24"
 }

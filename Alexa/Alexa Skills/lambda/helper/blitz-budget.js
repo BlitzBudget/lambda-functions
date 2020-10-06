@@ -1,7 +1,12 @@
 var blitzbudgetDB = function () { };
 
+
+// Setup ================================================================================
+
 const dbHelper = require('./dbHelper');
-const currencyInfo = require('./currency');
+const currencyInfo = require('../constants/currency');
+
+// Constants ============================================================================
 
 const ON = ' on ';
 const YOU = 'You ';

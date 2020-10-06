@@ -7,55 +7,53 @@
 const https = require("https");
 const AWS = require('aws-sdk');
 const Alexa = require("ask-sdk-core");
+const utils = require('./helper/utils');
 const blitzbudgetDB = require('./helper/blitz-budget');
 const featureRequest = require('./helper/feature-request');
+const voiceCodeVerifier = require('./voice-code/verification');
 
 // Constants ============================================================================
 
 // TODO: clean up debugging code
 // const DEBUG = getEnvVar('DEBUG', false); // true = log to CloudWatch Logs ; false = no logging
-const invocationName = "blitz budget";
-const OPTED_OUT_VOICE_CODE = 'OPTED_OUT_VOICE_CODE';
 const COGNITO_REGION = getEnvVar('COGNITO_REGION', 'eu-west-1');
 
 const THE_MESSAGE = ' The ';
 const YOUR_MESSAGE = ' Your ';
 const HELLO_MESSAGE = 'Hello ';
-const SKILL_NAME =  'Blitz Budget';
-const BUDGET_BALANCE_ONE = ' budget has ';
 const BUDGET_BALANCE_TWO = " remaining";
+const BUDGET_BALANCE_ONE = ' budget has ';
 const TAG_MESSAGE = ' tag has a balance of ';
 const BUDGET_RETRIEVED = ' budget amount is ';
 const DEFAULT_WALLET = 'Your default wallet is ';
+const GET_WALLET_BALANCE = "Your wallet balance is ";
 const DEFAULT_ACCOUNT_SUCCESS = 'Your default account is ';
-const GREETING_MESSAGE =  '. <amazon:emotion name="excited" intensity="low"> What can I do for you today?  </amazon:emotion>';
-const CATEGORY_BALANCE_ERROR_TWO = ' category has a balance of ';
+const BUDGET_CREATED_ERROR = ' budget has already been created.';
 const GOODBYE_MESSAGE = 'Good bye. It was nice talking to you. ';
+const CATEGORY_BALANCE_ERROR_TWO = ' category has a balance of ';
 const GOAL_TYPE_ERROR = 'I didn\'t get the goal type. Please try again!';
+const EMPTY_CATEGORY_TYPE = 'The category type cannot be empty. Please try again!';
+const EMPTY_TAG = ' tag is not present in any of the transactions. Please try again!';
+const BUDGET_NOT_CREATED_TWO = ' by saying <break time="0.20s"/> "Add a new budget for "';
+const BUDGET_NOT_CREATED = ' budget has not been created. Consider creating a budget for ';
+const EMPTY_CATEGORY = 'I didn\'t get the category entered for the transaction. Please try again!';
+const HELP_MESSAGE = 'You can say: \'alexa, hello\', \'alexa, tell me my info\' or \'alexa, who am I\'.';
+const INCOME_CATEGORY_ERROR = 'Sorry! it is not possible to create a budget for an income category. Please try again!';
+const GREETING_MESSAGE =  '. <amazon:emotion name="excited" intensity="low"> What can I do for you today?  </amazon:emotion>';
+const BUDGET_EMPTY_ERROR = ' budget is not created. Consider creating a new budget by saying <break time="0.20s"/> "Create a new budget for "';
+const CATEGORY_EMPTY = ' category has not been created. Consider creating a new category by saying <break time="0.20s"/> "Create a new category for "';
+const NEED_TO_LINK_MESSAGE = 'Before we can continue, you will need to link your account to the skill using the card that I have sent to the Alexa app.';
 const ERR_MESSAGE =  '<amazon:emotion name="disappointed" intensity="medium"> Sorry, I can\'t understand that request. Please try again! </amazon:emotion>';
+const WALLET_IS_NOT_PRESENT = 'The wallet that you mentioned is not present. Consider adding a wallet by saying <break time="0.20s"/> "Add a new wallet for" ';
 const EMPTY_AMOUNT  = '<amazon:emotion name="disappointed" intensity="medium"> I didn\'t get the amount entered for the transaction. Please try again! </amazon:emotion>';
 const CURRENCY_NOTFOUND = '<amazon:emotion name="disappointed" intensity="medium"> I couldn\'t find the currency that you mentioned. Please try again! </amazon:emotion>';
-const EMPTY_TAG = ' tag is not present in any of the transactions. Please try again!';
-const EMPTY_CATEGORY = 'I didn\'t get the category entered for the transaction. Please try again!';
-const EMPTY_WALLET = '<amazon:emotion name="disappointed" intensity="medium"> The requested currency cannot be found. </amazon:emotion> Consider creating a wallet by saying <break time="0.20s"/> "Create a new wallet for" followed by the currency name as you find it in the blitz budget application. ';
-const HELP_MESSAGE = 'You can say: \'alexa, hello\', \'alexa, tell me my info\' or \'alexa, who am I\'.';
-const CATEGORY_EMPTY = ' category has not been created. Consider creating a new category by saying <break time="0.20s"/> "Create a new category for "';
 const EMPTY_ACCOUNT = '<amazon:emotion name="disappointed" intensity="medium"> Sorry, There was an error while getting you default account. </amazon:emotion> Please try again!';
-const BUDGET_NOT_CREATED = ' budget has not been created. Consider creating a budget for ';
-const BUDGET_NOT_CREATED_TWO = ' by saying <break time="0.20s"/> "Add a new budget for "';
-const BUDGET_CREATED_ERROR = ' budget has already been created.';
-const BUDGET_EMPTY_ERROR = ' budget is not created. Consider creating a new budget by saying <break time="0.20s"/> "Create a new budget for "';
-const NEED_TO_LINK_MESSAGE = 'Before we can continue, you will need to link your account to the skill using the card that I have sent to the Alexa app.';
 const CATEGORY_EXISTS = '<amazon:emotion name="disappointed" intensity="medium"> The selected category is already present for the mentioned dates. </amazon:emotion> Consider creating a new category by saying <break time="0.20s"/> "Create a new category for "';
-const EMPTY_CATEGORY_TYPE = 'The category type cannot be empty. Please try again!';
-const INCOME_CATEGORY_ERROR = 'Sorry! it is not possible to create a budget for an income category. Please try again!';
-const GET_WALLET_BALANCE = "Your wallet balance is ";
-const WALLET_IS_NOT_PRESENT = 'The wallet that you mentioned is not present. Consider adding a wallet by saying <break time="0.20s"/> "Add a new wallet for" ';
-const LOST_VOICE_CODE = 'Sorry to hear that! You could disable the blitzbudget skill in Alexa and then re-enable it again.';
-const VERIFY_VOICE_CODE = '<amazon:emotion name="disappointed" intensity="medium"> You need to verify your voice code. </amazon:emotion> Verify by saying <break time="0.20s"/> "Verify Blitz Budget " followed by your four digit voice code';
-const SESSION_VERIFIED = '<amazon:emotion name="excited" intensity="low">Great! You session has been successfully verified. </amazon:emotion> How can I help you today?';
+const EMPTY_WALLET = '<amazon:emotion name="disappointed" intensity="medium"> The requested currency cannot be found. </amazon:emotion> Consider creating a wallet by saying <break time="0.20s"/> "Create a new wallet for" followed by the currency name as you find it in the blitz budget application. ';
 
-
+/*
+* Send a simple card
+*/
 const SUCCESSFUL_TITLE = 'Successfully';
 const CARD_SECURITY_TITLE = "BlitzBudget Security Information";
 const ADDED_NEW_TRANSACTION_SIMPLE_CARD = "A new transaction was added through Alexa.";
@@ -84,30 +82,10 @@ const CheckAccountLinkedHandler = {
     return triggerNeedToLinkAccounted(handlerInput);
   },
   handle(handlerInput) {
-    const requestAttributes = handlerInput.attributesManager.getRequestAttributes();
     const speakOutput = NEED_TO_LINK_MESSAGE;
     return handlerInput.responseBuilder
       .speak(speakOutput)
       .withLinkAccountCard()
-      .getResponse();
-  },
-};
-
-// CheckVoiceCodeVerifiedHandler: This handler is always run second,
-// based on the order defined in the skillBuilder.
-// If verification code is not set, then request it from the user.
-//``
-const CheckVoiceCodeVerifiedHandler = {
-  canHandle(handlerInput) {
-    // If voice code is required, 
-    // then return true
-    return checkIfVoiceCodeRequired(handlerInput);
-  },
-  handle(handlerInput) {
-    const requestAttributes = handlerInput.attributesManager.getRequestAttributes();
-    const speakOutput = VERIFY_VOICE_CODE;
-    return handlerInput.responseBuilder
-      .speak(speakOutput)
       .getResponse();
   },
 };
@@ -118,9 +96,7 @@ const AMAZON_CancelIntent_Handler =  {
         return request.type === 'IntentRequest' && request.intent.name === 'AMAZON.CancelIntent' ;
     },
     handle(handlerInput) {
-        const request = handlerInput.requestEnvelope.request;
         const responseBuilder = handlerInput.responseBuilder;
-        let sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
 
 
         let say = 'Okay, talk to you later! ';
@@ -138,11 +114,8 @@ const AMAZON_HelpIntent_Handler =  {
         return request.type === 'IntentRequest' && request.intent.name === 'AMAZON.HelpIntent' ;
     },
     handle(handlerInput) {
-        const request = handlerInput.requestEnvelope.request;
         const responseBuilder = handlerInput.responseBuilder;
-        let sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
 
-        let history = sessionAttributes['history'];
         let intents = getCustomIntents();
         let sampleIntent = randomElement(intents);
 
@@ -163,9 +136,7 @@ const AMAZON_StopIntent_Handler =  {
         return request.type === 'IntentRequest' && request.intent.name === 'AMAZON.StopIntent' ;
     },
     handle(handlerInput) {
-        const request = handlerInput.requestEnvelope.request;
         const responseBuilder = handlerInput.responseBuilder;
-        let sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
 
 
         let say = 'Okay, talk to you later! ';
@@ -183,9 +154,7 @@ const AMAZON_NavigateHomeIntent_Handler =  {
         return request.type === 'IntentRequest' && request.intent.name === 'AMAZON.NavigateHomeIntent' ;
     },
     handle(handlerInput) {
-        const request = handlerInput.requestEnvelope.request;
         const responseBuilder = handlerInput.responseBuilder;
-        let sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
 
         let say = 'Hello from AMAZON.NavigateHomeIntent. ';
 
@@ -203,7 +172,6 @@ const AMAZON_FallbackIntent_Handler =  {
         return request.type === 'IntentRequest' && request.intent.name === 'AMAZON.FallbackIntent' ;
     },
     handle(handlerInput) {
-        const request = handlerInput.requestEnvelope.request;
         const responseBuilder = handlerInput.responseBuilder;
         let sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
 
@@ -231,7 +199,7 @@ const getWalletBalance_Handler =  {
         let slotStatus = '';
         let shouldEndSession = true;
 
-        let slotValues = getSlotValues(request.intent.slots); 
+        let slotValues = utils.getSlotValues(request.intent.slots); 
         
         if (slotValues.wallet.heardAs && slotValues.wallet.heardAs !== '') {
             let walletCurrency;
@@ -252,7 +220,7 @@ const getWalletBalance_Handler =  {
                 let allWallets = await blitzbudgetDB.getWalletFromAlexa(sessionAttributes.userId);
                 let wallet = blitzbudgetDB.getMatchingWalletAlexa(allWallets, walletCurrency);
                 // Successfully Changed the default wallet then
-                if(isNotEmpty(wallet)) {
+                if(utils.isNotEmpty(wallet)) {
                     slotStatus += GET_WALLET_BALANCE + wallet['wallet_balance'].N + ' ' + walletCurrency;
                     // Send a simple card to Alexa on Success
                     responseBuilder.withSimpleCard(CARD_SECURITY_TITLE, CHANGED_DEFAULT_WALLET_SIMPLE_CARD);   
@@ -269,7 +237,7 @@ const getWalletBalance_Handler =  {
             console.log('The wallets obtained are ', JSON.stringify(wallet));
             
             // Successfully Changed the default wallet then
-            if(isNotEmpty(wallet)) {
+            if(utils.isNotEmpty(wallet)) {
                 slotStatus += GET_WALLET_BALANCE + wallet['wallet_balance'].N + ' ' + wallet['currency'].S;
                 // Send a simple card to Alexa on Success
                 responseBuilder.withSimpleCard(CARD_SECURITY_TITLE, CHANGED_DEFAULT_WALLET_SIMPLE_CARD);   
@@ -295,7 +263,6 @@ const getRecentTransactions_Handler =  {
         return request.type === 'IntentRequest' && request.intent.name === 'getRecentTransactions' ;
     },
     async handle(handlerInput) {
-        const request = handlerInput.requestEnvelope.request;
         const responseBuilder = handlerInput.responseBuilder;
         let sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
         console.log('The User id retrieved is ', sessionAttributes.userId);
@@ -337,14 +304,14 @@ const getCategoryBalance_Handler =  {
         let slotStatus = '';
         let shouldEndSession = true;
 
-        let slotValues = getSlotValues(request.intent.slots); 
-        // getSlotValues returns .heardAs, .resolved, and .isValidated for each slot, according to request slot status codes ER_SUCCESS_MATCH, ER_SUCCESS_NO_MATCH, or traditional simple request slot without resolutions
+        let slotValues = utils.getSlotValues(request.intent.slots); 
+        // utils.getSlotValues returns .heardAs, .resolved, and .isValidated for each slot, according to request slot status codes ER_SUCCESS_MATCH, ER_SUCCESS_NO_MATCH, or traditional simple request slot without resolutions
 
         // console.log('***** slotValues: ' +  JSON.stringify(slotValues, null, 2));
         //   SLOT: category 
         if (slotValues.category.heardAs && slotValues.category.heardAs !== '') {
             let category = await blitzbudgetDB.getCategoryAlexa(wallet.sk.S, slotValues.category.heardAs, slotValues.date.heardAs);
-            if(isEmpty(category)) {
+            if(utils.isEmpty(category)) {
                 slotStatus += THE_MESSAGE + slotValues.category.heardAs + CATEGORY_EMPTY + slotValues.category.heardAs;
                 shouldEndSession = false;
             } else {
@@ -381,12 +348,12 @@ const addNewTransaction_Handler =  {
         let slotStatus = '';
         let wallet, shouldEndSession = true;
         
-        // getSlotValues returns .heardAs, .resolved, and .isValidated for each slot, according to request slot status codes ER_SUCCESS_MATCH, ER_SUCCESS_NO_MATCH, or traditional simple request slot without resolutions
+        // utils.getSlotValues returns .heardAs, .resolved, and .isValidated for each slot, according to request slot status codes ER_SUCCESS_MATCH, ER_SUCCESS_NO_MATCH, or traditional simple request slot without resolutions
 
         // console.log('***** slotValues: ' +  JSON.stringify(slotValues, null, 2));
         //   SLOT: goaltype 
-        let slotValues = getSlotValues(request.intent.slots); 
-        if(isNotEmpty(slotValues.currency.heardAs)) {
+        let slotValues = utils.getSlotValues(request.intent.slots); 
+        if(utils.isNotEmpty(slotValues.currency.heardAs)) {
             let allWallets = await blitzbudgetDB.getWalletFromAlexa(sessionAttributes.userId);
             wallet = blitzbudgetDB.calculateWalletFromAlexa(allWallets, slotValues); 
             console.log("The calculate wallet is ", JSON.stringify(wallet), ". The currency name is ", slotValues.currency.heardAs);
@@ -395,25 +362,25 @@ const addNewTransaction_Handler =  {
             console.log("The default wallet is ", wallet.currency.S, " Heard as ", slotValues.currency.heardAs);
         }
         
-        // getSlotValues returns .heardAs, .resolved, and .isValidated for each slot, according to request slot status codes ER_SUCCESS_MATCH, ER_SUCCESS_NO_MATCH, or traditional simple request slot without resolutions
+        // utils.getSlotValues returns .heardAs, .resolved, and .isValidated for each slot, according to request slot status codes ER_SUCCESS_MATCH, ER_SUCCESS_NO_MATCH, or traditional simple request slot without resolutions
 
         // console.log('***** slotValues: ' +  JSON.stringify(slotValues, null, 2));
         //   SLOT: category 
-        if(isEmpty(wallet)) {
+        if(utils.isEmpty(wallet)) {
             slotStatus += EMPTY_WALLET;
             shouldEndSession = false;
         } else {
             console.log("The number of transaction is ",slotValues.number, " The category is ", slotValues.category);
-            if(isEmpty(slotValues.number.heardAs)) {
+            if(utils.isEmpty(slotValues.number.heardAs)) {
                 slotStatus = EMPTY_AMOUNT;
             } else {
-                // getSlotValues returns .heardAs, .resolved, and .isValidated for each slot, according to request slot status codes ER_SUCCESS_MATCH, ER_SUCCESS_NO_MATCH, or traditional simple request slot without resolutions
+                // utils.getSlotValues returns .heardAs, .resolved, and .isValidated for each slot, according to request slot status codes ER_SUCCESS_MATCH, ER_SUCCESS_NO_MATCH, or traditional simple request slot without resolutions
     
                 // console.log('***** slotValues: ' +  JSON.stringify(slotValues, null, 2));
                 //   SLOT: category 
                 if (slotValues.categories.heardAs && slotValues.categories.heardAs !== '') {
                     let category = await blitzbudgetDB.getCategoryAlexa(wallet.sk.S, slotValues.categories.heardAs, slotValues.date.heardAs);
-                    if(isEmpty(category)) {
+                    if(utils.isEmpty(category)) {
                         slotStatus = THE_MESSAGE + slotValues.categories.heardAs + CATEGORY_EMPTY + slotValues.categories.heardAs;
                         shouldEndSession = false;
                     } else {
@@ -427,7 +394,7 @@ const addNewTransaction_Handler =  {
                         }
                         slotStatus = await blitzbudgetDB.addTransactionAlexaAmount(wallet.sk.S, category.sk.S, transactionTotal.toString(), slotValues.date.heardAs, wallet.currency.S);
                         // Successfully Added the transaction then
-                        if(includesStr(slotStatus, SUCCESSFUL_TITLE)) {
+                        if(utils.includesStr(slotStatus, SUCCESSFUL_TITLE)) {
                             // Send a simple card to Alexa on Success
                             responseBuilder.withSimpleCard(CARD_SECURITY_TITLE, ADDED_NEW_TRANSACTION_SIMPLE_CARD);   
                         }
@@ -464,8 +431,8 @@ const changeDefaultWallet_Handler =  {
         let slotStatus = '';
         let shouldEndSession = true;
 
-        let slotValues = getSlotValues(request.intent.slots); 
-        // getSlotValues returns .heardAs, .resolved, and .isValidated for each slot, according to request slot status codes ER_SUCCESS_MATCH, ER_SUCCESS_NO_MATCH, or traditional simple request slot without resolutions
+        let slotValues = utils.getSlotValues(request.intent.slots); 
+        // utils.getSlotValues returns .heardAs, .resolved, and .isValidated for each slot, according to request slot status codes ER_SUCCESS_MATCH, ER_SUCCESS_NO_MATCH, or traditional simple request slot without resolutions
 
         // console.log('***** slotValues: ' +  JSON.stringify(slotValues, null, 2));
         //   SLOT: wallet 
@@ -489,7 +456,7 @@ const changeDefaultWallet_Handler =  {
                 let changeWallet = await blitzbudgetDB.changeDefaultWalletAlexa(sessionAttributes.userId, allWallets, walletCurrency);
                 slotStatus += changeWallet;
                 // Successfully Changed the default wallet then
-                if(includesStr(slotStatus, SUCCESSFUL_TITLE)) {
+                if(utils.includesStr(slotStatus, SUCCESSFUL_TITLE)) {
                     // Send a simple card to Alexa on Success
                     responseBuilder.withSimpleCard(CARD_SECURITY_TITLE, CHANGED_DEFAULT_WALLET_SIMPLE_CARD);   
                 }
@@ -525,8 +492,8 @@ const changeDefaultAccount_Handler =  {
         let slotStatus = '';
         let shouldEndSession = true;
 
-        let slotValues = getSlotValues(request.intent.slots); 
-        // getSlotValues returns .heardAs, .resolved, and .isValidated for each slot, according to request slot status codes ER_SUCCESS_MATCH, ER_SUCCESS_NO_MATCH, or traditional simple request slot without resolutions
+        let slotValues = utils.getSlotValues(request.intent.slots); 
+        // utils.getSlotValues returns .heardAs, .resolved, and .isValidated for each slot, according to request slot status codes ER_SUCCESS_MATCH, ER_SUCCESS_NO_MATCH, or traditional simple request slot without resolutions
 
         // console.log('***** slotValues: ' +  JSON.stringify(slotValues, null, 2));
         //   SLOT: account 
@@ -535,7 +502,7 @@ const changeDefaultAccount_Handler =  {
             let changeAccount = await blitzbudgetDB.changeDefaultAccountAlexa(allAccounts, slotValues.account.heardAs);
             slotStatus = changeAccount;
             // Successfully Changed the default wallet then
-            if(includesStr(slotStatus, SUCCESSFUL_TITLE)) {
+            if(utils.includesStr(slotStatus, SUCCESSFUL_TITLE)) {
                 // Send a simple card to Alexa on Success
                 responseBuilder.withSimpleCard(CARD_SECURITY_TITLE, CHANGED_DEFAULT_ACCOUNT_SIMPLE_CARD);   
             }
@@ -570,8 +537,8 @@ const addNewBudget_Handler =  {
         let slotStatus = '';
         let wallet;
 
-        let slotValues = getSlotValues(request.intent.slots); 
-        if(isNotEmpty(slotValues.currency.heardAs)) {
+        let slotValues = utils.getSlotValues(request.intent.slots); 
+        if(utils.isNotEmpty(slotValues.currency.heardAs)) {
             let allWallets = await blitzbudgetDB.getWalletFromAlexa(sessionAttributes.userId);
             wallet = blitzbudgetDB.calculateWalletFromAlexa(allWallets, slotValues); 
             console.log("The calculate wallet is ", JSON.stringify(wallet), ". The currency name is ", slotValues.currency.heardAs);
@@ -582,32 +549,32 @@ const addNewBudget_Handler =  {
         
         let currentDate =  new Date();
         currentDate = currentDate.getFullYear() + '-' + ("0" + (Number(currentDate.getMonth()) + 1)).slice(-2);
-        // getSlotValues returns .heardAs, .resolved, and .isValidated for each slot, according to request slot status codes ER_SUCCESS_MATCH, ER_SUCCESS_NO_MATCH, or traditional simple request slot without resolutions
+        // utils.getSlotValues returns .heardAs, .resolved, and .isValidated for each slot, according to request slot status codes ER_SUCCESS_MATCH, ER_SUCCESS_NO_MATCH, or traditional simple request slot without resolutions
 
         // console.log('***** slotValues: ' +  JSON.stringify(slotValues, null, 2));
         //   SLOT: category 
-        if(isEmpty(wallet)) {
+        if(utils.isEmpty(wallet)) {
             slotStatus += EMPTY_WALLET;
             shouldEndSession = false;
         } else {
-            // getSlotValues returns .heardAs, .resolved, and .isValidated for each slot, according to request slot status codes ER_SUCCESS_MATCH, ER_SUCCESS_NO_MATCH, or traditional simple request slot without resolutions
+            // utils.getSlotValues returns .heardAs, .resolved, and .isValidated for each slot, according to request slot status codes ER_SUCCESS_MATCH, ER_SUCCESS_NO_MATCH, or traditional simple request slot without resolutions
     
             // console.log('***** slotValues: ' +  JSON.stringify(slotValues, null, 2));
             //   SLOT: category 
             if (slotValues.category.heardAs && slotValues.category.heardAs !== '') {
                 let category = await blitzbudgetDB.getCategoryAlexa(wallet.sk.S, slotValues.category.heardAs, currentDate);
-                if(isEmpty(category)) {
+                if(utils.isEmpty(category)) {
                     slotStatus += THE_MESSAGE + slotValues.category.heardAs + CATEGORY_EMPTY + slotValues.category.heardAs;
                     shouldEndSession = false;
-                } else if(isEqual(category['category_type'].S, 'Income')) {
+                } else if(utils.isEqual(category['category_type'].S, 'Income')) {
                     slotStatus = INCOME_CATEGORY_ERROR;
                     shouldEndSession = false;
                 } else {
                     let budget = await blitzbudgetDB.getBudgetAlexaAmount(wallet.sk.S, category.sk.S, currentDate);
-                    if(isEmpty(budget)) {
+                    if(utils.isEmpty(budget)) {
                         slotStatus += await blitzbudgetDB.addBudgetAlexaAmount(wallet.sk.S, category.sk.S, slotValues.amount.heardAs, currentDate, slotValues.category.heardAs);
                         // Successfully added a new budget then
-                        if(includesStr(slotStatus, SUCCESSFUL_TITLE)) {
+                        if(utils.includesStr(slotStatus, SUCCESSFUL_TITLE)) {
                             // Send a simple card to Alexa on Success
                             responseBuilder.withSimpleCard(CARD_SECURITY_TITLE, ADDED_NEW_BUDGET_SIMPLE_CARD);   
                         }
@@ -647,12 +614,12 @@ const addNewGoal_Handler =  {
         let slotStatus = '';
         let wallet;
   
-        // getSlotValues returns .heardAs, .resolved, and .isValidated for each slot, according to request slot status codes ER_SUCCESS_MATCH, ER_SUCCESS_NO_MATCH, or traditional simple request slot without resolutions
+        // utils.getSlotValues returns .heardAs, .resolved, and .isValidated for each slot, according to request slot status codes ER_SUCCESS_MATCH, ER_SUCCESS_NO_MATCH, or traditional simple request slot without resolutions
 
         // console.log('***** slotValues: ' +  JSON.stringify(slotValues, null, 2));
         //   SLOT: goaltype 
-        let slotValues = getSlotValues(request.intent.slots); 
-        if(isNotEmpty(slotValues.currency.heardAs)) {
+        let slotValues = utils.getSlotValues(request.intent.slots); 
+        if(utils.isNotEmpty(slotValues.currency.heardAs)) {
             let allWallets = await blitzbudgetDB.getWalletFromAlexa(sessionAttributes.userId);
             wallet = blitzbudgetDB.calculateWalletFromAlexa(allWallets, slotValues); 
             console.log("The calculate wallet is ", JSON.stringify(wallet), ". The currency name is ", slotValues.currency.heardAs);
@@ -661,22 +628,22 @@ const addNewGoal_Handler =  {
             console.log("The default wallet is ", wallet.currency.S);
         }
         
-        // getSlotValues returns .heardAs, .resolved, and .isValidated for each slot, according to request slot status codes ER_SUCCESS_MATCH, ER_SUCCESS_NO_MATCH, or traditional simple request slot without resolutions
+        // utils.getSlotValues returns .heardAs, .resolved, and .isValidated for each slot, according to request slot status codes ER_SUCCESS_MATCH, ER_SUCCESS_NO_MATCH, or traditional simple request slot without resolutions
 
         // console.log('***** slotValues: ' +  JSON.stringify(slotValues, null, 2));
         //   SLOT: category 
-        if(isEmpty(wallet)) {
+        if(utils.isEmpty(wallet)) {
             slotStatus += EMPTY_WALLET;
             shouldEndSession = false;
         } else {
-            let goalType = isEmpty(slotValues.goaltype.id) ? slotValues.goaltype.heardAs : slotValues.goaltype.id;
-            if(isEmpty(slotValues.goaltype.heardAs) && isEmpty(slotValues.goaltype.id)) {
+            let goalType = utils.isEmpty(slotValues.goaltype.id) ? slotValues.goaltype.heardAs : slotValues.goaltype.id;
+            if(utils.isEmpty(slotValues.goaltype.heardAs) && utils.isEmpty(slotValues.goaltype.id)) {
                 slotStatus = GOAL_TYPE_ERROR;
                 shouldEndSession = false;
             } else {
                 slotStatus = await blitzbudgetDB.addNewGoalFromAlexa(wallet.sk.S, slotValues.amount.heardAs, goalType, slotValues.monthlyContribution.heardAs, slotValues.targetDate.heardAs);
                 // Successfully added a new goal then
-                if(includesStr(slotStatus, SUCCESSFUL_TITLE)) {
+                if(utils.includesStr(slotStatus, SUCCESSFUL_TITLE)) {
                     // Send a simple card to Alexa on Success
                     responseBuilder.withSimpleCard(CARD_SECURITY_TITLE, ADDED_NEW_GOAL_SIMPLE_CARD);   
                 }
@@ -711,15 +678,15 @@ const getBudgetAmount_Handler = {
         
         let shouldEndSession = true;
 
-        let slotValues = getSlotValues(request.intent.slots); 
-        // getSlotValues returns .heardAs, .resolved, and .isValidated for each slot, according to request slot status codes ER_SUCCESS_MATCH, ER_SUCCESS_NO_MATCH, or traditional simple request slot without resolutions
+        let slotValues = utils.getSlotValues(request.intent.slots); 
+        // utils.getSlotValues returns .heardAs, .resolved, and .isValidated for each slot, according to request slot status codes ER_SUCCESS_MATCH, ER_SUCCESS_NO_MATCH, or traditional simple request slot without resolutions
 
         // console.log('***** slotValues: ' +  JSON.stringify(slotValues, null, 2));
         
         // Date
         let currentDate =  new Date();
         // Date used to get the budget
-        if(isNotEmpty(slotValues.date.heardAs)) {
+        if(utils.isNotEmpty(slotValues.date.heardAs)) {
             let dateMentioned = slotValues.date.heardAs;
             console.log("The Date mentioned is ", dateMentioned);
             if(dateMentioned.length < 6) {
@@ -733,12 +700,12 @@ const getBudgetAmount_Handler = {
         //   SLOT: category 
         if (slotValues.category.heardAs && slotValues.category.heardAs !== '') {
             let category = await blitzbudgetDB.getCategoryAlexa(wallet.sk.S, slotValues.category.heardAs, currentDate);
-            if(isEmpty(category)) {
+            if(utils.isEmpty(category)) {
                 slotStatus += THE_MESSAGE + slotValues.category.heardAs + CATEGORY_EMPTY + slotValues.category.heardAs;
                 shouldEndSession = false;
             } else {
                 let budget = await blitzbudgetDB.getBudgetAlexaAmount(wallet.sk.S, category.sk.S, currentDate);
-                if(isEmpty(budget)) {
+                if(utils.isEmpty(budget)) {
                     slotStatus += THE_MESSAGE + slotValues.category.heardAs + BUDGET_EMPTY_ERROR + slotValues.category.heardAs;
                     shouldEndSession = false;
                 } else {
@@ -776,8 +743,8 @@ const getBudgetBalance_Handler =  {
         let say = '';
         let slotStatus = '';
         
-        let slotValues = getSlotValues(request.intent.slots); 
-        // getSlotValues returns .heardAs, .resolved, and .isValidated for each slot, according to request slot status codes ER_SUCCESS_MATCH, ER_SUCCESS_NO_MATCH, or traditional simple request slot without resolutions
+        let slotValues = utils.getSlotValues(request.intent.slots); 
+        // utils.getSlotValues returns .heardAs, .resolved, and .isValidated for each slot, according to request slot status codes ER_SUCCESS_MATCH, ER_SUCCESS_NO_MATCH, or traditional simple request slot without resolutions
 
         // console.log('***** slotValues: ' +  JSON.stringify(slotValues, null, 2));
         
@@ -788,12 +755,12 @@ const getBudgetBalance_Handler =  {
         //   SLOT: category 
         if (slotValues.category.heardAs && slotValues.category.heardAs !== '') {
             let category = await blitzbudgetDB.getCategoryAlexa(wallet.sk.S, slotValues.category.heardAs, currentDate);
-            if(isEmpty(category)) {
+            if(utils.isEmpty(category)) {
                 slotStatus += THE_MESSAGE + slotValues.category.heardAs + CATEGORY_EMPTY + slotValues.category.heardAs;
                 shouldEndSession = false;
             } else {
                 let budget = await blitzbudgetDB.getBudgetAlexaAmount(wallet.sk.S, category.sk.S, currentDate);
-                if(isEmpty(budget)) {
+                if(utils.isEmpty(budget)) {
                     slotStatus += THE_MESSAGE + slotValues.category.heardAs + BUDGET_NOT_CREATED + category['category_name'].S + BUDGET_NOT_CREATED_TWO + category['category_name'].S ;
                     shouldEndSession = false;
                 } else {
@@ -832,8 +799,8 @@ const getTagBalance_Handler =  {
         let slotStatus = '';
         let shouldEndSession = true;
 
-        let slotValues = getSlotValues(request.intent.slots); 
-        // getSlotValues returns .heardAs, .resolved, and .isValidated for each slot, according to request slot status codes ER_SUCCESS_MATCH, ER_SUCCESS_NO_MATCH, or traditional simple request slot without resolutions
+        let slotValues = utils.getSlotValues(request.intent.slots); 
+        // utils.getSlotValues returns .heardAs, .resolved, and .isValidated for each slot, according to request slot status codes ER_SUCCESS_MATCH, ER_SUCCESS_NO_MATCH, or traditional simple request slot without resolutions
 
         // console.log('***** slotValues: ' +  JSON.stringify(slotValues, null, 2));
         
@@ -844,7 +811,7 @@ const getTagBalance_Handler =  {
         //   SLOT: tag 
         if (slotValues.tag.heardAs && slotValues.tag.heardAs !== '') {
             let tagBalance = await blitzbudgetDB.getTagAlexaBalance(wallet.sk.S, slotValues.tag.heardAs, currentDate);
-            if(isEmpty(tagBalance)) {
+            if(utils.isEmpty(tagBalance)) {
                 slotStatus += THE_MESSAGE + slotValues.tag.heardAs + EMPTY_TAG;
                 shouldEndSession = false;
             } else {
@@ -878,8 +845,8 @@ const changeBudgetAmount_Handler =  {
         const responseBuilder = handlerInput.responseBuilder;
         let sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
         console.log("The Budget amount is ", JSON.stringify(request.intent.slots));
-        let slotValues = getSlotValues(request.intent.slots); 
-        if(isNotEmpty(slotValues.currency.heardAs)) {
+        let slotValues = utils.getSlotValues(request.intent.slots); 
+        if(utils.isNotEmpty(slotValues.currency.heardAs)) {
             let allWallets = await blitzbudgetDB.getWalletFromAlexa(sessionAttributes.userId);
             wallet = blitzbudgetDB.calculateWalletFromAlexa(allWallets, slotValues); 
             console.log("The calculate wallet is ", JSON.stringify(wallet), ". The currency name is ", slotValues.currency.heardAs);
@@ -895,28 +862,28 @@ const changeBudgetAmount_Handler =  {
         let currentDate =  new Date();
         currentDate = currentDate.getFullYear() + '-' + ("0" + (Number(currentDate.getMonth()) + 1)).slice(-2);
         
-        if(isEmpty(wallet)) {
+        if(utils.isEmpty(wallet)) {
             slotStatus += EMPTY_WALLET;
             shouldEndSession = false;
         } else {
-            // getSlotValues returns .heardAs, .resolved, and .isValidated for each slot, according to request slot status codes ER_SUCCESS_MATCH, ER_SUCCESS_NO_MATCH, or traditional simple request slot without resolutions
+            // utils.getSlotValues returns .heardAs, .resolved, and .isValidated for each slot, according to request slot status codes ER_SUCCESS_MATCH, ER_SUCCESS_NO_MATCH, or traditional simple request slot without resolutions
     
             // console.log('***** slotValues: ' +  JSON.stringify(slotValues, null, 2));
             //   SLOT: category 
             if (slotValues.category.heardAs && slotValues.category.heardAs !== '') {
                 let category = await blitzbudgetDB.getCategoryAlexa(wallet.sk.S, slotValues.category.heardAs, currentDate);
-                if(isEmpty(category)) {
+                if(utils.isEmpty(category)) {
                     slotStatus += THE_MESSAGE + slotValues.category.heardAs + CATEGORY_EMPTY + slotValues.category.heardAs;
                     shouldEndSession = false;
                 } else {
                     let budget = await blitzbudgetDB.getBudgetAlexaAmount(wallet.sk.S, category.sk.S, currentDate);
-                    if(isEmpty(budget)) {
+                    if(utils.isEmpty(budget)) {
                         slotStatus += THE_MESSAGE + slotValues.category.heardAs + BUDGET_NOT_CREATED + category['category_name'].S + BUDGET_NOT_CREATED_TWO + category['category_name'].S;
                         shouldEndSession = false;
                     } else {
                         slotStatus += await blitzbudgetDB.changeBudgetAlexaAmount(wallet.sk.S, budget.sk.S, slotValues.amt.heardAs, wallet.currency.S);
                         // Successfully change budget amount then
-                        if(includesStr(slotStatus, SUCCESSFUL_TITLE)) {
+                        if(utils.includesStr(slotStatus, SUCCESSFUL_TITLE)) {
                             // Send a simple card to Alexa on Success
                             responseBuilder.withSimpleCard(CARD_SECURITY_TITLE, CHANGED_BUDGET_AMOUNT_SIMPLE_CARD);   
                         }
@@ -975,13 +942,13 @@ const getDefaultAccount_Handler =  {
         console.log('The wallets obtained are ', JSON.stringify(wallet));
         let say, shouldEndSession = true;
         
-        if(isEmpty(wallet)) {
+        if(utils.isEmpty(wallet)) {
             slotStatus += EMPTY_WALLET;
             shouldEndSession = false;
         } else {
             let defaultAccount = await blitzbudgetDB.getDefaultAlexaAccount(wallet.sk.S);
 
-            if(isEmpty(defaultAccount)) {
+            if(utils.isEmpty(defaultAccount)) {
                 say = EMPTY_ACCOUNT;
                 shouldEndSession = false;
             } else {
@@ -1010,20 +977,20 @@ const addNewWallet_Handler =  {
         let slotStatus = '';
         let shouldEndSession = true;
 
-        let slotValues = getSlotValues(request.intent.slots); 
-        // getSlotValues returns .heardAs, .resolved, and .isValidated for each slot, according to request slot status codes ER_SUCCESS_MATCH, ER_SUCCESS_NO_MATCH, or traditional simple request slot without resolutions
+        let slotValues = utils.getSlotValues(request.intent.slots); 
+        // utils.getSlotValues returns .heardAs, .resolved, and .isValidated for each slot, according to request slot status codes ER_SUCCESS_MATCH, ER_SUCCESS_NO_MATCH, or traditional simple request slot without resolutions
 
         // console.log('***** slotValues: ' +  JSON.stringify(slotValues, null, 2));
         //   SLOT: currency 
         if (slotValues.currency.heardAs && slotValues.currency.heardAs !== '') {
             let matchedCurrency = blitzbudgetDB.checkIfWalletIsInvalid(slotValues);
-            if(isEmpty(matchedCurrency)) {
+            if(utils.isEmpty(matchedCurrency)) {
                slotStatus = CURRENCY_NOTFOUND;
                shouldEndSession = false;
             } else {
                 slotStatus = await blitzbudgetDB.addWalletFromAlexa(sessionAttributes.userId, matchedCurrency);
                 // Successfully change budget amount then
-                if(includesStr(slotStatus, SUCCESSFUL_TITLE)) {
+                if(utils.includesStr(slotStatus, SUCCESSFUL_TITLE)) {
                     // Send a simple card to Alexa on Success
                     responseBuilder.withSimpleCard(CARD_SECURITY_TITLE, ADDED_NEW_WALLET_SIMPLE_CARD);   
                 }
@@ -1059,8 +1026,8 @@ const sendFeatureRequest_Handler =  {
         let slotStatus = '';
         let shouldEndSession = true;
 
-        let slotValues = getSlotValues(request.intent.slots); 
-        // getSlotValues returns .heardAs, .resolved, and .isValidated for each slot, according to request slot status codes ER_SUCCESS_MATCH, ER_SUCCESS_NO_MATCH, or traditional simple request slot without resolutions
+        let slotValues = utils.getSlotValues(request.intent.slots); 
+        // utils.getSlotValues returns .heardAs, .resolved, and .isValidated for each slot, according to request slot status codes ER_SUCCESS_MATCH, ER_SUCCESS_NO_MATCH, or traditional simple request slot without resolutions
 
         // console.log('***** slotValues: ' +  JSON.stringify(slotValues, null, 2));
         
@@ -1098,13 +1065,13 @@ const getEarningsByDate_Handler =  {
         let slotStatus = '';
         let shouldEndSession = true;
         
-        if(isEmpty(wallet)) {
+        if(utils.isEmpty(wallet)) {
             slotStatus += EMPTY_WALLET;
             shouldEndSession = false;
         } else {
 
-            let slotValues = getSlotValues(request.intent.slots); 
-            // getSlotValues returns .heardAs, .resolved, and .isValidated for each slot, according to request slot status codes ER_SUCCESS_MATCH, ER_SUCCESS_NO_MATCH, or traditional simple request slot without resolutions
+            let slotValues = utils.getSlotValues(request.intent.slots); 
+            // utils.getSlotValues returns .heardAs, .resolved, and .isValidated for each slot, according to request slot status codes ER_SUCCESS_MATCH, ER_SUCCESS_NO_MATCH, or traditional simple request slot without resolutions
     
             // console.log('***** slotValues: ' +  JSON.stringify(slotValues, null, 2));
             
@@ -1143,12 +1110,12 @@ const getExpenditureByDate_Handler =  {
         let slotStatus = '';
         let shouldEndSession = true;
         
-        if(isEmpty(wallet)) {
+        if(utils.isEmpty(wallet)) {
             slotStatus += EMPTY_WALLET;
             shouldEndSession = false;
         } else {
-            let slotValues = getSlotValues(request.intent.slots); 
-            // getSlotValues returns .heardAs, .resolved, and .isValidated for each slot, according to request slot status codes ER_SUCCESS_MATCH, ER_SUCCESS_NO_MATCH, or traditional simple request slot without resolutions
+            let slotValues = utils.getSlotValues(request.intent.slots); 
+            // utils.getSlotValues returns .heardAs, .resolved, and .isValidated for each slot, according to request slot status codes ER_SUCCESS_MATCH, ER_SUCCESS_NO_MATCH, or traditional simple request slot without resolutions
     
             // console.log('***** slotValues: ' +  JSON.stringify(slotValues, null, 2));
             
@@ -1187,12 +1154,12 @@ const getTransactionTotalByDate_Handler =  {
         let slotStatus = '';
         let shouldEndSession = true;
         
-        if(isEmpty(wallet)) {
+        if(utils.isEmpty(wallet)) {
             slotStatus += EMPTY_WALLET;
             shouldEndSession = false;
         } else {
-            let slotValues = getSlotValues(request.intent.slots); 
-            // getSlotValues returns .heardAs, .resolved, and .isValidated for each slot, according to request slot status codes ER_SUCCESS_MATCH, ER_SUCCESS_NO_MATCH, or traditional simple request slot without resolutions
+            let slotValues = utils.getSlotValues(request.intent.slots); 
+            // utils.getSlotValues returns .heardAs, .resolved, and .isValidated for each slot, according to request slot status codes ER_SUCCESS_MATCH, ER_SUCCESS_NO_MATCH, or traditional simple request slot without resolutions
     
             // console.log('***** slotValues: ' +  JSON.stringify(slotValues, null, 2));
             
@@ -1231,25 +1198,25 @@ const addCategoryByDate_Handler =  {
         let slotStatus = '';
         let shouldEndSession = true;
 
-        let slotValues = getSlotValues(request.intent.slots);
+        let slotValues = utils.getSlotValues(request.intent.slots);
         
-        if(isEmpty(slotValues.categoryType.heardAs)) {
+        if(utils.isEmpty(slotValues.categoryType.heardAs)) {
             slotStatus = EMPTY_CATEGORY_TYPE;
             shouldEndSession = false;
         } else {
             
-            if(isEmpty(wallet)) {
+            if(utils.isEmpty(wallet)) {
                 slotStatus += EMPTY_WALLET;
                 shouldEndSession = false;
             } else {
-                // getSlotValues returns .heardAs, .resolved, and .isValidated for each slot, according to request slot status codes ER_SUCCESS_MATCH, ER_SUCCESS_NO_MATCH, or traditional simple request slot without resolutions
+                // utils.getSlotValues returns .heardAs, .resolved, and .isValidated for each slot, according to request slot status codes ER_SUCCESS_MATCH, ER_SUCCESS_NO_MATCH, or traditional simple request slot without resolutions
 
                 // console.log('***** slotValues: ' +  JSON.stringify(slotValues, null, 2));
                 
                 // Date
                 let currentDate =  new Date();
                 // Date used to get the budget
-                if(isNotEmpty(slotValues.date.heardAs)) {
+                if(utils.isNotEmpty(slotValues.date.heardAs)) {
                     let dateMentioned = slotValues.date.heardAs;
                     console.log("The Date mentioned is ", dateMentioned);
                     if(dateMentioned.length < 6) {
@@ -1259,16 +1226,16 @@ const addCategoryByDate_Handler =  {
                     currentDate =  new Date(dateMentioned);
                 }
                 currentDate = currentDate.getFullYear() + '-' + ("0" + (Number(currentDate.getMonth()) + 1)).slice(-2);
-                // getSlotValues returns .heardAs, .resolved, and .isValidated for each slot, according to request slot status codes ER_SUCCESS_MATCH, ER_SUCCESS_NO_MATCH, or traditional simple request slot without resolutions
+                // utils.getSlotValues returns .heardAs, .resolved, and .isValidated for each slot, according to request slot status codes ER_SUCCESS_MATCH, ER_SUCCESS_NO_MATCH, or traditional simple request slot without resolutions
         
                 // console.log('***** slotValues: ' +  JSON.stringify(slotValues, null, 2));
                 //   SLOT: category
                 if (slotValues.category.heardAs && slotValues.category.heardAs !== '') {
                     let category = await blitzbudgetDB.getCategoryAlexa(wallet.sk.S, slotValues.category.heardAs, currentDate);
-                    if(isEmpty(category)) {
+                    if(utils.isEmpty(category)) {
                         slotStatus = await blitzbudgetDB.addCategoryByDateFromAlexa(wallet.sk.S, slotValues.date.heardAs, slotValues.category.heardAs, slotValues.categoryType.id);
                         // Successfully change budget amount then
-                        if(includesStr(slotStatus, SUCCESSFUL_TITLE)) {
+                        if(utils.includesStr(slotStatus, SUCCESSFUL_TITLE)) {
                             // Send a simple card to Alexa on Success
                             responseBuilder.withSimpleCard(CARD_SECURITY_TITLE, ADDED_NEW_CATEGORY_SIMPLE_CARD);   
                         }
@@ -1290,62 +1257,6 @@ const addCategoryByDate_Handler =  {
             .reprompt('try again, ' + say)
             .withShouldEndSession(shouldEndSession) // End session for security purposes
             .getResponse();
-    }
-}
-
-const verifyVoiceCode_Handler = {
-    canHandle(handlerInput) {
-        const request = handlerInput.requestEnvelope.request;
-        return request.type === 'IntentRequest' && request.intent.name === 'lostVoiceCode' ;
-    },
-    async handle(handlerInput) {
-        const request = handlerInput.requestEnvelope.request;
-        const responseBuilder = handlerInput.responseBuilder;
-        let sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
-        console.log('The User id retrieved is ', sessionAttributes.userId);
-
-        let say = '';
-        let slotStatus = '';
-        let shouldEndSession = true;
-
-        let slotValues = getSlotValues(request.intent.slots); 
-        
-        if (slotValues.voicecode.heardAs && slotValues.voicecode.heardAs !== '') {
-            if(isEqual(slotValues.voicecode.heardAs, sessionAttributes.voiceCode)) {
-                sessionAttributes.voiceCodeVerified = true;
-            } else {
-                // TODO Store number of failed attempts
-                // TODO say back if the attempt has failed
-                sessionAttributes.voiceCodeVerified = false;
-            }
-        }
-        
-        let say = SESSION_VERIFIED;
-        
-        return responseBuilder
-            .speak(say)
-            .withShouldEndSession(shouldEndSession) // End session for security purposes
-            .getResponse();
-        
-    }
-}
-
-const lostVoiceCode_Handler =  {
-    canHandle(handlerInput) {
-        const request = handlerInput.requestEnvelope.request;
-        return request.type === 'IntentRequest' && request.intent.name === 'lostVoiceCode' ;
-    },
-    async handle(handlerInput) {
-        const request = handlerInput.requestEnvelope.request;
-        const responseBuilder = handlerInput.responseBuilder;
-        
-        let say = LOST_VOICE_CODE;
-        
-        return responseBuilder
-            .speak(say)
-            .withShouldEndSession(shouldEndSession) // End session for security purposes
-            .getResponse();
-        
     }
 }
 
@@ -1418,59 +1329,7 @@ function randomElement(myArray) {
 function stripSpeak(str) { 
     return(str.replace('<speak>', '').replace('</speak>', '')); 
 } 
- 
- 
-function getSlotValues(filledSlots) { 
-    const slotValues = {}; 
- 
-    Object.keys(filledSlots).forEach((item) => { 
-        const name  = filledSlots[item].name; 
-        console.log("The Slot Values calculated are", JSON.stringify(filledSlots[item]));
-        
-        if (filledSlots[item] && 
-            filledSlots[item].resolutions && 
-            filledSlots[item].resolutions.resolutionsPerAuthority[0] && 
-            filledSlots[item].resolutions.resolutionsPerAuthority[0].status && 
-            filledSlots[item].resolutions.resolutionsPerAuthority[0].status.code) { 
-                
-                let slotId = '';
-                if(filledSlots[item].resolutions.resolutionsPerAuthority[0].values
-                && filledSlots[item].resolutions.resolutionsPerAuthority[0].values[0].value.id) {
-                    slotId = filledSlots[item].resolutions.resolutionsPerAuthority[0].values[0].value.id;
-                }
-                
-                switch (filledSlots[item].resolutions.resolutionsPerAuthority[0].status.code) { 
-                    case 'ER_SUCCESS_MATCH': 
-                        slotValues[name] = { 
-                            heardAs: filledSlots[item].value, 
-                            resolved: filledSlots[item].resolutions.resolutionsPerAuthority[0].values[0].value.name, 
-                            id: slotId, 
-                            ERstatus: 'ER_SUCCESS_MATCH' 
-                        }; 
-                        break; 
-                    case 'ER_SUCCESS_NO_MATCH': 
-                        slotValues[name] = { 
-                            heardAs: filledSlots[item].value, 
-                            resolved: '',
-                            id: slotId, 
-                            ERstatus: 'ER_SUCCESS_NO_MATCH' 
-                        }; 
-                        break; 
-                    default: 
-                        break; 
-                } 
-        } else { 
-            slotValues[name] = { 
-                heardAs: filledSlots[item].value || '', // may be null 
-                resolved: '', 
-                ERstatus: '' 
-            }; 
-        } 
-    }, this); 
- 
-    return slotValues; 
-} 
- 
+
 function getCustomIntents() { 
     const modelIntents = model.interactionModel.languageModel.intents; 
  
@@ -1782,15 +1641,6 @@ function triggerNeedToLinkAccounted(handlerInput) {
   return (handlerInput.requestEnvelope.session.user.accessToken === undefined);
 }
 
-/*
-* Check if voice code is verified
-* If voice code is empty -- It needs verification
-*/
-function checkIfVoiceCodeRequired(handlerInput) {
-    let sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
-    return sessionAttributes.voiceCodeVerified;
-}
-
 const RequestLog = {
   process(handlerInput) {
     console.log(`REQUEST ENVELOPE = ${JSON.stringify(handlerInput.requestEnvelope)}`);
@@ -1811,44 +1661,6 @@ function getEnvVar(envVarName, defaultValue) {
   return defaultValue;
 }
 
-// Includes String 
-function includesStr(arr, val) {
-    return isEmpty(arr) ? null : arr.includes(val);
-}
-
-// Is Empty Check
-function isEmpty(obj) {
-    // Check if objext is a number or a boolean
-    if (typeof (obj) == 'number' || typeof (obj) == 'boolean') return false;
-
-    // Check if obj is null or undefined
-    if (obj == null || obj === undefined) return true;
-
-    // Check if the length of the obj is defined
-    if (typeof (obj.length) != 'undefined') return obj.length == 0;
-
-    // check if obj is a custom obj
-    for (let key in obj) {
-        if (obj.hasOwnProperty(key)) return false;
-    }
-
-    // Check if obj is an element
-    if (obj instanceof Element) return false;
-
-    return true;
-}
-
-function isNotEmpty(obj) {
-    return !isEmpty(obj);
-}
-
-function isEqual(obj1, obj2) {
-    if (JSON.stringify(obj1) === JSON.stringify(obj2)) {
-        return true;
-    }
-    return false;
-}
-
 //
 // GetLinkedInfoInterceptor: Interceptor function that is executed on every
 // request sent to the skill
@@ -1861,7 +1673,7 @@ const GetLinkedInfoInterceptor = {
       // so get the user details from Cognito and persist in session attributes
       const userData = await getUserData(handlerInput.requestEnvelope.session.user.accessToken);
       // console.log('GetLinkedInfoInterceptor: getUserData: ', userData);
-      if (userData.Username !== undefined) {
+      if (userData.Username !== undefined && utils.isEmpty(sessionAttributes.userId)) {
         const sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
         sessionAttributes.firstName = getAttribute(userData.UserAttributes, 'name');
         sessionAttributes.surname = getAttribute(userData.UserAttributes, 'family_name');
@@ -1869,13 +1681,17 @@ const GetLinkedInfoInterceptor = {
         sessionAttributes.userId = getAttribute(userData.UserAttributes, 'custom:financialPortfolioId');
         // Get Alexa Voice Code
         const alexaVoiceCode = await blitzbudgetDB.getAlexaVoiceCode(sessionAttributes.userId);
-        sessionAttributes.voiceCode = alexaVoiceCode['voice_code'].S;
+        // Set Number of times failed
+        sessionAttributes.numberOfTimesVoiceVerificationFailed = 0;
         // Set Session Verified if user opted out
-        if(isEqual(sessionAttributes.voiceCode, OPTED_OUT_VOICE_CODE)) {
+        if(utils.isEmpty(alexaVoiceCode)) {
             sessionAttributes.voiceCodeVerified = true;
         } else {
+            sessionAttributes.voiceCode = alexaVoiceCode['voice_code'].S;
             // If not then set verification to false
             sessionAttributes.voiceCodeVerified = false;
+            // Set Total voice code failure
+            sessionAttributes.numberOfTimesVoiceVerificationFailed = alexaVoiceCode['failure_rate'].N;
         }
         handlerInput.attributesManager.setSessionAttributes(sessionAttributes);
       } else {
@@ -1890,7 +1706,8 @@ const skillBuilder = Alexa.SkillBuilders.custom();
 exports.handler = skillBuilder
     .addRequestHandlers(
         CheckAccountLinkedHandler,
-        CheckVoiceCodeVerifiedHandler,
+        voiceCodeVerifier.CheckVoiceCodeVerifiedHandler,
+        voiceCodeVerifier.CheckIfVoiceCodeVerificationTriesExpired,
         AMAZON_CancelIntent_Handler, 
         AMAZON_HelpIntent_Handler, 
         AMAZON_StopIntent_Handler, 
@@ -1916,8 +1733,8 @@ exports.handler = skillBuilder
         getExpenditureByDate_Handler,
         getEarningsByDate_Handler,
         addCategoryByDate_Handler,
-        lostVoiceCode_Handler,
-        verifyVoiceCode_Handler,
+        voiceCodeVerifier.lostVoiceCode_Handler,
+        voiceCodeVerifier.verifyVoiceCode_Handler,
         LaunchRequest_Handler, 
         HelpHandler,
         ExitHandler,
