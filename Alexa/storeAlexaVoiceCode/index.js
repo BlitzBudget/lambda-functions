@@ -177,6 +177,7 @@ function addNewVoiceCode(event, userId, alexaId) {
             "pk": userId,
             "sk": alexaId,
             "voice_code": event['body-json'].voiceCode,
+            "failure_rate": 0,
             "creation_date": today,
             "updated_date": today
         }
