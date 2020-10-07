@@ -1,44 +1,27 @@
 var utils = function () { };
 
 // Includes String 
-function includesStr(arr, val) {
+utils.prototype.includesStr = function(arr, val) {
     return isEmpty(arr) ? null : arr.includes(val);
 }
 
 // Is Empty Check
-function isEmpty(obj) {
-    // Check if objext is a number or a boolean
-    if (typeof (obj) == 'number' || typeof (obj) == 'boolean') return false;
-
-    // Check if obj is null or undefined
-    if (obj == null || obj === undefined) return true;
-
-    // Check if the length of the obj is defined
-    if (typeof (obj.length) != 'undefined') return obj.length == 0;
-
-    // check if obj is a custom obj
-    for (let key in obj) {
-        if (obj.hasOwnProperty(key)) return false;
-    }
-
-    // Check if obj is an element
-    if (obj instanceof Element) return false;
-
-    return true;
+utils.prototype.isEmpty = function(obj) {
+    return isEmpty(obj)
 }
 
-function isNotEmpty(obj) {
+utils.prototype.isNotEmpty = function (obj) {
     return !isEmpty(obj);
 }
 
-function isEqual(obj1, obj2) {
+utils.prototype.isEqual = function(obj1, obj2) {
     if (JSON.stringify(obj1) === JSON.stringify(obj2)) {
         return true;
     }
     return false;
 }
 
-function getSlotValues(filledSlots) { 
+utils.prototype.getSlotValues =  function(filledSlots) { 
     const slotValues = {}; 
  
     Object.keys(filledSlots).forEach((item) => { 
@@ -88,5 +71,26 @@ function getSlotValues(filledSlots) {
  
     return slotValues; 
 } 
+
+function isEmpty(obj) {
+    // Check if objext is a number or a boolean
+    if (typeof (obj) == 'number' || typeof (obj) == 'boolean') return false;
+
+    // Check if obj is null or undefined
+    if (obj == null || obj === undefined) return true;
+
+    // Check if the length of the obj is defined
+    if (typeof (obj.length) != 'undefined') return obj.length == 0;
+
+    // check if obj is a custom obj
+    for (let key in obj) {
+        if (obj.hasOwnProperty(key)) return false;
+    }
+
+    // Check if obj is an element
+    if (obj instanceof Element) return false;
+
+    return true;
+}
 
 module.exports = new utils();

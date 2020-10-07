@@ -143,7 +143,8 @@ function checkIfVoiceCodeRequired(handlerInput) {
 function maximumVoiceCodeRetiresExceeded(handlerInput) {
     // Number of times voice verification has failed.
     const sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
-    const numberOfTimesVoiceVerificationFailed  = sessionAttributes.numberOfTimesVoiceVerificationFailed;    
+    const numberOfTimesVoiceVerificationFailed  = sessionAttributes.numberOfTimesVoiceVerificationFailed;
+    console.log("The number of times voice verification failed is ", numberOfTimesVoiceVerificationFailed);
     return  utils.isNotEmpty(numberOfTimesVoiceVerificationFailed) && numberOfTimesVoiceVerificationFailed >= MAX_RETRIES_ALLOWED;
 }
 

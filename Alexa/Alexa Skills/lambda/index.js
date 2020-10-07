@@ -1637,6 +1637,7 @@ function getResolvedSlotIDValue(request, slotName) {
 }
 
 function triggerNeedToLinkAccounted(handlerInput) {
+    console.log("The access token from the cognito is " + handlerInput.requestEnvelope.session.user.accessToken);
   // if there is an access token, then assumed linked
   return (handlerInput.requestEnvelope.session.user.accessToken === undefined);
 }
@@ -1672,9 +1673,10 @@ const GetLinkedInfoInterceptor = {
       // This is a new session and we have an access token,
       // so get the user details from Cognito and persist in session attributes
       const userData = await getUserData(handlerInput.requestEnvelope.session.user.accessToken);
+      // Get Session Attributes
+      const sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
       // console.log('GetLinkedInfoInterceptor: getUserData: ', userData);
       if (userData.Username !== undefined && utils.isEmpty(sessionAttributes.userId)) {
-        const sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
         sessionAttributes.firstName = getAttribute(userData.UserAttributes, 'name');
         sessionAttributes.surname = getAttribute(userData.UserAttributes, 'family_name');
         sessionAttributes.email = getAttribute(userData.UserAttributes, 'email');
@@ -1687,11 +1689,13 @@ const GetLinkedInfoInterceptor = {
         if(utils.isEmpty(alexaVoiceCode)) {
             sessionAttributes.voiceCodeVerified = true;
         } else {
-            sessionAttributes.voiceCode = alexaVoiceCode['voice_code'].S;
+            // Get the first voice code
+            const alexaVoiceCodeEl = alexaVoiceCode[0];
+            sessionAttributes.voiceCode = alexaVoiceCodeEl['voice_code'].S;
             // If not then set verification to false
             sessionAttributes.voiceCodeVerified = false;
             // Set Total voice code failure
-            sessionAttributes.numberOfTimesVoiceVerificationFailed = alexaVoiceCode['failure_rate'].N;
+            sessionAttributes.numberOfTimesVoiceVerificationFailed = alexaVoiceCodeEl['failure_rate'].N;
         }
         handlerInput.attributesManager.setSessionAttributes(sessionAttributes);
       } else {

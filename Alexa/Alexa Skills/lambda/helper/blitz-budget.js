@@ -3,6 +3,7 @@ var blitzbudgetDB = function () { };
 
 // Setup ================================================================================
 
+const utils = require('./utils');
 const dbHelper = require('./dbHelper');
 const currencyInfo = require('../constants/currency');
 
@@ -64,10 +65,10 @@ blitzbudgetDB.prototype.getDefaultAlexaWallet = async function(userId) {
         console.log('Successfully retrieved the wallet information from the DynamoDB. Item count is ' + data.length);
         let wallet = data[0];
         // If length is empty
-        if(isNotEmpty(data)) {
+        if(utils.isNotEmpty(data)) {
             for(let i=0, len=data.length; i<len; i++) {
                 let item = data[i];
-                if(isNotEmpty(item['default_alexa']) && item['default_alexa'].BOOL) {
+                if(utils.isNotEmpty(item['default_alexa']) && item['default_alexa'].BOOL) {
                     wallet = item;
                 }
             }   
@@ -93,7 +94,7 @@ blitzbudgetDB.prototype.getDefaultAlexaAccount = async function(walletId) {
 blitzbudgetDB.prototype.getCategoryAlexa = async function(walletId, categoryName, date) {
     console.log('The Category name is ', categoryName, ' and the date is ', date);
     let selectedDate;
-    if(isEmpty(date)) {
+    if(utils.isEmpty(date)) {
         let currentDate =  new Date();
         selectedDate = currentDate.getFullYear() + '-' + ("0" + (Number(currentDate.getMonth()) + 1)).slice(-2);
         console.log('The date is empty, assigning the current date ', selectedDate,' for the wallet ', walletId);
@@ -121,10 +122,10 @@ blitzbudgetDB.prototype.getCategoryAlexa = async function(walletId, categoryName
         console.log('Successfully retrieved the category information from the DynamoDB. Item count is ' + data.length);
         let category;
         // If length is not empty
-        if(isNotEmpty(data)) {
+        if(utils.isNotEmpty(data)) {
             for(let i=0, len=data.length; i<len; i++) {
                 let item = data[i];
-                if(isEqual(item['category_name'].S.toUpperCase(), categoryName.toUpperCase())) {
+                if(utils.isEqual(item['category_name'].S.toUpperCase(), categoryName.toUpperCase())) {
                     category = item;
                     console.log("The category balance of ", categoryName, " has the balance of ", category['category_total'].N);
                 }
@@ -164,10 +165,10 @@ blitzbudgetDB.prototype.getBudgetAlexaAmount = async function(walletId, category
         console.log('Successfully retrieved the budget information from the DynamoDB. Item count is ' + data.length);
         let budget;
         // If length is not empty
-        if(isNotEmpty(data)) {
+        if(utils.isNotEmpty(data)) {
             for(let i=0, len=data.length; i<len; i++) {
                 let item = data[i];
-                if(isEqual(item['category'].S, categoryId)) {
+                if(utils.isEqual(item['category'].S, categoryId)) {
                     budget = item;
                     console.log("The budget has a balance of ", budget['planned'].N);
                 }
@@ -202,18 +203,18 @@ blitzbudgetDB.prototype.getTagAlexaBalance = async function(walletId, tagName, s
         console.log('Successfully retrieved the transaction information from the DynamoDB. Item count is ' + data.length);
         let tagBal = 0;
         // If length is not empty
-        if(isNotEmpty(data)) {
+        if(utils.isNotEmpty(data)) {
             for(let i=0, len=data.length; i<len; i++) {
                 let item = data[i];
                 // If tag is not present then continue with the loop
-                if(isEmpty(item['tags'])) {
+                if(utils.isEmpty(item['tags'])) {
                     continue;
                 }
                 
                 let tags = item['tags'].L;
                 for(let j=0, leng=tags.length; j<leng; j++) {
                     let tag = tags[j];
-                    if(isEqual(tag.S.toUpperCase(), tagName.toUpperCase())) {
+                    if(utils.isEqual(tag.S.toUpperCase(), tagName.toUpperCase())) {
                         tagBal += Number(item['amount'].N);
                         // Break the tags for loop
                         break;
@@ -258,18 +259,18 @@ blitzbudgetDB.prototype.getWalletFromAlexa = async function(userId) {
 blitzbudgetDB.prototype.changeDefaultWalletAlexa = async function(userId, data, currencyName) {
     let events = [], say;
     // If length is empty
-    if(isNotEmpty(data)) {
+    if(utils.isNotEmpty(data)) {
         for(let i=0, len=data.length; i<len; i++) {
             let item = data[i];
             console.log("Default Alexa is ", item['default_alexa']);
-            if(isNotEmpty(item['default_alexa']) && item['default_alexa'].BOOL) {
+            if(utils.isNotEmpty(item['default_alexa']) && item['default_alexa'].BOOL) {
                 events.push(patchWallet(userId, item.sk.S, false));
             }
         }
         
         for(let i=0, len=data.length; i<len; i++) {
             let item = data[i];
-            if(isEqual(item.currency.S.toUpperCase(), currencyName.toUpperCase())) {
+            if(utils.isEqual(item.currency.S.toUpperCase(), currencyName.toUpperCase())) {
                 console.log("Potential match of wallet found with currency, ", currencyName, " having a wallet id as ", item.sk.S);
                 events.push(patchWallet(userId, item.sk.S, true));
             }
@@ -279,7 +280,7 @@ blitzbudgetDB.prototype.changeDefaultWalletAlexa = async function(userId, data, 
     /*
     * Is Empty Events 
     */
-    if(isEmpty(events)) {
+    if(utils.isEmpty(events)) {
         say = WALLET_NOT_PRESENT;
     } else {
         /*
@@ -336,7 +337,7 @@ blitzbudgetDB.prototype.getAlexaVoiceCode  = async function(userId) {
                   S: "AlexaVoiceCode#"
                 }
             },
-            ProjectionExpression: "voice_code, sk, pk"
+            ProjectionExpression: "failure_rate, voice_code, sk, pk"
         }
     return dbHelper.getFromBlitzBudgetTable(params).then((data) => {
         console.log('Successfully retrieved the voice code from the DynamoDB. Item count is ' + data.length);
@@ -353,11 +354,11 @@ blitzbudgetDB.prototype.changeDefaultAccountAlexa = async function(allAccounts, 
     let events = [], say, data = allAccounts;
     
     // If length is empty
-    if(isNotEmpty(data)) {
+    if(utils.isNotEmpty(data)) {
         for(let i=0, len=data.length; i<len; i++) {
             let item = data[i];
             // Selected Account Boolean
-            if(isNotEmpty(item['selected_account']) && item['selected_account'].BOOL) {
+            if(utils.isNotEmpty(item['selected_account']) && item['selected_account'].BOOL) {
                 console.log("The default selected account to change to false is ", item['bank_account_name'].S);
                 events.push(patchAccount(item.pk.S, item.sk.S, false));
             }
@@ -365,7 +366,7 @@ blitzbudgetDB.prototype.changeDefaultAccountAlexa = async function(allAccounts, 
         
         for(let i=0, len=data.length; i<len; i++) {
             let item = data[i];
-            if(isEqual(item['bank_account_name'].S.toUpperCase(), accountName.toUpperCase())) {
+            if(utils.isEqual(item['bank_account_name'].S.toUpperCase(), accountName.toUpperCase())) {
                 events.push(patchAccount(item.pk.S, item.sk.S, true));
             }
         }
@@ -374,7 +375,7 @@ blitzbudgetDB.prototype.changeDefaultAccountAlexa = async function(allAccounts, 
     /*
     * Is Empty Events 
     */
-    if(isEmpty(events) || events.length == 1) {
+    if(utils.isEmpty(events) || events.length == 1) {
         say = ACCOUNT_NOT_PRESENT;
     } else {
         /*
@@ -406,10 +407,10 @@ blitzbudgetDB.prototype.calculateWalletFromAlexa = function(allWallets, slotValu
         console.log('***** consider adding "' + slotValues.currency.heardAs + '" to the custom slot type used by slot category! '); 
     } else {
         // If length is empty
-        if(isNotEmpty(data)) {
+        if(utils.isNotEmpty(data)) {
             for(let i=0, len=data.length; i<len; i++) {
                 let item = data[i];
-                if(isEqual(item['currency'].S.toUpperCase(), walletCurrency.toUpperCase())) {
+                if(utils.isEqual(item['currency'].S.toUpperCase(), walletCurrency.toUpperCase())) {
                     wallet = item;
                 }
             }
@@ -475,7 +476,7 @@ blitzbudgetDB.prototype.checkIfWalletIsInvalid = function(slotValues) {
     
     for(let i=0, len=currencyInfo.length; i<len; i++) {
         let defaultCurrency = currencyInfo[i];
-        if(isEqual(defaultCurrency.currency.toUpperCase(),walletCurrency.toUpperCase())) {
+        if(utils.isEqual(defaultCurrency.currency.toUpperCase(),walletCurrency.toUpperCase())) {
             matchedCurrency = defaultCurrency.currency;
         }
     }
@@ -537,7 +538,7 @@ blitzbudgetDB.prototype.addBudgetAlexaAmount = async function(walletId, category
     let dateObj = await getDateData(walletId, currentDate);
     
     // If Date is not empty
-    if(isNotEmpty(dateObj)) {
+    if(utils.isNotEmpty(dateObj)) {
         dateId = dateObj[0].sk.S;
     } else {
         dateId = "Date#" + today.toISOString();
@@ -545,7 +546,7 @@ blitzbudgetDB.prototype.addBudgetAlexaAmount = async function(walletId, category
     }
     
     // If Amount if empty
-    if(isEmpty(amount)) {
+    if(utils.isEmpty(amount)) {
         amount = "0";
     }
 
@@ -597,7 +598,7 @@ blitzbudgetDB.prototype.addNewGoalFromAlexa = async function(walletId, amount, g
     let randomValue = "Goal#" + today.toISOString();
     targetDate = new Date(targetDate);
     
-    if(isEmpty(amount)) {
+    if(utils.isEmpty(amount)) {
         amount = "0";
     }
 
@@ -655,7 +656,7 @@ blitzbudgetDB.prototype.addNewGoalFromAlexa = async function(walletId, amount, g
 blitzbudgetDB.prototype.addTransactionAlexaAmount = async function(walletId, categoryId, amount, dateId, currencyName) {
     let today = new Date();
     // Date used to get the budget
-    if(isNotEmpty(dateId)) {
+    if(utils.isNotEmpty(dateId)) {
         let chosenYear = dateId.slice(0,4);
         today.setFullYear(chosenYear);
         
@@ -678,7 +679,7 @@ blitzbudgetDB.prototype.addTransactionAlexaAmount = async function(walletId, cat
     let dateObj = await getDateData(walletId, currentDate);
     
     // If Date is not empty
-    if(isNotEmpty(dateObj)) {
+    if(utils.isNotEmpty(dateObj)) {
         dateId = dateObj[0].sk.S;
     } else {
         dateId = "Date#" + today.toISOString();
@@ -686,7 +687,7 @@ blitzbudgetDB.prototype.addTransactionAlexaAmount = async function(walletId, cat
     }
     
     let defaultAccount = await getDefaultAccount(walletId);
-    if(isEmpty(defaultAccount)) {
+    if(utils.isEmpty(defaultAccount)) {
        console.log("The default account is not present");
        return DEFAULT_ACCOUNT_NOTPRESENT;
     }
@@ -756,7 +757,7 @@ blitzbudgetDB.prototype.getEarningsByDateFromAlexa = async function(walletId, da
         console.log('Successfully retrieved the transaction information from the DynamoDB. Item count is ' + data.length);
         let transactionBalance = 0;
         // If length is not empty
-        if(isNotEmpty(data)) {
+        if(utils.isNotEmpty(data)) {
             for(let i=0, len=data.length; i<len; i++) {
                 let item = data[i];
                 let transactionAmount = Number(item.amount.N);
@@ -795,7 +796,7 @@ blitzbudgetDB.prototype.getExpenditureByDateFromAlexa = async function(walletId,
         console.log('Successfully retrieved the transaction information from the DynamoDB. Item count is ' + data.length);
         let transactionBalance = 0;
         // If length is not empty
-        if(isNotEmpty(data)) {
+        if(utils.isNotEmpty(data)) {
             for(let i=0, len=data.length; i<len; i++) {
                 let item = data[i];
                 let transactionAmount = Number(item.amount.N);
@@ -835,7 +836,7 @@ blitzbudgetDB.prototype.getTransactionTotalByDateFromAlexa = async function(wall
         console.log('Successfully retrieved the transaction information from the DynamoDB. Item count is ' + data.length);
         let transactionBalance = 0;
         // If length is not empty
-        if(isNotEmpty(data)) {
+        if(utils.isNotEmpty(data)) {
             for(let i=0, len=data.length; i<len; i++) {
                 let item = data[i];
                 let transactionAmount = Number(item.amount.N);
@@ -854,7 +855,7 @@ blitzbudgetDB.prototype.getTransactionTotalByDateFromAlexa = async function(wall
 blitzbudgetDB.prototype.addCategoryByDateFromAlexa = async function(walletId, currentDate, categoryName, categoryType) {
     let today = new Date();
     
-    if(isNotEmpty(currentDate)) {
+    if(utils.isNotEmpty(currentDate)) {
         let chosenYear = currentDate.slice(0,4);
         today.setFullYear(chosenYear);
         
@@ -874,7 +875,7 @@ blitzbudgetDB.prototype.addCategoryByDateFromAlexa = async function(walletId, cu
     }
     let randomValue = "Category#" + today.toISOString(); 
     
-    if(isNotEmpty(categoryName)) {
+    if(utils.isNotEmpty(categoryName)) {
         if(categoryName.length > 1) {
             categoryName = categoryName.charAt(0).toUpperCase() + categoryName.slice(1);
         } else {
@@ -919,10 +920,10 @@ blitzbudgetDB.prototype.getMatchingWalletAlexa = function(allWallets, walletCurr
     let data = allWallets, wallet;
     
     // If length is empty
-    if(isNotEmpty(data)) {
+    if(utils.isNotEmpty(data)) {
         for(let i=0, len=data.length; i<len; i++) {
             let item = data[i];
-            if(isEqual(item['currency'].S.toUpperCase(), walletCurrency.toUpperCase())) {
+            if(utils.isEqual(item['currency'].S.toUpperCase(), walletCurrency.toUpperCase())) {
                 wallet = item;
             }
         }
@@ -954,7 +955,7 @@ blitzbudgetDB.prototype.getRecentTransactions = async function(walletId, dateId,
         console.log('Successfully retrieved the transaction information from the DynamoDB. Item count is ' + data.length);
         let slotStatus = NO_TRANSACTIONS;
         // If length is not empty
-        if(isNotEmpty(data)) {
+        if(utils.isNotEmpty(data)) {
             let recentTransactions = '';
             // Maximum of 3 transactions
             let length = data.length < 3 ? data.length : 3;
@@ -962,10 +963,10 @@ blitzbudgetDB.prototype.getRecentTransactions = async function(walletId, dateId,
                 
                 let item = data[i];
                 let transactionAmount = Number(item.amount.N);
-                let description = isEmpty(item.description) ? '' : item.description.S;
+                let description = utils.isEmpty(item.description) ? '' : item.description.S;
                 let dateMeantFor = item['date_meant_for'].S;
                 
-                if(isNotEmpty(dateMeantFor)) {
+                if(utils.isNotEmpty(dateMeantFor)) {
                     recentTransactions += 'On the <say-as interpret-as="date" format="md">' + dateMeantFor.slice(10, 15) + '</say-as> <break time="0.20s"/>';
                 }
                 
@@ -990,7 +991,7 @@ blitzbudgetDB.prototype.getRecentTransactions = async function(walletId, dateId,
                 }
                 
                 // Add description if present
-                if(isNotEmpty(description)) {
+                if(utils.isNotEmpty(description)) {
                     recentTransactions += ON + description;
                 }
                 
@@ -1031,7 +1032,7 @@ async function getDefaultAccount(walletId) {
         console.log('Successfully retrieved the account information from the DynamoDB. Item count is ' + data.length);
         let defaultAccount = data[0];
         // If length is empty
-        if(isEmpty(data)) {
+        if(utils.isEmpty(data)) {
             return;
         } else {
             for(let i=0, len=data.length; i<len; i++) {
@@ -1169,36 +1170,6 @@ async function patchWallet(userId, walletId, defaultAlexa) {
     console.log("Updating the wallet with a default alexa property ", JSON.stringify(params));
                 
     return dbHelper.patchFromBlitzBudgetTable(params);
-}
-
-// Is Empty Check
-function isEmpty(obj) {
-    // Check if objext is a number or a boolean
-    if (typeof (obj) == 'number' || typeof (obj) == 'boolean') return false;
-
-    // Check if obj is null or undefined
-    if (obj == null || obj === undefined) return true;
-
-    // Check if the length of the obj is defined
-    if (typeof (obj.length) != 'undefined') return obj.length == 0;
-
-    // check if obj is a custom obj
-    for (let key in obj) {
-        if (obj.hasOwnProperty(key)) return false;
-    }
-
-    return true;
-}
-
-function isNotEmpty(obj) {
-    return !isEmpty(obj);
-}
-
-function isEqual(obj1, obj2) {
-    if (JSON.stringify(obj1) === JSON.stringify(obj2)) {
-        return true;
-    }
-    return false;
 }
 
 // Export object
