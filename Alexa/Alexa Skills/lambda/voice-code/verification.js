@@ -2,6 +2,8 @@ var voiceCodeVerifier = function () { };
 // Setup ================================================================================
 
 const utils = require('../helper/utils');
+const dbHelper = require('../helper/dbHelper');
+const constants = require('../constants/constant.js');
 
 // Constants ============================================================================
 
@@ -81,13 +83,13 @@ voiceCodeVerifier.prototype.verifyVoiceCode_Handler = {
                 // Store number of failed attempts
                 handlerInput.attributesManager.setSessionAttributes(sessionAttributes);
                 // Update the success to DynamoDB 
-                // TODO
+                await changeAlexaVoiceCode(sessionAttributes.userId, sessionAttributes.alexaVoiceCodeId, sessionAttributes.numberOfTimesVoiceVerificationFailed);
                 slotStatus = SESSION_VERIFIED;
             } else {
                 // Add number of times failed
                 sessionAttributes.numberOfTimesVoiceVerificationFailed++;
                 // Update the failure to DynamoDB 
-                // TODO
+                await changeAlexaVoiceCode(sessionAttributes.userId, sessionAttributes.alexaVoiceCodeId, sessionAttributes.numberOfTimesVoiceVerificationFailed);
                 // Store number of failed attempts
                 handlerInput.attributesManager.setSessionAttributes(sessionAttributes);
                 sessionAttributes.voiceCodeVerified = false;
@@ -126,6 +128,70 @@ voiceCodeVerifier.prototype.lostVoiceCode_Handler =  {
             .getResponse();
         
     }
+}
+
+function changeAlexaVoiceCode(userId, alexaVoiceCodeId, failureRate) {
+    console.log("The alexa voice code to change is for ", userId);
+    var params = {
+        TableName: constants.TABLE_NAME,
+        Key: {
+            "pk":  {
+                S: userId
+            },
+            "sk": {
+                S: alexaVoiceCodeId
+            }
+        },
+        UpdateExpression: 'set #variable1 = :v1, #update = :u',
+        ExpressionAttributeNames: {
+            "#variable1": "failure_rate",
+            "#update": "updated_date"
+        },
+        ExpressionAttributeValues: {
+            ":v1": {
+                BOOL: failureRate
+            },
+            ":u": {
+                S: new Date().toISOString()
+            }
+        },
+        ReturnValues:"UPDATED_NEW"
+    };
+    
+    console.log("Updating the account with a default alexa property ", JSON.stringify(params));
+                
+    dbHelper.patchFromBlitzBudgetTable(params).then((data) => {
+        console.log('Successfully patched the blitz budget from the DynamoDB. Item count is ' + data.length);
+      })
+      .catch((err) => {
+        console.log("There was an error changing the budget from DynamoDB ", err);
+      })
+}
+
+voiceCodeVerifier.prototype.getAlexaVoiceCode  = async function(userId) {
+    console.log("The alexa voice code to retrieve are for ", userId);
+    const params = {
+            TableName: constants.TABLE_NAME,
+            KeyConditionExpression: "pk = :pk and begins_with(sk, :items)",
+            ExpressionAttributeValues: {
+                ":pk": {
+                  S: userId
+                },
+                ":items": {
+                  S: "AlexaVoiceCode#"
+                }
+            },
+            ProjectionExpression: "failure_rate, voice_code, sk, pk"
+        }
+    return dbHelper.getFromBlitzBudgetTable(params).then((data) => {
+        console.log('Successfully retrieved the voice code from the DynamoDB. Item count is ' + data.length);
+        return data;
+        
+      })
+      .catch((err) => {
+        console.log("There was an error getting the voice code from DynamoDB ", err);
+        return;
+      })
 }
 
 /*

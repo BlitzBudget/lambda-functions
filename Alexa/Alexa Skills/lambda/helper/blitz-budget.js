@@ -5,6 +5,7 @@ var blitzbudgetDB = function () { };
 
 const utils = require('./utils');
 const dbHelper = require('./dbHelper');
+const constants = require('../constants/constant.js');
 const currencyInfo = require('../constants/currency');
 
 // Constants ============================================================================
@@ -15,7 +16,6 @@ const ALSO = ' also ';
 const SPENT = 'spent ';
 const EARNED = 'earned ';
 const CATEGORY = ' category.';
-const TABLE_NAME = "blitzbudget";
 const YOU_EARNED = 'You earned ';
 const SUCCESS_SPENT = 'You spent ';
 const SUCCESS_WALLET_TWO = ' wallet.';
@@ -49,7 +49,7 @@ const ERROR_TRANSACTION_TOTAL = 'We couldn\'t calculate your transaction total a
 */
 blitzbudgetDB.prototype.getDefaultAlexaWallet = async function(userId) {
     const params = {
-            TableName: TABLE_NAME,
+            TableName: constants.TABLE_NAME,
             KeyConditionExpression: "pk = :pk and begins_with(sk, :items)",
             ExpressionAttributeValues: {
                 ":pk": {
@@ -103,7 +103,7 @@ blitzbudgetDB.prototype.getCategoryAlexa = async function(walletId, categoryName
     }
     
     const params = {
-            TableName: TABLE_NAME,
+            TableName: constants.TABLE_NAME,
             KeyConditionExpression: "pk = :pk and begins_with(sk, :items)",
             ExpressionAttributeValues: {
                 ":pk": {
@@ -146,7 +146,7 @@ blitzbudgetDB.prototype.getBudgetAlexaAmount = async function(walletId, category
     console.log(' The date chosen for getting the budget with wallet', walletId, ' is ', selectedDate);
     
     const params = {
-            TableName: TABLE_NAME,
+            TableName: constants.TABLE_NAME,
             KeyConditionExpression: "pk = :pk and begins_with(sk, :items)",
             ExpressionAttributeValues: {
                 ":pk": {
@@ -186,7 +186,7 @@ blitzbudgetDB.prototype.getTagAlexaBalance = async function(walletId, tagName, s
     console.log(' The date chosen for getting the transaction with wallet', walletId, ' is ', selectedDate);
     
     const params = {
-            TableName: TABLE_NAME,
+            TableName: constants.TABLE_NAME,
             KeyConditionExpression: "pk = :pk and begins_with(sk, :items)",
             ExpressionAttributeValues: {
                 ":pk": {
@@ -233,7 +233,7 @@ blitzbudgetDB.prototype.getTagAlexaBalance = async function(walletId, tagName, s
 
 blitzbudgetDB.prototype.getWalletFromAlexa = async function(userId) {
     const params = {
-            TableName: TABLE_NAME,
+            TableName: constants.TABLE_NAME,
             KeyConditionExpression: "pk = :pk and begins_with(sk, :items)",
             ExpressionAttributeValues: {
                 ":pk": {
@@ -301,7 +301,7 @@ blitzbudgetDB.prototype.changeDefaultWalletAlexa = async function(userId, data, 
 blitzbudgetDB.prototype.getAccountFromAlexa  = async function(walletId) {
     console.log("The account information to retrieve from wallet is", walletId);
     const params = {
-            TableName: TABLE_NAME,
+            TableName: constants.TABLE_NAME,
             KeyConditionExpression: "pk = :pk and begins_with(sk, :items)",
             ExpressionAttributeValues: {
                 ":pk": {
@@ -322,75 +322,6 @@ blitzbudgetDB.prototype.getAccountFromAlexa  = async function(walletId) {
         console.log("There was an error getting the account from DynamoDB ", err);
         return;
       })
-}
-
-blitzbudgetDB.prototype.getAlexaVoiceCode  = async function(userId) {
-    console.log("The alexa voice code to retrieve are for ", userId);
-    const params = {
-            TableName: TABLE_NAME,
-            KeyConditionExpression: "pk = :pk and begins_with(sk, :items)",
-            ExpressionAttributeValues: {
-                ":pk": {
-                  S: userId
-                },
-                ":items": {
-                  S: "AlexaVoiceCode#"
-                }
-            },
-            ProjectionExpression: "failure_rate, voice_code, sk, pk"
-        }
-    return dbHelper.getFromBlitzBudgetTable(params).then((data) => {
-        console.log('Successfully retrieved the voice code from the DynamoDB. Item count is ' + data.length);
-        return data;
-        
-      })
-      .catch((err) => {
-        console.log("There was an error getting the voice code from DynamoDB ", err);
-        return;
-      })
-}
-
-blitzbudgetDB.prototype.changeDefaultAccountAlexa = async function(allAccounts, accountName) {
-    let events = [], say, data = allAccounts;
-    
-    // If length is empty
-    if(utils.isNotEmpty(data)) {
-        for(let i=0, len=data.length; i<len; i++) {
-            let item = data[i];
-            // Selected Account Boolean
-            if(utils.isNotEmpty(item['selected_account']) && item['selected_account'].BOOL) {
-                console.log("The default selected account to change to false is ", item['bank_account_name'].S);
-                events.push(patchAccount(item.pk.S, item.sk.S, false));
-            }
-        }
-        
-        for(let i=0, len=data.length; i<len; i++) {
-            let item = data[i];
-            if(utils.isEqual(item['bank_account_name'].S.toUpperCase(), accountName.toUpperCase())) {
-                events.push(patchAccount(item.pk.S, item.sk.S, true));
-            }
-        }
-    }
-    
-    /*
-    * Is Empty Events 
-    */
-    if(utils.isEmpty(events) || events.length == 1) {
-        say = ACCOUNT_NOT_PRESENT;
-    } else {
-        /*
-        * Patch Wallet
-        */
-        await Promise.all(events).then(function (result) {
-            console.log("Successfully updated the account information");
-            say = SUCCESS_DEFAULT_ACCOUNT + accountName;
-        }, function (err) {
-            console.log("Unable error occured while fetching the account " + err);
-            say = ERROR_CHANGING_ACCOUNT;
-        });   
-    }
-
-    return say;
 }
 
 blitzbudgetDB.prototype.calculateWalletFromAlexa = function(allWallets, slotValues) {
@@ -423,7 +354,7 @@ blitzbudgetDB.prototype.calculateWalletFromAlexa = function(allWallets, slotValu
 
 blitzbudgetDB.prototype.changeBudgetAlexaAmount = async function(walletId, budgetId, amount, currencyName) {
     var params = {
-        TableName: TABLE_NAME,
+        TableName: constants.TABLE_NAME,
         Key: {
             "pk":  {
                 S: walletId
@@ -453,7 +384,6 @@ blitzbudgetDB.prototype.changeBudgetAlexaAmount = async function(walletId, budge
     return dbHelper.patchFromBlitzBudgetTable(params).then((data) => {
         console.log('Successfully retrieved the budget information from the DynamoDB. Item count is ' + data.length);
         return BUDGET_AMOUNT_SUCCESS + amount + ' ' + currencyName;
-        
       })
       .catch((err) => {
         console.log("There was an error changing the budget from DynamoDB ", err);
@@ -739,7 +669,7 @@ blitzbudgetDB.prototype.addTransactionAlexaAmount = async function(walletId, cat
 blitzbudgetDB.prototype.getEarningsByDateFromAlexa = async function(walletId, dateId, walletCurrency) {
     
     const params = {
-            TableName: TABLE_NAME,
+            TableName: constants.TABLE_NAME,
             KeyConditionExpression: "pk = :pk and begins_with(sk, :items)",
             ExpressionAttributeValues: {
                 ":pk": {
@@ -778,7 +708,7 @@ blitzbudgetDB.prototype.getEarningsByDateFromAlexa = async function(walletId, da
 blitzbudgetDB.prototype.getExpenditureByDateFromAlexa = async function(walletId, dateId, walletCurrency) {
     
     const params = {
-            TableName: TABLE_NAME,
+            TableName: constants.TABLE_NAME,
             KeyConditionExpression: "pk = :pk and begins_with(sk, :items)",
             ExpressionAttributeValues: {
                 ":pk": {
@@ -817,7 +747,7 @@ blitzbudgetDB.prototype.getExpenditureByDateFromAlexa = async function(walletId,
 blitzbudgetDB.prototype.getTransactionTotalByDateFromAlexa = async function(walletId, dateId, walletCurrency) {
     
     const params = {
-            TableName: TABLE_NAME,
+            TableName: constants.TABLE_NAME,
             KeyConditionExpression: "pk = :pk and begins_with(sk, :items)",
             ExpressionAttributeValues: {
                 ":pk": {
@@ -935,7 +865,7 @@ blitzbudgetDB.prototype.getMatchingWalletAlexa = function(allWallets, walletCurr
 blitzbudgetDB.prototype.getRecentTransactions = async function(walletId, dateId, walletCurrency) {
     
     const params = {
-            TableName: TABLE_NAME,
+            TableName: constants.TABLE_NAME,
             KeyConditionExpression: "pk = :pk and begins_with(sk, :items)",
             ExpressionAttributeValues: {
                 ":pk": {
@@ -1010,13 +940,57 @@ blitzbudgetDB.prototype.getRecentTransactions = async function(walletId, dateId,
     
 }
 
+blitzbudgetDB.prototype.changeDefaultAccountAlexa = async function(allAccounts, accountName) {
+    let events = [], say, data = allAccounts;
+    
+    // If length is empty
+    if(utils.isNotEmpty(data)) {
+        for(let i=0, len=data.length; i<len; i++) {
+            let item = data[i];
+            // Selected Account Boolean
+            if(utils.isNotEmpty(item['selected_account']) && item['selected_account'].BOOL) {
+                console.log("The default selected account to change to false is ", item['bank_account_name'].S);
+                events.push(patchAccount(item.pk.S, item.sk.S, false));
+            }
+        }
+        
+        for(let i=0, len=data.length; i<len; i++) {
+            let item = data[i];
+            if(utils.isEqual(item['bank_account_name'].S.toUpperCase(), accountName.toUpperCase())) {
+                events.push(patchAccount(item.pk.S, item.sk.S, true));
+            }
+        }
+    }
+    
+    /*
+    * Is Empty Events 
+    */
+    if(utils.isEmpty(events) || events.length == 1) {
+        say = ACCOUNT_NOT_PRESENT;
+    } else {
+        /*
+        * Patch Wallet
+        */
+        await Promise.all(events).then(function (result) {
+            console.log("Successfully updated the account information");
+            say = SUCCESS_DEFAULT_ACCOUNT + accountName;
+        }, function (err) {
+            console.log("Unable error occured while fetching the account " + err);
+            say = ERROR_CHANGING_ACCOUNT;
+        });   
+    }
+
+    return say;
+}
+
+
 /*
 * Handle Helper Functions
 */
 
 async function getDefaultAccount(walletId) {
     const params = {
-            TableName: TABLE_NAME,
+            TableName: constants.TABLE_NAME,
             KeyConditionExpression: "pk = :pk and begins_with(sk, :items)",
             ExpressionAttributeValues: {
                 ":pk": {
@@ -1083,7 +1057,7 @@ async function createDateData(walletId, skForDate) {
 
 async function getDateData(walletId, currentDate) {
     const params = {
-            TableName: TABLE_NAME,
+            TableName: constants.TABLE_NAME,
             KeyConditionExpression: "pk = :pk and begins_with(sk, :items)",
             ExpressionAttributeValues: {
                 ":pk": {
@@ -1109,7 +1083,7 @@ async function getDateData(walletId, currentDate) {
 
 async function patchAccount(walletId, accountId, selectedAccount) {
     var params = {
-        TableName: TABLE_NAME,
+        TableName: constants.TABLE_NAME,
         Key: {
             "pk":  {
                 S: walletId
@@ -1142,7 +1116,7 @@ async function patchAccount(walletId, accountId, selectedAccount) {
 async function patchWallet(userId, walletId, defaultAlexa) {
                 
     var params = {
-        TableName: TABLE_NAME,
+        TableName: constants.TABLE_NAME,
         Key: {
             "pk":  {
                 S: userId
