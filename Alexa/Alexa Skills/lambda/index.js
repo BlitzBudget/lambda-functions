@@ -634,8 +634,10 @@ const skillBuilder = Alexa.SkillBuilders.custom();
 exports.handler = skillBuilder
     .addRequestHandlers(
         CheckAccountLinkedHandler,
-        voiceCodeVerifier.CheckVoiceCodeVerifiedHandler,
+        voiceCodeVerifier.lostVoiceCode_Handler,
         voiceCodeVerifier.CheckIfVoiceCodeVerificationTriesExpired,
+        voiceCodeVerifier.verifyVoiceCode_Handler,
+        voiceCodeVerifier.CheckVoiceCodeVerifiedHandler,
         AMAZON_CancelIntent_Handler, 
         AMAZON_HelpIntent_Handler, 
         AMAZON_StopIntent_Handler, 
@@ -661,8 +663,6 @@ exports.handler = skillBuilder
         fetchData.getExpenditureByDate_Handler,
         fetchData.getEarningsByDate_Handler,
         addData.addCategoryByDate_Handler,
-        voiceCodeVerifier.lostVoiceCode_Handler,
-        voiceCodeVerifier.verifyVoiceCode_Handler,
         LaunchRequest_Handler, 
         HelpHandler,
         ExitHandler,

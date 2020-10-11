@@ -32,7 +32,7 @@ module.exports = {
     CURRENCY_NOTFOUND : '<amazon:emotion name="disappointed" intensity="medium"> I couldn\'t find the currency that you mentioned. Please try again! </amazon:emotion>',
     EMPTY_ACCOUNT : '<amazon:emotion name="disappointed" intensity="medium"> Sorry, There was an error while getting you default account. </amazon:emotion> Please try again!',
     CATEGORY_EXISTS : '<amazon:emotion name="disappointed" intensity="medium"> The selected category is already present for the mentioned dates. </amazon:emotion> Consider creating a new category by saying <break time="0.20s"/> "Create a new category for "',
-    EMPTY_WALLET : '<amazon:emotion name="disappointed" intensity="medium"> The requested currency cannot be found. </amazon:emotion> Consider creating a wallet by saying <break time="0.20s"/> "Create a new wallet for" followed by the currency name as you find it in the blitz budget application. ',
+    EMPTY_WALLET : '<amazon:emotion name="disappointed" intensity="medium"> The requested currency cannot be found. </amazon:emotion> Consider creating a wallet by saying <break time="0.20s"/> "Create a new wallet for" <break time="0.06s"/> followed by the currency name as you find it in the blitz budget application. ',
     SUCCESSFUL_TITLE : 'Successfully',
     CARD_SECURITY_TITLE : "BlitzBudget Security Information",
     ADDED_NEW_TRANSACTION_SIMPLE_CARD : "A new transaction was added through Alexa.",

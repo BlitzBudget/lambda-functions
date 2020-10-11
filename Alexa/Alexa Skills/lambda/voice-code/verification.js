@@ -11,10 +11,10 @@ const MAX_RETRIES_ALLOWED = 3;
 const ALREADY_VERIFIED = 'You are already a verified user!';
 const SESSION_NOT_VERIFIED = 'The voice code provided was wrong! Please try again';
 const LOST_VOICE_CODE = 'Sorry to hear that! You could disable the blitzbudget skill in Alexa and then re-enable it again.';
-const LAST_VOICE_CODE_TRY = ' This is your last try, <break time="0.10s"/> after which you would be signed out of your account for security purposes!';
+const LAST_VOICE_CODE_TRY = '<break time="0.10s"/> This is your last try, <break time="0.10s"/> after which you would be signed out of your account for security purposes!';
 const SESSION_VERIFIED = '<amazon:emotion name="excited" intensity="low">Great! You session has been successfully verified. </amazon:emotion> How can I help you today?';
-const VERIFY_VOICE_CODE = '<amazon:emotion name="disappointed" intensity="medium"> You need to verify your voice code. </amazon:emotion> Verify by saying <break time="0.20s"/> "Verify Blitz Budget " followed by your four digit voice code';
-const MAX_RETRIES_EXCEEDED = '<amazon:emotion name="disappointed" intensity="medium"> You have exceeded the maximum number of voice code verification tries.</amazon:emotion>  <break time="0.20s"/> Please disable and then re-enable the blitz budget skill, to reset your voice code';
+const VERIFY_VOICE_CODE = '<amazon:emotion name="disappointed" intensity="medium"> You need to verify your voice code. </amazon:emotion> Verify by saying <break time="0.20s"/> "Verify Blitz Budget " <break time="0.05s"/> followed by your four digit voice code';
+const MAX_RETRIES_EXCEEDED = '<amazon:emotion name="disappointed" intensity="medium"> You have exceeded the maximum number of voice code verification tries.</amazon:emotion>  <break time="0.20s"/> Please disable and then re-enable the blitz budget skill.';
 
 // CheckVoiceCodeVerifiedHandler: This handler is always run second,
 // based on the order defined in the skillBuilder.
@@ -30,6 +30,7 @@ voiceCodeVerifier.prototype.CheckVoiceCodeVerifiedHandler = {
     const speakOutput = VERIFY_VOICE_CODE;
     return handlerInput.responseBuilder
       .speak(speakOutput)
+      .withShouldEndSession(false) // End session for security purposes
       .getResponse();
   },
 };
@@ -51,6 +52,7 @@ voiceCodeVerifier.prototype.CheckIfVoiceCodeVerificationTriesExpired = {
     const speakOutput = MAX_RETRIES_EXCEEDED;
     return handlerInput.responseBuilder
       .speak(speakOutput)
+      .withShouldEndSession(true) // End session for security purposes
       .withLinkAccountCard()
       .getResponse();
   },
@@ -68,28 +70,29 @@ voiceCodeVerifier.prototype.verifyVoiceCode_Handler = {
         console.log('The User id retrieved is ', sessionAttributes.userId);
 
         let say = '';
-        let slotStatus = '';
-        let shouldEndSession = true;
-
+        let slotStatus = '', shouldEndSession = false;
         let slotValues = utils.getSlotValues(request.intent.slots); 
         
         if(sessionAttributes.voiceCodeVerified) {
+            console.log("The voice code has already been verified");
             slotStatus = ALREADY_VERIFIED;
         } else if (slotValues.voicecode.heardAs && slotValues.voicecode.heardAs !== '') {
             if(utils.isEqual(slotValues.voicecode.heardAs, sessionAttributes.voiceCode)) {
+                console.log("The voice code is verified");
                 sessionAttributes.voiceCodeVerified = true;
                 // Update the number of times failed to 0
                 sessionAttributes.numberOfTimesVoiceVerificationFailed = 0;
                 // Store number of failed attempts
                 handlerInput.attributesManager.setSessionAttributes(sessionAttributes);
                 // Update the success to DynamoDB 
-                await changeAlexaVoiceCode(sessionAttributes.userId, sessionAttributes.alexaVoiceCodeId, sessionAttributes.numberOfTimesVoiceVerificationFailed);
+                await changeAlexaVoiceCode(sessionAttributes.userId, sessionAttributes.alexaVoiceCodeId, sessionAttributes.numberOfTimesVoiceVerificationFailed.toString());
                 slotStatus = SESSION_VERIFIED;
             } else {
+                console.log("The voice code provided is wrong");
                 // Add number of times failed
                 sessionAttributes.numberOfTimesVoiceVerificationFailed++;
                 // Update the failure to DynamoDB 
-                await changeAlexaVoiceCode(sessionAttributes.userId, sessionAttributes.alexaVoiceCodeId, sessionAttributes.numberOfTimesVoiceVerificationFailed);
+                await changeAlexaVoiceCode(sessionAttributes.userId, sessionAttributes.alexaVoiceCodeId, sessionAttributes.numberOfTimesVoiceVerificationFailed.toString());
                 // Store number of failed attempts
                 handlerInput.attributesManager.setSessionAttributes(sessionAttributes);
                 sessionAttributes.voiceCodeVerified = false;
@@ -97,6 +100,9 @@ voiceCodeVerifier.prototype.verifyVoiceCode_Handler = {
                 
                 if(sessionAttributes.numberOfTimesVoiceVerificationFailed == 2) {
                     slotStatus += LAST_VOICE_CODE_TRY;
+                } else if(sessionAttributes.numberOfTimesVoiceVerificationFailed >= 3) {
+                    slotStatus = MAX_RETRIES_EXCEEDED;
+                    shouldEndSession = true;
                 }
             }
         }
@@ -149,7 +155,7 @@ function changeAlexaVoiceCode(userId, alexaVoiceCodeId, failureRate) {
         },
         ExpressionAttributeValues: {
             ":v1": {
-                BOOL: failureRate
+                N: failureRate
             },
             ":u": {
                 S: new Date().toISOString()
@@ -200,7 +206,7 @@ voiceCodeVerifier.prototype.getAlexaVoiceCode  = async function(userId) {
 */
 function checkIfVoiceCodeRequired(handlerInput) {
     let sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
-    return sessionAttributes.voiceCodeVerified;
+    return !sessionAttributes.voiceCodeVerified;
 }
 
 /*
