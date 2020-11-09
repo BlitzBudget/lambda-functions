@@ -25,7 +25,7 @@ exports.handler = async (event) => {
     }
 
     // Save Alexa Voice Code
-    if (isEmpty(event['body-json'].voiceCode)) {
+    if (isEmpty(event['body-json'].voiceCode) && !deleteVoiceCode) {
         throw new Error("Unable to save alexa voice code as it is empty ");
     }
 
