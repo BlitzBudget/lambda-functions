@@ -11,13 +11,13 @@ AWS.config.update({
 var docClient = new AWS.DynamoDB.DocumentClient();
 let cognitoidentityserviceprovider = new AWS.CognitoIdentityServiceProvider();
 
-
 const clientId = '18he7k81dv7k6fccf7giiuo84r';
 const clientSecret = 'ar8dgqr8e2jma0ojrkq5cu13bntnb624132uboirg9v6m1h4ge5';
 
 exports.handler = async (event) => {
     let response = {};
     let username = event['body-json'].username;
+    let deleteVoiceCode = event['body-json'].deleteVoiceCode;
 
     // Authorization code
     if (isEmpty(username)) {
@@ -87,6 +87,8 @@ exports.handler = async (event) => {
      * Add a new voice code
      */
     let today = new Date();
+    // Check if the voice code is present
+    let voiceCodePresent = false;
     let alexaId = "AlexaVoiceCode#" + today.toISOString();
 
     /*
@@ -97,24 +99,64 @@ exports.handler = async (event) => {
             for (const alexaVoiceCode of result.Items) {
                 console.log("successfully assigned the old voice code id ", alexaVoiceCode.sk);
                 alexaId = alexaVoiceCode.sk;
+                voiceCodePresent = true;
             }
         }
     }, function (err) {
         throw new Error("Unable to get a new voice code " + err);
     });
 
-    /*
-     * Add a new voice code
-     */
-    await addNewVoiceCode(event, userId, alexaId).then(function (result) {
-        console.log("successfully added a new voice code");
-    }, function (err) {
-        throw new Error("Unable to add a new voice code " + err);
-    });
+    if (deleteVoiceCode && voiceCodePresent) {
+        /*
+         * Delete the old voice code
+         */
+        await deleteOldVoiceCode(userId, alexaId).then(function (result) {
+            console.log("successfully added the old voice code");
+        }, function (err) {
+            throw new Error("Unable to delete the old voice code " + err);
+        });
+    } else {
+        /*
+         * Add a new voice code
+         */
+        await addNewVoiceCode(event, userId, alexaId).then(function (result) {
+            console.log("successfully added a new voice code");
+        }, function (err) {
+            throw new Error("Unable to add a new voice code " + err);
+        });
+    }
 
 
     return event;
 };
+
+/*
+ * Delete Old Voice Code
+ */
+function deleteOldVoiceCode(pk, sk) {
+    console.log('Delete old voice code for the primary key ' + pk);
+
+    var params = {
+        "TableName": 'blitzbudget',
+        "Key": {
+            "pk": pk,
+            "sk": sk
+        }
+    };
+
+    return new Promise((resolve, reject) => {
+        docClient.delete(params, function (err, data) {
+            if (err) {
+                console.log("Error ", err);
+                reject(err);
+            } else {
+                resolve({
+                    "success": data
+                });
+            }
+        });
+    });
+}
 
 /*
  * Get New Voice Code
