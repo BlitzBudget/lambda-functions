@@ -50,7 +50,8 @@ exports.handler = async (event) => {
         console.log("The result of the initiate Auth is", result);
         response = result;
     }, function (err) {
-        throw new Error("Unable to signin from cognito  " + err);
+        console.log("Unable to login ", err);
+        throw new Error("Invalid username or password");
     });
 
     /*
@@ -61,7 +62,8 @@ exports.handler = async (event) => {
         response.UserAttributes = result.UserAttributes;
         console.log("logged in the user " + JSON.stringify(result.Username));
     }, function (err) {
-        throw new Error("Unable to signin from cognito  " + err);
+        console.log("Unable to get the user information ", err);
+        throw new Error("Unable to retrieve user information ", err);
     });
 
     /*
