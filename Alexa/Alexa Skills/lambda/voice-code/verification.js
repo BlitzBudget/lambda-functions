@@ -9,7 +9,7 @@ const constants = require('../constants/constant.js');
 
 const MAX_RETRIES_ALLOWED = 3;
 const ALREADY_VERIFIED = 'You are already a verified user!';
-const SESSION_NOT_VERIFIED = 'The voice code provided was wrong! Please try again';
+const SESSION_NOT_VERIFIED = 'The voice code provided was wrong! If you had forgotten your voice code, <break time="0.05s"/> you could disable and then reenable your Blitzbudget skill in alexa to set a new voice code.';
 const LOST_VOICE_CODE = 'Sorry to hear that! You could disable the blitzbudget skill in Alexa and then re-enable it again.';
 const LAST_VOICE_CODE_TRY = '<break time="0.10s"/> This is your last try, <break time="0.10s"/> after which you would be signed out of your account for security purposes!';
 const SESSION_VERIFIED = '<amazon:emotion name="excited" intensity="low">Great! You session has been successfully verified. </amazon:emotion> How can I help you today?';
@@ -97,12 +97,13 @@ voiceCodeVerifier.prototype.verifyVoiceCode_Handler = {
                 handlerInput.attributesManager.setSessionAttributes(sessionAttributes);
                 sessionAttributes.voiceCodeVerified = false;
                 slotStatus = SESSION_NOT_VERIFIED;
+                // End the session everytime the verification fails.
+                shouldEndSession = true;
                 
                 if(sessionAttributes.numberOfTimesVoiceVerificationFailed == 2) {
                     slotStatus += LAST_VOICE_CODE_TRY;
                 } else if(sessionAttributes.numberOfTimesVoiceVerificationFailed >= 3) {
                     slotStatus = MAX_RETRIES_EXCEEDED;
-                    shouldEndSession = true;
                 }
             }
         }
