@@ -14,7 +14,7 @@ let paramsDelete = {
 var sns = new AWS.SNS();
 
 exports.handler = async function (event) {
-    console.log(" Events ", JSON.stringify(event));
+    //console.log(" Events ", JSON.stringify(event));
     // Concurrently call multiple APIs and wait for the response
     let events = [];
     // Params delete add the userName field
