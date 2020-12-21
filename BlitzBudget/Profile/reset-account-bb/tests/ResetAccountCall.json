@@ -1,30 +1,31 @@
 {
-    "body-json": {},
+    "body-json": {
+        "userName": "nagarjun_nagesh@outlook.com",
+        "walletId": "User#2020-12-17T14:40:35.890Z",
+        "deleteAccount": false
+    },
     "params": {
         "path": {},
-        "querystring": {
-            "deleteAccount": "false",
-            "walletId": "2212020113431339"
-        },
+        "querystring": {},
         "header": {
-            "Accept": "*/*",
-            "Accept-Encoding": "gzip, deflate, br",
-            "Accept-Language": "en-US,en;q=0.5",
-            "Authorization": "eyJraWQiOiJtNkhwVHRYQVNweE96MU5rS2JHT2xYSzA2b3RNNlVkak5RUkRidXJ5SXJrPSIsImFsZyI6IlJTMjU2In0.eyJzdWIiOiIyOTlmN2I3ZC00MjI1LTQwMjgtYmZjNS01YmFiZjk0MDI4YzAiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiY3VzdG9tOmZpbmFuY2lhbFBvcnRmb2xpb0lkIjoiMjIxMjAyMDExMzQzMTMzOSIsImlzcyI6Imh0dHBzOlwvXC9jb2duaXRvLWlkcC5ldS13ZXN0LTEuYW1hem9uYXdzLmNvbVwvZXUtd2VzdC0xX2NqZkM4cU5pQiIsImNvZ25pdG86dXNlcm5hbWUiOiJuYWdhcmp1bl9uYWdlc2hAb3V0bG9vay5jb20iLCJsb2NhbGUiOiJlbi1FUyIsImF1ZCI6Imw3bm1wYXZscXAzamNmamJyMjM3cHJxYWUiLCJldmVudF9pZCI6IjI1N2Y0ZDk4LTRkZjUtNDZmNi04ZTkyLTdmMjc3ODg1NzkxYyIsInRva2VuX3VzZSI6ImlkIiwiY3VzdG9tOmN1cnJlbmN5IjoiXHUyMEFDIiwiYXV0aF90aW1lIjoxNTg0ODAxODY1LCJuYW1lIjoiTmFnYXJqdW4iLCJjdXN0b206ZXhwb3J0RmlsZUZvcm1hdCI6IkRPQyIsImV4cCI6MTU4NDgwNTQ2NSwiaWF0IjoxNTg0ODAxODY1LCJmYW1pbHlfbmFtZSI6Ik5hZ2VzaCIsImVtYWlsIjoibmFnYXJqdW5fbmFnZXNoQG91dGxvb2suY29tIn0.ieO7k0obPjmYtvXO9UgHrM76A5P78fUOL4w6xG-v1_o-oqv73qRk7A0cEoP8_NnO2wHNbMsoCfs5IUOTvbgQ7XccXflgaD_t_EeL0RItda6mLDSBkwe8G2WMTjezls9AlZIowt0CGzusC5pWO7Kkj5IYWmbg5qB6ohzFi_3ev0ib5sWzzeXKbeCsawVpLoGRZRVTXmTDPQRn2TLHRDPEBlSpSjiJg_i5eqwQHq43q4e1jDmjLxA14RSWf4S08El1PWHlJ3MSdXlj2EkfppdX97l34mZ1tzaDnyDaDbh7j-gEdzCB025JP4otnHc9xA3jHLEudSiUIiLn3BFZeVs_Lg",
+            "Accept": "application/json, text/javascript, */*; q=0.01",
+            "accept-encoding": "gzip, deflate, br",
+            "Accept-Language": "en-gb",
+            "Authorization": "eyJraWQiOiJtNkhwVHRYQVNweE96MU5rS2JHT2xYSzA2b3RNNlVkak5RUkRidXJ5SXJrPSIsImFsZyI6IlJTMjU2In0.eyJzdWIiOiJmZDFkZjUzNS05OTgwLTRhNTItOTA0OS1lZGQ0MmZiOTNkY2MiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiY3VzdG9tOmZpbmFuY2lhbFBvcnRmb2xpb0lkIjoiVXNlciMyMDIwLTEyLTE3VDE0OjQwOjM1Ljg5MFoiLCJpc3MiOiJodHRwczpcL1wvY29nbml0by1pZHAuZXUtd2VzdC0xLmFtYXpvbmF3cy5jb21cL2V1LXdlc3QtMV9jamZDOHFOaUIiLCJjb2duaXRvOnVzZXJuYW1lIjoibmFnYXJqdW5fbmFnZXNoQG91dGxvb2suY29tIiwibG9jYWxlIjoiZW4tVVMiLCJhdWQiOiIyZnRsYnMxa2ZtcjJ1YjBlNHAxNXRzYWc4ZyIsImV2ZW50X2lkIjoiNmNjYzVmOTgtYmIxMy00MjI2LWJiNWEtZDU2OWY2NDljN2E0IiwidG9rZW5fdXNlIjoiaWQiLCJhdXRoX3RpbWUiOjE2MDg1Nzk2ODAsIm5hbWUiOiJOYWdhcmp1biIsImN1c3RvbTpleHBvcnRGaWxlRm9ybWF0IjoiWExTIiwiZXhwIjoxNjA4NTgzMjgwLCJpYXQiOjE2MDg1Nzk2ODAsImZhbWlseV9uYW1lIjoiTmFnZXNoIiwiZW1haWwiOiJuYWdhcmp1bl9uYWdlc2hAb3V0bG9vay5jb20ifQ.TFYXD-8LxefMcdG68SyVGLH0_SziSnK0o6ZFibq-3pWLV9PNSJXh-w80iefPyj0Tlhaxm_XG7YsXaWNfBX0qYGYfi356f79aVBMxZLGzkTGDgjG2oGzO8CD3j5XMT3Jn0i-iNXoScmxv0gkvv2xnZ1gd8_1q4DT-gQZdkYcaCYamstfn8fQzfS178B46LMFIw_y5Xz3qdZPWRvV9Sz5lfgVNEM1folPdeG25QEvJRwjPL4JgIRyewlam7Sj7eeMjAKgdmyZ18IW03ezKOwv2CalItfy-3DOWby8mL_0H6WrQ1je2BtGSJlhJJH5pBvOmNF4I2l-XJYcgBumDQPztwQ",
             "CloudFront-Forwarded-Proto": "https",
             "CloudFront-Is-Desktop-Viewer": "true",
             "CloudFront-Is-Mobile-Viewer": "false",
             "CloudFront-Is-SmartTV-Viewer": "false",
             "CloudFront-Is-Tablet-Viewer": "false",
             "CloudFront-Viewer-Country": "ES",
-            "dnt": "1",
+            "content-type": "application/json;charset=UTF-8",
             "Host": "api.blitzbudget.com",
             "origin": "https://app.blitzbudget.com",
-            "User-Agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:74.0) Gecko/20100101 Firefox/74.0",
-            "Via": "2.0 9bac09758c086d613f2c0a80dd66c7a6.cloudfront.net (CloudFront)",
-            "X-Amz-Cf-Id": "SQG8fNy72zVyOZHBfow_r9G91EGoJU85cON6XpODVbRnrT_fcy9WrA==",
-            "X-Amzn-Trace-Id": "Root=1-5e762853-509d5fc0b8d3f44d7d1de81a",
-            "X-Forwarded-For": "95.127.153.41, 64.252.132.145",
+            "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0.1 Safari/605.1.15",
+            "Via": "2.0 e43c7f33e20c02c01ba46ebadfa00ed4.cloudfront.net (CloudFront)",
+            "X-Amz-Cf-Id": "GP8tekyPI0LD5X4TyjnTLM57w0xQtUOH7KUG9iBmBOoYBzq3ffZ4Ow==",
+            "X-Amzn-Trace-Id": "Root=1-5fe0fa68-0b2d5c4d0ada97c72867caa2",
+            "X-Forwarded-For": "88.26.96.134, 52.46.44.74",
             "X-Forwarded-Port": "443",
             "X-Forwarded-Proto": "https"
         }
@@ -40,14 +41,14 @@
         "cognito-authentication-type": "",
         "cognito-identity-id": "",
         "cognito-identity-pool-id": "",
-        "http-method": "DELETE",
+        "http-method": "POST",
         "stage": "prod",
-        "source-ip": "95.127.153.41",
+        "source-ip": "88.26.96.134",
         "user": "",
-        "user-agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:74.0) Gecko/20100101 Firefox/74.0",
+        "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0.1 Safari/605.1.15",
         "user-arn": "",
-        "request-id": "f14ffe07-f975-4c09-9703-411ca49ddfec",
-        "resource-id": "su6ehq",
-        "resource-path": "/reset-account"
+        "request-id": "8b9d1954-a1c1-4e71-babb-80ff9e7a8bae",
+        "resource-id": "mlwuhb",
+        "resource-path": "/profile/reset-account"
     }
 }

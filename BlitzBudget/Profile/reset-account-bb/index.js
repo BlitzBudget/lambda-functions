@@ -14,9 +14,11 @@ let paramsDelete = {
 var sns = new AWS.SNS();
 
 exports.handler = async function (event) {
-
+    console.log(" Events ", JSON.stringify(event));
     // Concurrently call multiple APIs and wait for the response
     let events = [];
+    // Params delete add the userName field
+    paramsDelete.Username = event['body-json'].userName;
 
     if (event['body-json'].deleteAccount) {
         events.push(globalSignoutFromAllDevices(event));
@@ -35,7 +37,7 @@ exports.handler = async function (event) {
 // Global Signout Before Deleting the User
 function globalSignoutFromAllDevices(event) {
     var params = {
-        AccessToken: event.header.Authorization /* required */
+        AccessToken: event['body-json'].accessToken /* required */
     };
 
     return new Promise((resolve, reject) => {
@@ -53,7 +55,6 @@ function globalSignoutFromAllDevices(event) {
 
 // Delete Cognito Account
 function deleteCognitoAccount(event) {
-    paramsDelete.Username = event['body-json'].userName;
 
     return new Promise((resolve, reject) => {
         cognitoIdServiceProvider.adminDeleteUser(paramsDelete, function (err, data) {
