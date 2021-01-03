@@ -282,7 +282,7 @@ function getCategoryData(pk, startsWithDate, endsWithDate) {
                 if (data.Items) {
                     for (const categoryObj of data.Items) {
                         categoryObj.categoryId = categoryObj.sk;
-                        categoryObj.userId = categoryObj.pk;
+                        categoryObj.walletId = categoryObj.pk;
                         delete categoryObj.sk;
                         delete categoryObj.pk;
                     }
