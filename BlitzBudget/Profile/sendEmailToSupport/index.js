@@ -15,7 +15,7 @@ exports.handler = async (event) => {
         Message: {
             Body: {
                 Text: {
-                    Data: event['body-json'].message
+                    Data: 'From Address: ' + event['body-json'].email + ' Message:' + event['body-json'].message
                 }
 
             },
@@ -23,9 +23,9 @@ exports.handler = async (event) => {
                 Data: event['body-json'].subject
             }
         },
-        Source: event['body-json'].email,
+        Source: "noreply@blitzbudget.com",
         ReplyToAddresses: [
-            'admin@blitzbudget.com',
+            event['body-json'].email,
         ],
     };
 
