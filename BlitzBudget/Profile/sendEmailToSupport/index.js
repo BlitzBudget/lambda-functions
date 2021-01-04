@@ -23,9 +23,19 @@ exports.handler = async (event) => {
                 Data: event['body-json'].subject
             }
         },
-        Source: event['body-json'].email
+        Source: event['body-json'].email,
+        ReplyToAddresses: [
+            'admin@blitzbudget.com',
+        ],
     };
 
 
-    await ses.sendEmail(params).promise();
+    await ses.sendEmail(params).promise().then(
+        function (data) {
+            console.log(data.MessageId);
+        }).catch(
+        function (err) {
+            console.error("Unbable to send the email", err, err.stack);
+            throw new Error("Unable to send the request email. Please try again later!");
+        });
 };
