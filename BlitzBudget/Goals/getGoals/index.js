@@ -187,7 +187,7 @@ function getGoalItem(walletId) {
                 if (data.Items) {
                     for (const goalObj of data.Items) {
                         goalObj.goalId = goalObj.sk;
-                        goalObj.userId = goalObj.pk;
+                        goalObj.walletId = goalObj.pk;
                         delete goalObj.sk;
                         delete goalObj.pk;
                     }
