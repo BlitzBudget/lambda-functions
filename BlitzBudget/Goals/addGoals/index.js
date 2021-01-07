@@ -50,7 +50,7 @@ function addNewGoals(event) {
                 resolve({
                     "success": data
                 });
-                event['body-json'].id = randomValue;
+                event['body-json'].goalId = randomValue;
             }
         });
     });
