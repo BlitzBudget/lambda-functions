@@ -11,7 +11,7 @@ var DB = new AWS.DynamoDB.DocumentClient();
 exports.handler = async (event) => {
     let userId = event['body-json'].userId;
     let currency = event['body-json'].currency;
-    let walletName = event['body-json']['wallet_name'];
+    let walletName = event['body-json']['walletName'];
     console.log("events ", JSON.stringify(event));
     await addNewWallet(event, userId, currency, walletName).then(function (result) {
         console.log("successfully saved the new wallet");
