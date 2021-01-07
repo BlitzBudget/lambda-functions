@@ -12,7 +12,7 @@ const parameters = [{
         "prmValue": 'currency'
 },
     {
-        "prmName": "name",
+        "prmName": "walletName",
         "prmValue": 'wallet_name'
 }
 ]
