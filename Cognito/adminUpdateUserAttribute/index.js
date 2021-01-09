@@ -6,9 +6,9 @@ let cognitoIdServiceProvider = new AWS.CognitoIdentityServiceProvider();
 const userPoolId = 'eu-west-1_cjfC8qNiB';
 
 exports.handler = async (event) => {
-    console.log("event - " + JSON.stringify(event));
+    //console.log("event - " + JSON.stringify(event));
 
-    await updateAttributes(event, event['body-json'].userName).then(function (result) {
+    await updateAttributes(event, event['body-json'].username).then(function (result) {
         // Success function
         console.log("Successfully updated the attribute");
     }, function (err) {
