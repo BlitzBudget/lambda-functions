@@ -9,6 +9,7 @@ exports.handler = async (event) => {
     let accepLan = JSON.stringify(event.params.header['Accept-Language']);
     let firstName = event['body-json'].firstname;
     let lastName = event['body-json'].lastname;
+    let email = event['body-json'].username.toLowerCase().trim();
 
     if(isEmpty(firstName) && isEmpty(lastName)) {
         // Set Name
@@ -24,13 +25,13 @@ exports.handler = async (event) => {
         /* required */
         Password: event['body-json'].password,
         /* required */
-        Username: event['body-json'].username,
+        Username: email,
         /* required */
         UserAttributes: [
             {
                 Name: 'email',
                 /* required */
-                Value: event['body-json'].username
+                Value: email
         },
             {
                 Name: 'name',
