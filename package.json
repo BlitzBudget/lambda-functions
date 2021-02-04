@@ -1,0 +1,22 @@
+{
+  "name": "lambda-functions",
+  "version": "1.0.0",
+  "description": "AWS Lambda Serverless Functions",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NagarjunNagesh/Lambda-Functions.git"
+  },
+  "author": "Nagarjun Nagesh",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/NagarjunNagesh/Lambda-Functions/issues"
+  },
+  "homepage": "https://github.com/NagarjunNagesh/Lambda-Functions#readme",
+  "devDependencies": {
+    "jest": "^26.6.3"
+  }
+}
