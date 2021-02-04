@@ -1,4 +1,5 @@
 const AWS = require('aws-sdk')
+const helper = require('helper');
 AWS.config.update({
     region: 'eu-west-1'
 });
@@ -11,7 +12,7 @@ exports.handler = async (event) => {
     let lastName = event['body-json'].lastname;
     let email = event['body-json'].username.toLowerCase().trim();
 
-    if(isEmpty(firstName) && isEmpty(lastName)) {
+    if(helper.isEmpty(firstName) && helper.isEmpty(lastName)) {
         // Set Name
         let fullName = fetchFirstElement(splitElement(email, '@'));
         let name = fetchFirstAndFamilyName(fullName);
@@ -98,21 +99,21 @@ function fetchFirstAndFamilyName(fullName) {
         let familyName = nameArr[1]
 
         // If First Name is empty then assign family name to first name
-        if (isEmpty(firstName)) {
+        if (helper.isEmpty(firstName)) {
             firstName = familyName;
             familyName = nameArr.length > 2 ? nameArr[2] : ' ';
         }
 
         // First Letter Upper case
         firstName = firstName.length > 1 ? firstName.charAt(0).toUpperCase() + firstName.slice(1) : firstName.charAt(0).toUpperCase();
-        familyName = isEmpty(familyName) ? ' ' : (familyName.length > 1 ? familyName.charAt(0).toUpperCase() + familyName.slice(1) : familyName.charAt(0).toUpperCase());
+        familyName = helper.isEmpty(familyName) ? ' ' : (familyName.length > 1 ? familyName.charAt(0).toUpperCase() + familyName.slice(1) : familyName.charAt(0).toUpperCase());
 
         name['firstName'] = firstName;
         name['familyName'] = familyName;
 
     } else {
         // First Letter Upper case
-        fullName = isEmpty(fullName) ? '' : (fullName.length > 1 ? fullName.charAt(0).toUpperCase() + fullName.slice(1) : fullName.charAt(0).toUpperCase());
+        fullName = helper.isEmpty(fullName) ? '' : (fullName.length > 1 ? fullName.charAt(0).toUpperCase() + fullName.slice(1) : fullName.charAt(0).toUpperCase());
         name['firstName'] = fullName;
         name['familyName'] = ' ';
     }
@@ -120,42 +121,20 @@ function fetchFirstAndFamilyName(fullName) {
     /*
      * Family name
      */
-    if (isEmpty(name['familyName'])) {
+    if (helper.isEmpty(name['familyName'])) {
         name['familyName'] = ' ';
     }
 
     return name;
 }
 
-
-function isEmpty(obj) {
-    // Check if objext is a number or a boolean
-    if (typeof (obj) == 'number' || typeof (obj) == 'boolean') return false;
-
-    // Check if obj is null or undefined
-    if (obj == null || obj === undefined) return true;
-
-    // Check if the length of the obj is defined
-    if (typeof (obj.length) != 'undefined') return obj.length == 0;
-
-    // check if obj is a custom obj
-    for (let key in obj) {
-        if (obj.hasOwnProperty(key)) return false;
-    }
-
-    // Check if obj is an element
-    if (obj instanceof Element) return false;
-
-    return true;
-}
-
 function isNotEmpty(obj) {
-    return !isEmpty(obj);
+    return !helper.isEmpty(obj);
 }
 
 function splitElement(str, splitString) {
     if (includesStr(str, splitString)) {
-        return isEmpty(str) ? str : str.split(splitString);
+        return helper.isEmpty(str) ? str : str.split(splitString);
     }
 
     return str;

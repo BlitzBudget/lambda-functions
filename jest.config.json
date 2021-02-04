@@ -1,0 +1,12 @@
+{
+    "name": "Debug Jest Tests",
+    "type": "node",
+    "request": "launch",
+    "program": "${workspaceFolder}/node_modules/jest/bin/jest.js",
+    "args": [
+        "-i",
+        "-t should dispatch GetAccessToken Test",
+        "-c jest-config.json"  
+    ],
+    "console": "integratedTerminal"
+}
