@@ -1,9 +1,7 @@
-const AWS = require('aws-sdk')
-AWS.config.update({region: 'eu-west-1'});
-let cognitoidentityserviceprovider = new AWS.CognitoIdentityServiceProvider();
-
-// Create the DynamoDB service object
-var docClient = new AWS.DynamoDB.DocumentClient({region: 'eu-west-1'});
+const helper = require('helper');
+const fetchUser = require('fetch-user');
+const fetchWallet = require('fetch-wallet');
+const login = require('login');
 
 exports.handler = async (event) => {
     let response = {};
@@ -16,7 +14,7 @@ exports.handler = async (event) => {
       }
     };
     
-    await initiateAuth(params).then(function(result) {
+    await login.initiateAuth(params).then(function(result) {
        response = result;
     }, function(err) {
        throw new Error("Unable to signin from cognito  " + err);
@@ -26,7 +24,7 @@ exports.handler = async (event) => {
         return response;
     }
 
-    await getUser(response).then(function(result) {
+    await fetchUser.getUser(response).then(function(result) {
        response.Username = result.Username;
        response.UserAttributes = result.UserAttributes;
        console.log("logged in the user " + JSON.stringify(result.Username));
@@ -34,13 +32,8 @@ exports.handler = async (event) => {
        throw new Error("Unable to signin from cognito  " + err);
     });
     
-    let userIdParam;
-    for(const userId of response.UserAttributes) {
-        if(includesStr(userId.Name, 'custom:financialPortfolioId')) {
-            userIdParam = userId.Value;
-        }
-    }
-    await getWallet(userIdParam).then(function(result) {
+    let userIdParam = fetchUserId(response);
+    await fetchWallet.getWallet(userIdParam).then(function(result) {
        response.Wallet = result;
        console.log("logged in the user " + JSON.stringify(result.walletId));
     }, function(err) {
@@ -49,92 +42,3 @@ exports.handler = async (event) => {
     
     return response;
 };
-
-function getWallet(userId) {
-     var params = {
-      TableName: 'blitzbudget',
-      KeyConditionExpression   : "pk = :userId and begins_with(sk, :items)",
-      ExpressionAttributeValues: {
-          ":userId": userId,
-          ":items": "Wallet#"
-      },
-      ProjectionExpression: "currency, pk, sk, total_asset_balance, total_debt_balance, wallet_balance"
-    };
-    
-    // Call DynamoDB to read the item from the table
-    return new Promise((resolve, reject) => {
-        docClient.query(params, function(err, data) {
-          if (err) {
-            console.log("Error ", err);
-            reject(err);
-          } else {
-            console.log("data retrieved ", data.Count);
-            for(const walletObj of data.Items) {
-              walletObj.walletId = walletObj.sk;
-              walletObj.userId = walletObj.pk;
-              delete walletObj.sk;
-              delete walletObj.pk;
-            }
-            resolve(data.Items);
-          }
-        });
-    });
-}
-
-function getUser(response) {
-    let params = {
-      AccessToken: response.AuthenticationResult.AccessToken /* required */
-    };
-
-
-    return new Promise((resolve, reject) => {
-        cognitoidentityserviceprovider.getUser(params, function(err, data) {
-          if (err) {
-              console.log(err, err.stack); // an error occurred
-              reject(err);
-          }
-          else {
-              console.log(data);           // successful response
-              resolve(data);
-          }
-        });
-    });
-}
-
-function initiateAuth(params) {
-    return new Promise((resolve, reject) => {
-        cognitoidentityserviceprovider.initiateAuth(params, function(err, data) {
-          if (err) {
-              console.log(err, err.stack); // an error occurred
-              reject(err);
-          }
-          else {
-              console.log(data);           // successful response
-              resolve(data);
-          }
-        });
-    });
-}
-
-function includesStr(arr, val){
-  return isEmpty(arr) ? null : arr.includes(val); 
-}
-
-
-function  isEmpty(obj) {
-  // Check if objext is a number or a boolean
-  if(typeof(obj) == 'number' || typeof(obj) == 'boolean') return false; 
-  
-  // Check if obj is null or undefined
-  if (obj == null || obj === undefined) return true;
-  
-  // Check if the length of the obj is defined
-  if(typeof(obj.length) != 'undefined') return obj.length == 0;
-   
-  // check if obj is a custom obj
-  for(let key in obj) {
-        if(obj.hasOwnProperty(key))return false;
-    }
-      
-  return true;
-}
