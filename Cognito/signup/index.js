@@ -14,11 +14,18 @@ exports.handler = async (event) => {
 
     let params = helper.buildParamForSignup(event, email, firstName, lastName, accepLan);
 
+    response = await signupUser(params, response);
+
+    return response;
+};
+
+// Signup User
+async function signupUser(params, response) {
     await signup.signUp(params).then(function (result) {
         response = result;
     }, function (err) {
         throw new Error("Unable to signin from cognito  " + err);
     });
-
     return response;
-};
+}
+
