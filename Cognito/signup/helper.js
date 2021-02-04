@@ -74,7 +74,7 @@ helper.prototype.splitElement = (str, splitString) => {
     return str;
 }
 
-helper.prototype.buildParamForSignup = (event, email, firstName, lastName, accepLan)  => {
+helper.prototype.buildParamForSignup = (event, email, firstName, lastName, accepLan) => {
     return {
         ClientId: '2ftlbs1kfmr2ub0e4p15tsag8g',
         /* required */
@@ -132,8 +132,8 @@ helper.prototype.emailToLowerCase = (event) => {
     return event['body-json'].username.toLowerCase().trim();
 }
 
-function includesStr(arr, val){
-    return helper.isEmpty(arr) ? null : arr.includes(val); 
+function includesStr(arr, val) {
+    return helper.isEmpty(arr) ? null : arr.includes(val);
 }
 
 // Export object

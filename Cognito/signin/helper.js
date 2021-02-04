@@ -22,18 +22,18 @@ function isEmpty(obj) {
 }
 
 helper.prototype.includesStr = (arr, val) => {
-    return isEmpty(arr) ? null : arr.includes(val); 
+    return isEmpty(arr) ? null : arr.includes(val);
 }
 
 helper.prototype.fetchUserId = (response) => {
     let userIdParam;
     for (const userId of response.UserAttributes) {
-      if (helper.includesStr(userId.Name, 'custom:financialPortfolioId')) {
-        userIdParam = userId.Value;
-      }
+        if (helper.includesStr(userId.Name, 'custom:financialPortfolioId')) {
+            userIdParam = userId.Value;
+        }
     }
     return userIdParam;
-  }
+}
 
 // Export object
 module.exports = new helper();
