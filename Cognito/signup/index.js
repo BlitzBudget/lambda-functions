@@ -7,12 +7,15 @@ exports.handler = async (event) => {
     let accepLan = JSON.stringify(event.params.header['Accept-Language']);
     let firstName = event['body-json'].firstname;
     let lastName = event['body-json'].lastname;
-    let email = helper.emailToLowerCase(event);
+    let email = event['body-json'].username;    
+    let password = event['body-json'].password;
+    
     let response = {};
+    email = helper.emailToLowerCase(email);
 
     ({ firstName, lastName } = helper.extractFirstAndLastName(firstName, lastName, email));
 
-    let params = helper.buildParamForSignup(event, email, firstName, lastName, accepLan);
+    let params = helper.buildParamForSignup(password, email, firstName, lastName, accepLan);
 
     response = await signupUser(params, response);
 

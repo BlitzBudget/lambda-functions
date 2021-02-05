@@ -33,15 +33,8 @@ let splitElement = (str, splitString) => {
     return str;
 }
 
-helper.prototype.isEmpty = isEmpty;
-
-helper.prototype.isNotEmpty = isNotEmpty;
-
-helper.prototype.splitElement = splitElement;
-
-
 // Calculate First Name and Last Name
-helper.prototype.fetchFirstAndFamilyName = (fullName) => {
+let fetchFirstAndFamilyName = (fullName) => {
     let possibleSym = /[!#$%&'*+-\/=?^_`{|}~]/;
     let name = {};
     let matchFound = fullName.match(possibleSym);
@@ -81,11 +74,22 @@ helper.prototype.fetchFirstAndFamilyName = (fullName) => {
     return name;
 }
 
-helper.prototype.buildParamForSignup = (event, email, firstName, lastName, accepLan) => {
+function includesStr(arr, val) {
+    return isEmpty(arr) ? null : arr.includes(val);
+}
+
+function fetchFirstElement(arr) {
+    if (Array.isArray(arr)) {
+        return isEmpty(arr) ? null : arr[0];
+    }
+    return arr;
+}
+
+helper.prototype.buildParamForSignup = (password, email, firstName, lastName, accepLan) => {
     return {
         ClientId: '2ftlbs1kfmr2ub0e4p15tsag8g',
         /* required */
-        Password: event['body-json'].password,
+        Password: password,
         /* required */
         Username: email,
         /* required */
@@ -125,23 +129,27 @@ helper.prototype.buildParamForSignup = (event, email, firstName, lastName, accep
 }
 
 helper.prototype.extractFirstAndLastName = (firstName, lastName, email) => {
-    if (isEmpty(firstName) && isEmpty(lastName)) {
+    if (isEmpty(firstName) || isEmpty(lastName)) {
         // Set Name
-        let fullName = helper.fetchFirstElement(helper.splitElement(email, '@'));
-        let name = helper.fetchFirstAndFamilyName(fullName);
+        let fullName = fetchFirstElement(splitElement(email, '@'));
+        let name = fetchFirstAndFamilyName(fullName);
         firstName = name.firstName;
         lastName = name.familyName;
     }
     return { firstName, lastName };
 }
 
-helper.prototype.emailToLowerCase = (event) => {
-    return event['body-json'].username.toLowerCase().trim();
+helper.prototype.emailToLowerCase = (email) => {
+    return email.toLowerCase().trim();
 }
 
-function includesStr(arr, val) {
-    return isEmpty(arr) ? null : arr.includes(val);
-}
+helper.prototype.isEmpty = isEmpty;
+
+helper.prototype.isNotEmpty = isNotEmpty;
+
+helper.prototype.splitElement = splitElement;
+
+helper.prototype.fetchFirstAndFamilyName = fetchFirstAndFamilyName;
 
 // Export object
 module.exports = new helper();
