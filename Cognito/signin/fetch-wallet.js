@@ -1,11 +1,6 @@
 var fetchWallet = function () { };
 
-const AWS = require('aws-sdk')
-AWS.config.update({ region: 'eu-west-1' });
-// Create the DynamoDB service object
-var docClient = new AWS.DynamoDB.DocumentClient({ region: 'eu-west-1' });
-
-fetchWallet.prototype.getWallet = (userId) => {
+fetchWallet.prototype.getWallet = (userId, docClient) => {
     var params = {
         TableName: 'blitzbudget',
         KeyConditionExpression: "pk = :userId and begins_with(sk, :items)",

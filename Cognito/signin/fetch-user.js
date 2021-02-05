@@ -1,9 +1,5 @@
 var fetchUser = function () { };
 
-const AWS = require('aws-sdk')
-AWS.config.update({ region: 'eu-west-1' });
-let cognitoidentityserviceprovider = new AWS.CognitoIdentityServiceProvider();
-
 fetchUser.prototype.getUser = (response) => {
     let params = {
         AccessToken: response.AuthenticationResult.AccessToken /* required */
