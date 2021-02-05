@@ -1,6 +1,6 @@
 var helper = function () { };
 
-helper.prototype.isEmpty = (obj) => {
+function isEmpty(obj) {
     // Check if objext is a number or a boolean
     if (typeof (obj) == 'number' || typeof (obj) == 'boolean') return false;
 
@@ -21,6 +21,25 @@ helper.prototype.isEmpty = (obj) => {
     return true;
 }
 
+function isNotEmpty(obj) {
+    return !isEmpty(obj);
+}
+
+let splitElement = (str, splitString) => {
+    if (includesStr(str, splitString)) {
+        return isEmpty(str) ? str : str.split(splitString);
+    }
+
+    return str;
+}
+
+helper.prototype.isEmpty = isEmpty;
+
+helper.prototype.isNotEmpty = isNotEmpty;
+
+helper.prototype.splitElement = splitElement;
+
+
 // Calculate First Name and Last Name
 helper.prototype.fetchFirstAndFamilyName = (fullName) => {
     let possibleSym = /[!#$%&'*+-\/=?^_`{|}~]/;
@@ -33,21 +52,21 @@ helper.prototype.fetchFirstAndFamilyName = (fullName) => {
         let familyName = nameArr[1]
 
         // If First Name is empty then assign family name to first name
-        if (helper.isEmpty(firstName)) {
+        if (isEmpty(firstName)) {
             firstName = familyName;
             familyName = nameArr.length > 2 ? nameArr[2] : ' ';
         }
 
         // First Letter Upper case
         firstName = firstName.length > 1 ? firstName.charAt(0).toUpperCase() + firstName.slice(1) : firstName.charAt(0).toUpperCase();
-        familyName = helper.isEmpty(familyName) ? ' ' : (familyName.length > 1 ? familyName.charAt(0).toUpperCase() + familyName.slice(1) : familyName.charAt(0).toUpperCase());
+        familyName = isEmpty(familyName) ? ' ' : (familyName.length > 1 ? familyName.charAt(0).toUpperCase() + familyName.slice(1) : familyName.charAt(0).toUpperCase());
 
         name['firstName'] = firstName;
         name['familyName'] = familyName;
 
     } else {
         // First Letter Upper case
-        fullName = helper.isEmpty(fullName) ? '' : (fullName.length > 1 ? fullName.charAt(0).toUpperCase() + fullName.slice(1) : fullName.charAt(0).toUpperCase());
+        fullName = isEmpty(fullName) ? '' : (fullName.length > 1 ? fullName.charAt(0).toUpperCase() + fullName.slice(1) : fullName.charAt(0).toUpperCase());
         name['firstName'] = fullName;
         name['familyName'] = ' ';
     }
@@ -55,23 +74,11 @@ helper.prototype.fetchFirstAndFamilyName = (fullName) => {
     /*
      * Family name
      */
-    if (helper.isEmpty(name['familyName'])) {
+    if (isEmpty(name['familyName'])) {
         name['familyName'] = ' ';
     }
 
     return name;
-}
-
-helper.prototype.isNotEmpty = (obj) => {
-    return !helper.isEmpty(obj);
-}
-
-helper.prototype.splitElement = (str, splitString) => {
-    if (includesStr(str, splitString)) {
-        return helper.isEmpty(str) ? str : str.split(splitString);
-    }
-
-    return str;
 }
 
 helper.prototype.buildParamForSignup = (event, email, firstName, lastName, accepLan) => {
@@ -118,7 +125,7 @@ helper.prototype.buildParamForSignup = (event, email, firstName, lastName, accep
 }
 
 helper.prototype.extractFirstAndLastName = (firstName, lastName, email) => {
-    if (helper.isEmpty(firstName) && helper.isEmpty(lastName)) {
+    if (isEmpty(firstName) && isEmpty(lastName)) {
         // Set Name
         let fullName = helper.fetchFirstElement(helper.splitElement(email, '@'));
         let name = helper.fetchFirstAndFamilyName(fullName);
@@ -133,7 +140,7 @@ helper.prototype.emailToLowerCase = (event) => {
 }
 
 function includesStr(arr, val) {
-    return helper.isEmpty(arr) ? null : arr.includes(val);
+    return isEmpty(arr) ? null : arr.includes(val);
 }
 
 // Export object
