@@ -1,36 +1,23 @@
-const AWS = require('aws-sdk')
-AWS.config.update({region: 'eu-west-1'});
-let cognitoidentityserviceprovider = new AWS.CognitoIdentityServiceProvider();
+const helper = require('utils/helper');
+const changePassword = require('user/change-password');
 
 exports.handler = async (event) => {
-    let response = {};
-    let params = {
-      AccessToken: event['body-json'].accessToken, /* required */
-      PreviousPassword: event['body-json'].previousPassword, /* required */
-      ProposedPassword: event['body-json'].newPassword /* required */
-    };
+    let accessToken = event['body-json'].accessToken;
+    let previousPassword = event['body-json'].previousPassword;
+    let newPassword = event['body-json'].newPassword;
     
-    await changePassword(params).then(function(result) {
-       response = result;
-    }, function(err) {
-       throw new Error("Unable to change password from cognito  " + err);
-    });
-    
+    let response = await handleChangePassword(accessToken, previousPassword, newPassword, response);
     
     return response;
 };
 
-function changePassword(params) {
-    return new Promise((resolve, reject) => {
-        cognitoidentityserviceprovider.changePassword(params, function(err, data) {
-          if (err) {
-              console.log(err, err.stack); // an error occurred
-              reject(err);
-          }
-          else {
-              console.log(data);           // successful response
-              resolve(data);
-          }
-        });
+async function handleChangePassword(accessToken, previousPassword, newPassword, response) {
+    let params = helper.changePasswordParameters(accessToken, previousPassword, newPassword);
+
+    await changePassword.changePassword(params).then(function (result) {
+        response = result;
+    }, function (err) {
+        throw new Error("Unable to change password from cognito  " + err);
     });
+    return response;
 }
