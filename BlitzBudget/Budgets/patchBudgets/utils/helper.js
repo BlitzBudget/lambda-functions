@@ -51,4 +51,4 @@ helper.prototype.formulateDateFromRequest = (event) => {
 }
 
 // Export object
-module.exports = new helper();
+module.exports = new helper(); 
