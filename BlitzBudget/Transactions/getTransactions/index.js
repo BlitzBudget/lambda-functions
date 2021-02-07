@@ -1,3 +1,7 @@
+const helper = require('utils/helper');
+const fetchHelper = require('utils/fetch-helper');
+const snsHelper = require('utils/sns-helper');
+
 // Load the AWS SDK for Node.js
 var AWS = require('aws-sdk');
 // Set the region 
@@ -20,16 +24,16 @@ exports.handler = async (event) => {
     percentage = 1;
     console.log("fetching item for the walletId ", event['body-json'].walletId);
     let events = [];
-    let { startsWithDate, endsWithDate, walletId, userId } = extractVariablesFromRequest(event);
-    let fullMonth = isFullMonth(startsWithDate, endsWithDate);
+    let { startsWithDate, endsWithDate, walletId, userId } = helper.extractVariablesFromRequest(event);
+    let fullMonth = helper.isFullMonth(startsWithDate, endsWithDate);
 
     // Cognito does not store wallet information nor curreny. All are stored in wallet.
-    walletId = await fetchWalletItem(walletId, userId, docClient);
+    walletId = await fetchHelper.fetchWalletItem(walletId, userId, docClient);
 
-    await fetchAllRelevantItems(events, walletId, startsWithDate, endsWithDate, docClient, snsEvents, sns);
+    await fetchHelper.fetchAllRelevantItems(events, walletId, startsWithDate, endsWithDate, docClient, snsEvents, sns);
 
-    calculateDateAndCategoryTotal(fullMonth);
+    helper.calculateDateAndCategoryTotal(fullMonth);
 
-    await sendSNSToCreateNewTransactions(snsEvents);
+    await snsHelper.sendSNSToCreateNewTransactions(snsEvents);
     return transactionData;
 };

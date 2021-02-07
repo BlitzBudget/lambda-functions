@@ -1,3 +1,4 @@
+var addCategory = function () { };
 
 function createCategoryItem(event, skForCategory, categoryName, docClient) {
 
@@ -39,3 +40,7 @@ function createCategoryItem(event, skForCategory, categoryName, docClient) {
         };
     }
 }
+
+addCategory.prototype.createCategoryItem = createCategoryItem;
+// Export object
+module.exports = new addCategory(); 

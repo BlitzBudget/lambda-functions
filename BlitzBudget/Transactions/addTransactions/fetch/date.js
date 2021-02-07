@@ -1,3 +1,5 @@
+var fetchDate = function () { };
+
 function getDateData(pk, today) {
     var params = {
         TableName: 'blitzbudget',
@@ -24,3 +26,7 @@ function getDateData(pk, today) {
         });
     });
 }
+
+fetchDate.prototype.getDateData = getDateData;
+// Export object
+module.exports = new fetchDate(); 

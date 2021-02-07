@@ -1,23 +1,8 @@
+var addCategory = function () { };
 
-function createCategoryItem(event, skForCategory, categoryName) {
+function createCategoryItem(event, skForCategory, categoryName, docClient) {
 
-    var params = {
-        TableName: 'blitzbudget',
-        Key: {
-            "pk": event['body-json'].walletId,
-            "sk": skForCategory,
-        },
-        UpdateExpression: "set category_total = :r, category_name = :p, category_type = :q, date_meant_for = :s, creation_date = :c, updated_date = :u",
-        ExpressionAttributeValues: {
-            ":r": 0,
-            ":p": categoryName,
-            ":q": event['body-json'].categoryType,
-            ":s": event['body-json'].dateMeantFor,
-            ":c": new Date().toISOString(),
-            ":u": new Date().toISOString()
-        },
-        ReturnValues: 'ALL_NEW'
-    }
+    var params = createParameters()
 
     console.log("Adding a new item...");
     return new Promise((resolve, reject) => {
@@ -34,4 +19,28 @@ function createCategoryItem(event, skForCategory, categoryName) {
             }
         });
     });
+
+    function createParameters() {
+        return {
+            TableName: 'blitzbudget',
+            Key: {
+                "pk": event['body-json'].walletId,
+                "sk": skForCategory,
+            },
+            UpdateExpression: "set category_total = :r, category_name = :p, category_type = :q, date_meant_for = :s, creation_date = :c, updated_date = :u",
+            ExpressionAttributeValues: {
+                ":r": 0,
+                ":p": categoryName,
+                ":q": event['body-json'].categoryType,
+                ":s": event['body-json'].dateMeantFor,
+                ":c": new Date().toISOString(),
+                ":u": new Date().toISOString()
+            },
+            ReturnValues: 'ALL_NEW'
+        };
+    }
 }
+
+addCategory.prototype.createCategoryItem = createCategoryItem;
+// Export object
+module.exports = new addCategory(); 

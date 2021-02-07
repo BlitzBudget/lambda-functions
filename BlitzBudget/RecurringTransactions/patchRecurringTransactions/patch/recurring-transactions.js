@@ -1,7 +1,9 @@
+var patchRecurringTransaction = function () { };
+
+const helper = require('../utils/helper');
+const parameters = require('../utils/parameters');
 
 function updatingRecurringTransactions(event, docClient) {
-
-
 
     var params = createParameters();
 
@@ -28,7 +30,7 @@ function updatingRecurringTransactions(event, docClient) {
         let expAttrVal = {};
         let expAttrNames = {};
 
-        if (isEmpty(event['body-json'])) {
+        if (helper.isEmpty(event['body-json'])) {
             return;
         }
 
@@ -39,12 +41,12 @@ function updatingRecurringTransactions(event, docClient) {
 
 
             // If the parameter is not found then do not save
-            if (isEmpty(event['body-json'][prm.prmName])) {
+            if (helper.isEmpty(event['body-json'][prm.prmName])) {
                 continue;
             }
 
             // Add a comma to update expression
-            if (includesStr(updateExp, '#variable')) {
+            if (helper.includesStr(updateExp, '#variable')) {
                 updateExp += ',';
             }
 
@@ -56,7 +58,7 @@ function updatingRecurringTransactions(event, docClient) {
         }
 
         console.log(" update expression ", JSON.stringify(updateExp), " expression attribute value ", JSON.stringify(expAttrVal), ' expression Attribute Names ', JSON.stringify(expAttrNames));
-        if (isEmpty(expAttrVal)) {
+        if (helper.isEmpty(expAttrVal)) {
             return;
         }
 
@@ -77,3 +79,7 @@ function updatingRecurringTransactions(event, docClient) {
         };
     }
 }
+
+patchRecurringTransaction.prototype.updatingRecurringTransactions = updatingRecurringTransactions;
+// Export object
+module.exports = new patchRecurringTransaction(); 

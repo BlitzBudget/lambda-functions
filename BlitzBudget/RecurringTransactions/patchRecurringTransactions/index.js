@@ -1,3 +1,6 @@
+const fetchHelper = require('utils/fetch-helper');
+const updateHelper = require('utils/update-helper');
+
 // Load the AWS SDK for Node.js
 var AWS = require('aws-sdk');
 // Set the region
@@ -12,9 +15,9 @@ exports.handler = async (event) => {
     let events = [];
     console.log("updating transactions for ", JSON.stringify(event['body-json']));
 
-    await calculateAndFetchCategory(event, events, docClient);
+    await fetchHelper.calculateAndFetchCategory(event, events, docClient);
 
-    await updateRecurringTransaction(events, event, docClient);
+    await updateHelper.updateRecurringTransaction(events, event, docClient);
 
     return event;
 };

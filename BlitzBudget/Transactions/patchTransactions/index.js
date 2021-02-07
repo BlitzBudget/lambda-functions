@@ -1,3 +1,6 @@
+const helper = require('utils/helper');
+const updateHelper = require('utils/update-helper');
+
 // Load the AWS SDK for Node.js
 var AWS = require('aws-sdk');
 // Set the region 
@@ -15,9 +18,9 @@ exports.handler = async (event) => {
     /*
      * If category Id is not present
      */
-    await calculateAndFetchCategory(event, events);
+    await helper.calculateAndFetchCategory(event, events, docClient);
 
-    await updateAllItems(events, event);
+    await updateHelper.updateAllItems(events, event, docClient);
 
     return event;
 };

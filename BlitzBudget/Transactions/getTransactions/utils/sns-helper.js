@@ -1,8 +1,12 @@
+var snsHelper = function () { };
+
+const helper = require('helper');
+
 /*
 * Send to SNS events
 */
 async function sendSNSToCreateNewTransactions(snsEvents) {
-    if (isNotEmpty(snsEvents)) {
+    if (helper.isNotEmpty(snsEvents)) {
         await Promise.all(snsEvents).then(function () {
             console.log("Successfully sent the pending recurring transactions for creation");
         }, function (err) {
@@ -10,3 +14,7 @@ async function sendSNSToCreateNewTransactions(snsEvents) {
         });
     }
 }
+
+snsHelper.prototype.sendSNSToCreateNewTransactions = sendSNSToCreateNewTransactions;
+// Export object
+module.exports = new snsHelper(); 

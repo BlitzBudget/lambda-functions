@@ -1,3 +1,4 @@
+var createTransaction = function () { };
 
 function markTransactionForCreation(recurringTransaction, sns) {
     console.log("Marking the recurring transaction for creation %j", recurringTransaction.sk);
@@ -78,3 +79,7 @@ function markTransactionForCreation(recurringTransaction, sns) {
         };
     }
 }
+
+createTransaction.prototype.markTransactionForCreation = markTransactionForCreation;
+// Export object
+module.exports = new createTransaction(); 

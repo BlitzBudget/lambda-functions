@@ -1,5 +1,6 @@
+var addDate = function () { };
 
-function createDateData(event, skForDate) {
+function createDateData(event, skForDate, docClient) {
 
     var params = {
         TableName: 'blitzbudget',
@@ -35,3 +36,7 @@ function createDateData(event, skForDate) {
     });
 
 }
+
+addDate.prototype.createDateData = createDateData;
+// Export object
+module.exports = new addDate(); 

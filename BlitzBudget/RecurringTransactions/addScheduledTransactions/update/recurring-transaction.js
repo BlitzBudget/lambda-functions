@@ -3,21 +3,9 @@ var recurringTransaction = function () { };
 /*
  * Update the recurring transaction
  */
-function updateRecurringTransactionsData(walletId, sk, futureTransactionCreationDate) {
+function updateRecurringTransactionsData(walletId, sk, futureTransactionCreationDate, DB) {
 
-    var params = {
-        TableName: 'blitzbudget',
-        Key: {
-            "pk": walletId,
-            "sk": sk,
-        },
-        UpdateExpression: "set next_scheduled = :ns, updated_date = :u",
-        ExpressionAttributeValues: {
-            ":ns": futureTransactionCreationDate,
-            ":u": new Date().toISOString()
-        },
-        ReturnValues: 'ALL_NEW'
-    }
+    var params = createParameters()
 
     console.log("Adding a new item...");
     return new Promise((resolve, reject) => {
@@ -31,6 +19,22 @@ function updateRecurringTransactionsData(walletId, sk, futureTransactionCreation
             }
         });
     });
+
+    function createParameters() {
+        return {
+            TableName: 'blitzbudget',
+            Key: {
+                "pk": walletId,
+                "sk": sk,
+            },
+            UpdateExpression: "set next_scheduled = :ns, updated_date = :u",
+            ExpressionAttributeValues: {
+                ":ns": futureTransactionCreationDate,
+                ":u": new Date().toISOString()
+            },
+            ReturnValues: 'ALL_NEW'
+        };
+    }
 }
 
 recurringTransaction.prototype.updateRecurringTransactionsData = updateRecurringTransactionsData;

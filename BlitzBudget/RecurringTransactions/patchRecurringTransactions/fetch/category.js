@@ -1,3 +1,6 @@
+var fetchCategory = function () { };
+
+const helper = require('../utils/helper');
 
 function getCategoryData(docClient, event, today) {
     var params = createParameter();
@@ -11,7 +14,7 @@ function getCategoryData(docClient, event, today) {
             } else {
                 console.log("data retrieved - Category %j", data.Count);
                 let obj;
-                if (isNotEmpty(data.Items)) {
+                if (helper.isNotEmpty(data.Items)) {
                     for (const categoryObj of data.Items) {
                         if (isEqual(categoryObj['category_type'], event['body-json'].categoryType) &&
                             isEqual(categoryObj['category_name'], event['body-json'].category)) {
@@ -21,7 +24,7 @@ function getCategoryData(docClient, event, today) {
                     }
                 }
 
-                if (isEmpty(obj)) {
+                if (helper.isEmpty(obj)) {
                     console.log("No matching categories found");
                 }
 
@@ -44,3 +47,7 @@ function getCategoryData(docClient, event, today) {
         };
     }
 }
+
+fetchCategory.prototype.getCategoryData = getCategoryData;
+// Export object
+module.exports = new fetchCategory(); 

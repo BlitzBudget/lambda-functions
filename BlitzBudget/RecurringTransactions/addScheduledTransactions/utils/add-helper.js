@@ -1,23 +1,29 @@
 var addHelper = function () { };
 
-function constructRequestAndCreateItems(addItemArray, datesMap, categoryMap, event) {
+const addTransaction = require('../create-parameters/transaction');
+const addCategoryParam = require('../create-parameters/category');
+const batchWriteItems = require('../add/batch-write');
+const fetchHelper = require('fetch-helper');
+const helper = require('helper');
+
+function constructRequestAndCreateItems(addItemArray, datesMap, categoryMap, event, DB) {
     console.log(" The number of dates and categories to create are %j", addItemArray.length);
     // Add all transactions
-    constructTransactionsWithDateMeantForAndCategory(datesMap, categoryMap, event, addItemArray);
+    addTransaction.constructTransactionsWithDateMeantForAndCategory(datesMap, categoryMap, event, addItemArray);
     console.log(" The number of transactions to create are %j", addItemArray.length);
 
     // Split array into sizes of 25
-    let putRequests = chunkArrayInGroups(addItemArray, 25);
+    let putRequests = helper.chunkArrayInGroups(addItemArray, 25);
 
     // Push Events  to be executed in bulk
-    createAllItemsInBatch(putRequests);
+    createAllItemsInBatch(putRequests, DB);
 }
 
 /*
 * Start processing categories
 */
-async function calculateAndAddAllCategories(category, walletId, categoryType, categoryName, categoryMap, addItemArray, datesMap, events) {
-    await calculateCategoriesToAdd(category, walletId, categoryType, categoryName, categoryMap, addItemArray, datesMap, events);
+async function calculateAndAddAllCategories(category, walletId, categoryType, categoryName, categoryMap, addItemArray, datesMap, events, DB) {
+    await calculateCategoriesToAdd(category, walletId, categoryType, categoryName, categoryMap, addItemArray, datesMap, events, DB);
 
     /*
      * Add all categories first
@@ -25,14 +31,14 @@ async function calculateAndAddAllCategories(category, walletId, categoryType, ca
     await addAllCategories(events);
 }
 
-function createAllItemsInBatch(putRequests) {
+function createAllItemsInBatch(putRequests, DB) {
     for (const putRequest of putRequests) {
         let params = {};
         params.RequestItems = {};
         params.RequestItems.blitzbudget = putRequest;
         console.log("The put request is in batch  with length %j", params.RequestItems.blitzbudget.length);
         // Delete Items in batch
-        events.push(batchWriteItems(params));
+        events.push(batchWriteItems.batchWriteItems(params, DB));
     }
 }
 
@@ -45,8 +51,8 @@ async function addAllCategories(events) {
     });
 }
 
-async function calculateCategoriesToAdd(category, walletId, categoryType, categoryName, categoryMap, addItemArray, datesMap, events) {
-    pushAllCategoriesToFetch(category, walletId, categoryType, categoryName);
+async function calculateCategoriesToAdd(category, walletId, categoryType, categoryName, categoryMap, addItemArray, datesMap, events, DB) {
+    fetchHelper.pushAllCategoriesToFetch(category, walletId, categoryType, categoryName, DB);
 
     /*
      * Publish events to get category data
@@ -56,7 +62,7 @@ async function calculateCategoriesToAdd(category, walletId, categoryType, catego
         console.log("Processing Categories to create");
         for (const categoryItem of result) {
             categoryMap[categoryItem.dateMeantFor] = categoryItem.sortKey;
-            addItemArray.push(buildParamsForCategory(walletId, categoryItem.sortKey, categoryType, categoryName, datesMap[categoryItem.dateMeantFor]));
+            addItemArray.push(addCategoryParam.buildParamsForCategory(walletId, categoryItem.sortKey, categoryType, categoryName, datesMap[categoryItem.dateMeantFor]));
         }
     }, function (err) {
         throw new Error("Unable to get the category for the recurring transaction" + err);

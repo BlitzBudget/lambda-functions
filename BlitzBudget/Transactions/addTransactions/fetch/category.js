@@ -1,3 +1,7 @@
+var fetchCategory = function () { };
+
+const helper = require('../utils/helper');
+
 function getCategoryData(categoryId, event, today) {
     var params = {
         TableName: 'blitzbudget',
@@ -18,17 +22,17 @@ function getCategoryData(categoryId, event, today) {
             } else {
                 console.log("data retrieved - Category %j", data.Count);
                 let obj;
-                if (isNotEmpty(data.Items)) {
+                if (helper.isNotEmpty(data.Items)) {
                     for (const categoryObj of data.Items) {
-                        if (isEqual(categoryObj['category_type'], event['body-json'].categoryType) &&
-                            isEqual(categoryObj['category_name'], event['body-json'].category)) {
+                        if (helper.isEqual(categoryObj['category_type'], event['body-json'].categoryType) &&
+                        helper.isEqual(categoryObj['category_name'], event['body-json'].category)) {
                             console.log("Found a match for the mentioned category %j", categoryObj.sk);
                             obj = categoryObj;
                         }
                     }
                 }
 
-                if (isEmpty(obj)) {
+                if (helper.isEmpty(obj)) {
                     console.log("No matching categories found");
                 }
 
@@ -39,3 +43,7 @@ function getCategoryData(categoryId, event, today) {
         });
     });
 }
+
+fetchCategory.prototype.getCategoryData = getCategoryData;
+// Export object
+module.exports = new fetchCategory(); 

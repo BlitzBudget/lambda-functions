@@ -3,7 +3,7 @@ var date = function () { };
 /*
  * Get Date Data
  */
-function getDateData(pk, today) {
+function getDateData(pk, today, DB) {
     var params = {
         TableName: 'blitzbudget',
         KeyConditionExpression: "pk = :pk AND begins_with(sk, :items)",

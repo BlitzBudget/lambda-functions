@@ -1,3 +1,4 @@
+var helper = function () { };
 
 function extractVariablesFromRequest(event) {
     let userId = event['body-json'].userId;
@@ -14,62 +15,77 @@ function calculateDateAndCategoryTotal(fullMonth) {
         expenseTotal = 0,
         periodBalance = 0;
 
-    for (const transObj of transactionData.Transaction) {
-        if (isEmpty(categoryList[transObj.category])) {
-            categoryList[transObj.category] = transObj.amount;
-        } else {
-            categoryList[transObj.category] += transObj.amount;
-        }
-        transObj.transactionId = transObj.sk;
-        transObj.walletId = transObj.pk;
-        delete transObj.sk;
-        delete transObj.pk;
-    }
+    organizeTransactionItems();
 
-    for (const categoryObj of transactionData.Category) {
-        if (isNotEmpty(categoryList[categoryObj.sk]) && !fullMonth) {
-            categoryObj['category_total'] = categoryList[categoryObj.sk];
-        }
+    organizeCategoryItems();
 
-        if (isEqual(categoryObj['category_type'], 'Income')) {
-            incomeTotal += categoryObj['category_total'];
-        } else if (isEqual(categoryObj['category_type'], 'Expense')) {
-            expenseTotal += categoryObj['category_total'];
-        }
-        periodBalance = incomeTotal + expenseTotal;
-        categoryObj.categoryId = categoryObj.sk;
-        categoryObj.walletId = categoryObj.pk;
-        delete categoryObj.sk;
-        delete categoryObj.pk;
-    }
-
-    for (const dateObj of transactionData.Date) {
-        dateObj.dateId = dateObj.sk;
-        dateObj.walletId = dateObj.pk;
-        delete dateObj.sk;
-        delete dateObj.pk;
-    }
+    organizeDateItems();
 
     /*
      * Assuming the category total will be equal to the transactions added
      */
-    for (const budgetObj of transactionData.Budget) {
-        budgetObj.planned = budgetObj.planned * percentage;
-        if (isNotEmpty(categoryList[budgetObj.category])) {
-            budgetObj.used = categoryList[budgetObj.category];
-        } else {
-            budgetObj.used = 0;
-        }
-        budgetObj.budgetId = budgetObj.sk;
-        budgetObj.walletId = budgetObj.pk;
-        delete budgetObj.sk;
-        delete budgetObj.pk;
-    }
+    organizeBudgetItems();
 
     transactionData.incomeTotal = incomeTotal;
     transactionData.expenseTotal = expenseTotal;
     transactionData.balance = periodBalance;
 
+    function organizeBudgetItems() {
+        for (const budgetObj of transactionData.Budget) {
+            budgetObj.planned = budgetObj.planned * percentage;
+            if (isNotEmpty(categoryList[budgetObj.category])) {
+                budgetObj.used = categoryList[budgetObj.category];
+            } else {
+                budgetObj.used = 0;
+            }
+            budgetObj.budgetId = budgetObj.sk;
+            budgetObj.walletId = budgetObj.pk;
+            delete budgetObj.sk;
+            delete budgetObj.pk;
+        }
+    }
+
+    function organizeDateItems() {
+        for (const dateObj of transactionData.Date) {
+            dateObj.dateId = dateObj.sk;
+            dateObj.walletId = dateObj.pk;
+            delete dateObj.sk;
+            delete dateObj.pk;
+        }
+    }
+
+    function organizeCategoryItems() {
+        for (const categoryObj of transactionData.Category) {
+            if (isNotEmpty(categoryList[categoryObj.sk]) && !fullMonth) {
+                categoryObj['category_total'] = categoryList[categoryObj.sk];
+            }
+
+            if (isEqual(categoryObj['category_type'], 'Income')) {
+                incomeTotal += categoryObj['category_total'];
+            } else if (isEqual(categoryObj['category_type'], 'Expense')) {
+                expenseTotal += categoryObj['category_total'];
+            }
+            periodBalance = incomeTotal + expenseTotal;
+            categoryObj.categoryId = categoryObj.sk;
+            categoryObj.walletId = categoryObj.pk;
+            delete categoryObj.sk;
+            delete categoryObj.pk;
+        }
+    }
+
+    function organizeTransactionItems() {
+        for (const transObj of transactionData.Transaction) {
+            if (isEmpty(categoryList[transObj.category])) {
+                categoryList[transObj.category] = transObj.amount;
+            } else {
+                categoryList[transObj.category] += transObj.amount;
+            }
+            transObj.transactionId = transObj.sk;
+            transObj.walletId = transObj.pk;
+            delete transObj.sk;
+            delete transObj.pk;
+        }
+    }
 }
 
 
@@ -131,3 +147,13 @@ function isEqual(obj1, obj2) {
 function isNotEqual(obj1, obj2) {
     return !isEqual(obj1, obj2);
 }
+
+helper.prototype.isNotEqual = isNotEqual;
+helper.prototype.isEqual = isEqual;
+helper.prototype.isNotEmpty = isNotEmpty;
+helper.prototype.isEmpty = isEmpty;
+helper.prototype.isFullMonth = isFullMonth;
+helper.prototype.calculateDateAndCategoryTotal = calculateDateAndCategoryTotal;
+helper.prototype.extractVariablesFromRequest = extractVariablesFromRequest;
+// Export object
+module.exports = new helper(); 

@@ -1,3 +1,4 @@
+var helper = function () { };
 
 function includesStr(arr, val) {
     return isEmpty(arr) ? null : arr.includes(val);
@@ -54,3 +55,12 @@ function throwErrorIfEmpty(event, walletId) {
         throw new Error("Unable to add the transaction as date is mandatory");
     }
 }
+
+helper.prototype.throwErrorIfEmpty = throwErrorIfEmpty;
+helper.prototype.isEqual = isEqual;
+helper.prototype.isNotEmpty = isNotEmpty;
+helper.prototype.isEmpty = isEmpty;
+helper.prototype.notIncludesStr = notIncludesStr;
+helper.prototype.includesStr = includesStr;
+// Export object
+module.exports = new helper(); 

@@ -1,3 +1,7 @@
+const helper = require('utils/helper');
+const fetchHelper = require('utils/fetch-helper');
+const addHelper = require('utils/add-helper');
+
 // Load the AWS SDK for Node.js
 var AWS = require('aws-sdk');
 // Set the region 
@@ -13,13 +17,13 @@ exports.handler = async (event) => {
     let events = [];
     let walletId = event['body-json'].walletId;
 
-    throwErrorIfEmpty(event, walletId);
+    helper.throwErrorIfEmpty(event, walletId);
 
-    await calculateAndFetchDate(event, walletId, events);
+    await fetchHelper.calculateAndFetchDate(event, walletId, events, docClient);
 
-    await calculateAndFetchCategory(event, events);
+    await fetchHelper.calculateAndFetchCategory(event, events, docClient);
 
-    await addAllItems(events, event);
+    await addHelper.addAllItems(events, event, docClient);
 
     return event;
 };

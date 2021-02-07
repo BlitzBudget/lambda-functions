@@ -3,7 +3,7 @@ var batchWrite = function () { };
 /*
  * Batch write all the transactions and dates created
  */
-function batchWriteItems(paramsPartial) {
+function batchWriteItems(paramsPartial, DB) {
     return new Promise((resolve, reject) => {
         DB.batchWrite(paramsPartial, function (err, data) {
             if (err) {

@@ -1,5 +1,7 @@
 var scheduledDate = function () { };
 
+const helper = require('helper');
+
 /*
  * Build params for put items (transactions)
  */
@@ -32,7 +34,7 @@ function calculateNextDateToCreates(event, futureTransactionCreationDate, datesT
              * Scheduled Transactions
              */
             let nextDateToCreateAsString = nextDateToCreate.getFullYear() + '-' + ('0' + (nextDateToCreate.getMonth() + 1)).slice(-2);
-            if (notIncludesStr(datesToCreateTransactions, nextDateToCreateAsString)) {
+            if (helper.notIncludesStr(datesToCreateTransactions, nextDateToCreateAsString)) {
                 datesToCreateTransactions.push(nextDateToCreateAsString);
             }
 

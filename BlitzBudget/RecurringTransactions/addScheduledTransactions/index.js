@@ -24,13 +24,11 @@ exports.handler = async (event) => {
     let { walletId, category, categoryType, categoryName, recurringTransactionsId } = helper.extractVariablesFromRequest(event);
     scheduledDates.calculateNextDateToCreates(event, futureTransactionCreationDate, datesToCreateTransactions);
 
-    fetchHelper.fetchDatesForWallet(walletId, events);
+    await fetchHelper.calculateAndAddAllDates(addItemArray, walletId, datesMap, events, DB);
 
-    await fetchHelper.calculateAndAddAllDates(addItemArray, walletId, datesMap, events);
+    await addHelper.calculateAndAddAllCategories(category, walletId, categoryType, categoryName, categoryMap, addItemArray, datesMap, events, DB);
 
-    await addHelper.calculateAndAddAllCategories(category, walletId, categoryType, categoryName, categoryMap, addItemArray, datesMap, events);
+    addHelper.constructRequestAndCreateItems(addItemArray, datesMap, categoryMap, event, DB);
 
-    addHelper.constructRequestAndCreateItems(addItemArray, datesMap, categoryMap, event);
-
-    await updateHelper.updateRecurringTransaction(walletId, recurringTransactionsId, futureTransactionCreationDate);
+    await updateHelper.updateRecurringTransaction(walletId, recurringTransactionsId, futureTransactionCreationDate, DB);
 }

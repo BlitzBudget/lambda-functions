@@ -1,14 +1,7 @@
+var date = function () { };
 
 function getDateData(pk, year, docClient) {
-    var params = {
-        TableName: 'blitzbudget',
-        KeyConditionExpression: "pk = :pk and begins_with(sk, :items)",
-        ExpressionAttributeValues: {
-            ":pk": pk,
-            ":items": "Date#" + year
-        },
-        ProjectionExpression: "pk, sk, income_total, expense_total, balance"
-    };
+    var params = createParameters();
 
     // Call DynamoDB to read the item from the table
     return new Promise((resolve, reject) => {
@@ -25,4 +18,20 @@ function getDateData(pk, year, docClient) {
             }
         });
     });
+
+    function createParameters() {
+        return {
+            TableName: 'blitzbudget',
+            KeyConditionExpression: "pk = :pk and begins_with(sk, :items)",
+            ExpressionAttributeValues: {
+                ":pk": pk,
+                ":items": "Date#" + year
+            },
+            ProjectionExpression: "pk, sk, income_total, expense_total, balance"
+        };
+    }
 }
+
+date.prototype.getDateData = getDateData;
+// Export object
+module.exports = new date(); 

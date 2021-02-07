@@ -1,3 +1,4 @@
+var helper = function () { };
 
 function isEmpty(obj) {
     // Check if objext is a number or a boolean
@@ -35,3 +36,10 @@ function isEqual(obj1, obj2) {
     }
     return false;
 }
+
+helper.prototype.isNotEmpty = isNotEmpty;
+helper.prototype.isEmpty = isEmpty;
+helper.prototype.isNotEqual = isNotEqual;
+helper.prototype.isEqual = isEqual;
+// Export object
+module.exports = new helper(); 
