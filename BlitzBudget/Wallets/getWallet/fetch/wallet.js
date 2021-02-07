@@ -1,3 +1,5 @@
+var wallet = function () { };
+
 // Load the AWS SDK for Node.js
 var AWS = require('aws-sdk');
 // Set the region 
@@ -40,3 +42,7 @@ function getWalletItem(userId, walletData) {
         });
     });
 }
+
+wallet.prototype.getWalletItem = getWalletItem;
+// Export object
+module.exports = new wallet(); 

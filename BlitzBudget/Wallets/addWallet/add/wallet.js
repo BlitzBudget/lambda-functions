@@ -1,3 +1,4 @@
+var wallet = function () { };
 
 // Load the AWS SDK for Node.js
 var AWS = require('aws-sdk');
@@ -56,3 +57,7 @@ function addNewWallet(event, userId, currency, walletName) {
         };
     }
 }
+
+wallet.prototype.addNewWallet = addNewWallet;
+// Export object
+module.exports = new helper(); 

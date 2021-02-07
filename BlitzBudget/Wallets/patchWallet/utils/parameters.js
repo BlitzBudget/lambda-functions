@@ -1,4 +1,4 @@
-const parameters = [{
+module.exports.parameters = [{
     "prmName": "currency",
     "prmValue": 'currency'
 },

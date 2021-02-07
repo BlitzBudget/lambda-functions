@@ -1,3 +1,8 @@
+var updateHelper = function () { };
+
+const parameters = require('../utils/parameters');
+const helper = require('../utils/helper');
+
 // Load the AWS SDK for Node.js
 var AWS = require('aws-sdk');
 // Set the region 
@@ -32,7 +37,7 @@ function updatingItem(event) {
         let expAttrVal = {};
         let expAttrNames = {};
 
-        if (isEmpty(event['body-json'])) {
+        if (helper.isEmpty(event['body-json'])) {
             return;
         }
 
@@ -43,12 +48,12 @@ function updatingItem(event) {
 
 
             // If the parameter is not found then do not save
-            if (isEmpty(event['body-json'][prm.prmName])) {
+            if (helper.isEmpty(event['body-json'][prm.prmName])) {
                 continue;
             }
 
             // Add a comma to update expression
-            if (includesStr(updateExp, '#variable')) {
+            if (helper.includesStr(updateExp, '#variable')) {
                 updateExp += ',';
             }
 
@@ -60,7 +65,7 @@ function updatingItem(event) {
         }
 
         console.log(" update expression ", JSON.stringify(updateExp), " expression attribute value ", JSON.stringify(expAttrVal), ' expression Attribute Names ', JSON.stringify(expAttrNames));
-        if (isEmpty(expAttrVal)) {
+        if (helper.isEmpty(expAttrVal)) {
             return;
         }
 
@@ -80,3 +85,7 @@ function updatingItem(event) {
         };
     }
 }
+
+updateHelper.prototype.updatingItem = updatingItem;
+// Export object
+module.exports = new updateHelper();

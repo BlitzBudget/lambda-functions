@@ -1,3 +1,4 @@
+var helper = function () { };
 
 function isEmpty(obj) {
     // Check if objext is a number or a boolean
@@ -29,3 +30,8 @@ function extractVariablesFromRequest(event) {
     return { userId, currency, walletName };
 }
 
+helper.prototype.isEmpty = isEmpty;
+helper.prototype.isNotEmpty = isNotEmpty;
+helper.prototype.extractVariablesFromRequest = extractVariablesFromRequest;
+// Export object
+module.exports = new helper(); 

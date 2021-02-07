@@ -1,3 +1,4 @@
+var helper = function () { };
 
 function isEmpty(obj) {
     // Check if objext is a number or a boolean
@@ -20,3 +21,8 @@ function isEmpty(obj) {
 function includesStr(arr, val) {
     return isEmpty(arr) ? null : arr.includes(val);
 }
+
+helper.prototype.includesStr = includesStr;
+helper.prototype.isEmpty = isEmpty;
+// Export object
+module.exports = new helper();
