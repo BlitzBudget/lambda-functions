@@ -1,3 +1,5 @@
+var batchWrite = function () { };
+
 /*
  * Batch write all the transactions and dates created
  */
@@ -16,3 +18,7 @@ function batchWriteItems(paramsPartial) {
         });
     });
 }
+
+batchWrite.prototype.batchWriteItems = batchWriteItems;
+// Export object
+module.exports = new batchWrite(); 

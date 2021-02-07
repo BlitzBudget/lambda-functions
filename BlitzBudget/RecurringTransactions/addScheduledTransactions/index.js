@@ -1,3 +1,9 @@
+const helper = require('utils/helper');
+const fetchHelper = require('utils/fetch-helper');
+const addHelper = require('utils/add-helper');
+const updateHelper = require('utils/update-helper');
+const scheduledDates = require('utils/scheduled-dates');
+
 // Load the AWS SDK for Node.js
 var AWS = require('aws-sdk');
 // Set the region 
@@ -7,27 +13,24 @@ AWS.config.update({
 
 // Create the DynamoDB service object
 var DB = new AWS.DynamoDB.DocumentClient();
-let nextSchArray = [];
-let events = [];
-let recurringTransactionsNextSch;
 
 exports.handler = async (event) => {
-    let requestArr = [];
-    nextSchArray = [];
-    events = [];
+    let futureTransactionCreationDate;
+    let addItemArray = [];
+    let datesToCreateTransactions = [];
+    let events = [];
     let datesMap = {};
     let categoryMap = {};
-    let { walletId, category, categoryType, categoryName, recurringTransactionsId } = extractVariablesFromRequest(event);
-    calculateNextScheduledDates(event);
-    console.log(" The dates to create are %j", nextSchArray.toString());
+    let { walletId, category, categoryType, categoryName, recurringTransactionsId } = helper.extractVariablesFromRequest(event);
+    scheduledDates.calculateNextDateToCreates(event, futureTransactionCreationDate, datesToCreateTransactions);
 
-    fetchDatesForWallet(walletId);
+    fetchHelper.fetchDatesForWallet(walletId, events);
 
-    await calculateAndAddAllDates(requestArr, walletId, datesMap);
+    await fetchHelper.calculateAndAddAllDates(addItemArray, walletId, datesMap, events);
 
-    await calculateAndAddAllCategories(category, walletId, categoryType, categoryName, categoryMap, requestArr, datesMap);
+    await addHelper.calculateAndAddAllCategories(category, walletId, categoryType, categoryName, categoryMap, addItemArray, datesMap, events);
 
-    constructRequestAndCreateItems(requestArr, datesMap, categoryMap, event);
+    addHelper.constructRequestAndCreateItems(addItemArray, datesMap, categoryMap, event);
 
-    await updateRecurringTransaction(walletId, recurringTransactionsId);
+    await updateHelper.updateRecurringTransaction(walletId, recurringTransactionsId, futureTransactionCreationDate);
 }

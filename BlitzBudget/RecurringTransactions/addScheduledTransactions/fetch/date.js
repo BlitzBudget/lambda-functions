@@ -1,3 +1,5 @@
+var date = function () { };
+
 /*
  * Get Date Data
  */
@@ -32,3 +34,7 @@ function getDateData(pk, today) {
         });
     });
 }
+
+date.prototype.getDateData = getDateData;
+// Export object
+module.exports = new date(); 

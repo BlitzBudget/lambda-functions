@@ -1,12 +1,13 @@
+var addHelper = function () { };
 
-function constructRequestAndCreateItems(requestArr, datesMap, categoryMap, event) {
-    console.log(" The number of dates and categories to create are %j", requestArr.length);
+function constructRequestAndCreateItems(addItemArray, datesMap, categoryMap, event) {
+    console.log(" The number of dates and categories to create are %j", addItemArray.length);
     // Add all transactions
-    constructTransactionsWithDateMeantForAndCategory(datesMap, categoryMap, event, requestArr);
-    console.log(" The number of transactions to create are %j", requestArr.length);
+    constructTransactionsWithDateMeantForAndCategory(datesMap, categoryMap, event, addItemArray);
+    console.log(" The number of transactions to create are %j", addItemArray.length);
 
     // Split array into sizes of 25
-    let putRequests = chunkArrayInGroups(requestArr, 25);
+    let putRequests = chunkArrayInGroups(addItemArray, 25);
 
     // Push Events  to be executed in bulk
     createAllItemsInBatch(putRequests);
@@ -15,13 +16,13 @@ function constructRequestAndCreateItems(requestArr, datesMap, categoryMap, event
 /*
 * Start processing categories
 */
-async function calculateAndAddAllCategories(category, walletId, categoryType, categoryName, categoryMap, requestArr, datesMap) {
-    await calculateCategoriesToAdd(category, walletId, categoryType, categoryName, categoryMap, requestArr, datesMap);
+async function calculateAndAddAllCategories(category, walletId, categoryType, categoryName, categoryMap, addItemArray, datesMap, events) {
+    await calculateCategoriesToAdd(category, walletId, categoryType, categoryName, categoryMap, addItemArray, datesMap, events);
 
     /*
      * Add all categories first
      */
-    await addAllCategories();
+    await addAllCategories(events);
 }
 
 function createAllItemsInBatch(putRequests) {
@@ -35,7 +36,7 @@ function createAllItemsInBatch(putRequests) {
     }
 }
 
-async function addAllCategories() {
+async function addAllCategories(events) {
     await Promise.all(events).then(function () {
         events = [];
         console.log("Successfully inserted the categories field %j", recurringTransactionsNextSch);
@@ -44,7 +45,7 @@ async function addAllCategories() {
     });
 }
 
-async function calculateCategoriesToAdd(category, walletId, categoryType, categoryName, categoryMap, requestArr, datesMap) {
+async function calculateCategoriesToAdd(category, walletId, categoryType, categoryName, categoryMap, addItemArray, datesMap, events) {
     pushAllCategoriesToFetch(category, walletId, categoryType, categoryName);
 
     /*
@@ -55,9 +56,15 @@ async function calculateCategoriesToAdd(category, walletId, categoryType, catego
         console.log("Processing Categories to create");
         for (const categoryItem of result) {
             categoryMap[categoryItem.dateMeantFor] = categoryItem.sortKey;
-            requestArr.push(buildParamsForCategory(walletId, categoryItem.sortKey, categoryType, categoryName, datesMap[categoryItem.dateMeantFor]));
+            addItemArray.push(buildParamsForCategory(walletId, categoryItem.sortKey, categoryType, categoryName, datesMap[categoryItem.dateMeantFor]));
         }
     }, function (err) {
         throw new Error("Unable to get the category for the recurring transaction" + err);
     });
 }
+
+addHelper.prototype.constructRequestAndCreateItems = constructRequestAndCreateItems;
+addHelper.prototype.calculateAndAddAllCategories = calculateAndAddAllCategories
+
+// Export object
+module.exports = new addHelper(); 

@@ -1,3 +1,5 @@
+var fetchHelper = function () { };
+
 function pushAllCategoriesToFetch(category, walletId, categoryType, categoryName) {
     for (const dateMeantFor of nextSchArray) {
         /*
@@ -12,7 +14,7 @@ function pushAllCategoriesToFetch(category, walletId, categoryType, categoryName
 /*
 * Publish events to get date data
 */
-async function calculateAndAddAllDates(requestArr, walletId, datesMap) {
+async function calculateAndAddAllDates(addItemArray, walletId, datesMap, events) {
     await Promise.all(events).then(function (result) {
         events = [];
         console.log("Successfully fetched all the relevant information %j", JSON.stringify(result));
@@ -20,7 +22,7 @@ async function calculateAndAddAllDates(requestArr, walletId, datesMap) {
         /*
          * Calculate Date
          */
-        calculateDates(result, requestArr, walletId, datesMap);
+        calculateDates(result, addItemArray, walletId, datesMap);
 
     }, function (err) {
         throw new Error("Unable to fetch the date for the recurring transaction" + err);
@@ -28,7 +30,7 @@ async function calculateAndAddAllDates(requestArr, walletId, datesMap) {
 }
 
 
-function calculateDates(result, requestArr, walletId, datesMap) {
+function calculateDates(result, addItemArray, walletId, datesMap) {
     for (const dateObj of result) {
 
         /*
@@ -40,7 +42,7 @@ function calculateDates(result, requestArr, walletId, datesMap) {
             let month = parseInt(dateObj.dateToCreate.substring(5, 7)) - 1;
             dateToCreate.setMonth(month);
             let sk = "Date#" + dateToCreate.toISOString();
-            requestArr.push(buildParamsForDate(walletId, sk));
+            addItemArray.push(buildParamsForDate(walletId, sk));
             /*
              * Build date object to place the date in transactions
              */
@@ -63,8 +65,14 @@ function calculateDates(result, requestArr, walletId, datesMap) {
 /*
 * Fetch available dates
 */
-function fetchDatesForWallet(walletId) {
+function fetchDatesForWallet(walletId, events) {
     for (const dateMeantFor of nextSchArray) {
         events.push(getDateData(walletId, dateMeantFor));
     }
 }
+
+fetchHelper.prototype.pushAllCategoriesToFetch = pushAllCategoriesToFetch;
+fetchHelper.prototype.calculateAndAddAllDates = calculateAndAddAllDates;
+fetchHelper.prototype.fetchDatesForWallet = fetchDatesForWallet;
+// Export object
+module.exports = new fetchHelper(); 

@@ -1,3 +1,5 @@
+var date = function () { };
+
 /*
  * Build params for date
  */
@@ -17,3 +19,7 @@ function buildParamsForDate(walletId, sk) {
         }
     };
 }
+
+date.prototype.buildParamsForDate = buildParamsForDate;
+// Export object
+module.exports = new date(); 

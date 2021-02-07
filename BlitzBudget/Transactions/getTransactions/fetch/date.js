@@ -1,5 +1,5 @@
 
-function getDateData(pk, year) {
+function getDateData(pk, year, docClient) {
     var params = {
         TableName: 'blitzbudget',
         KeyConditionExpression: "pk = :pk and begins_with(sk, :items)",

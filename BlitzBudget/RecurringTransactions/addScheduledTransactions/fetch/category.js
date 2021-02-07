@@ -1,3 +1,5 @@
+var category = function () { };
+
 /*
  * Get Category Data
  */
@@ -47,3 +49,7 @@ function getCategoryData(pk, today, categoryType, categoryName, category) {
         });
     });
 }
+
+category.prototype.getCategoryData = getCategoryData;
+// Export object
+module.exports = new category(); 

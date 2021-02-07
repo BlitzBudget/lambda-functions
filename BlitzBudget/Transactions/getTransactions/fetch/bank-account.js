@@ -1,5 +1,5 @@
 
-function getBankAccountData(pk) {
+function getBankAccountData(pk, docClient) {
     var params = {
         TableName: 'blitzbudget',
         KeyConditionExpression: "pk = :pk and begins_with(sk, :items)",

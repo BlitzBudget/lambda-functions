@@ -1,6 +1,6 @@
 
 // Get Transaction Item
-function getTransactionItem(pk, startsWithDate, endsWithDate) {
+function getTransactionItem(pk, startsWithDate, endsWithDate, docClient) {
     var params = {
         TableName: 'blitzbudget',
         KeyConditionExpression: "pk = :pk and sk BETWEEN :bt1 AND :bt2",

@@ -1,6 +1,6 @@
 
 // Get Budget Item
-function getBudgetsItem(walletId, startsWithDate, endsWithDate) {
+function getBudgetsItem(walletId, startsWithDate, endsWithDate, docClient) {
     var params = {
         TableName: 'blitzbudget',
         KeyConditionExpression: "pk = :walletId AND sk BETWEEN :bt1 AND :bt2",

@@ -1,7 +1,9 @@
+var recurringTransaction = function () { };
+
 /*
  * Update the recurring transaction
  */
-function updateRecurringTransactionsData(walletId, sk) {
+function updateRecurringTransactionsData(walletId, sk, futureTransactionCreationDate) {
 
     var params = {
         TableName: 'blitzbudget',
@@ -11,7 +13,7 @@ function updateRecurringTransactionsData(walletId, sk) {
         },
         UpdateExpression: "set next_scheduled = :ns, updated_date = :u",
         ExpressionAttributeValues: {
-            ":ns": recurringTransactionsNextSch,
+            ":ns": futureTransactionCreationDate,
             ":u": new Date().toISOString()
         },
         ReturnValues: 'ALL_NEW'
@@ -29,5 +31,8 @@ function updateRecurringTransactionsData(walletId, sk) {
             }
         });
     });
-
 }
+
+recurringTransaction.prototype.updateRecurringTransactionsData = updateRecurringTransactionsData;
+// Export object
+module.exports = new recurringTransaction(); 

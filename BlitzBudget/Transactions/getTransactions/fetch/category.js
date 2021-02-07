@@ -1,5 +1,5 @@
 
-function getCategoryData(pk, startsWithDate, endsWithDate) {
+function getCategoryData(pk, startsWithDate, endsWithDate, docClient) {
     var params = {
         TableName: 'blitzbudget',
         KeyConditionExpression: "pk = :pk and sk BETWEEN :bt1 AND :bt2",

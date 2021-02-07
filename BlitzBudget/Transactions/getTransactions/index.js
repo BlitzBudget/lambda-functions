@@ -24,12 +24,12 @@ exports.handler = async (event) => {
     let fullMonth = isFullMonth(startsWithDate, endsWithDate);
 
     // Cognito does not store wallet information nor curreny. All are stored in wallet.
-    walletId = await fetchWalletItem(walletId, userId);
+    walletId = await fetchWalletItem(walletId, userId, docClient);
 
-    await fetchAllRelevantItems(events, walletId, startsWithDate, endsWithDate);
+    await fetchAllRelevantItems(events, walletId, startsWithDate, endsWithDate, docClient, snsEvents, sns);
 
     calculateDateAndCategoryTotal(fullMonth);
 
-    await sendSNSToCreateNewTransactions();
+    await sendSNSToCreateNewTransactions(snsEvents);
     return transactionData;
 };

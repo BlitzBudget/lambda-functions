@@ -1,3 +1,5 @@
+var category = function () { };
+
 /*
  * Build Parameters for category
  */
@@ -18,3 +20,7 @@ function buildParamsForCategory(pk, sk, categoryType, categoryName, dateMeantFor
         }
     }
 }
+
+category.prototype.buildParamsForCategory = buildParamsForCategory;
+// Export object
+module.exports = new category(); 

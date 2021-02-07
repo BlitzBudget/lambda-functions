@@ -1,7 +1,7 @@
 
 
 // Get Budget Item
-function getRecurringTransactions(walletId) {
+function getRecurringTransactions(walletId, docClient, snsEvents, sns) {
     var params = {
         TableName: 'blitzbudget',
         KeyConditionExpression: "pk = :walletId AND begins_with(sk, :items)",
@@ -24,7 +24,7 @@ function getRecurringTransactions(walletId) {
                 for (const rtObj of data.Items) {
                     let scheduled = new Date(rtObj['next_scheduled']);
                     if (scheduled < today) {
-                        snsEvents.push(markTransactionForCreation(rtObj));
+                        snsEvents.push(markTransactionForCreation(rtObj, sns));
                     }
                     rtObj.recurringTransactionsId = rtObj.sk;
                     rtObj.walletId = rtObj.pk;

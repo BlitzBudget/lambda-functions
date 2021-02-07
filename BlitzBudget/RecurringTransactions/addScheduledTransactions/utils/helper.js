@@ -1,3 +1,4 @@
+var helper = function () { };
 
 // Splits array into chunks
 function chunkArrayInGroups(arr, size) {
@@ -49,7 +50,7 @@ function isNotEqual(obj1, obj2) {
     return !isEqual(obj1, obj2);
 }
 
-function extractVariablesFromRequest(event) {
+helper.prototype.extractVariablesFromRequest = (event) => {
     let walletId = event.Records[0].Sns.MessageAttributes.walletId.Value;
     let category = event.Records[0].Sns.MessageAttributes.category.Value;
     let categoryType = event.Records[0].Sns.MessageAttributes.categoryType.Value;
@@ -58,3 +59,14 @@ function extractVariablesFromRequest(event) {
     console.log('Creating transactions via recurring transactions for the walletId ' + walletId);
     return { walletId, category, categoryType, categoryName, recurringTransactionsId };
 }
+
+helper.prototype.isNotEqual = isNotEqual;
+helper.prototype.isEmpty = isEmpty;
+helper.prototype.isNotEmpty = isNotEmpty;
+helper.prototype.isEqual = isEqual;
+helper.prototype.chunkArrayInGroups = chunkArrayInGroups;
+helper.prototype.includesStr = includesStr;
+helper.prototype.notIncludesStr = notIncludesStr;
+
+// Export object
+module.exports = new helper(); 
