@@ -3,10 +3,10 @@ const fetchUser = require('fetch-user');
 const fetchWallet = require('fetch-wallet');
 const login = require('login');
 
-const AWS = require('aws-sdk')
-AWS.config.update({ region: 'eu-west-1' });
+const AWS = require('aws-sdk');
+AWS.config.update({region: 'eu-west-1'});
 // Create the DynamoDB service object
-var docClient = new AWS.DynamoDB.DocumentClient({ region: 'eu-west-1' });
+var docClient = new AWS.DynamoDB.DocumentClient({region: 'eu-west-1'});
 let cognitoidentityserviceprovider = new AWS.CognitoIdentityServiceProvider();
 
 exports.handler = async (event) => {
@@ -27,23 +27,29 @@ exports.handler = async (event) => {
 // Fetch Wallets
 async function fetchWallet(response) {
   let userIdParam = helper.fetchUserId(response);
-  await fetchWallet.getWallet(userIdParam, docClient).then(function (result) {
-    response.Wallet = result;
-    console.log("logged in the user " + JSON.stringify(result.walletId));
-  }, function (err) {
-    throw new Error("Unable to get the wallet at the moment  " + err);
-  });
+  await fetchWallet.getWallet(userIdParam, docClient).then(
+    function (result) {
+      response.Wallet = result;
+      console.log('logged in the user ' + JSON.stringify(result.walletId));
+    },
+    function (err) {
+      throw new Error('Unable to get the wallet at the moment  ' + err);
+    }
+  );
 }
 
 // Fetch Users
 async function fetchUser(response) {
-  await fetchUser.getUser(response, cognitoidentityserviceprovider).then(function (result) {
-    response.Username = result.Username;
-    response.UserAttributes = result.UserAttributes;
-    console.log("logged in the user " + JSON.stringify(result.Username));
-  }, function (err) {
-    throw new Error("Unable to signin from cognito  " + err);
-  });
+  await fetchUser.getUser(response, cognitoidentityserviceprovider).then(
+    function (result) {
+      response.Username = result.Username;
+      response.UserAttributes = result.UserAttributes;
+      console.log('logged in the user ' + JSON.stringify(result.Username));
+    },
+    function (err) {
+      throw new Error('Unable to signin from cognito  ' + err);
+    }
+  );
 }
 
 // Login to user
@@ -53,15 +59,17 @@ async function login(event, response) {
     ClientId: '2ftlbs1kfmr2ub0e4p15tsag8g',
     AuthParameters: {
       USERNAME: event['body-json'].username,
-      PASSWORD: event['body-json'].password
-    }
+      PASSWORD: event['body-json'].password,
+    },
   };
 
-  await login.initiateAuth(params, cognitoidentityserviceprovider).then(function (result) {
-    response = result;
-  }, function (err) {
-    throw new Error("Unable to signin from cognito  " + err);
-  });
+  await login.initiateAuth(params, cognitoidentityserviceprovider).then(
+    function (result) {
+      response = result;
+    },
+    function (err) {
+      throw new Error('Unable to signin from cognito  ' + err);
+    }
+  );
   return response;
 }
-

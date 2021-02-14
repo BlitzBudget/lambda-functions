@@ -5,19 +5,19 @@ const updateHelper = require('utils/update-helper');
 var AWS = require('aws-sdk');
 // Set the region
 AWS.config.update({
-    region: 'eu-west-1'
+  region: 'eu-west-1',
 });
 
 // Create the DynamoDB service object
 var docClient = new AWS.DynamoDB.DocumentClient();
 
 exports.handler = async (event) => {
-    let events = [];
-    console.log("updating transactions for ", JSON.stringify(event['body-json']));
+  let events = [];
+  console.log('updating transactions for ', JSON.stringify(event['body-json']));
 
-    await fetchHelper.calculateAndFetchCategory(event, events, docClient);
+  await fetchHelper.calculateAndFetchCategory(event, events, docClient);
 
-    await updateHelper.updateRecurringTransaction(events, event, docClient);
+  await updateHelper.updateRecurringTransaction(events, event, docClient);
 
-    return event;
+  return event;
 };

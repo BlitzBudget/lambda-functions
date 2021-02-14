@@ -1,17 +1,18 @@
-module.exports.parameters = [{
-    "prmName" : "goalType",
-    "prmValue" : 'goal_type'
+module.exports.parameters = [
+  {
+    prmName: 'goalType',
+    prmValue: 'goal_type',
   },
   {
-    "prmName" : "finalAmount",
-    "prmValue" : 'final_amount'
+    prmName: 'finalAmount',
+    prmValue: 'final_amount',
   },
   {
-    "prmName" : 'targetId',
-    "prmValue" : 'target_id'
+    prmName: 'targetId',
+    prmValue: 'target_id',
   },
   {
-    "prmName" : 'targetType',
-    "prmValue" : 'target_type'
-  }
-  ]
+    prmName: 'targetType',
+    prmValue: 'target_type',
+  },
+];

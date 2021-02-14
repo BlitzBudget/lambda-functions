@@ -1,17 +1,17 @@
-var helper = function () { };
+var helper = function () {};
 
 // Splits array into chunks
 helper.prototype.chunkArrayInGroups = (arr, size) => {
-    var myArray = [];
-    for (var i = 0; i < arr.length; i += size) {
-        myArray.push(arr.slice(i, i + size));
-    }
-    return myArray;
-}
+  var myArray = [];
+  for (var i = 0; i < arr.length; i += size) {
+    myArray.push(arr.slice(i, i + size));
+  }
+  return myArray;
+};
 
 helper.prototype.noItemsPresent = (result) => {
-    return result.Count == 0;
-}
+  return result.Count == 0;
+};
 
 // Export object
 module.exports = new helper();

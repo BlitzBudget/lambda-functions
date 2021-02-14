@@ -1,49 +1,56 @@
-var category = function () { };
+var category = function () {};
 
-category.prototype.getCategoryData = (pk, startsWithDate, endsWithDate, budgetData, docClient) => {
-    var params = createParameters();
+category.prototype.getCategoryData = (
+  pk,
+  startsWithDate,
+  endsWithDate,
+  budgetData,
+  docClient
+) => {
+  var params = createParameters();
 
-    // Call DynamoDB to read the item from the table
-    return new Promise((resolve, reject) => {
-        docClient.query(params, function (err, data) {
-            if (err) {
-                console.log("Error ", err);
-                reject(err);
-            } else {
-                organizeCategoryData(data);
-                budgetData['Category'] = data.Items;
-                resolve({
-                    "Category": data.Items
-                });
-            }
+  // Call DynamoDB to read the item from the table
+  return new Promise((resolve, reject) => {
+    docClient.query(params, function (err, data) {
+      if (err) {
+        console.log('Error ', err);
+        reject(err);
+      } else {
+        organizeCategoryData(data);
+        budgetData['Category'] = data.Items;
+        resolve({
+          Category: data.Items,
         });
+      }
     });
+  });
 
-    function organizeCategoryData(data) {
-        console.log("data retrieved - Category %j", data.Count);
-        if (data.Items) {
-            for (const categoryObj of data.Items) {
-                categoryObj.categoryId = categoryObj.sk;
-                categoryObj.walletId = categoryObj.pk;
-                delete categoryObj.sk;
-                delete categoryObj.pk;
-            }
-        }
+  function organizeCategoryData(data) {
+    console.log('data retrieved - Category %j', data.Count);
+    if (data.Items) {
+      for (const categoryObj of data.Items) {
+        categoryObj.categoryId = categoryObj.sk;
+        categoryObj.walletId = categoryObj.pk;
+        delete categoryObj.sk;
+        delete categoryObj.pk;
+      }
     }
+  }
 
-    function createParameters() {
-        return {
-            TableName: 'blitzbudget',
-            KeyConditionExpression: "pk = :pk and sk BETWEEN :bt1 AND :bt2",
-            ExpressionAttributeValues: {
-                ":pk": pk,
-                ":bt1": "Category#" + startsWithDate,
-                ":bt2": "Category#" + endsWithDate,
-            },
-            ProjectionExpression: "pk, sk, category_name, category_total, category_type"
-        };
-    }
-}
+  function createParameters() {
+    return {
+      TableName: 'blitzbudget',
+      KeyConditionExpression: 'pk = :pk and sk BETWEEN :bt1 AND :bt2',
+      ExpressionAttributeValues: {
+        ':pk': pk,
+        ':bt1': 'Category#' + startsWithDate,
+        ':bt2': 'Category#' + endsWithDate,
+      },
+      ProjectionExpression:
+        'pk, sk, category_name, category_total, category_type',
+    };
+  }
+};
 
 // Export object
 module.exports = new category();

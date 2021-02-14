@@ -4,27 +4,26 @@ const addHelper = require('utils/add-helper');
 
 // Load the AWS SDK for Node.js
 var AWS = require('aws-sdk');
-// Set the region 
+// Set the region
 AWS.config.update({
-    region: 'eu-west-1'
+  region: 'eu-west-1',
 });
 
 // Create the DynamoDB service object
 var docClient = new AWS.DynamoDB.DocumentClient();
 
 exports.handler = async (event) => {
-    console.log("adding transactions for ", JSON.stringify(event['body-json']));
-    let events = [];
-    let walletId = event['body-json'].walletId;
+  console.log('adding transactions for ', JSON.stringify(event['body-json']));
+  let events = [];
+  let walletId = event['body-json'].walletId;
 
-    helper.throwErrorIfEmpty(event, walletId);
+  helper.throwErrorIfEmpty(event, walletId);
 
-    await fetchHelper.calculateAndFetchDate(event, walletId, events, docClient);
+  await fetchHelper.calculateAndFetchDate(event, walletId, events, docClient);
 
-    await fetchHelper.calculateAndFetchCategory(event, events, docClient);
+  await fetchHelper.calculateAndFetchCategory(event, events, docClient);
 
-    await addHelper.addAllItems(events, event, docClient);
+  await addHelper.addAllItems(events, event, docClient);
 
-    return event;
+  return event;
 };
-

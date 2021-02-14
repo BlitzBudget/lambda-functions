@@ -93,16 +93,15 @@ localeToCurrency['TL'] = 'US Dollar';
 localeToCurrency['TM'] = 'Manat';
 localeToCurrency['UA'] = 'Ukrainian Hryvnia';
 localeToCurrency['US'] = 'US Dollar';
-localeToCurrency['UZ'] = "Uzbekistan Sum";
-localeToCurrency['VA'] = "Euro";
-localeToCurrency['VC'] = "East Caribbean Dollar";
-localeToCurrency['VI'] = "US Dollar";
-localeToCurrency['VN'] = "Vietnamese Dong";
-localeToCurrency['VU'] = "Vanuatu Vatu";
+localeToCurrency['UZ'] = 'Uzbekistan Sum';
+localeToCurrency['VA'] = 'Euro';
+localeToCurrency['VC'] = 'East Caribbean Dollar';
+localeToCurrency['VI'] = 'US Dollar';
+localeToCurrency['VN'] = 'Vietnamese Dong';
+localeToCurrency['VU'] = 'Vanuatu Vatu';
 localeToCurrency['WS'] = 'Tala';
 localeToCurrency['YE'] = 'Yemeni Rial';
 localeToCurrency['ZA'] = 'Rand';
-
 
 // Export object
 module.exports.localeToCurrency = localeToCurrency;
