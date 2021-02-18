@@ -1,27 +1,10 @@
-var addVoiceCode = function () {};
+const AddVoiceCode = () => {};
 
 /*
  * Voice Code
  */
 function addNewVoiceCode(event, userId, alexaId, docClient) {
-  let today = new Date().toISOString();
-
-  var params = createParameters();
-
-  console.log('Adding a new item...');
-  return new Promise((resolve, reject) => {
-    docClient.put(params, function (err, data) {
-      if (err) {
-        console.log('Error ', err);
-        reject(err);
-      } else {
-        resolve({
-          success: data,
-        });
-        event['body-json'].alexaVoiceCodeId = alexaId;
-      }
-    });
-  });
+  const today = new Date().toISOString();
 
   function createParameters() {
     return {
@@ -36,8 +19,25 @@ function addNewVoiceCode(event, userId, alexaId, docClient) {
       },
     };
   }
+
+  const params = createParameters();
+
+  console.log('Adding a new item...');
+  return new Promise((resolve, reject) => {
+    docClient.put(params, (err, data) => {
+      if (err) {
+        console.log('Error ', err);
+        reject(err);
+      } else {
+        resolve({
+          success: data,
+          alexaVoiceCodeId: alexaId,
+        });
+      }
+    });
+  });
 }
 
-addVoiceCode.prototype.addNewVoiceCode = addNewVoiceCode;
+AddVoiceCode.prototype.addNewVoiceCode = addNewVoiceCode;
 // Export object
-module.exports = new addVoiceCode();
+module.exports = new AddVoiceCode();

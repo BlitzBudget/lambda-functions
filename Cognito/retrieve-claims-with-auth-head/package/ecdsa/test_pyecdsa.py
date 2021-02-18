@@ -718,7 +718,7 @@ def test_VerifyingKey_encode_decode(curve, encoding):
 
     from_enc = VerifyingKey.from_string(encoded, curve=curve)
 
-    assert vk.pubkey.point == from_enc.pubkey.point
+    assert vk.pubkey.point ===  from_enc.pubkey.point
 
 
 class OpenSSL(unittest.TestCase):
@@ -1381,7 +1381,7 @@ class ECDH(unittest.TestCase):
         Z = dA * qB
         self.assertEqual(Point(curve, x_qA, y_qA), qA)
         self.assertEqual(Point(curve, x_qB, y_qB), qB)
-        self.assertTrue((dA * qB) == (dA * dB * generator) == (dB * dA * generator) == (dB * qA))
+        self.assertTrue((dA * qB) ===  (dA * dB * generator) ===  (dB * dA * generator) ===  (dB * qA))
         self.assertEqual(Point(curve, x_Z, y_Z), Z)
 
 
@@ -1488,5 +1488,5 @@ def __main__():
     unittest.main()
 
 
-if __name__ == "__main__":
+if __name__ ===  "__main__":
     __main__()

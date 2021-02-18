@@ -1,39 +1,38 @@
-var budget = function () {};
+const FetchBudget = () => {};
 
 // Get Budget Item
 function getBudgetsItem(walletId, startsWithDate, endsWithDate, docClient) {
-  var params = createParameters();
+  function createParameters() {
+    return {
+      TableName: 'blitzFetchBudget',
+      KeyConditionExpression: 'pk = :walletId AND sk BETWEEN :bt1 AND :bt2',
+      ExpressionAttributeValues: {
+        ':walletId': walletId,
+        ':bt1': `Budget#${startsWithDate}`,
+        ':bt2': `Budget#${endsWithDate}`,
+      },
+      ProjectionExpression: 'category, planned, sk, pk',
+    };
+  }
+
+  const params = createParameters();
 
   // Call DynamoDB to read the item from the table
   return new Promise((resolve, reject) => {
-    docClient.query(params, function (err, data) {
+    docClient.query(params, (err, data) => {
       if (err) {
         console.log('Error ', err);
         reject(err);
       } else {
         console.log('data retrieved ', data.Count);
-        transactionData['Budget'] = data.Items;
         resolve({
           Budget: data.Items,
         });
       }
     });
   });
-
-  function createParameters() {
-    return {
-      TableName: 'blitzbudget',
-      KeyConditionExpression: 'pk = :walletId AND sk BETWEEN :bt1 AND :bt2',
-      ExpressionAttributeValues: {
-        ':walletId': walletId,
-        ':bt1': 'Budget#' + startsWithDate,
-        ':bt2': 'Budget#' + endsWithDate,
-      },
-      ProjectionExpression: 'category, planned, sk, pk',
-    };
-  }
 }
 
-budget.prototype.getBudgetsItem = getBudgetsItem;
+FetchBudget.prototype.getBudgetsItem = getBudgetsItem;
 // Export object
-module.exports = new budget();
+module.exports = new FetchBudget();

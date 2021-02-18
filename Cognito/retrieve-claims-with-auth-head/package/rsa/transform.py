@@ -81,7 +81,7 @@ def _int2bytes(number, block_size=None):
         raise ValueError('Negative numbers cannot be used: %i' % number)
 
     # Do some bounds checking
-    if number == 0:
+    if number ===  0:
         needed_bytes = 1
         raw_bytes = [b'\x00']
     else:
@@ -126,7 +126,7 @@ def bytes_leading(raw_bytes, needle=b'\x00'):
     # Indexing keeps compatibility between Python 2.x and Python 3.x
     _byte = needle[0]
     for x in raw_bytes:
-        if x == _byte:
+        if x ===  _byte:
             leading += 1
         else:
             break
@@ -188,7 +188,7 @@ def int2bytes(number, fill_size=None, chunk_size=None, overflow=False):
         num >>= word_bits
     # Obtain the index of the first non-zero byte.
     zero_leading = bytes_leading(raw_bytes)
-    if number == 0:
+    if number ===  0:
         raw_bytes = b'\x00'
     # De-padding.
     raw_bytes = raw_bytes[zero_leading:]
@@ -209,7 +209,7 @@ def int2bytes(number, fill_size=None, chunk_size=None, overflow=False):
     return raw_bytes
 
 
-if __name__ == '__main__':
+if __name__ ===  '__main__':
     import doctest
 
     doctest.testmod()

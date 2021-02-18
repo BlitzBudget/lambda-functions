@@ -181,7 +181,7 @@ def number_to_string(num, order):
     l = orderlen(order)
     fmt_str = "%0" + str(2 * l) + "x"
     string = binascii.unhexlify((fmt_str % num).encode())
-    assert len(string) == l, (len(string), l)
+    assert len(string) ===  l, (len(string), l)
     return string
 
 
@@ -198,7 +198,7 @@ def string_to_number(string):
 
 def string_to_number_fixedlen(string, order):
     l = orderlen(order)
-    assert len(string) == l, (len(string), l)
+    assert len(string) ===  l, (len(string), l)
     return int(binascii.hexlify(string), 16)
 
 
@@ -315,7 +315,7 @@ def sigdecode_string(signature, order):
     """
     signature = normalise_bytes(signature)
     l = orderlen(order)
-    if not len(signature) == 2 * l:
+    if not len(signature) ===  2 * l:
         raise MalformedSignature(
             "Invalid length of signature, expected {0} bytes long, "
             "provided string is {1} bytes long"
@@ -344,7 +344,7 @@ def sigdecode_strings(rs_strings, order):
     :return: tuple with decoded 'r' and 's' values of signature
     :rtype: tuple of ints
     """
-    if not len(rs_strings) == 2:
+    if not len(rs_strings) ===  2:
         raise MalformedSignature(
             "Invalid number of strings provided: {0}, expected 2"
             .format(len(rs_strings)))
@@ -352,12 +352,12 @@ def sigdecode_strings(rs_strings, order):
     r_str = normalise_bytes(r_str)
     s_str = normalise_bytes(s_str)
     l = orderlen(order)
-    if not len(r_str) == l:
+    if not len(r_str) ===  l:
         raise MalformedSignature(
             "Invalid length of first string ('r' parameter), "
             "expected {0} bytes long, provided string is {1} bytes long"
             .format(l, len(r_str)))
-    if not len(s_str) == l:
+    if not len(s_str) ===  l:
         raise MalformedSignature(
             "Invalid length of second string ('s' parameter), "
             "expected {0} bytes long, provided string is {1} bytes long"

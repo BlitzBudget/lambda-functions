@@ -1,18 +1,18 @@
-var login = function () {};
+const Login = () => {};
 
-login.prototype.initiateAuth = (params, cognitoidentityserviceprovider) => {
-  return new Promise((resolve, reject) => {
-    cognitoidentityserviceprovider.initiateAuth(params, function (err, data) {
-      if (err) {
-        console.log(err, err.stack); // an error occurred
-        reject(err);
-      } else {
-        console.log(data); // successful response
-        resolve(data);
-      }
-    });
+const initiateAuth = (params, cognitoidentityserviceprovider) => new Promise((resolve, reject) => {
+  cognitoidentityserviceprovider.initiateAuth(params, (err, data) => {
+    if (err) {
+      console.log(err, err.stack); // an error occurred
+      reject(err);
+    } else {
+      console.log(data); // successful response
+      resolve(data);
+    }
   });
-};
+});
+
+Login.prototype.initiateAuth = initiateAuth;
 
 // Export object
-module.exports = new login();
+module.exports = new Login();

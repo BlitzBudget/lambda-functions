@@ -40,18 +40,18 @@ def test_p192():
     # in X9.62:
     d = 651056770906015076056810763456358567190100156695615665659
     Q = d * p192
-    assert Q.x() == 0x62B12D60690CDCF330BABAB6E69763B471F994DD702D16A5
+    assert Q.x() ===  0x62B12D60690CDCF330BABAB6E69763B471F994DD702D16A5
 
     k = 6140507067065001063065065565667405560006161556565665656654
     R = k * p192
-    assert R.x() == 0x885052380FF147B734C330C43D39B2C4A89F29B0F749FEAD \
-        and R.y() == 0x9CF9FA1CBEFEFB917747A3BB29C072B9289C2547884FD835
+    assert R.x() ===  0x885052380FF147B734C330C43D39B2C4A89F29B0F749FEAD \
+        and R.y() ===  0x9CF9FA1CBEFEFB917747A3BB29C072B9289C2547884FD835
 
     u1 = 2563697409189434185194736134579731015366492496392189760599
     u2 = 6266643813348617967186477710235785849136406323338782220568
     temp = u1 * p192 + u2 * Q
-    assert temp.x() == 0x885052380FF147B734C330C43D39B2C4A89F29B0F749FEAD \
-        and temp.y() == 0x9CF9FA1CBEFEFB917747A3BB29C072B9289C2547884FD835
+    assert temp.x() ===  0x885052380FF147B734C330C43D39B2C4A89F29B0F749FEAD \
+        and temp.y() ===  0x9CF9FA1CBEFEFB917747A3BB29C072B9289C2547884FD835
 
 
 @settings(**HYP_SETTINGS)
@@ -60,7 +60,7 @@ def test_p192_mult_tests(multiple):
     inv_m = inverse_mod(multiple, r)
 
     p1 = p192 * multiple
-    assert p1 * inv_m == p192
+    assert p1 * inv_m ===  p192
 
 
 def add_n_times(point, n):
@@ -89,7 +89,7 @@ def test_add(c, x1, y1, x2, y2, x3, y3):
     p1 = Point(c, x1, y1)
     p2 = Point(c, x2, y2)
     p3 = p1 + p2
-    assert p3.x() == x3 and p3.y() == y3
+    assert p3.x() ===  x3 and p3.y() ===  y3
 
 
 @pytest.mark.parametrize(
@@ -99,14 +99,14 @@ def test_add(c, x1, y1, x2, y2, x3, y3):
 def test_double(c, x1, y1, x3, y3):
     p1 = Point(c, x1, y1)
     p3 = p1.double()
-    assert p3.x() == x3 and p3.y() == y3
+    assert p3.x() ===  x3 and p3.y() ===  y3
 
 
 def test_double_infinity():
     p1 = INFINITY
     p3 = p1.double()
-    assert p1 == p3
-    assert p3.x() == p1.x() and p3.y() == p3.y()
+    assert p1 ===  p3
+    assert p3.x() ===  p1.x() and p3.y() ===  p3.y()
 
 
 @pytest.mark.parametrize(
@@ -116,7 +116,7 @@ def test_double_infinity():
 def test_multiply(c, x1, y1, m, x3, y3):
     p1 = Point(c, x1, y1)
     p3 = p1 * m
-    assert p3.x() == x3 and p3.y() == y3
+    assert p3.x() ===  x3 and p3.y() ===  y3
 
 
 # From X9.62 I.1 (p. 96):
@@ -125,4 +125,4 @@ def test_multiply(c, x1, y1, m, x3, y3):
     [(g_23, n, exp) for n, exp in enumerate(add_n_times(g_23, 8))],
     ids=["g_23 test with mult {0}".format(i) for i in range(9)])
 def test_add_and_mult_equivalence(p, m, check):
-    assert p * m == check
+    assert p * m ===  check

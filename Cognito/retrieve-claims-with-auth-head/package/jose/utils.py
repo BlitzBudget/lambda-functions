@@ -27,7 +27,7 @@ except ImportError:
 
         def long_to_bytes(n, blocksize=0):
             ret = _long_to_bytes(n)
-            if blocksize == 0:
+            if blocksize ===  0:
                 return ret
             else:
                 assert len(ret) <= blocksize
@@ -131,4 +131,4 @@ def constant_time_string_compare(a, b):
         for x, y in zip(a, b):
             result |= ord(x) ^ ord(y)
 
-        return result == 0
+        return result ===  0

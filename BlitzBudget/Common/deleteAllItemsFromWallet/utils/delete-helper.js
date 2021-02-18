@@ -1,30 +1,17 @@
-var deleteHelper = function () {};
+const DeleteHelper = () => {};
 
-const helper = require('helper');
+const helper = require('./helper');
 const deleteItems = require('../delete/items.js');
-
-async function bulkDeleteItems(result, walletId, DB) {
-  let events = buildDeleteRequest(result, walletId, DB);
-
-  await Promise.all(events).then(
-    function () {
-      console.log('successfully deleted all the items');
-    },
-    function (err) {
-      throw new Error('Unable to delete all the items ' + err);
-    }
-  );
-}
 
 function buildDeleteRequest(result, walletId, DB) {
   console.log(
     'Starting to process the batch delete request for the item for the wallet %j',
-    result.Count
+    result.Count,
   );
-  let requestArr = [];
-  let events = [];
+  const requestArr = [];
+  const events = [];
 
-  for (const item of result.Items) {
+  Object.keys(result.Items).forEach((item) => {
     console.log('Building the delete params for the item %j', item.sk);
     requestArr.push({
       DeleteRequest: {
@@ -34,26 +21,39 @@ function buildDeleteRequest(result, walletId, DB) {
         },
       },
     });
-  }
+  });
 
   // Split array into sizes of 25
-  let deleteRequests = helper.chunkArrayInGroups(requestArr, 25);
+  const deleteRequests = helper.chunkArrayInGroups(requestArr, 25);
 
   // Push Events  to be executed in bulk
-  for (const deleteRequest of deleteRequests) {
-    let params = {};
+  Object.keys(deleteRequests).forEach((deleteRequest) => {
+    const params = {};
     params.RequestItems = {};
     params.RequestItems.blitzbudget = deleteRequest;
     console.log(
       'The delete request is in batch  with length %j',
-      params.RequestItems.blitzbudget.length
+      params.RequestItems.blitzbudget.length,
     );
     // Delete Items in batch
     events.push(deleteItems.deleteItems(params, DB));
-  }
+  });
 }
 
-deleteHelper.prototype.bulkDeleteItems = bulkDeleteItems;
+async function bulkDeleteItems(result, walletId, DB) {
+  const events = buildDeleteRequest(result, walletId, DB);
+
+  await Promise.all(events).then(
+    () => {
+      console.log('successfully deleted all the items');
+    },
+    (err) => {
+      throw new Error(`Unable to delete all the items ${err}`);
+    },
+  );
+}
+
+DeleteHelper.prototype.bulkDeleteItems = bulkDeleteItems;
 
 // Export object
-module.exports = new deleteHelper();
+module.exports = new DeleteHelper();

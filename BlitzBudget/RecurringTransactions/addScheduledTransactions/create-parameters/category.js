@@ -1,4 +1,4 @@
-var category = function() {};
+const CreateParameterCategory = () => {};
 
 /*
  * Build Parameters for category
@@ -8,7 +8,7 @@ function buildParamsForCategory(
   sk,
   categoryType,
   categoryName,
-  dateMeantFor
+  dateMeantFor,
 ) {
   console.log(
     'Creating the category with an sk %j',
@@ -16,13 +16,13 @@ function buildParamsForCategory(
     ' And with a date as ',
     dateMeantFor,
     ' for the wallet ',
-    pk
+    pk,
   );
   return {
     PutRequest: {
       Item: {
-        pk: pk,
-        sk: sk,
+        pk,
+        sk,
         category_total: 0,
         category_name: categoryName,
         category_type: categoryType,
@@ -34,6 +34,6 @@ function buildParamsForCategory(
   };
 }
 
-category.prototype.buildParamsForCategory = buildParamsForCategory;
+CreateParameterCategory.prototype.buildParamsForCategory = buildParamsForCategory;
 // Export object
-module.exports = new category();
+module.exports = new CreateParameterCategory();

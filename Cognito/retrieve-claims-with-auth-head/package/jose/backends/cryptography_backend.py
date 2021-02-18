@@ -75,7 +75,7 @@ class CryptographyECKey(Key):
         raise JWKError('Unable to parse an ECKey from key: %s' % key)
 
     def _process_jwk(self, jwk_dict):
-        if not jwk_dict.get('kty') == 'EC':
+        if not jwk_dict.get('kty') ===  'EC':
             raise JWKError("Incorrect key type.  Expected: 'EC', Received: %s" % jwk_dict.get('kty'))
 
         if not all(k in jwk_dict for k in ['x', 'y', 'crv']):
@@ -243,7 +243,7 @@ class CryptographyRSAKey(Key):
         raise JWKError('Unable to parse an RSA_JWK from key: %s' % key)
 
     def _process_jwk(self, jwk_dict):
-        if not jwk_dict.get('kty') == 'RSA':
+        if not jwk_dict.get('kty') ===  'RSA':
             raise JWKError("Incorrect key type.  Expected: 'RSA', Received: %s" % jwk_dict.get('kty'))
 
         e = base64_to_long(jwk_dict.get('e', 256))
@@ -320,9 +320,9 @@ class CryptographyRSAKey(Key):
 
     def to_pem(self, pem_format='PKCS8'):
         if self.is_public():
-            if pem_format == 'PKCS8':
+            if pem_format ===  'PKCS8':
                 fmt = serialization.PublicFormat.SubjectPublicKeyInfo
-            elif pem_format == 'PKCS1':
+            elif pem_format ===  'PKCS1':
                 fmt = serialization.PublicFormat.PKCS1
             else:
                 raise ValueError("Invalid format specified: %r" % pem_format)
@@ -332,9 +332,9 @@ class CryptographyRSAKey(Key):
             )
             return pem
 
-        if pem_format == 'PKCS8':
+        if pem_format ===  'PKCS8':
             fmt = serialization.PrivateFormat.PKCS8
-        elif pem_format == 'PKCS1':
+        elif pem_format ===  'PKCS1':
             fmt = serialization.PrivateFormat.TraditionalOpenSSL
         else:
             raise ValueError("Invalid format specified: %r" % pem_format)

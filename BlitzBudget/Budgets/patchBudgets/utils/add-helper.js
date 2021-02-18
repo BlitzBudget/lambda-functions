@@ -1,6 +1,6 @@
-var addHelper = function () {};
+const AddHelper = () => {};
 
-const helper = require('helper');
+const helper = require('./helper');
 const category = require('../fetch/category');
 const addCategory = require('../add/category');
 
@@ -10,40 +10,41 @@ async function addNewCategoryIfNotPresent(
   today,
   categoryName,
   events,
-  checkIfBudgetIsPresent,
-  docClient
+  docClient,
 ) {
+  let isBudgetPresent = true;
   await category.getCategoryData(event, today, docClient).then(
-    function (result) {
+    (result) => {
       if (helper.isNotEmpty(result.Category)) {
         console.log(
           'successfully assigned the existing category %j',
-          result.Category.sk
+          result.Category.sk,
         );
-        event['body-json'].category = result.Category.sk;
+        // event['body-json'].category = result.Category.sk;
       } else {
+        const createCategory = event['body-json'];
         // Assign Category to create the transactions with the category ID
-        event['body-json'].category = categoryId;
-        event['body-json'].categoryName = categoryName;
+        createCategory.category = categoryId;
+        createCategory.categoryName = categoryName;
         // If it is a newly created category then the category total is 0
-        event['body-json'].used = 0;
+        createCategory.used = 0;
         events.push(
           addCategory.createCategoryItem(
-            event,
+            createCategory,
             categoryId,
             categoryName,
-            docClient
-          )
+            docClient,
+          ),
         );
         // Do not check the budget for a newly created category
-        checkIfBudgetIsPresent = false;
+        isBudgetPresent = false;
       }
     },
-    function (err) {
-      throw new Error('Unable to get the category ' + err);
-    }
+    (err) => {
+      throw new Error(`Unable to get the category ${err}`);
+    },
   );
-  return checkIfBudgetIsPresent;
+  return isBudgetPresent;
 }
 
 /*
@@ -51,34 +52,33 @@ async function addNewCategoryIfNotPresent(
  */
 async function addANewCategoryIfNotPresent(
   event,
-  checkIfBudgetIsPresent,
   events,
-  docClient
+  docClient,
 ) {
-  let categoryName = event['body-json'].category;
+  const categoryName = event['body-json'].category;
+  let isBudgetPresent = true;
   if (
-    helper.isNotEmpty(categoryName) &&
-    helper.notIncludesStr(categoryName, 'Category#')
+    helper.isNotEmpty(categoryName)
+    && helper.notIncludesStr(categoryName, 'Category#')
   ) {
-    let today = helper.formulateDateFromRequest(event);
-    let categoryId = 'Category#' + today.toISOString();
+    const today = helper.formulateDateFromRequest(event);
+    const categoryId = `Category#${today.toISOString()}`;
 
     /*
      * Check if category is present before adding them
      */
-    checkIfBudgetIsPresent = await addNewCategoryIfNotPresent(
+    isBudgetPresent = await addNewCategoryIfNotPresent(
       categoryId,
       event,
       today,
       categoryName,
       events,
-      checkIfBudgetIsPresent,
-      docClient
+      docClient,
     );
   }
-  return {categoryName, checkIfBudgetIsPresent};
+  return { categoryName, isBudgetPresent };
 }
 
-addHelper.prototype.addANewCategoryIfNotPresent = addANewCategoryIfNotPresent;
+AddHelper.prototype.addANewCategoryIfNotPresent = addANewCategoryIfNotPresent;
 // Export object
-module.exports = new addHelper();
+module.exports = new AddHelper();

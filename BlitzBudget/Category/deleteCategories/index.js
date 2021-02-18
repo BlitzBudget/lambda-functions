@@ -1,36 +1,34 @@
-const helper = require('utils/helper');
-const fetchHelper = require('utils/fetch-helper');
-const deleteHelper = require('utils/delete-helper');
-
 // Load the AWS SDK for Node.js
-var AWS = require('aws-sdk');
+const AWS = require('aws-sdk');
+const helper = require('./utils/helper');
+const fetchHelper = require('./utils/fetch-helper');
+const deleteHelper = require('./utils/delete-helper');
+
 // Set the region
 AWS.config.update({
   region: 'eu-west-1',
 });
 
 // Create the DynamoDB service object
-var DB = new AWS.DynamoDB.DocumentClient();
+const DB = new AWS.DynamoDB.DocumentClient();
 
 exports.handler = async (event) => {
-  console.log('event ' + JSON.stringify(event));
-  let {walletId, curentPeriod} = helper.extractVariablesFromRequest(event);
+  console.log(`event ${JSON.stringify(event)}`);
+  const { walletId, curentPeriod } = helper.extractVariablesFromRequest(event);
 
   // Get Transactions and Budget Items
-  let result = await fetchHelper.fetchAllItemsToDelete(
-    events,
+  const { result, events } = await fetchHelper.fetchAllItemsToDelete(
     walletId,
     curentPeriod,
-    result,
-    DB
+    DB,
   );
 
-  let events = await deleteHelper.bulkDeleteItems(
+  await deleteHelper.bulkDeleteItems(
     events,
     result,
     walletId,
     event,
-    DB
+    DB,
   );
 
   return event;

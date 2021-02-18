@@ -1,4 +1,4 @@
-var fetchHelper = function () {};
+const FetchHelper = () => {};
 
 const fetchVoiceCode = require('../voice-code/fetch');
 
@@ -7,30 +7,30 @@ const fetchVoiceCode = require('../voice-code/fetch');
  */
 async function handleGetNewVoiceCode(
   userId,
-  alexaId,
-  voiceCodePresent,
-  docClient
+  docClient,
 ) {
+  let alexaId;
+  let voiceCodePresent;
   await fetchVoiceCode.getNewVoiceCode(userId, docClient).then(
-    function (result) {
+    (result) => {
       if (result.Count > 0) {
-        for (const alexaVoiceCode of result.Items) {
+        Object.keys(result.Items).forEach((alexaVoiceCode) => {
           console.log(
             'successfully assigned the old voice code id ',
-            alexaVoiceCode.sk
+            alexaVoiceCode.sk,
           );
           alexaId = alexaVoiceCode.sk;
           voiceCodePresent = true;
-        }
+        });
       }
     },
-    function (err) {
-      throw new Error('Unable to get a new voice code ' + err);
-    }
+    (err) => {
+      throw new Error(`Unable to get a new voice code ${err}`);
+    },
   );
-  return {alexaId, voiceCodePresent};
+  return { alexaId, voiceCodePresent };
 }
 
-fetchHelper.prototype.handleGetNewVoiceCode = handleGetNewVoiceCode;
+FetchHelper.prototype.handleGetNewVoiceCode = handleGetNewVoiceCode;
 // Export object
-module.exports = new fetchHelper();
+module.exports = new FetchHelper();

@@ -1,8 +1,8 @@
-var transaction = function () {};
+const Transaction = () => {};
 
-// Get all transaction Items
-transaction.prototype.getTransactionItems = (walletId, DB) => {
-  var params = {
+// Get all Transaction Items
+Transaction.prototype.getTransactionItems = (walletId, DB) => {
+  const params = {
     TableName: 'blitzbudget',
     KeyConditionExpression: 'pk = :pk and begins_with(sk, :items)',
     ExpressionAttributeValues: {
@@ -15,7 +15,7 @@ transaction.prototype.getTransactionItems = (walletId, DB) => {
 
   // Call DynamoDB to read the item from the table
   return new Promise((resolve, reject) => {
-    DB.query(params, function (err, data) {
+    DB.query(params, (err, data) => {
       if (err) {
         console.log('Error ', err);
         reject(err);
@@ -28,4 +28,4 @@ transaction.prototype.getTransactionItems = (walletId, DB) => {
 };
 
 // Export object
-module.exports = new transaction();
+module.exports = new Transaction();

@@ -1,4 +1,4 @@
-var deletHelper = function () {};
+const DeleteHelper = () => {};
 
 const deleteVoiceCode = require('../voice-code/delete');
 
@@ -7,15 +7,15 @@ const deleteVoiceCode = require('../voice-code/delete');
  */
 async function handleDeleteOldVoiceCode(userId, alexaId, docClient) {
   await deleteVoiceCode.deleteOldVoiceCode(userId, alexaId, docClient).then(
-    function () {
+    () => {
       console.log('successfully added the old voice code');
     },
-    function (err) {
-      throw new Error('Unable to delete the old voice code ' + err);
-    }
+    (err) => {
+      throw new Error(`Unable to delete the old voice code ${err}`);
+    },
   );
 }
 
-deletHelper.prototype.handleDeleteOldVoiceCode = handleDeleteOldVoiceCode;
+DeleteHelper.prototype.handleDeleteOldVoiceCode = handleDeleteOldVoiceCode;
 // Export object
-module.exports = new deletHelper();
+module.exports = new DeleteHelper();

@@ -1,39 +1,119 @@
-var addHelper = function () {};
+const AddHelper = () => {};
 
+const fetchHelper = require('./fetch-helper');
+const helper = require('./helper');
 const addTransaction = require('../create-parameters/transaction');
 const addCategoryParam = require('../create-parameters/category');
 const batchWriteItems = require('../add/batch-write');
-const fetchHelper = require('fetch-helper');
-const helper = require('helper');
+
+async function calculateCategoriesToAdd(
+  category,
+  walletId,
+  categoryType,
+  categoryName,
+  categoryMap,
+  addItemArray,
+  datesMap,
+  events,
+  DB,
+  nextSchArray,
+) {
+  const categoriesMap = categoryMap;
+  fetchHelper.pushAllCategoriesToFetch(
+    category,
+    walletId,
+    categoryType,
+    categoryName,
+    DB,
+    nextSchArray,
+    events,
+  );
+
+  /*
+   * Publish events to get category data
+   */
+  await Promise.all(events).then(
+    (result) => {
+      console.log('Processing Categories to create');
+      Object.keys(result).forEach((categoryItem) => {
+        categoriesMap[categoryItem.dateMeantFor] = categoryItem.sortKey;
+        addItemArray.push(
+          addCategoryParam.buildParamsForCategory(
+            walletId,
+            categoryItem.sortKey,
+            categoryType,
+            categoryName,
+            datesMap[categoryItem.dateMeantFor],
+          ),
+        );
+      });
+    },
+    (err) => {
+      throw new Error(
+        `Unable to get the category for the recurring transaction${err}`,
+      );
+    },
+  );
+
+  return [];
+}
+
+function createAllItemsInBatch(putRequests, DB, events) {
+  Object.keys(putRequests).forEach((putRequest) => {
+    const params = {};
+    params.RequestItems = {};
+    params.RequestItems.blitzbudget = putRequest;
+    console.log(
+      'The put request is in batch  with length %j',
+      params.RequestItems.blitzbudget.length,
+    );
+    // Delete Items in batch
+    events.push(batchWriteItems.batchWriteItems(params, DB));
+  });
+}
+
+async function addAllCategories(events) {
+  await Promise.all(events).then(
+    () => {},
+    (err) => {
+      throw new Error(
+        `Unable to update the recurring transactions field ${err}`,
+      );
+    },
+  );
+
+  return [];
+}
 
 function constructRequestAndCreateItems(
   addItemArray,
   datesMap,
   categoryMap,
   event,
-  DB
+  DB,
+  events,
 ) {
   console.log(
     ' The number of dates and categories to create are %j',
-    addItemArray.length
+    addItemArray.length,
   );
   // Add all transactions
-  addTransaction.constructTransactionsWithDateMeantForAndCategory(
+  addTransaction.constructTransactions(
     datesMap,
     categoryMap,
     event,
-    addItemArray
+    addItemArray,
   );
   console.log(
     ' The number of transactions to create are %j',
-    addItemArray.length
+    addItemArray.length,
   );
 
   // Split array into sizes of 25
-  let putRequests = helper.chunkArrayInGroups(addItemArray, 25);
+  const putRequests = helper.chunkArrayInGroups(addItemArray, 25);
 
   // Push Events  to be executed in bulk
-  createAllItemsInBatch(putRequests, DB);
+  createAllItemsInBatch(putRequests, DB, events);
 }
 
 /*
@@ -48,7 +128,8 @@ async function calculateAndAddAllCategories(
   addItemArray,
   datesMap,
   events,
-  DB
+  DB,
+  nextSchArray,
 ) {
   await calculateCategoriesToAdd(
     category,
@@ -59,95 +140,19 @@ async function calculateAndAddAllCategories(
     addItemArray,
     datesMap,
     events,
-    DB
+    DB,
+    nextSchArray,
   );
 
   /*
    * Add all categories first
    */
   await addAllCategories(events);
+  return [];
 }
 
-function createAllItemsInBatch(putRequests, DB) {
-  for (const putRequest of putRequests) {
-    let params = {};
-    params.RequestItems = {};
-    params.RequestItems.blitzbudget = putRequest;
-    console.log(
-      'The put request is in batch  with length %j',
-      params.RequestItems.blitzbudget.length
-    );
-    // Delete Items in batch
-    events.push(batchWriteItems.batchWriteItems(params, DB));
-  }
-}
-
-async function addAllCategories(events) {
-  await Promise.all(events).then(
-    function () {
-      events = [];
-      console.log(
-        'Successfully inserted the categories field %j',
-        recurringTransactionsNextSch
-      );
-    },
-    function (err) {
-      throw new Error(
-        'Unable to update the recurring transactions field ' + err
-      );
-    }
-  );
-}
-
-async function calculateCategoriesToAdd(
-  category,
-  walletId,
-  categoryType,
-  categoryName,
-  categoryMap,
-  addItemArray,
-  datesMap,
-  events,
-  DB
-) {
-  fetchHelper.pushAllCategoriesToFetch(
-    category,
-    walletId,
-    categoryType,
-    categoryName,
-    DB
-  );
-
-  /*
-   * Publish events to get category data
-   */
-  await Promise.all(events).then(
-    function (result) {
-      events = [];
-      console.log('Processing Categories to create');
-      for (const categoryItem of result) {
-        categoryMap[categoryItem.dateMeantFor] = categoryItem.sortKey;
-        addItemArray.push(
-          addCategoryParam.buildParamsForCategory(
-            walletId,
-            categoryItem.sortKey,
-            categoryType,
-            categoryName,
-            datesMap[categoryItem.dateMeantFor]
-          )
-        );
-      }
-    },
-    function (err) {
-      throw new Error(
-        'Unable to get the category for the recurring transaction' + err
-      );
-    }
-  );
-}
-
-addHelper.prototype.constructRequestAndCreateItems = constructRequestAndCreateItems;
-addHelper.prototype.calculateAndAddAllCategories = calculateAndAddAllCategories;
+AddHelper.prototype.constructRequestAndCreateItems = constructRequestAndCreateItems;
+AddHelper.prototype.calculateAndAddAllCategories = calculateAndAddAllCategories;
 
 // Export object
-module.exports = new addHelper();
+module.exports = new AddHelper();

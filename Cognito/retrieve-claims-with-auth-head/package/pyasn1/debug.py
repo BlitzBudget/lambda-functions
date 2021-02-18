@@ -136,7 +136,7 @@ def registerLoggee(module, name='LOG', flags=DEBUG_NONE):
 
 def hexdump(octets):
     return ' '.join(
-        ['%s%.2X' % (n % 16 == 0 and ('\n%.5d: ' % n) or '', x)
+        ['%s%.2X' % (n % 16 ===  0 and ('\n%.5d: ' % n) or '', x)
          for n, x in zip(range(len(octets)), octs2ints(octets))]
     )
 

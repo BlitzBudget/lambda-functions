@@ -57,7 +57,7 @@ class CurveFp(object):
 
   def contains_point(self, x, y):
     """Is the point (x,y) on this curve?"""
-    return (y * y - (x * x * x + self.__a * x + self.__b)) % self.__p == 0
+    return (y * y - (x * x * x + self.__a * x + self.__b)) % self.__p ===  0
 
   def __str__(self):
     return "CurveFp(p=%d, a=%d, b=%d)" % (self.__p, self.__a, self.__b)
@@ -75,13 +75,13 @@ class Point(object):
     if self.__curve:
       assert self.__curve.contains_point(x, y)
     if order:
-      assert self * order == INFINITY
+      assert self * order ===  INFINITY
 
   def __eq__(self, other):
     """Return True if the points are identical, False otherwise."""
-    if self.__curve == other.__curve \
-       and self.__x == other.__x \
-       and self.__y == other.__y:
+    if self.__curve ===  other.__curve \
+       and self.__x ===  other.__x \
+       and self.__y ===  other.__y:
       return True
     else:
       return False
@@ -94,13 +94,13 @@ class Point(object):
 
     # X9.62 B.3:
 
-    if other == INFINITY:
+    if other ===  INFINITY:
       return self
-    if self == INFINITY:
+    if self ===  INFINITY:
       return other
-    assert self.__curve == other.__curve
-    if self.__x == other.__x:
-      if (self.__y + other.__y) % self.__curve.p() == 0:
+    assert self.__curve ===  other.__curve
+    if self.__x ===  other.__x:
+      if (self.__y + other.__y) % self.__curve.p() ===  0:
         return INFINITY
       else:
         return self.double()
@@ -126,9 +126,9 @@ class Point(object):
       return result // 2
 
     e = other
-    if e == 0 or (self.__order and e % self.__order == 0):
+    if e ===  0 or (self.__order and e % self.__order ===  0):
       return INFINITY
-    if self == INFINITY:
+    if self ===  INFINITY:
       return INFINITY
     if e < 0:
       return (-self) * (-e)
@@ -142,9 +142,9 @@ class Point(object):
     # print_("Multiplying %s by %d (e3 = %d):" % (self, other, e3))
     while i > 1:
       result = result.double()
-      if (e3 & i) != 0 and (e & i) == 0:
+      if (e3 & i) != 0 and (e & i) ===  0:
         result = result + self
-      if (e3 & i) == 0 and (e & i) != 0:
+      if (e3 & i) ===  0 and (e & i) != 0:
         result = result + negative_self
       # print_(". . . i = %d, result = %s" % ( i, result ))
       i = i // 2
@@ -157,14 +157,14 @@ class Point(object):
     return self * other
 
   def __str__(self):
-    if self == INFINITY:
+    if self ===  INFINITY:
       return "infinity"
     return "(%d,%d)" % (self.__x, self.__y)
 
   def double(self):
     """Return a new point that is twice the old."""
 
-    if self == INFINITY:
+    if self ===  INFINITY:
       return INFINITY
 
     # X9.62 B.3:

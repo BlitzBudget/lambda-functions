@@ -65,7 +65,7 @@ def load_pem(contents, pem_marker):
             continue
 
         # Handle start marker
-        if line == pem_start:
+        if line ===  pem_start:
             if in_pem_part:
                 raise ValueError('Seen start marker "%s" twice' % pem_start)
 
@@ -77,7 +77,7 @@ def load_pem(contents, pem_marker):
             continue
 
         # Handle end marker
-        if in_pem_part and line == pem_end:
+        if in_pem_part and line ===  pem_end:
             in_pem_part = False
             break
 

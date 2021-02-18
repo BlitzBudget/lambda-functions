@@ -1,36 +1,35 @@
-var date = function () {};
+const Date = () => {};
 
-date.prototype.getDateData = (pk, year, budgetData, docClient) => {
-  var params = createParameters();
-
-  // Call DynamoDB to read the item from the table
-  return new Promise((resolve, reject) => {
-    docClient.query(params, function (err, data) {
-      if (err) {
-        console.log('Error ', err);
-        reject(err);
-      } else {
-        console.log('data retrieved - Date %j', data.Count);
-        budgetData['Date'] = data.Items;
-        resolve({
-          Date: data.Items,
-        });
-      }
-    });
-  });
-
+Date.prototype.getDateData = (pk, year, docClient) => {
   function createParameters() {
     return {
       TableName: 'blitzbudget',
       KeyConditionExpression: 'pk = :pk and begins_with(sk, :items)',
       ExpressionAttributeValues: {
         ':pk': pk,
-        ':items': 'Date#' + year,
+        ':items': `Date#${year}`,
       },
       ProjectionExpression: 'pk, sk, income_total, expense_total, balance',
     };
   }
+
+  const params = createParameters();
+
+  // Call DynamoDB to read the item from the table
+  return new Promise((resolve, reject) => {
+    docClient.query(params, (err, data) => {
+      if (err) {
+        console.log('Error ', err);
+        reject(err);
+      } else {
+        console.log('data retrieved - Date %j', data.Count);
+        resolve({
+          Date: data.Items,
+        });
+      }
+    });
+  });
 };
 
 // Export object
-module.exports = new date();
+module.exports = new Date();

@@ -1,9 +1,9 @@
-var updateBudget = function () {};
+const UpdateBudget = () => {};
 
-updateBudget.prototype.updatingBankAccounts = (params) => {
+UpdateBudget.prototype.updatingBankAccounts = (params, docClient) => {
   console.log('Updating an item...');
   return new Promise((resolve, reject) => {
-    docClient.update(params, function (err, data) {
+    docClient.update(params, (err, data) => {
       if (err) {
         console.log('Error ', err);
         reject(err);
@@ -17,4 +17,4 @@ updateBudget.prototype.updatingBankAccounts = (params) => {
 };
 
 // Export object
-module.exports = new updateBudget();
+module.exports = new UpdateBudget();

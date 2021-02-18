@@ -1,11 +1,11 @@
-var recurringTransaction = function () {};
+const RecurringTransaction = () => {};
 
 // Get all transaction Items
-recurringTransaction.prototype.getRecurringTransactionItems = (
+RecurringTransaction.prototype.getRecurringTransactionItems = (
   walletId,
-  DB
+  DB,
 ) => {
-  var params = {
+  const params = {
     TableName: 'blitzbudget',
     KeyConditionExpression: 'pk = :pk and begins_with(sk, :items)',
     ExpressionAttributeValues: {
@@ -18,7 +18,7 @@ recurringTransaction.prototype.getRecurringTransactionItems = (
 
   // Call DynamoDB to read the item from the table
   return new Promise((resolve, reject) => {
-    DB.query(params, function (err, data) {
+    DB.query(params, (err, data) => {
       if (err) {
         console.log('Error ', err);
         reject(err);
@@ -31,4 +31,4 @@ recurringTransaction.prototype.getRecurringTransactionItems = (
 };
 
 // Export object
-module.exports = new recurringTransaction();
+module.exports = new RecurringTransaction();

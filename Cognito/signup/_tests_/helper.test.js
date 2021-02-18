@@ -13,25 +13,25 @@ describe('isEmpty', () => {
 
 describe('fetchFirstAndFamilyName', () => {
   test('With Special Characters', () => {
-    let name = helper.fetchFirstAndFamilyName('nagarjun_nagesh');
+    const name = helper.fetchFirstAndFamilyName('nagarjun_nagesh');
     expect(name.familyName).toBe('Nagesh');
     expect(name.firstName).toBe('Nagarjun');
   });
 
   test('Without Special Characters', () => {
-    let name = helper.fetchFirstAndFamilyName('nagarjunnagesh');
+    const name = helper.fetchFirstAndFamilyName('nagarjunnagesh');
     expect(name.familyName).toBe(' ');
     expect(name.firstName).toBe('Nagarjunnagesh');
   });
 
   test('Special Characters in First Place: without family name', () => {
-    let name = helper.fetchFirstAndFamilyName('_nagarjun');
+    const name = helper.fetchFirstAndFamilyName('_nagarjun');
     expect(name.familyName).toBe(' ');
     expect(name.firstName).toBe('Nagarjun');
   });
 
   test('Special Characters in First Place: with family name', () => {
-    let name = helper.fetchFirstAndFamilyName('_nagarjun_nagesh');
+    const name = helper.fetchFirstAndFamilyName('_nagarjun_nagesh');
     expect(name.familyName).toBe('Nagesh');
     expect(name.firstName).toBe('Nagarjun');
   });
@@ -50,93 +50,93 @@ describe('isNotEmpty', () => {
 
 describe('splitElement', () => {
   test('With Split Character: Success', () => {
-    let names = helper.splitElement('Nagarjun_Nagesh', '_');
+    const names = helper.splitElement('Nagarjun_Nagesh', '_');
     expect(names[0]).toBe('Nagarjun');
     expect(names[1]).toBe('Nagesh');
   });
 
   test('Without Split Character: Success', () => {
-    let names = helper.splitElement('Nagarjun_Nagesh', '.');
+    const names = helper.splitElement('Nagarjun_Nagesh', '.');
     expect(names).toBe('Nagarjun_Nagesh');
   });
 
   test('Empty Data: Success', () => {
-    let names = helper.splitElement('', '.');
+    const names = helper.splitElement('', '.');
     expect(names).toBe('');
   });
 
-  test('Empty Data: Success', () => {
-    let names = helper.splitElement(null, '.');
+  test('Null Data: Success', () => {
+    const names = helper.splitElement(null, '.');
     expect(names).toBe(null);
   });
 });
 
 describe('emailToLowerCase', () => {
-  let event = {};
+  const event = {};
   event['body-json'] = {};
 
   test('With Empty Space: Success', () => {
     expect(helper.emailToLowerCase(' nagarjun_nagesh@outlook.com ')).toBe(
-      'nagarjun_nagesh@outlook.com'
+      'nagarjun_nagesh@outlook.com',
     );
   });
 
   test('With Uppercase: Success', () => {
     expect(helper.emailToLowerCase('Nagarjun_Nagesh@outlook.com')).toBe(
-      'nagarjun_nagesh@outlook.com'
+      'nagarjun_nagesh@outlook.com',
     );
   });
 
   test('Without Uppercase && Without Space: Success', () => {
     expect(helper.emailToLowerCase('nagarjun_nagesh@outlook.com ')).toBe(
-      'nagarjun_nagesh@outlook.com'
+      'nagarjun_nagesh@outlook.com',
     );
   });
 
   test('With Uppercase && With Space: Success', () => {
     expect(helper.emailToLowerCase(' nagaRjuN_NagEsh@outloOk.cOM ')).toBe(
-      'nagarjun_nagesh@outlook.com'
+      'nagarjun_nagesh@outlook.com',
     );
   });
 });
 
 describe('extractFirstAndLastName', () => {
   test('With Firstname and Lastname: Success', () => {
-    ({firstName, lastName} = helper.extractFirstAndLastName(
+    const { firstName, lastName } = helper.extractFirstAndLastName(
       'Nagarjun',
       'Nagesh',
-      null
-    ));
+      null,
+    );
     expect(firstName).toBe('Nagarjun');
     expect(lastName).toBe('Nagesh');
   });
 
   test('Without Firstname and Lastname: Success', () => {
-    ({firstName, lastName} = helper.extractFirstAndLastName(
+    const { firstName, lastName } = helper.extractFirstAndLastName(
       null,
       null,
-      'nagarjun_nagesh@outlook.com'
-    ));
+      'nagarjun_nagesh@outlook.com',
+    );
     expect(firstName).toBe('Nagarjun');
     expect(lastName).toBe('Nagesh');
   });
 
   test('Without Firstname and with Lastname: Success', () => {
-    ({firstName, lastName} = helper.extractFirstAndLastName(
+    const { firstName, lastName } = helper.extractFirstAndLastName(
       null,
       'ABCD',
-      'nagarjun_nagesh@outlook.com'
-    ));
+      'nagarjun_nagesh@outlook.com',
+    );
     expect(firstName).toBe('Nagarjun');
     expect(lastName).toBe('Nagesh');
   });
 
   test('With Firstname and without Lastname: Success', () => {
-    ({firstName, lastName} = helper.extractFirstAndLastName(
+    const { firstName, lastName } = helper.extractFirstAndLastName(
       null,
       'ABCD',
-      'nagarjun_nagesh@outlook.com'
-    ));
+      'nagarjun_nagesh@outlook.com',
+    );
     expect(firstName).toBe('Nagarjun');
     expect(lastName).toBe('Nagesh');
   });
@@ -144,15 +144,15 @@ describe('extractFirstAndLastName', () => {
 
 describe('buildParamForSignup', () => {
   test('Build Param for signup', () => {
-    let password = 'ABCD1234.';
-    let email = 'nagarjun_nagesh@outlook.com';
-    let firstName = 'Nagarjun';
-    let params = helper.buildParamForSignup(
+    const password = 'ABCD1234.';
+    const email = 'nagarjun_nagesh@outlook.com';
+    const firstName = 'Nagarjun';
+    const params = helper.buildParamForSignup(
       password,
       email,
       firstName,
       'Nagesh',
-      'en-US'
+      'en-US',
     );
     expect(params.Password).toBe(password);
     expect(params.Username).toBe(email);

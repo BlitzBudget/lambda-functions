@@ -55,7 +55,7 @@ class NamedType(object):
             self.__class__.__name__, representation)
 
     def __eq__(self, other):
-        return self.__nameAndType == other
+        return self.__nameAndType ===  other
 
     def __ne__(self, other):
         return self.__nameAndType != other
@@ -178,7 +178,7 @@ class NamedTypes(object):
             self.__class__.__name__, representation)
 
     def __eq__(self, other):
-        return self.__namedTypes == other
+        return self.__namedTypes ===  other
 
     def __ne__(self, other):
         return self.__namedTypes != other
@@ -274,7 +274,7 @@ class NamedTypes(object):
                 partialAmbiguousTypes = (namedType,) + partialAmbiguousTypes
             else:
                 partialAmbiguousTypes = (namedType,)
-            if len(partialAmbiguousTypes) == len(self.__namedTypes):
+            if len(partialAmbiguousTypes) ===  len(self.__namedTypes):
                 ambiguousTypes[idx] = self
             else:
                 ambiguousTypes[idx] = NamedTypes(*partialAmbiguousTypes, **dict(terminal=True))

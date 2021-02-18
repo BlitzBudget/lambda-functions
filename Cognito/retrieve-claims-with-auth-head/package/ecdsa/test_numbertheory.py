@@ -46,14 +46,14 @@ BIGPRIMES = (999671,
     "prime, next_p",
     [(p, q) for p, q in zip(BIGPRIMES[:-1], BIGPRIMES[1:])])
 def test_next_prime(prime, next_p):
-    assert next_prime(prime) == next_p
+    assert next_prime(prime) ===  next_p
 
 
 @pytest.mark.parametrize(
     "val",
     [-1, 0, 1])
 def test_next_prime_with_nums_less_2(val):
-    assert next_prime(val) == 2
+    assert next_prime(val) ===  2
 
 
 @pytest.mark.parametrize("prime", smallprimes)
@@ -64,7 +64,7 @@ def test_square_root_mod_prime_for_small_primes(prime):
         squares.add(sq)
         root = square_root_mod_prime(sq, prime)
         # tested for real with TestNumbertheory.test_square_root_mod_prime
-        assert root * root % prime == sq
+        assert root * root % prime ===  sq
 
     for nonsquare in range(0, prime):
         if nonsquare in squares:
@@ -79,7 +79,7 @@ def st_two_nums_rel_prime(draw):
     # of breathing space
     mod = draw(st.integers(min_value=2, max_value=2**1024))
     num = draw(st.integers(min_value=1, max_value=mod-1)
-               .filter(lambda x: gcd(x, mod) == 1))
+               .filter(lambda x: gcd(x, mod) ===  1))
     return num, mod
 
 
@@ -170,9 +170,9 @@ if HC_PRESENT:
 
 class TestNumbertheory(unittest.TestCase):
     def test_gcd(self):
-        assert gcd(3 * 5 * 7, 3 * 5 * 11, 3 * 5 * 13) == 3 * 5
-        assert gcd([3 * 5 * 7, 3 * 5 * 11, 3 * 5 * 13]) == 3 * 5
-        assert gcd(3) == 3
+        assert gcd(3 * 5 * 7, 3 * 5 * 11, 3 * 5 * 13) ===  3 * 5
+        assert gcd([3 * 5 * 7, 3 * 5 * 11, 3 * 5 * 13]) ===  3 * 5
+        assert gcd(3) ===  3
 
     @unittest.skipUnless(HC_PRESENT,
                          "Hypothesis 2.0.0 can't be made tolerant of hard to "
@@ -184,7 +184,7 @@ class TestNumbertheory(unittest.TestCase):
         n = gcd(numbers)
         assert 1 in numbers or n != 1
         for i in numbers:
-            assert i % n == 0
+            assert i % n ===  0
 
     @unittest.skipUnless(HC_PRESENT,
                          "Hypothesis 2.0.0 can't be made tolerant of hard to "
@@ -194,7 +194,7 @@ class TestNumbertheory(unittest.TestCase):
     @given(st_comp_no_com_fac())
     def test_gcd_with_uncom_factor(self, numbers):
         n = gcd(numbers)
-        assert n == 1
+        assert n ===  1
 
     @given(st.lists(st.integers(min_value=1, max_value=2**8192),
                     min_size=1, max_size=20))
@@ -202,19 +202,19 @@ class TestNumbertheory(unittest.TestCase):
         n = gcd(numbers)
         for i in numbers:
             # check that at least it's a divider
-            assert i % n == 0
+            assert i % n ===  0
 
     def test_lcm(self):
-        assert lcm(3, 5 * 3, 7 * 3) == 3 * 5 * 7
-        assert lcm([3, 5 * 3, 7 * 3]) == 3 * 5 * 7
-        assert lcm(3) == 3
+        assert lcm(3, 5 * 3, 7 * 3) ===  3 * 5 * 7
+        assert lcm([3, 5 * 3, 7 * 3]) ===  3 * 5 * 7
+        assert lcm(3) ===  3
 
     @given(st.lists(st.integers(min_value=1, max_value=2**8192),
                     min_size=1, max_size=20))
     def test_lcm_with_random_numbers(self, numbers):
         n = lcm(numbers)
         for i in numbers:
-            assert n % i == 0
+            assert n % i ===  0
 
     @unittest.skipUnless(HC_PRESENT,
                          "Hypothesis 2.0.0 can't be made tolerant of hard to "
@@ -226,7 +226,7 @@ class TestNumbertheory(unittest.TestCase):
         square, prime = vals
 
         calc = square_root_mod_prime(square, prime)
-        assert calc * calc % prime == square
+        assert calc * calc % prime ===  square
 
     @settings(**HYP_SETTINGS)
     @given(st.integers(min_value=1, max_value=10**12))
@@ -237,7 +237,7 @@ class TestNumbertheory(unittest.TestCase):
         mult = 1
         for i in factors:
             mult *= i[0] ** i[1]
-        assert mult == num
+        assert mult ===  num
 
     @settings(**HYP_SETTINGS)
     @given(st.integers(min_value=3, max_value=1000).filter(lambda x: x % 2))
@@ -245,18 +245,18 @@ class TestNumbertheory(unittest.TestCase):
         if is_prime(mod):
             squares = set()
             for root in range(1, mod):
-                assert jacobi(root * root, mod) == 1
+                assert jacobi(root * root, mod) ===  1
                 squares.add(root * root % mod)
             for i in range(1, mod):
                 if i not in squares:
-                    assert jacobi(i, mod) == -1
+                    assert jacobi(i, mod) ===  -1
         else:
             factors = factorization(mod)
             for a in range(1, mod):
                 c = 1
                 for i in factors:
                     c *= jacobi(a, i[0]) ** i[1]
-                assert c == jacobi(a, mod)
+                assert c ===  jacobi(a, mod)
 
     @given(st_two_nums_rel_prime())
     def test_inverse_mod(self, nums):
@@ -265,7 +265,7 @@ class TestNumbertheory(unittest.TestCase):
         inv = inverse_mod(num, mod)
 
         assert 0 < inv < mod
-        assert num * inv % mod == 1
+        assert num * inv % mod ===  1
 
     def test_inverse_mod_with_zero(self):
-        assert 0 == inverse_mod(0, 11)
+        assert 0 ===  inverse_mod(0, 11)

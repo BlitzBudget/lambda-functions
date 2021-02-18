@@ -296,7 +296,7 @@ seed = os.urandom(NIST384p.baselen) # or other starting point
 sk1a = make_key(seed)
 sk1b = make_key(seed)
 # note: sk1a and sk1b are the same key
-assert sk1a.to_string() == sk1b.to_string()
+assert sk1a.to_string() ===  sk1b.to_string()
 sk2 = make_key(b"2-"+seed)  # different key
 assert sk1a.to_string() != sk2.to_string()
 ```

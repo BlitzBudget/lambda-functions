@@ -1,26 +1,26 @@
-var helper = function () {};
+const Helper = () => {};
 
 // Splits array into chunks
-helper.prototype.chunkArrayInGroups = (arr, size) => {
-  var myArray = [];
-  for (var i = 0; i < arr.length; i += size) {
+Helper.prototype.chunkArrayInGroups = (arr, size) => {
+  const myArray = [];
+  for (let i = 0; i < arr.length; i += size) {
     myArray.push(arr.slice(i, i + size));
   }
   return myArray;
 };
 
-helper.prototype.isEqual = (obj1, obj2) => {
+Helper.prototype.isEqual = (obj1, obj2) => {
   if (JSON.stringify(obj1) === JSON.stringify(obj2)) {
     return true;
   }
   return false;
 };
 
-helper.prototype.extractVariablesFromRequest = (event) => {
-  let walletId = event['body-json'].walletId;
-  let curentPeriod = event['body-json'].category.substring(9, 16);
-  return {walletId, curentPeriod};
+Helper.prototype.extractVariablesFromRequest = (event) => {
+  const { walletId } = event['body-json'];
+  const curentPeriod = event['body-json'].category.substring(9, 16);
+  return { walletId, curentPeriod };
 };
 
 // Export object
-module.exports = new helper();
+module.exports = new Helper();

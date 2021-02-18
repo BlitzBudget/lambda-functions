@@ -1,11 +1,11 @@
-var batchWrite = function () {};
+const BatchWrite = () => {};
 
 /*
  * Batch write all the transactions and dates created
  */
 function batchWriteItems(paramsPartial, DB) {
   return new Promise((resolve, reject) => {
-    DB.batchWrite(paramsPartial, function (err, data) {
+    DB.batchWrite(paramsPartial, (err, data) => {
       if (err) {
         console.log('Error ', err);
         reject(err);
@@ -19,6 +19,6 @@ function batchWriteItems(paramsPartial, DB) {
   });
 }
 
-batchWrite.prototype.batchWriteItems = batchWriteItems;
+BatchWrite.prototype.batchWriteItems = batchWriteItems;
 // Export object
-module.exports = new batchWrite();
+module.exports = new BatchWrite();

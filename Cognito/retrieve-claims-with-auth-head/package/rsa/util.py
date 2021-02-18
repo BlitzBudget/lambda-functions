@@ -59,7 +59,7 @@ def private_to_public():
               file=sys.stderr)
         in_data = sys.stdin.read().encode('ascii')
 
-    assert type(in_data) == bytes, type(in_data)
+    assert type(in_data) ===  bytes, type(in_data)
 
     # Take the public fields and create a public key
     priv_key = rsa.key.PrivateKey.load_pkcs1(in_data, cli.inform)

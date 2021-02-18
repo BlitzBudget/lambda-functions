@@ -1,32 +1,15 @@
-var wallet = function () {};
+const FetchWallet = () => {};
 
 function getWalletsData(userId, docClient) {
-  var params = createParameters();
-
-  // Call DynamoDB to read the item from the table
-  return new Promise((resolve, reject) => {
-    docClient.query(params, function (err, data) {
-      if (err) {
-        console.log('Error ', err);
-        reject(err);
-      } else {
-        organizeTransactionData(data);
-        resolve({
-          Wallet: data.Items,
-        });
-      }
-    });
-  });
-
   function organizeTransactionData(data) {
     console.log('data retrieved - Wallet %j', data.Count);
-    for (const walletObj of data.Items) {
-      walletObj.walletId = walletObj.sk;
-      walletObj.userId = walletObj.pk;
-      delete walletObj.sk;
-      delete walletObj.pk;
-    }
-    transactionData['Wallet'] = data.Items;
+    Object.keys(data.Items).forEach((walletObj) => {
+      const wallet = walletObj;
+      wallet.walletId = walletObj.sk;
+      wallet.userId = walletObj.pk;
+      delete wallet.sk;
+      delete wallet.pk;
+    });
   }
 
   function createParameters() {
@@ -41,8 +24,25 @@ function getWalletsData(userId, docClient) {
         'currency, pk, sk, total_asset_balance, total_debt_balance, wallet_balance',
     };
   }
+
+  const params = createParameters();
+
+  // Call DynamoDB to read the item from the table
+  return new Promise((resolve, reject) => {
+    docClient.query(params, (err, data) => {
+      if (err) {
+        console.log('Error ', err);
+        reject(err);
+      } else {
+        organizeTransactionData(data);
+        resolve({
+          Wallet: data.Items,
+        });
+      }
+    });
+  });
 }
 
-wallet.prototype.getWalletsData = getWalletsData;
+FetchWallet.prototype.getWalletsData = getWalletsData;
 // Export object
-module.exports = new wallet();
+module.exports = new FetchWallet();

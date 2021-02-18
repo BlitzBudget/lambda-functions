@@ -1,21 +1,22 @@
-const helper = require('utils/helper');
-const adminGetUser = require('user/admin-get-user-attribute');
-
-exports.handler = async (event) => {
-  return await handleGetUser(event);
-};
+const helper = require('./utils/helper');
+const adminGetUser = require('./user/admin-get-user-attribute');
 
 async function handleGetUser(event) {
   let userAttr;
-  let params = helper.createParameters(event); /* required */
+  const params = helper.createParameters(event); /* required */
 
   await adminGetUser.getUser(params).then(
-    function (result) {
+    (result) => {
       userAttr = result;
     },
-    function (err) {
-      throw new Error('Error getting user attributes from cognito  ' + err);
-    }
+    (err) => {
+      throw new Error(`Error getting user attributes from cognito  ${err}`);
+    },
   );
   return userAttr;
 }
+
+exports.handler = async (event) => {
+  const response = await handleGetUser(event);
+  return response;
+};

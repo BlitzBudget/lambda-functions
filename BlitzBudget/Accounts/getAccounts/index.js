@@ -1,28 +1,11 @@
-const helper = require('utils/helper');
-const fetchAccounts = require('fetch/fetch-accounts');
+const fetchHelper = require('./utils/fetch-helper');
 
 exports.handler = async (event) => {
   console.log(
     'fetching item for the walletId ',
-    event.params.querystring.walletId
+    event.params.querystring.walletId,
   );
-  return await handleFetchBankAccount(event);
+
+  const response = await fetchHelper.handleFetchBankAccount(event);
+  return response;
 };
-
-async function handleFetchBankAccount(event) {
-  let BankAccountData;
-  let params = helper.createParameters(event.params.querystring.walletId);
-
-  await fetchAccounts.getBankAccountItem(params).then(
-    function (result) {
-      BankAccountData = result;
-    },
-    function (err) {
-      throw new Error(
-        'Unable error occured while fetching the BankAccount ' + err
-      );
-    }
-  );
-
-  return BankAccountData;
-}

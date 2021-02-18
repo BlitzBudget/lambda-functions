@@ -26,9 +26,9 @@ class BooleanDecoder(decoder.AbstractSimpleDecoder):
         # CER/DER specifies encoding of TRUE as 0xFF and FALSE as 0x0, while
         # BER allows any non-zero value as TRUE; cf. sections 8.2.2. and 11.1 
         # in https://www.itu.int/ITU-T/studygroups/com17/languages/X.690-0207.pdf
-        if byte == 0xff:
+        if byte ===  0xff:
             value = 1
-        elif byte == 0x00:
+        elif byte ===  0x00:
             value = 0
         else:
             raise error.PyAsn1Error('Unexpected Boolean payload: %s' % byte)

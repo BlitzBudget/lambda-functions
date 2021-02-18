@@ -1,4 +1,4 @@
-const updateHelper = require('../update/helper');
+const updateHelper = require('./utils/update-helper');
 
 exports.handler = async (event) => {
   console.log('updating goals for ', JSON.stringify(event['body-json']));

@@ -1,19 +1,19 @@
-var account = function () {};
+const UpdateAccount = () => {};
 
-function updateAccountBalanceItem(pk, sk, balance) {
+function updateAccountBalanceItem(pk, sk, balance, docClient) {
   console.log(
     'Updating account balance for the account with walelt Id %j',
     pk,
     ' With sk as ',
     sk,
     ' with the balance ',
-    balance
+    balance,
   );
-  let params = {
+  const params = {
     TableName: 'blitzbudget',
     Key: {
-      pk: pk,
-      sk: sk,
+      pk,
+      sk,
     },
     UpdateExpression: 'set account_balance = account_balance + :ab',
     ConditionExpression: 'attribute_exists(account_balance)',
@@ -25,11 +25,11 @@ function updateAccountBalanceItem(pk, sk, balance) {
 
   console.log('Updating the item...');
   return new Promise((resolve, reject) => {
-    docClient.update(params, function (err, data) {
+    docClient.update(params, (err, data) => {
       if (err) {
         console.error(
           'Unable to update item. Error JSON:',
-          JSON.stringify(err, null, 2)
+          JSON.stringify(err, null, 2),
         );
         reject(err);
       } else {
@@ -40,6 +40,6 @@ function updateAccountBalanceItem(pk, sk, balance) {
   });
 }
 
-account.prototype.updateAccountBalanceItem = updateAccountBalanceItem;
+UpdateAccount.prototype.updateAccountBalanceItem = updateAccountBalanceItem;
 // Export object
-module.exports = new account();
+module.exports = new UpdateAccount();

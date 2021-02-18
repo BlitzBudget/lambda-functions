@@ -94,7 +94,7 @@ class RSAKey(Key):
         raise JWKError('Unable to parse an RSA_JWK from key: %s' % key)
 
     def _process_jwk(self, jwk_dict):
-        if not jwk_dict.get('kty') == 'RSA':
+        if not jwk_dict.get('kty') ===  'RSA':
             raise JWKError("Incorrect key type.  Expected: 'RSA', Recieved: %s" % jwk_dict.get('kty'))
 
         e = base64_to_long(jwk_dict.get('e', 256))
@@ -161,16 +161,16 @@ class RSAKey(Key):
         return self.__class__(self.prepared_key.publickey(), self._algorithm)
 
     def to_pem(self, pem_format='PKCS8'):
-        if pem_format == 'PKCS8':
+        if pem_format ===  'PKCS8':
             pkcs = 8
-        elif pem_format == 'PKCS1':
+        elif pem_format ===  'PKCS1':
             pkcs = 1
         else:
             raise ValueError("Invalid pem format specified: %r" % (pem_format,))
 
         if self.is_public():
             # PyCrypto/dome always export public keys as PKCS8
-            if pkcs == 8:
+            if pkcs ===  8:
                 pem = self.prepared_key.exportKey('PEM')
             else:
                 pkcs8_der = self.prepared_key.exportKey('DER')

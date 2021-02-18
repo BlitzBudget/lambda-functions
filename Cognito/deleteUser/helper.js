@@ -1,10 +1,8 @@
-var helper = function () {};
+const Helper = () => {};
 
-helper.prototype.createParameters = (event) => {
-  return {
-    AccessToken: event['body-json'].accessToken,
-  };
-};
+Helper.prototype.createParameters = (event) => ({
+  AccessToken: event['body-json'].accessToken,
+});
 
 // Export object
-module.exports = new helper();
+module.exports = new Helper();

@@ -1,8 +1,8 @@
-const fetchHelper = require('utils/fetch-helper');
+const fetchHelper = require('./utils/fetch-helper');
 
 exports.handler = async (event) => {
   console.log('fetching item for the userId ', event['body-json'].userId);
-  let walletData = {};
+  const walletData = {};
 
   await fetchHelper.handleFetchWallet(event, walletData);
 

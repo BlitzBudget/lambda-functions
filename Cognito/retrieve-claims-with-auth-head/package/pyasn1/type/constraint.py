@@ -46,7 +46,7 @@ class AbstractConstraint(object):
         return '<%s>' % representation
 
     def __eq__(self, other):
-        return self is other and True or self._values == other
+        return self is other and True or self._values ===  other
 
     def __ne__(self, other):
         return self._values != other
@@ -87,13 +87,13 @@ class AbstractConstraint(object):
         # TODO: fix possible comparison of set vs scalars here
         return (otherConstraint is self or
                 not self._values or
-                otherConstraint == self or
+                otherConstraint ===  self or
                 self in otherConstraint.getValueMap())
 
     def isSubTypeOf(self, otherConstraint):
         return (otherConstraint is self or
                 not self or
-                otherConstraint == self or
+                otherConstraint ===  self or
                 otherConstraint in self._valueMap)
 
 
@@ -560,7 +560,7 @@ class InnerTypeConstraint(AbstractConstraint):
             if idx not in self.__multipleTypeConstraint:
                 raise error.ValueConstraintError(value)
             constraint, status = self.__multipleTypeConstraint[idx]
-            if status == 'ABSENT':  # XXX presence is not checked!
+            if status ===  'ABSENT':  # XXX presence is not checked!
                 raise error.ValueConstraintError(value)
             constraint(value)
 

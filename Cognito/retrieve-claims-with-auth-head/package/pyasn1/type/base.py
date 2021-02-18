@@ -106,8 +106,8 @@ class Asn1Type(Asn1Item):
             :obj:`False` otherwise.
         """
         return (self is other or
-                (not matchTags or self.tagSet == other.tagSet) and
-                (not matchConstraints or self.subtypeSpec == other.subtypeSpec))
+                (not matchTags or self.tagSet ===  other.tagSet) and
+                (not matchConstraints or self.subtypeSpec ===  other.subtypeSpec))
 
     def isSuperTypeOf(self, other, matchTags=True, matchConstraints=True):
         """Examine |ASN.1| type for subtype relationship with other ASN.1 type.
@@ -291,7 +291,7 @@ class SimpleAsn1Type(Asn1Type):
         return '<%s>' % representation
 
     def __eq__(self, other):
-        return self is other and True or self._value == other
+        return self is other and True or self._value ===  other
 
     def __ne__(self, other):
         return self._value != other
@@ -547,7 +547,7 @@ class ConstructedAsn1Type(Asn1Type):
         return '<%s>' % representation
 
     def __eq__(self, other):
-        return self is other or self.components == other
+        return self is other or self.components ===  other
 
     def __ne__(self, other):
         return self.components != other

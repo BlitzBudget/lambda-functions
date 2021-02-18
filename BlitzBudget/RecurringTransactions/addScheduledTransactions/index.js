@@ -1,48 +1,46 @@
-const helper = require('utils/helper');
-const fetchHelper = require('utils/fetch-helper');
-const addHelper = require('utils/add-helper');
-const updateHelper = require('utils/update-helper');
-const scheduledDates = require('utils/scheduled-dates');
-
 // Load the AWS SDK for Node.js
-var AWS = require('aws-sdk');
+const AWS = require('aws-sdk');
+const helper = require('./utils/helper');
+const fetchHelper = require('./utils/fetch-helper');
+const addHelper = require('./utils/add-helper');
+const updateHelper = require('./utils/update-helper');
+const scheduledDates = require('./utils/scheduled-dates');
+
 // Set the region
 AWS.config.update({
   region: 'eu-west-1',
 });
 
 // Create the DynamoDB service object
-var DB = new AWS.DynamoDB.DocumentClient();
+const DB = new AWS.DynamoDB.DocumentClient();
 
 exports.handler = async (event) => {
-  let futureTransactionCreationDate;
-  let addItemArray = [];
-  let datesToCreateTransactions = [];
+  const addItemArray = [];
+  const datesToCreateTransactions = [];
   let events = [];
-  let datesMap = {};
-  let categoryMap = {};
-  let {
+  const datesMap = {};
+  const categoryMap = {};
+  const {
     walletId,
     category,
     categoryType,
     categoryName,
     recurringTransactionsId,
   } = helper.extractVariablesFromRequest(event);
-  scheduledDates.calculateNextDateToCreates(
+  const futureTransactionCreationDate = scheduledDates.calculateNextDateToCreates(
     event,
-    futureTransactionCreationDate,
-    datesToCreateTransactions
+    datesToCreateTransactions,
   );
 
-  await fetchHelper.calculateAndAddAllDates(
+  events = await fetchHelper.calculateAndAddAllDates(
     addItemArray,
     walletId,
     datesMap,
     events,
-    DB
+    DB,
   );
 
-  await addHelper.calculateAndAddAllCategories(
+  events = await addHelper.calculateAndAddAllCategories(
     category,
     walletId,
     categoryType,
@@ -51,7 +49,8 @@ exports.handler = async (event) => {
     addItemArray,
     datesMap,
     events,
-    DB
+    DB,
+    futureTransactionCreationDate,
   );
 
   addHelper.constructRequestAndCreateItems(
@@ -59,13 +58,15 @@ exports.handler = async (event) => {
     datesMap,
     categoryMap,
     event,
-    DB
+    DB,
+    events,
   );
 
   await updateHelper.updateRecurringTransaction(
     walletId,
     recurringTransactionsId,
     futureTransactionCreationDate,
-    DB
+    DB,
+    events,
   );
 };

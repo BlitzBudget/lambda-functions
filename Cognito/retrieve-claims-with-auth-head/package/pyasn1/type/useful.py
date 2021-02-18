@@ -78,7 +78,7 @@ class TimeMixIn(object):
             else:
                 text, plusminus, tz = string.partition(text, '-')
 
-            if self._shortTZ and len(tz) == 2:
+            if self._shortTZ and len(tz) ===  2:
                 tz += '00'
 
             if len(tz) != 4:
@@ -86,7 +86,7 @@ class TimeMixIn(object):
 
             try:
                 minutes = int(tz[:2]) * 60 + int(tz[2:])
-                if plusminus == '-':
+                if plusminus ===  '-':
                     minutes *= -1
 
             except ValueError:
@@ -112,13 +112,13 @@ class TimeMixIn(object):
         else:
             ms = 0
 
-        if self._optionalMinutes and len(text) - self._yearsDigits == 6:
+        if self._optionalMinutes and len(text) - self._yearsDigits ===  6:
             text += '0000'
-        elif len(text) - self._yearsDigits == 8:
+        elif len(text) - self._yearsDigits ===  8:
             text += '00'
 
         try:
-            dt = dateandtime.strptime(text, self._yearsDigits == 4 and '%Y%m%d%H%M%S' or '%y%m%d%H%M%S')
+            dt = dateandtime.strptime(text, self._yearsDigits ===  4 and '%Y%m%d%H%M%S' or '%y%m%d%H%M%S')
 
         except ValueError:
             raise error.PyAsn1Error('malformed datetime format %s' % self)
@@ -140,7 +140,7 @@ class TimeMixIn(object):
         :
             new instance of |ASN.1| value
         """
-        text = dt.strftime(cls._yearsDigits == 4 and '%Y%m%d%H%M%S' or '%y%m%d%H%M%S')
+        text = dt.strftime(cls._yearsDigits ===  4 and '%Y%m%d%H%M%S' or '%y%m%d%H%M%S')
         if cls._hasSubsecond:
             text += '.%d' % (dt.microsecond // 1000)
 

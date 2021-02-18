@@ -1,45 +1,30 @@
-var createRecurringTransaction = function () {};
+const CreateRecurringTransaction = () => {};
 
 function addRecurringTransaction(event, docClient) {
-  let today = new Date();
+  const today = new Date();
   today.setYear(event['body-json'].dateMeantFor.substring(5, 9));
   today.setMonth(
-    parseInt(event['body-json'].dateMeantFor.substring(10, 12)) - 1
+    parseInt(event['body-json'].dateMeantFor.substring(10, 12), 10) - 1,
   );
-  let randomValue = 'RecurringTransactions#' + today.toISOString();
-  let nextRecurrence = today;
+  const randomValue = `RecurringTransactions#${today.toISOString()}`;
+  const nextRecurrence = today;
 
   switch (event['body-json'].recurrence) {
     case 'MONTHLY':
       nextRecurrence.setMonth(nextRecurrence.getMonth() + 1);
-      event['body-json'].nextScheduled = nextRecurrence.toISOString();
+      // event['body-json'].nextScheduled = nextRecurrence.toISOString();
       break;
     case 'WEEKLY':
       nextRecurrence.setDate(nextRecurrence.getDate() + 7);
-      event['body-json'].nextScheduled = nextRecurrence.toISOString();
+      // event['body-json'].nextScheduled = nextRecurrence.toISOString();
       break;
     case 'BI-MONTHLY':
       nextRecurrence.setDate(nextRecurrence.getDate() + 15);
-      event['body-json'].nextScheduled = nextRecurrence.toISOString();
+      // event['body-json'].nextScheduled = nextRecurrence.toISOString();
+      break;
+    default:
       break;
   }
-
-  var params = createParameters();
-
-  console.log('Adding a new item...');
-  return new Promise((resolve, reject) => {
-    docClient.put(params, function (err, data) {
-      if (err) {
-        console.log('Error ', err);
-        reject(err);
-      } else {
-        resolve({
-          success: data,
-        });
-        event['body-json'].id = randomValue;
-      }
-    });
-  });
 
   function createParameters() {
     return {
@@ -61,8 +46,25 @@ function addRecurringTransaction(event, docClient) {
       },
     };
   }
+
+  const params = createParameters();
+
+  console.log('Adding a new item...');
+  return new Promise((resolve, reject) => {
+    docClient.put(params, (err, data) => {
+      if (err) {
+        console.log('Error ', err);
+        reject(err);
+      } else {
+        resolve({
+          success: data,
+        });
+        // event['body-json'].id = randomValue;
+      }
+    });
+  });
 }
 
-createRecurringTransaction.prototype.addRecurringTransaction = addRecurringTransaction;
+CreateRecurringTransaction.prototype.addRecurringTransaction = addRecurringTransaction;
 // Export object
-module.exports = new createRecurringTransaction();
+module.exports = new CreateRecurringTransaction();

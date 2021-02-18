@@ -1,18 +1,18 @@
-const helper = require('utils/helper');
-const updateHelper = require('utils/update-helper');
-
 // Load the AWS SDK for Node.js
-var AWS = require('aws-sdk');
+const AWS = require('aws-sdk');
+const helper = require('./utils/helper');
+const updateHelper = require('./utils/update-helper');
+
 // Set the region
 AWS.config.update({
   region: 'eu-west-1',
 });
 
 // Create the DynamoDB service object
-var docClient = new AWS.DynamoDB.DocumentClient();
+const docClient = new AWS.DynamoDB.DocumentClient();
 
 exports.handler = async (event) => {
-  let events = [];
+  const events = [];
   console.log('updating transactions for ', JSON.stringify(event['body-json']));
 
   /*
@@ -20,7 +20,12 @@ exports.handler = async (event) => {
    */
   await helper.calculateAndFetchCategory(event, events, docClient);
 
-  await updateHelper.updateAllItems(events, event, docClient);
+  const response = await updateHelper.updateAllItems(events, event, docClient);
 
-  return event;
+  const updateResponse = event['body-json'];
+  // updateResponse.category = response.Category.Attributes.sk;
+  updateResponse.category = response.Transaction.Attributes.category;
+  updateResponse.amount = response.Transaction.Attributes.amount;
+
+  return updateResponse;
 };

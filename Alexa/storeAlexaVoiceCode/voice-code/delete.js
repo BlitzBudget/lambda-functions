@@ -1,15 +1,25 @@
-var deleteVoiceCode = function () {};
+const DeleteVoiceCode = () => {};
 
 /*
  * Delete Old Voice Code
  */
 function deleteOldVoiceCode(pk, sk, docClient) {
-  console.log('Delete old voice code for the primary key ' + pk);
+  console.log(`Delete old voice code for the primary key ${pk}`);
 
-  var params = createParameters();
+  function createParameters() {
+    return {
+      TableName: 'blitzbudget',
+      Key: {
+        pk,
+        sk,
+      },
+    };
+  }
+
+  const params = createParameters();
 
   return new Promise((resolve, reject) => {
-    docClient.delete(params, function (err, data) {
+    docClient.delete(params, (err, data) => {
       if (err) {
         console.log('Error ', err);
         reject(err);
@@ -20,18 +30,8 @@ function deleteOldVoiceCode(pk, sk, docClient) {
       }
     });
   });
-
-  function createParameters() {
-    return {
-      TableName: 'blitzbudget',
-      Key: {
-        pk: pk,
-        sk: sk,
-      },
-    };
-  }
 }
 
-deleteVoiceCode.prototype.deleteOldVoiceCode = deleteOldVoiceCode;
+DeleteVoiceCode.prototype.deleteOldVoiceCode = deleteOldVoiceCode;
 // Export object
-module.exports = new deleteVoiceCode();
+module.exports = new DeleteVoiceCode();

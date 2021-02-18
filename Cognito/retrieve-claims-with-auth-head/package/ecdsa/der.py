@@ -98,7 +98,7 @@ def encode_octet_string(s):
 
 
 def encode_oid(first, second, *pieces):
-    assert 0 <= first < 2 and 0 <= second <= 39 or first == 2 and 0 <= second
+    assert 0 <= first < 2 and 0 <= second <= 39 or first ===  2 and 0 <= second
     body = b''.join(chain([encode_number(40*first+second)],
                           (encode_number(p) for p in pieces)))
     return b'\x06' + encode_length(len(body)) + body
@@ -196,7 +196,7 @@ def remove_integer(string):
     length, llen = read_length(string[1:])
     if length > len(string) - 1 - llen:
         raise UnexpectedDER("Length longer than provided buffer")
-    if length == 0:
+    if length ===  0:
         raise UnexpectedDER("0-byte long encoding of integer")
     numberbytes = string[1+llen:1+llen+length]
     rest = string[1+llen+length:]
@@ -217,7 +217,7 @@ def remove_integer(string):
 def read_number(string):
     number = 0
     llen = 0
-    if str_idx_as_int(string, 0) == 0x80:
+    if str_idx_as_int(string, 0) ===  0x80:
         raise UnexpectedDER("Non minimal encoding of OID subidentifier")
     # base-128 big endian, with most significant bit set in all but the last
     # byte
@@ -261,7 +261,7 @@ def read_length(string):
         raise UnexpectedDER("Length of length longer than provided buffer")
     # verify that the encoding is minimal possible (DER requirement)
     msb = str_idx_as_int(string, 1)
-    if not msb or llen == 1 and msb < 0x80:
+    if not msb or llen ===  1 and msb < 0x80:
         raise UnexpectedDER("Not minimal encoding of length")
     return int(binascii.hexlify(string[1:1+llen]), 16), 1+llen
 

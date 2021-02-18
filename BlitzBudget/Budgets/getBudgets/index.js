@@ -1,52 +1,51 @@
-const helper = require('utils/helper');
-const fetchHelper = require('utils/fetch-helper');
-
 // Load the AWS SDK for Node.js
-var AWS = require('aws-sdk');
+const AWS = require('aws-sdk');
+
+const helper = require('./utils/helper');
+const fetchHelper = require('./utils/fetch-helper');
+
 // Set the region
 AWS.config.update({
   region: 'eu-west-1',
 });
 
 // Create the DynamoDB service object
-var docClient = new AWS.DynamoDB.DocumentClient({
+const docClient = new AWS.DynamoDB.DocumentClient({
   region: 'eu-west-1',
 });
 
-let budgetData = {};
-let percentage = 1;
-
 exports.handler = async (event) => {
-  percentage = 1;
-  budgetData = {};
-  let events = [];
-  let {
+  const events = [];
+  const {
     startsWithDate,
     endsWithDate,
-    walletId,
     userId,
   } = helper.extractVariablesFromRequest(event);
-  let fullMonth = helper.isFullMonth(startsWithDate, endsWithDate);
+  const { fullMonth, percentage } = helper.isFullMonth(startsWithDate, endsWithDate);
 
   // Cognito does not store wallet information nor curreny. All are stored in wallet.
-  walletId = await fetchHelper.fetchWalletsIfEmpty(
+  const {
     walletId,
+    response,
+  } = await fetchHelper.fetchWalletsIfEmpty(
+    event['body-json'].walletId,
     userId,
-    budgetData,
-    docClient
+    docClient,
   );
 
-  await fetchHelper.fetchAllInformationForBudget(
+  const otherResponse = await fetchHelper.fetchAllInformationForBudget(
     events,
     walletId,
     startsWithDate,
     endsWithDate,
     fullMonth,
-    budgetData,
-    docClient
+    docClient,
   );
 
-  helper.modifyTotalOfBudget(percentage, fullMonth);
+  const budgetResponse = otherResponse;
+  budgetResponse.Wallet = response;
 
-  return budgetData;
+  helper.modifyTotalOfBudget(percentage, fullMonth, budgetResponse);
+
+  return budgetResponse;
 };

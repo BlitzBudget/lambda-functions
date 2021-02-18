@@ -1,18 +1,18 @@
-var updateBudget = function () {};
+const UpdateBudget = () => {};
 
-updateBudget.prototype.updatingBudgets = (params, docClient) => {
+UpdateBudget.prototype.updatingBudgets = (params, docClient) => {
   console.log('Updating an item...');
   return new Promise((resolve, reject) => {
-    docClient.update(params, function (err, data) {
+    docClient.update(params, (err, data) => {
       if (err) {
         console.log('Error ', err);
         reject(err);
       } else {
-        resolve({success: data});
+        resolve({ success: data });
       }
     });
   });
 };
 
 // Export object
-module.exports = new updateBudget();
+module.exports = new UpdateBudget();

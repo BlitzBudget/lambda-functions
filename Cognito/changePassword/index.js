@@ -1,40 +1,39 @@
-const helper = require('utils/helper');
-const changePassword = require('user/change-password');
-
-exports.handler = async (event) => {
-  let accessToken = event['body-json'].accessToken;
-  let previousPassword = event['body-json'].previousPassword;
-  let newPassword = event['body-json'].newPassword;
-
-  let response = await handleChangePassword(
-    accessToken,
-    previousPassword,
-    newPassword,
-    response
-  );
-
-  return response;
-};
+const helper = require('./utils/helper');
+const changePassword = require('./user/change-password');
 
 async function handleChangePassword(
   accessToken,
   previousPassword,
   newPassword,
-  response
 ) {
-  let params = helper.changePasswordParameters(
+  let changePasswordResponse;
+  const params = helper.changePasswordParameters(
     accessToken,
     previousPassword,
-    newPassword
+    newPassword,
   );
 
   await changePassword.changePassword(params).then(
-    function (result) {
-      response = result;
+    (result) => {
+      changePasswordResponse = result;
     },
-    function (err) {
-      throw new Error('Unable to change password from cognito  ' + err);
-    }
+    (err) => {
+      throw new Error(`Unable to change password from cognito  ${err}`);
+    },
   );
-  return response;
+  return changePasswordResponse;
 }
+
+exports.handler = async (event) => {
+  const { accessToken } = event['body-json'];
+  const { previousPassword } = event['body-json'];
+  const { newPassword } = event['body-json'];
+
+  const response = await handleChangePassword(
+    accessToken,
+    previousPassword,
+    newPassword,
+  );
+
+  return response;
+};

@@ -1,14 +1,14 @@
-var addBudget = function () {};
+const AddBudget = () => {};
 
-addBudget.prototype.addNewBudget = (event) => {
-  let today = new Date();
+AddBudget.prototype.addNewBudget = (event, docClient) => {
+  const today = new Date();
   today.setYear(event['body-json'].dateMeantFor.substring(5, 9));
   today.setMonth(
-    parseInt(event['body-json'].dateMeantFor.substring(10, 12)) - 1
+    parseInt(event['body-json'].dateMeantFor.substring(10, 12), 10) - 1,
   );
-  let randomValue = 'Budget#' + today.toISOString();
+  const randomValue = `Budget#${today.toISOString()}`;
 
-  var params = {
+  const params = {
     TableName: 'blitzbudget',
     Item: {
       pk: event['body-json'].walletId,
@@ -24,18 +24,18 @@ addBudget.prototype.addNewBudget = (event) => {
 
   console.log('Adding a new item...');
   return new Promise((resolve, reject) => {
-    docClient.put(params, function (err, data) {
+    docClient.put(params, (err, data) => {
       if (err) {
         console.log('Error ', err);
         reject(err);
       } else {
         resolve({
           success: data,
+          budgetId: randomValue,
         });
-        event['body-json'].budgetId = randomValue;
       }
     });
   });
 };
 
-module.exports = new addBudget();
+module.exports = new AddBudget();

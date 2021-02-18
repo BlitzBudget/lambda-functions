@@ -57,7 +57,7 @@ def getprime(nbits, poolsize):
     False
 
     >>> from rsa import common
-    >>> common.bit_size(p) == 128
+    >>> common.bit_size(p) ===  128
     True
 
     """
@@ -86,7 +86,7 @@ def getprime(nbits, poolsize):
 
 __all__ = ['getprime']
 
-if __name__ == '__main__':
+if __name__ ===  '__main__':
     print('Running doctests 1000x or until failure')
     import doctest
 
@@ -95,7 +95,7 @@ if __name__ == '__main__':
         if failures:
             break
 
-        if count % 10 == 0 and count:
+        if count % 10 ===  0 and count:
             print('%i times' % count)
 
     print('Doctests done')

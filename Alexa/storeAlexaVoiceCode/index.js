@@ -1,26 +1,27 @@
-const helper = require('utils/helper');
-const cognitoHelper = require('utils/cognito-helper');
-const configuration = require('utils/cognito-configuration');
-const addHelper = require('utils/add-helper');
-const deleteHelper = require('utils/delete-helper');
-const fetchHelper = require('utils/fetch-helper');
-
+// Load the AWS SDK for Node.js
+const AWS = require('aws-sdk');
 const crypto = require('crypto');
 
-// Load the AWS SDK for Node.js
-var AWS = require('aws-sdk');
+const helper = require('./utils/helper');
+const cognitoHelper = require('./utils/cognito-helper');
+const configuration = require('./utils/cognito-configuration');
+const addHelper = require('./utils/add-helper');
+const deleteHelper = require('./utils/delete-helper');
+const fetchHelper = require('./utils/fetch-helper');
+
 // Set the region
 AWS.config.update({
   region: 'eu-west-1',
 });
 
 // Create the DynamoDB service object
-var docClient = new AWS.DynamoDB.DocumentClient();
-let cognitoidentityserviceprovider = new AWS.CognitoIdentityServiceProvider();
+const docClient = new AWS.DynamoDB.DocumentClient();
+const cognitoidentityserviceprovider = new AWS.CognitoIdentityServiceProvider();
 
 exports.handler = async (event) => {
-  let response = {};
-  let {username, deleteVoiceCode} = helper.extractVariablesFromRequest(event);
+  const { username, deleteVoiceCode } = helper.extractVariablesFromRequest(
+    event,
+  );
 
   // Authorization code
   helper.throwErrorIfUsernameEmpty(username);
@@ -28,28 +29,27 @@ exports.handler = async (event) => {
   // Save Alexa Voice Code
   helper.throwErrorIfVoicecodeEmpty(event, deleteVoiceCode);
 
-  let signature = crypto
+  const signature = crypto
     .createHmac('SHA256', configuration.clientSecret)
     .update(username + configuration.clientId)
     .digest('base64');
 
-  let params = helper.createParameter(username, event, signature);
+  const params = helper.createParameter(username, event, signature);
 
-  response = await cognitoHelper.loginUser(
+  const loginResponse = await cognitoHelper.loginUser(
     params,
-    response,
-    cognitoidentityserviceprovider
+    cognitoidentityserviceprovider,
   );
 
   await cognitoHelper.fetchUserAttributes(
-    response,
-    cognitoidentityserviceprovider
+    loginResponse,
+    cognitoidentityserviceprovider,
   );
 
   /*
    * Fetch user id from cognito attributes
    */
-  let userId = helper.fetchUserId(response);
+  const userId = helper.fetchUserId(loginResponse);
 
   /*
    * User Id cannot be found
@@ -59,23 +59,24 @@ exports.handler = async (event) => {
   /*
    * Add a new voice code
    */
-  let today = new Date();
+  const today = new Date();
   // Check if the voice code is present
   let voiceCodePresent = false;
-  let alexaId = 'AlexaVoiceCode#' + today.toISOString();
+  const response = event['body-json'];
+  let alexaVoiceCodeId;
+  let alexaId = `AlexaVoiceCode#${today.toISOString()}`;
 
-  ({alexaId, voiceCodePresent} = await fetchHelper.handleGetNewVoiceCode(
+  ({ alexaId, voiceCodePresent } = await fetchHelper.handleGetNewVoiceCode(
     userId,
-    alexaId,
-    voiceCodePresent,
-    docClient
+    docClient,
   ));
 
   if (deleteVoiceCode && voiceCodePresent) {
     await deleteHelper.handleDeleteOldVoiceCode(userId, alexaId, docClient);
   } else {
-    await addHelper.handleAddNewVoiceCode(event, userId, alexaId, docClient);
+    alexaVoiceCodeId = await addHelper.handleAddNewVoiceCode(event, userId, alexaId, docClient);
+    response.alexaVoiceCodeId = alexaVoiceCodeId;
   }
 
-  return event;
+  return response;
 };

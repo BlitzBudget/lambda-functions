@@ -1,18 +1,19 @@
-const helper = require('utils/helper');
-const deleteHelper = require('utils/delete-helper');
-
 // Load the AWS SDK for Node.js
-var AWS = require('aws-sdk');
+const AWS = require('aws-sdk');
+
+const helper = require('./utils/helper');
+const deleteHelper = require('./utils/delete-helper');
+
 // Set the region
-AWS.config.update({region: 'eu-west-1'});
+AWS.config.update({ region: 'eu-west-1' });
 
 // Create the DynamoDB service object
-var DB = new AWS.DynamoDB.DocumentClient();
+const DB = new AWS.DynamoDB.DocumentClient();
 
 exports.handler = async (event) => {
-  console.log('event %j' + JSON.stringify(event['body-json']));
-  let {result, walletId} = helper.extractVariablesFromRequest(event);
-  let events = [];
+  console.log(`event %j${JSON.stringify(event['body-json'])}`);
+  const { result, walletId } = helper.extractVariablesFromRequest(event);
+  const events = [];
 
   if (helper.noItemsInRequest(result)) {
     console.log('There are no items to delete for the wallet %j', walletId);

@@ -1,8 +1,8 @@
-var fetchBudget = function () {};
+const FetchBudget = () => {};
 
 // Get BankAccount Item
-fetchBudget.prototype.getBankAccountItem = (walletId) => {
-  var params = {
+FetchBudget.prototype.getBankAccountItem = (walletId, docClient) => {
+  const params = {
     TableName: 'blitzbudget',
     KeyConditionExpression: 'pk = :walletId and begins_with(sk, :items)',
     ExpressionAttributeValues: {
@@ -15,7 +15,7 @@ fetchBudget.prototype.getBankAccountItem = (walletId) => {
 
   // Call DynamoDB to read the item from the table
   return new Promise((resolve, reject) => {
-    docClient.query(params, function (err, data) {
+    docClient.query(params, (err, data) => {
       if (err) {
         console.log('Error ', err);
         reject(err);
@@ -30,4 +30,4 @@ fetchBudget.prototype.getBankAccountItem = (walletId) => {
 };
 
 // Export object
-module.exports = new fetchBudget();
+module.exports = new FetchBudget();

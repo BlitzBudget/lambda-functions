@@ -1,7 +1,7 @@
-var addDate = function () {};
+const AddDate = () => {};
 
 function createDateData(event, skForDate, docClient) {
-  var params = {
+  const params = {
     TableName: 'blitzbudget',
     Key: {
       pk: event['body-json'].walletId,
@@ -21,13 +21,12 @@ function createDateData(event, skForDate, docClient) {
 
   console.log('Adding a new item...');
   return new Promise((resolve, reject) => {
-    docClient.update(params, function (err, data) {
+    docClient.update(params, (err, data) => {
       if (err) {
         console.log('Error ', err);
         reject(err);
       } else {
         console.log('successfully created a new date %j', data.Attributes.sk);
-        event['body-json'].dateMeantFor = data.Attributes.sk;
         resolve({
           Date: data.Attributes,
         });
@@ -36,6 +35,6 @@ function createDateData(event, skForDate, docClient) {
   });
 }
 
-addDate.prototype.createDateData = createDateData;
+AddDate.prototype.createDateData = createDateData;
 // Export object
-module.exports = new addDate();
+module.exports = new AddDate();

@@ -1,15 +1,15 @@
-var wallet = function () {};
+const Wallet = () => {};
 
-function updateWalletBalanceItem(pk, sk, balance, assetBalance, debtBalance) {
-  let params = {
+function updateWalletBalance(pk, sk, balance, assetBalance, debtBalance, docClient) {
+  const params = {
     TableName: 'blitzbudget',
     Key: {
-      pk: pk,
-      sk: sk,
+      pk,
+      sk,
     },
     UpdateExpression:
-      'set wallet_balance = wallet_balance + :ab, total_asset_balance = total_asset_balance + :tab, total_debt_balance = total_debt_balance + :dab',
-    ConditionExpression: 'attribute_exists(wallet_balance)',
+      'set Wallet_balance = Wallet_balance + :ab, total_asset_balance = total_asset_balance + :tab, total_debt_balance = total_debt_balance + :dab',
+    ConditionExpression: 'attribute_exists(Wallet_balance)',
     ExpressionAttributeValues: {
       ':ab': balance,
       ':tab': assetBalance,
@@ -20,11 +20,11 @@ function updateWalletBalanceItem(pk, sk, balance, assetBalance, debtBalance) {
 
   console.log('Updating the item...');
   return new Promise((resolve, reject) => {
-    docClient.update(params, function (err, data) {
+    docClient.update(params, (err, data) => {
       if (err) {
         console.error(
           'Unable to update item. Error JSON:',
-          JSON.stringify(err, null, 2)
+          JSON.stringify(err, null, 2),
         );
         reject(err);
       } else {
@@ -35,6 +35,6 @@ function updateWalletBalanceItem(pk, sk, balance, assetBalance, debtBalance) {
   });
 }
 
-wallet.prototype.updateWalletBalanceItem = updateWalletBalanceItem;
+Wallet.prototype.updateWalletBalance = updateWalletBalance;
 // Export object
-module.exports = new wallet();
+module.exports = new Wallet();

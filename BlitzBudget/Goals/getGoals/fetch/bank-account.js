@@ -1,38 +1,20 @@
-var bankAccount = function () {};
+const FetchBankAccount = () => {};
 
-bankAccount.prototype.getBankAccountData = function getBankAccountData(
+FetchBankAccount.prototype.getBankAccountData = function getBankAccountData(
   pk,
   docClient,
-  goalData
 ) {
-  var params = createParameters();
-
-  // Call DynamoDB to read the item from the table
-  return new Promise((resolve, reject) => {
-    docClient.query(params, function (err, data) {
-      if (err) {
-        console.log('Error ', err);
-        reject(err);
-      } else {
-        organizeRetrivedItems(data);
-        resolve({
-          BankAccount: data.Items,
-        });
-      }
-    });
-  });
-
   function organizeRetrivedItems(data) {
     console.log('data retrieved - Bank Account %j', data.Count);
     if (data.Items) {
-      for (const accountObj of data.Items) {
-        accountObj.accountId = accountObj.sk;
-        accountObj.walletId = accountObj.pk;
-        delete accountObj.sk;
-        delete accountObj.pk;
-      }
+      Object.keys(data.Items).forEach((accountObj) => {
+        const account = accountObj;
+        account.accountId = accountObj.sk;
+        account.walletId = accountObj.pk;
+        delete account.sk;
+        delete account.pk;
+      });
     }
-    goalData['BankAccount'] = data.Items;
   }
 
   function createParameters() {
@@ -47,7 +29,24 @@ bankAccount.prototype.getBankAccountData = function getBankAccountData(
         'bank_account_name, linked, bank_account_number, account_balance, sk, pk, selected_account, number_of_times_selected, account_type',
     };
   }
+
+  const params = createParameters();
+
+  // Call DynamoDB to read the item from the table
+  return new Promise((resolve, reject) => {
+    docClient.query(params, (err, data) => {
+      if (err) {
+        console.log('Error ', err);
+        reject(err);
+      } else {
+        organizeRetrivedItems(data);
+        resolve({
+          BankAccount: data.Items,
+        });
+      }
+    });
+  });
 };
 
 // Export object
-module.exports = new bankAccount();
+module.exports = new FetchBankAccount();

@@ -61,7 +61,7 @@ def _rsa_recover_prime_factors(n, e, d):
     # The quantity d*e-1 is a multiple of phi(n), even,
     # and can be represented as t*2^s.
     t = ktot
-    while t % 2 == 0:
+    while t % 2 ===  0:
         t = t // 2
     # Cycle through all multiplicative inverses in Zn.
     # The algorithm is non-deterministic, but there is a 50% chance
@@ -76,7 +76,7 @@ def _rsa_recover_prime_factors(n, e, d):
         while k < ktot:
             cand = pow(a, k, n)
             # Check if a^k is a non-trivial root of unity (mod n)
-            if cand != 1 and cand != (n - 1) and pow(cand, 2, n) == 1:
+            if cand != 1 and cand != (n - 1) and pow(cand, 2, n) ===  1:
                 # We have found a number such that (cand-1)(cand+1)=0 (mod n).
                 # Either of the terms divides n.
                 p = _gcd(cand + 1, n)
@@ -89,7 +89,7 @@ def _rsa_recover_prime_factors(n, e, d):
         raise ValueError("Unable to compute factors p and q from exponent d.")
     # Found !
     q, r = divmod(n, p)
-    assert r == 0
+    assert r ===  0
     p, q = sorted((p, q), reverse=True)
     return (p, q)
 
@@ -169,7 +169,7 @@ class RSAKey(Key):
         raise JWKError('Unable to parse an RSA_JWK from key: %s' % key)
 
     def _process_jwk(self, jwk_dict):
-        if not jwk_dict.get('kty') == 'RSA':
+        if not jwk_dict.get('kty') ===  'RSA':
             raise JWKError("Incorrect key type.  Expected: 'RSA', Recieved: %s" % jwk_dict.get('kty'))
 
         e = base64_to_long(jwk_dict.get('e'))
@@ -218,19 +218,19 @@ class RSAKey(Key):
 
         if isinstance(self._prepared_key, pyrsa.PrivateKey):
             der = self._prepared_key.save_pkcs1(format='DER')
-            if pem_format == 'PKCS8':
+            if pem_format ===  'PKCS8':
                 pkcs8_der = rsa_private_key_pkcs1_to_pkcs8(der)
                 pem = pyrsa_pem.save_pem(pkcs8_der, pem_marker='PRIVATE KEY')
-            elif pem_format == 'PKCS1':
+            elif pem_format ===  'PKCS1':
                 pem = pyrsa_pem.save_pem(der, pem_marker='RSA PRIVATE KEY')
             else:
                 raise ValueError("Invalid pem format specified: %r" % (pem_format,))
         else:
-            if pem_format == 'PKCS8':
+            if pem_format ===  'PKCS8':
                 pkcs1_der = self._prepared_key.save_pkcs1(format="DER")
                 pkcs8_der = rsa_public_key_pkcs1_to_pkcs8(pkcs1_der)
                 pem = pyrsa_pem.save_pem(pkcs8_der, pem_marker='PUBLIC KEY')
-            elif pem_format == 'PKCS1':
+            elif pem_format ===  'PKCS1':
                 der = self._prepared_key.save_pkcs1(format='DER')
                 pem = pyrsa_pem.save_pem(der, pem_marker='RSA PUBLIC KEY')
             else:

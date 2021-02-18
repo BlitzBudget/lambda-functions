@@ -1,18 +1,19 @@
-var deleteHelper = function () {};
+const DeleteHelper = () => {};
 
 const deleteItem = require('../delete/item');
 
-let deleteAnItem = async function (pk, sk, DB) {
+async function deleteAnItem(pk, sk, DB) {
   await deleteItem.deleteOneItem(pk, sk, DB).then(
-    function () {
+    () => {
       console.log('successfully deleted the item');
     },
-    function (err) {
-      throw new Error('Unable to delete the item ' + err);
-    }
+    (err) => {
+      throw new Error(`Unable to delete the item ${err}`);
+    },
   );
-};
+}
 
-deleteHelper.prototype.deleteAnItem = deleteAnItem;
+DeleteHelper.prototype.deleteAnItem = deleteAnItem;
 
-var deleteHelper = function () {};
+// Export object
+module.exports = new DeleteHelper();

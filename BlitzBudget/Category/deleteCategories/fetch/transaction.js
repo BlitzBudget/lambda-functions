@@ -1,17 +1,17 @@
-var fetchTransaction = function () {};
+const FetchTransaction = () => {};
 
 // Get all transaction Items
-fetchTransaction.prototype.getTransactionItems = (
+FetchTransaction.prototype.getTransactionItems = (
   walletId,
   currentPeriod,
-  DB
+  DB,
 ) => {
-  var params = {
+  const params = {
     TableName: 'blitzbudget',
     KeyConditionExpression: 'pk = :pk and begins_with(sk, :items)',
     ExpressionAttributeValues: {
       ':pk': walletId,
-      ':items': 'Transaction#' + currentPeriod,
+      ':items': `Transaction#${currentPeriod}`,
     },
     ProjectionExpression:
       'amount, description, category, recurrence, account, date_meant_for, sk, pk, creation_date, tags',
@@ -19,7 +19,7 @@ fetchTransaction.prototype.getTransactionItems = (
 
   // Call DynamoDB to read the item from the table
   return new Promise((resolve, reject) => {
-    DB.query(params, function (err, data) {
+    DB.query(params, (err, data) => {
       if (err) {
         console.log('Error ', err);
         reject(err);
@@ -31,4 +31,5 @@ fetchTransaction.prototype.getTransactionItems = (
   });
 };
 
-var fetchTransaction = function () {};
+// Export object
+module.exports = new FetchTransaction();

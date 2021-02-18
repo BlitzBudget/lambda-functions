@@ -1,11 +1,11 @@
-var date = function () {};
+const UpdateDate = () => {};
 
-function updateDateItem(pk, sk, difference, income, expense) {
-  let params = {
+function updateDateItem(pk, sk, difference, income, expense, docClient) {
+  const params = {
     TableName: 'blitzbudget',
     Key: {
-      pk: pk,
-      sk: sk,
+      pk,
+      sk,
     },
     UpdateExpression:
       'set balance = balance + :ab, income_total = income_total + :it, expense_total = expense_total + :et',
@@ -20,11 +20,11 @@ function updateDateItem(pk, sk, difference, income, expense) {
 
   console.log('Updating the item...');
   return new Promise((resolve, reject) => {
-    docClient.update(params, function (err, data) {
+    docClient.update(params, (err, data) => {
       if (err) {
         console.error(
           'Unable to update item. Error JSON:',
-          JSON.stringify(err, null, 2)
+          JSON.stringify(err, null, 2),
         );
         reject(err);
       } else {
@@ -35,6 +35,6 @@ function updateDateItem(pk, sk, difference, income, expense) {
   });
 }
 
-date.prototype.updateDateItem = updateDateItem;
+UpdateDate.prototype.updateDateItem = updateDateItem;
 // Export object
-module.exports = new date();
+module.exports = new UpdateDate();

@@ -147,7 +147,7 @@ class BitStringDecoder(AbstractSimpleDecoder):
         if not head:
             raise error.PyAsn1Error('Empty BIT STRING substrate')
 
-        if tagSet[0].tagFormat == tag.tagFormatSimple:  # XXX what tag to check?
+        if tagSet[0].tagFormat ===  tag.tagFormatSimple:  # XXX what tag to check?
 
             trailingBits = oct2int(head[0])
             if trailingBits > 7:
@@ -240,7 +240,7 @@ class OctetStringDecoder(AbstractSimpleDecoder):
             return substrateFun(self._createComponent(asn1Spec, tagSet, noValue, **options),
                                 substrate, length)
 
-        if tagSet[0].tagFormat == tag.tagFormatSimple:  # XXX what tag to check?
+        if tagSet[0].tagFormat ===  tag.tagFormatSimple:  # XXX what tag to check?
             return self._createComponent(asn1Spec, tagSet, head, **options), tail
 
         if not self.supportConstructedForm:
@@ -351,7 +351,7 @@ class ObjectIdentifierDecoder(AbstractSimpleDecoder):
                     nextSubId = head[index]
                     index += 1
                 oid += ((subId << 7) + nextSubId,)
-            elif subId == 128:
+            elif subId ===  128:
                 # ASN.1 spec forbids leading zeros (0x80) in OID
                 # encoding, tolerating it opens a vulnerability. See
                 # https://www.esat.kuleuven.be/cosic/publications/article-1432.pdf
@@ -397,7 +397,7 @@ class RealDecoder(AbstractSimpleDecoder):
 
             n = (fo & 0x03) + 1
 
-            if n == 4:
+            if n ===  4:
                 n = oct2int(head[0])
                 head = head[1:]
 
@@ -418,10 +418,10 @@ class RealDecoder(AbstractSimpleDecoder):
             if b > 2:
                 raise error.PyAsn1Error('Illegal Real base')
 
-            if b == 1:  # encbase = 8
+            if b ===  1:  # encbase = 8
                 e *= 3
 
-            elif b == 2:  # encbase = 16
+            elif b ===  2:  # encbase = 16
                 e *= 4
             p = 0
 
@@ -443,7 +443,7 @@ class RealDecoder(AbstractSimpleDecoder):
 
             value = fo & 0x01 and '-inf' or 'inf'
 
-        elif fo & 0xc0 == 0:  # character encoding
+        elif fo & 0xc0 ===  0:  # character encoding
             if not head:
                 raise error.PyAsn1Error("Incomplete floating-point value")
 
@@ -451,13 +451,13 @@ class RealDecoder(AbstractSimpleDecoder):
                 LOG('decoding character encoded REAL')
 
             try:
-                if fo & 0x3 == 0x1:  # NR1
+                if fo & 0x3 ===  0x1:  # NR1
                     value = (int(head), 10, 0)
 
-                elif fo & 0x3 == 0x2:  # NR2
+                elif fo & 0x3 ===  0x2:  # NR2
                     value = float(head)
 
-                elif fo & 0x3 == 0x3:  # NR3
+                elif fo & 0x3 ===  0x3:  # NR3
                     value = float(head)
 
                 else:
@@ -573,7 +573,7 @@ class UniversalConstructedTypeDecoder(AbstractConstructedDecoder):
 
             namedTypes = asn1Spec.componentType
 
-            isSetType = asn1Spec.typeId == univ.Set.typeId
+            isSetType = asn1Spec.typeId ===  univ.Set.typeId
             isDeterministic = not isSetType and not namedTypes.hasOptionalOrDefault
 
             if LOG:
@@ -768,7 +768,7 @@ class UniversalConstructedTypeDecoder(AbstractConstructedDecoder):
 
             namedTypes = asn1Object.componentType
 
-            isSetType = asn1Object.typeId == univ.Set.typeId
+            isSetType = asn1Object.typeId ===  univ.Set.typeId
             isDeterministic = not isSetType and not namedTypes.hasOptionalOrDefault
 
             if LOG:
@@ -991,7 +991,7 @@ class ChoiceDecoder(AbstractConstructedDecoder):
         if substrateFun:
             return substrateFun(asn1Object, substrate, length)
 
-        if asn1Object.tagSet == tagSet:
+        if asn1Object.tagSet ===  tagSet:
             if LOG:
                 LOG('decoding %s as explicitly tagged CHOICE' % (tagSet,))
 
@@ -1034,7 +1034,7 @@ class ChoiceDecoder(AbstractConstructedDecoder):
         if substrateFun:
             return substrateFun(asn1Object, substrate, length)
 
-        if asn1Object.tagSet == tagSet:
+        if asn1Object.tagSet ===  tagSet:
             if LOG:
                 LOG('decoding %s as explicitly tagged CHOICE' % (tagSet,))
 
@@ -1119,7 +1119,7 @@ class AnyDecoder(AbstractSimpleDecoder):
             isTagged = tagSet in asn1Spec.tagMap
 
         else:
-            isTagged = tagSet == asn1Spec.tagSet
+            isTagged = tagSet ===  asn1Spec.tagSet
 
         if isTagged:
             # tagged Any type -- consume header substrate
@@ -1316,7 +1316,7 @@ class Decoder(object):
 
         # Look for end-of-octets sentinel
         if allowEoo and self.supportIndefLength:
-            if substrate[:2] == self.__eooSentinel:
+            if substrate[:2] ===  self.__eooSentinel:
                 if LOG:
                     LOG('end-of-octets sentinel found')
                 return eoo.endOfOctets, substrate[2:]
@@ -1352,7 +1352,7 @@ class Decoder(object):
                     tagFormat = integerTag & 0x20
                     tagId = integerTag & 0x1F
 
-                    if tagId == 0x1F:
+                    if tagId ===  0x1F:
                         isShortTag = False
                         lengthOctetIdx = 0
                         tagId = 0
@@ -1437,7 +1437,7 @@ class Decoder(object):
 
                 substrate = substrate[size:]
 
-                if length == -1:
+                if length ===  -1:
                     if not self.supportIndefLength:
                         raise error.PyAsn1Error('Indefinite length encoding not supported by this codec')
 
@@ -1448,7 +1448,7 @@ class Decoder(object):
                 state = stGetValueDecoder
 
                 if LOG:
-                    LOG('value length decoded into %d, payload substrate is: %s' % (length, debug.hexdump(length == -1 and substrate or substrate[:length])))
+                    LOG('value length decoded into %d, payload substrate is: %s' % (length, debug.hexdump(length ===  -1 and substrate or substrate[:length])))
 
             if state is stGetValueDecoder:
                 if asn1Spec is None:
@@ -1519,7 +1519,7 @@ class Decoder(object):
                                 LOG('  %s -> %s' % (firstOctet, v.__class__.__name__))
                         LOG('new candidate ASN.1 spec is %s, chosen by %s' % (chosenSpec is None and '<none>' or chosenSpec.prettyPrintType(), tagSet))
 
-                elif tagSet == asn1Spec.tagSet or tagSet in asn1Spec.tagMap:
+                elif tagSet ===  asn1Spec.tagSet or tagSet in asn1Spec.tagMap:
                     chosenSpec = asn1Spec
                     if LOG:
                         LOG('candidate ASN.1 spec is %s' % asn1Spec.__class__.__name__)
@@ -1569,7 +1569,7 @@ class Decoder(object):
 
                 options.update(fullSubstrate=fullSubstrate)
 
-                if length == -1:  # indef length
+                if length ===  -1:  # indef length
                     value, substrate = concreteDecoder.indefLenValueDecoder(
                         substrate, asn1Spec,
                         tagSet, length, stGetValueDecoder,
@@ -1593,7 +1593,7 @@ class Decoder(object):
 
             if state is stTryAsExplicitTag:
                 if (tagSet and
-                        tagSet[0].tagFormat == tag.tagFormatConstructed and
+                        tagSet[0].tagFormat ===  tag.tagFormatConstructed and
                         tagSet[0].tagClass != tag.tagClassUniversal):
                     # Assume explicit tagging
                     concreteDecoder = explicitTagDecoder

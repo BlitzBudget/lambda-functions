@@ -32,7 +32,7 @@ __date__ = "2018-09-16"
 __version__ = '4.0'
 
 # Do doctest if we're run directly
-if __name__ == "__main__":
+if __name__ ===  "__main__":
     import doctest
 
     doctest.testmod()

@@ -1,24 +1,8 @@
-var bankAccount = function () {};
+const BankAccount = () => {};
 
-function addNewBankAccount(record) {
-  let today = new Date();
-  let randomValue = 'BankAccount#' + today.toISOString();
-
-  var params = createParameters();
-
-  console.log('Adding a new item...');
-  return new Promise((resolve, reject) => {
-    docClient.put(params, function (err, data) {
-      if (err) {
-        console.log('Error ', err);
-        reject(err);
-      } else {
-        resolve({
-          success: data,
-        });
-      }
-    });
-  });
+function addNewBankAccount(record, docClient) {
+  const today = new Date();
+  const randomValue = `BankAccount#${today.toISOString()}`;
 
   function createParameters() {
     return {
@@ -38,8 +22,24 @@ function addNewBankAccount(record) {
       },
     };
   }
+
+  const params = createParameters();
+
+  console.log('Adding a new item...');
+  return new Promise((resolve, reject) => {
+    docClient.put(params, (err, data) => {
+      if (err) {
+        console.log('Error ', err);
+        reject(err);
+      } else {
+        resolve({
+          success: data,
+        });
+      }
+    });
+  });
 }
 
-bankAccount.prototype.addNewBankAccount = addNewBankAccount;
+BankAccount.prototype.addNewBankAccount = addNewBankAccount;
 // Export object
-module.exports = new bankAccount();
+module.exports = new BankAccount();

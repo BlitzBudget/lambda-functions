@@ -19,7 +19,7 @@ if version_info[0:2] < (2, 6):
             prefix = '0b0'
 
         while value:
-            if value & 1 == 1:
+            if value & 1 ===  1:
                 bitstring.append('1')
             else:
                 bitstring.append('0')

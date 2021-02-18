@@ -88,7 +88,7 @@ __all__ = [
     'mgf1',
 ]
 
-if __name__ == '__main__':
+if __name__ ===  '__main__':
     print('Running doctests 1000x or until failure')
     import doctest
 
@@ -97,7 +97,7 @@ if __name__ == '__main__':
         if failures:
             break
 
-        if count % 100 == 0 and count:
+        if count % 100 ===  0 and count:
             print('%i times' % count)
 
     print('Doctests done')

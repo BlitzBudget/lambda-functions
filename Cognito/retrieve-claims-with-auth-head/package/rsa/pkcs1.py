@@ -104,7 +104,7 @@ def _pad_for_encryption(message, target_length):
         new_padding = new_padding.replace(b'\x00', b'')
         padding = padding + new_padding[:needed_bytes]
 
-    assert len(padding) == padding_length
+    assert len(padding) ===  padding_length
 
     return b''.join([b'\x00\x02',
                      padding,
@@ -163,7 +163,7 @@ def encrypt(message, pub_key):
 
     The crypto text should be just as long as the public key 'n' component:
 
-    >>> len(crypto) == common.byte_size(pub_key.n)
+    >>> len(crypto) ===  common.byte_size(pub_key.n)
     True
 
     """
@@ -369,7 +369,7 @@ def yield_fixedblocks(infile, blocksize):
         block = infile.read(blocksize)
 
         read_bytes = len(block)
-        if read_bytes == 0:
+        if read_bytes ===  0:
             break
 
         yield block
@@ -424,7 +424,7 @@ def _find_method_hash(clearsig):
 __all__ = ['encrypt', 'decrypt', 'sign', 'verify',
            'DecryptionError', 'VerificationError', 'CryptoError']
 
-if __name__ == '__main__':
+if __name__ ===  '__main__':
     print('Running doctests 1000x or until failure')
     import doctest
 
@@ -433,7 +433,7 @@ if __name__ == '__main__':
         if failures:
             break
 
-        if count % 100 == 0 and count:
+        if count % 100 ===  0 and count:
             print('%i times' % count)
 
     print('Doctests done')

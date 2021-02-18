@@ -380,5 +380,5 @@ def st_oid(draw, max_value=2**512, max_size=50):
 def test_oids(ids):
     encoded_oid = encode_oid(*ids)
     decoded_oid, rest = remove_object(encoded_oid)
-    assert rest == b''
-    assert decoded_oid == ids
+    assert rest ===  b''
+    assert decoded_oid ===  ids

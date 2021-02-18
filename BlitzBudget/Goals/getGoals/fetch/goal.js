@@ -1,39 +1,21 @@
-var goal = function () {};
+const FetchGoal = () => {};
 
 // Get goal Item
-goal.prototype.getGoalItem = function getGoalItem(
+FetchGoal.prototype.getGoalItem = function getGoalItem(
   walletId,
   docClient,
-  goalData
 ) {
-  var params = createParameter();
-
-  // Call DynamoDB to read the item from the table
-  return new Promise((resolve, reject) => {
-    docClient.query(params, function (err, data) {
-      if (err) {
-        console.log('Error ', err);
-        reject(err);
-      } else {
-        organizeRetrievedItems(data);
-        resolve({
-          Goal: data.Items,
-        });
-      }
-    });
-  });
-
   function organizeRetrievedItems(data) {
     console.log('data retrieved - Goal %j', data.Count);
     if (data.Items) {
-      for (const goalObj of data.Items) {
-        goalObj.goalId = goalObj.sk;
-        goalObj.walletId = goalObj.pk;
-        delete goalObj.sk;
-        delete goalObj.pk;
-      }
+      Object.keys(data.Items).forEach((goalObj) => {
+        const goal = goalObj;
+        goal.goalId = goalObj.sk;
+        goal.walletId = goalObj.pk;
+        delete goal.sk;
+        delete goal.pk;
+      });
     }
-    goalData['Goal'] = data.Items;
   }
 
   function createParameter() {
@@ -48,7 +30,24 @@ goal.prototype.getGoalItem = function getGoalItem(
         'preferable_target_date, target_id, target_type, goal_type, monthly_contribution, sk, pk, final_amount',
     };
   }
+
+  const params = createParameter();
+
+  // Call DynamoDB to read the item from the table
+  return new Promise((resolve, reject) => {
+    docClient.query(params, (err, data) => {
+      if (err) {
+        console.log('Error ', err);
+        reject(err);
+      } else {
+        organizeRetrievedItems(data);
+        resolve({
+          Goal: data.Items,
+        });
+      }
+    });
+  });
 };
 
 // Export object
-module.exports = new goal();
+module.exports = new FetchGoal();

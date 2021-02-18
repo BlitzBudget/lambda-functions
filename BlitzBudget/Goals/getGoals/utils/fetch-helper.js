@@ -1,72 +1,69 @@
-var fetchHelper = function () {};
+const FetchHelper = () => {};
 
-const helper = require('helper');
+const helper = require('./helper');
 const wallet = require('../fetch/wallet');
 const date = require('../fetch/date');
 const goal = require('../fetch/goal');
 const bankAccount = require('../fetch/bank-account');
 
-let fetchOtherRelevantInformation = async function (
+const fetchOtherRelevantInformation = async (
   events,
   walletId,
   oneYearAgo,
   today,
   docClient,
-  goalData
-) {
-  events.push(bankAccount.getBankAccountData(walletId, docClient, goalData));
-  events.push(goal.getGoalItem(walletId, docClient, goalData));
+) => {
+  let response;
+  events.push(bankAccount.getBankAccountData(walletId, docClient));
+  events.push(goal.getGoalItem(walletId, docClient));
   // Get Dates information to calculate the monthly Income / expense per month
   events.push(
-    date.getDateData(walletId, oneYearAgo, today, docClient, goalData)
+    date.getDateData(walletId, oneYearAgo, today, docClient),
   );
 
   await Promise.all(events).then(
-    function () {
+    (allResonses) => {
+      response = allResonses;
       console.log('successfully retrieved all information');
     },
-    function (err) {
-      throw new Error('Unable error occured while fetching the goal ' + err);
-    }
+    (err) => {
+      throw new Error(`Unable error occured while fetching the goal ${err}`);
+    },
   );
+
+  return response;
 };
 
-let fetchWalletInformation = async function (
+const fetchWalletInformation = async (
   walletId,
   userId,
   events,
   docClient,
-  goalData
-) {
-  if (helper.isEmpty(walletId) && helper.isNotEmpty(userId)) {
-    walletId = await fetchWalletsFromUser(
-      userId,
-      docClient,
-      goalData,
-      walletId
+) => {
+  let walletPK = walletId;
+  async function fetchWalletsFromUser() {
+    await wallet.getWalletsData(userId, docClient).then(
+      (result) => {
+        walletPK = result.Wallet[0].walletId;
+        console.log('retrieved the wallet for the item ', walletId);
+      },
+      (err) => {
+        throw new Error(
+          `Unable error occured while fetching the transaction ${err}`,
+        );
+      },
     );
-  } else if (helper.isNotEmpty(walletId) && helper.isNotEmpty(userId)) {
-    events.push(wallet.getWalletData(userId, walletId, docClient, goalData));
   }
-  return walletId;
+
+  if (helper.isEmpty(walletId) && helper.isNotEmpty(userId)) {
+    walletPK = await fetchWalletsFromUser();
+  } else if (helper.isNotEmpty(walletId) && helper.isNotEmpty(userId)) {
+    events.push(wallet.getWalletData(userId, walletId, docClient));
+  }
+  return walletPK;
 };
 
-async function fetchWalletsFromUser(userId, docClient, goalData, walletId) {
-  await wallet.getWalletsData(userId, docClient, goalData).then(
-    function (result) {
-      walletId = result.Wallet[0].walletId;
-      console.log('retrieved the wallet for the item ', walletId);
-    },
-    function (err) {
-      throw new Error(
-        'Unable error occured while fetching the transaction ' + err
-      );
-    }
-  );
-  return walletId;
-}
-
-fetchHelper.prototype.fetchWalletInformation = fetchWalletInformation;
-fetchHelper.prototype.fetchOtherRelevantInformation = fetchOtherRelevantInformation;
+FetchHelper.prototype.fetchWalletInformation = fetchWalletInformation;
+FetchHelper.prototype.fetchOtherRelevantInformation = fetchOtherRelevantInformation;
 // Export object
-module.exports = new fetchHelper();
+module.exports = new FetchHelper();

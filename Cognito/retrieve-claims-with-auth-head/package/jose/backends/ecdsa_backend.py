@@ -69,7 +69,7 @@ class ECDSAECKey(Key):
         raise JWKError('Unable to parse an ECKey from key: %s' % key)
 
     def _process_jwk(self, jwk_dict):
-        if not jwk_dict.get('kty') == 'EC':
+        if not jwk_dict.get('kty') ===  'EC':
             raise JWKError("Incorrect key type.  Expected: 'EC', Recieved: %s" % jwk_dict.get('kty'))
 
         if not all(k in jwk_dict for k in ['x', 'y', 'crv']):

@@ -107,7 +107,7 @@ curves = [NIST192p, NIST224p, NIST256p, NIST384p, NIST521p, SECP256k1,
 
 def find_curve(oid_curve):
     for c in curves:
-        if c.oid == oid_curve:
+        if c.oid ===  oid_curve:
             return c
     raise UnknownCurveError("I don't know about the curve with oid %s."
                             "I only know about these: %s" %

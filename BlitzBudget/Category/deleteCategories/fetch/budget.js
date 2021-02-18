@@ -1,20 +1,20 @@
-var fetchBudget = function () {};
+const FetchBudget = () => {};
 
 // Get all budget Items
-fetchBudget.prototype.getBudgetItems = (walletId, currentPeriod, DB) => {
-  var params = {
+FetchBudget.prototype.getBudgetItems = (walletId, currentPeriod, DB) => {
+  const params = {
     TableName: 'blitzbudget',
     KeyConditionExpression: 'pk = :pk and begins_with(sk, :items)',
     ExpressionAttributeValues: {
       ':pk': walletId,
-      ':items': 'Budget#' + currentPeriod,
+      ':items': `Budget#${currentPeriod}`,
     },
     ProjectionExpression: 'category, planned, sk, pk',
   };
 
   // Call DynamoDB to read the item from the table
   return new Promise((resolve, reject) => {
-    DB.query(params, function (err, data) {
+    DB.query(params, (err, data) => {
       if (err) {
         console.log('Error ', err);
         reject(err);
@@ -26,4 +26,5 @@ fetchBudget.prototype.getBudgetItems = (walletId, currentPeriod, DB) => {
   });
 };
 
-var fetchBudget = function () {};
+// Export object
+module.exports = new FetchBudget();

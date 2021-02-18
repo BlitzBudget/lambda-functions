@@ -11,10 +11,10 @@ const config = {
 const regexSuffixless = /\/[^/.]+$/; // e.g. "/some/page" but not "/", "/some/" or "/some.jpg"
 const regexTrailingSlash = /.+\/$/; // e.g. "/some/" or "/some/page/" but not root "/"
 
-exports.handler = async function (event, context) {
-  const {request} = event.Records[0].cf;
-  const {uri} = request;
-  const {suffix, removeTrailingSlash} = config;
+exports.handler = async (event) => {
+  const { request } = event.Records[0].cf;
+  const { uri } = request;
+  const { suffix, removeTrailingSlash } = config;
 
   // Append ".html" to origin request
   if (suffix && uri.match(regexSuffixless)) {

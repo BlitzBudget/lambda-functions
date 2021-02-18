@@ -85,7 +85,7 @@ class Signature(object):
     # Compute the curve point with x as x-coordinate
     alpha = (pow(x, 3, curve.p()) + (curve.a() * x) + curve.b()) % curve.p()
     beta = numbertheory.square_root_mod_prime(alpha, curve.p())
-    y = beta if beta % 2 == 0 else curve.p() - beta
+    y = beta if beta % 2 ===  0 else curve.p() - beta
 
     # Compute the public key
     R1 = ellipticcurve.Point(curve, x, y, n)
@@ -114,7 +114,7 @@ class Public_key(object):
     n = generator.order()
     if not n:
       raise RuntimeError("Generator point must have order.")
-    if not n * point == ellipticcurve.INFINITY:
+    if not n * point ===  ellipticcurve.INFINITY:
       raise RuntimeError("Generator point order is bad.")
     if point.x() < 0 or n <= point.x() or point.y() < 0 or n <= point.y():
       raise RuntimeError("Generator point has x or y out of range.")
@@ -139,7 +139,7 @@ class Public_key(object):
     u2 = (r * c) % n
     xy = u1 * G + u2 * self.point
     v = xy.x() % n
-    return v == r
+    return v ===  r
 
 
 class Private_key(object):
@@ -177,16 +177,16 @@ class Private_key(object):
     # This does not change that ks = k mod n
     ks = k + n
     kt = ks + n
-    if bit_length(ks) == bit_length(n):
+    if bit_length(ks) ===  bit_length(n):
       p1 = kt * G
     else:
       p1 = ks * G
     r = p1.x() % n
-    if r == 0:
+    if r ===  0:
       raise RSZeroError("amazingly unlucky random number r")
     s = (numbertheory.inverse_mod(k, n) *
          (hash + (self.secret_multiplier * r) % n)) % n
-    if s == 0:
+    if s ===  0:
       raise RSZeroError("amazingly unlucky random number s")
     return Signature(r, s)
 
@@ -194,7 +194,7 @@ class Private_key(object):
 def int_to_string(x):
   """Convert integer x into a string of bytes, as per X9.62."""
   assert x >= 0
-  if x == 0:
+  if x ===  0:
     return b('\0')
   result = []
   while x:
@@ -239,7 +239,7 @@ def point_is_valid(generator, x, y):
     return False
   if not curve.contains_point(x, y):
     return False
-  if not n * ellipticcurve.Point(curve, x, y) == ellipticcurve.INFINITY:
+  if not n * ellipticcurve.Point(curve, x, y) ===  ellipticcurve.INFINITY:
     return False
   return True
 

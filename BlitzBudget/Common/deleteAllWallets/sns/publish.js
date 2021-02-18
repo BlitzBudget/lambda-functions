@@ -1,7 +1,7 @@
-var publish = function () {};
+const Publish = () => {};
 
-publish.prototype.publishToResetAccountsSNS = (item, sns) => {
-  var params = {
+Publish.prototype.publishToResetAccountsSNS = (item, sns) => {
+  const params = {
     Message: item,
     MessageAttributes: {
       delete_all_items_in_wallet: {
@@ -13,7 +13,7 @@ publish.prototype.publishToResetAccountsSNS = (item, sns) => {
   };
 
   return new Promise((resolve, reject) => {
-    sns.publish(params, function (err, data) {
+    sns.publish(params, (err) => {
       if (err) {
         console.log('Error ', err);
         reject(err);
@@ -24,4 +24,4 @@ publish.prototype.publishToResetAccountsSNS = (item, sns) => {
   });
 };
 // Export object
-module.exports = new publish();
+module.exports = new Publish();

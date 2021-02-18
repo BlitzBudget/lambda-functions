@@ -1,27 +1,27 @@
-var deleteItems = function () {};
+const DeleteItems = () => {};
 
-deleteItems.prototype.deleteOneItem = (pk, sk, DB) => {
-  console.log('user Id selected for deletion is ' + pk);
+DeleteItems.prototype.deleteOneItem = (pk, sk, DB) => {
+  console.log(`user Id selected for deletion is ${pk}`);
 
-  var params = {
+  const params = {
     TableName: 'blitzbudget',
     Key: {
-      pk: pk,
-      sk: sk,
+      pk,
+      sk,
     },
   };
 
   return new Promise((resolve, reject) => {
-    DB.delete(params, function (err, data) {
+    DB.delete(params, (err, data) => {
       if (err) {
         console.log('Error ', err);
         reject(err);
       } else {
-        resolve({success: data});
+        resolve({ success: data });
       }
     });
   });
 };
 
 // Export object
-module.exports = new deleteItems();
+module.exports = new DeleteItems();

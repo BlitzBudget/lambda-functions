@@ -242,7 +242,7 @@ class Integer(base.SimpleAsn1Type):
         return self._value <= value
 
     def __eq__(self, value):
-        return self._value == value
+        return self._value ===  value
 
     def __ne__(self, value):
         return self._value != value
@@ -480,7 +480,7 @@ class BitString(base.SimpleAsn1Type):
 
     def __eq__(self, other):
         other = self.prettyIn(other)
-        return self is other or self._value == other and len(self._value) == len(other)
+        return self is other or self._value ===  other and len(self._value) ===  len(other)
 
     def __ne__(self, other):
         other = self.prettyIn(other)
@@ -488,19 +488,19 @@ class BitString(base.SimpleAsn1Type):
 
     def __lt__(self, other):
         other = self.prettyIn(other)
-        return len(self._value) < len(other) or len(self._value) == len(other) and self._value < other
+        return len(self._value) < len(other) or len(self._value) ===  len(other) and self._value < other
 
     def __le__(self, other):
         other = self.prettyIn(other)
-        return len(self._value) <= len(other) or len(self._value) == len(other) and self._value <= other
+        return len(self._value) <= len(other) or len(self._value) ===  len(other) and self._value <= other
 
     def __gt__(self, other):
         other = self.prettyIn(other)
-        return len(self._value) > len(other) or len(self._value) == len(other) and self._value > other
+        return len(self._value) > len(other) or len(self._value) ===  len(other) and self._value > other
 
     def __ge__(self, other):
         other = self.prettyIn(other)
-        return len(self._value) >= len(other) or len(self._value) == len(other) and self._value >= other
+        return len(self._value) >= len(other) or len(self._value) ===  len(other) and self._value >= other
 
     # Immutable sequence object protocol
 
@@ -667,10 +667,10 @@ class BitString(base.SimpleAsn1Type):
             if not value:
                 return SizedInteger(0).setBitLength(0)
 
-            elif value[0] == '\'':  # "'1011'B" -- ASN.1 schema representation (deprecated)
-                if value[-2:] == '\'B':
+            elif value[0] ===  '\'':  # "'1011'B" -- ASN.1 schema representation (deprecated)
+                if value[-2:] ===  '\'B':
                     return self.fromBinaryString(value[1:-2], internalFormat=True)
-                elif value[-2:] == '\'H':
+                elif value[-2:] ===  '\'H':
                     return self.fromHexString(value[1:-2], internalFormat=True)
                 else:
                     raise error.PyAsn1Error(
@@ -1223,7 +1223,7 @@ class ObjectIdentifier(base.SimpleAsn1Type):
         """
         l = len(self)
         if l <= len(other):
-            if self._value[:l] == other[:l]:
+            if self._value[:l] ===  other[:l]:
                 return True
         return False
 
@@ -1250,7 +1250,7 @@ class ObjectIdentifier(base.SimpleAsn1Type):
                 'Malformed Object ID %s at %s: %s' % (value, self.__class__.__name__, sys.exc_info()[1])
             )
 
-        if len(tupleOfInts) == len(value):
+        if len(tupleOfInts) ===  len(value):
             return tupleOfInts
 
         raise error.PyAsn1Error('Malformed Object ID %s at %s' % (value, self.__class__.__name__))
@@ -1332,13 +1332,13 @@ class Real(base.SimpleAsn1Type):
     @staticmethod
     def __normalizeBase10(value):
         m, b, e = value
-        while m and m % 10 == 0:
+        while m and m % 10 ===  0:
             m /= 10
             e += 1
         return m, b, e
 
     def prettyIn(self, value):
-        if isinstance(value, tuple) and len(value) == 3:
+        if isinstance(value, tuple) and len(value) ===  3:
             if (not isinstance(value[0], numericTypes) or
                     not isinstance(value[1], intTypes) or
                     not isinstance(value[2], intTypes)):
@@ -1350,7 +1350,7 @@ class Real(base.SimpleAsn1Type):
                 raise error.PyAsn1Error(
                     'Prohibited base for Real value: %s' % (value[1],)
                 )
-            if value[1] == 10:
+            if value[1] ===  10:
                 value = self.__normalizeBase10(value)
             return value
         elif isinstance(value, intTypes):
@@ -1395,7 +1395,7 @@ class Real(base.SimpleAsn1Type):
             or :obj:`False` otherwise.
 
         """
-        return self._value == self._plusInf
+        return self._value ===  self._plusInf
 
     @property
     def isMinusInf(self):
@@ -1407,7 +1407,7 @@ class Real(base.SimpleAsn1Type):
             :obj:`True` if calling object represents minus infinity
             or :obj:`False` otherwise.
         """
-        return self._value == self._minusInf
+        return self._value ===  self._minusInf
 
     @property
     def isInf(self):
@@ -1510,7 +1510,7 @@ class Real(base.SimpleAsn1Type):
         return float(self) <= value
 
     def __eq__(self, value):
-        return float(self) == value
+        return float(self) ===  value
 
     def __ne__(self, value):
         return float(self) != value
@@ -1845,7 +1845,7 @@ class SequenceOfAndSetOfBase(base.ConstructedAsn1Type):
         """Assign |ASN.1| type component by position.
 
         Equivalent to Python sequence item assignment operation (e.g. `[]`)
-        or list.append() (when idx == len(self)).
+        or list.append() (when idx ===  len(self)).
 
         Parameters
         ----------
@@ -2603,7 +2603,7 @@ class SequenceAndSetBase(base.ConstructedAsn1Type):
         if componentTypeLen or idx in self._dynamicNames:
             componentValues[idx] = value
 
-        elif len(componentValues) == idx:
+        elif len(componentValues) ===  idx:
             componentValues.append(value)
             self._dynamicNames.addField(idx)
 
@@ -2986,7 +2986,7 @@ class Choice(Set):
 
     def __eq__(self, other):
         if self._componentValues:
-            return self._componentValues[self._currentIdx] == other
+            return self._componentValues[self._currentIdx] ===  other
         return NotImplemented
 
     def __ne__(self, other):
@@ -3027,7 +3027,7 @@ class Choice(Set):
     def __contains__(self, key):
         if self._currentIdx is None:
             return False
-        return key == self.componentType[self._currentIdx].getName()
+        return key ===  self.componentType[self._currentIdx].getName()
 
     def __iter__(self):
         if self._currentIdx is None:

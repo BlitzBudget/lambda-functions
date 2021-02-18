@@ -1,85 +1,85 @@
-var helper = function () {};
+const Helper = () => {};
 
-const deleteItems = require('delete/delete-items');
-const transaction = require('fetch/transactions');
-const recurringTransaction = require('fetch/recurring-transactions');
+const deleteItems = require('../delete/delete-items');
+const transaction = require('../fetch/transactions');
+const recurringTransaction = require('../fetch/recurring-transactions');
 
-async function fetchAccountsTransactionsAndRecurringTrans(
-  events,
+async function fetchAccountsTransactionData(
   walletId,
-  result,
-  DB
+  DB,
 ) {
+  const events = [];
+  let result;
   events.push(transaction.getTransactionItems(walletId, DB));
   events.push(recurringTransaction.getRecurringTransactionItems(walletId, DB));
 
   await Promise.all(events).then(
-    function (res) {
+    (res) => {
       console.log('successfully fetched all the items');
       result = res;
     },
-    function (err) {
-      throw new Error('Unable to delete the account ' + err);
-    }
+    (err) => {
+      throw new Error(`Unable to delete the account ${err}`);
+    },
   );
   return result;
 }
 
 // Splits array into chunks
-let chunkArrayInGroups = (arr, size) => {
-  var myArray = [];
-  for (var i = 0; i < arr.length; i += size) {
+const chunkArrayInGroups = (arr, size) => {
+  const myArray = [];
+  for (let i = 0; i < arr.length; i += size) {
     myArray.push(arr.slice(i, i + size));
   }
   return myArray;
 };
 
-let isEqual = (obj1, obj2) => {
+const isEqual = (obj1, obj2) => {
   if (JSON.stringify(obj1) === JSON.stringify(obj2)) {
     return true;
   }
   return false;
 };
 
-async function deleteAccountsAndItsData(events, deleteRequests) {
-  events = [];
-  for (const deleteRequest of deleteRequests) {
-    let params = {};
+async function deleteAccountsAndItsData(deleteRequests) {
+  const events = [];
+  Object.keys(deleteRequests).forEach((deleteRequest) => {
+    const params = {};
     params.RequestItems = {};
     params.RequestItems.blitzbudget = deleteRequest;
     console.log(
       'The delete request is in batch  with length %j',
-      params.RequestItems.blitzbudget.length
+      params.RequestItems.blitzbudget.length,
     );
     // Delete Items in batch
     events.push(deleteItems.deleteItems(params));
-  }
+  });
 
   await Promise.all(events).then(
-    function (result) {
+    () => {
       console.log('successfully deleted all the items');
     },
-    function (err) {
-      throw new Error('Unable to delete all the items ' + err);
-    }
+    (err) => {
+      throw new Error(`Unable to delete all the items ${err}`);
+    },
   );
   return events;
 }
 
-helper.prototype.logResultIfEmpty = (result, walletId) => {
-  if (result[0].Count == 0 && result[1].Count == 0) {
+Helper.prototype.logResultIfEmpty = (result, walletId) => {
+  if (result[0].Count === 0 && result[1].Count === 0) {
     console.log('There are no items to delete for the wallet %j', walletId);
   }
 };
 
-helper.prototype.buildDeleteRequest = (result, walletId, accountToDelete) => {
+Helper.prototype.buildDeleteRequest = (result, walletId, accountToDelete) => {
   console.log(
     'Starting to process the batch delete request for the transactions %j',
     result[0].Count,
     ' and for the budgets ',
-    result[1].Count
+    result[1].Count,
   );
-  let requestArr = [];
+  const requestArr = [];
 
   // Remove Account
   requestArr.push({
@@ -92,9 +92,9 @@ helper.prototype.buildDeleteRequest = (result, walletId, accountToDelete) => {
   });
 
   // Result contains both Transaction and RecurringTransactions items
-  for (const items of result) {
+  Object.keys(result).forEach((items) => {
     // Iterate through Transaction Item first and then recurringtransactions Item
-    for (const item of items.Items) {
+    Object.keys(items.Items).forEach((item) => {
       // If transactions and budgets contain the category.
       if (isEqual(item.account, accountToDelete)) {
         console.log('Building the delete params for the item %j', item.sk);
@@ -107,25 +107,18 @@ helper.prototype.buildDeleteRequest = (result, walletId, accountToDelete) => {
           },
         });
       }
-    }
-  }
+    });
+  });
 
   // Split array into sizes of 25
-  let deleteRequests = chunkArrayInGroups(requestArr, 25);
+  const deleteRequests = chunkArrayInGroups(requestArr, 25);
   return deleteRequests;
 };
 
-helper.prototype.fetchAccountsTransactionsAndRecurringTrans = fetchAccountsTransactionsAndRecurringTrans(
-  events,
-  walletId,
-  result
-);
-helper.prototype.deleteAccountsAndItsData = deleteAccountsAndItsData(
-  events,
-  deleteRequests
-);
-helper.prototype.isEqual = isEqual;
-helper.prototype.chunkArrayInGroups = chunkArrayInGroups;
+Helper.prototype.fetchAccountsTransactionData = fetchAccountsTransactionData;
+Helper.prototype.deleteAccountsAndItsData = deleteAccountsAndItsData;
+Helper.prototype.isEqual = isEqual;
+Helper.prototype.chunkArrayInGroups = chunkArrayInGroups;
 
 // Export object
-module.exports = new helper();
+module.exports = new Helper();

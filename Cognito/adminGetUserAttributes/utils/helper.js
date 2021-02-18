@@ -1,16 +1,16 @@
-var helper = function () {};
+const Helper = () => {};
 
 const userPoolId = 'eu-west-1_cjfC8qNiB';
-let params = {
+const params = {
   UserPoolId: userPoolId /* required */,
-  /*Limit: 'NUMBER_VALUE',*/
-  /*PaginationToken: 'STRING_VALUE'*/
+  /* Limit: 'NUMBER_VALUE', */
+  /* PaginationToken: 'STRING_VALUE' */
 };
 
-helper.prototype.createParameters = (event) => {
+Helper.prototype.createParameters = (event) => {
   params.Username = event.params.querystring.userName;
   return params;
 };
 
 // Export object
-module.exports = new helper();
+module.exports = new Helper();

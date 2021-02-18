@@ -225,10 +225,10 @@ class PublicKey(AbstractKey):
         if not isinstance(other, PublicKey):
             return False
 
-        return self.n == other.n and self.e == other.e
+        return self.n ===  other.n and self.e ===  other.e
 
     def __ne__(self, other):
-        return not (self == other)
+        return not (self ===  other)
 
     def __hash__(self):
         return hash((self.n, self.e))
@@ -402,17 +402,17 @@ class PrivateKey(AbstractKey):
         if not isinstance(other, PrivateKey):
             return False
 
-        return (self.n == other.n and
-                self.e == other.e and
-                self.d == other.d and
-                self.p == other.p and
-                self.q == other.q and
-                self.exp1 == other.exp1 and
-                self.exp2 == other.exp2 and
-                self.coef == other.coef)
+        return (self.n ===  other.n and
+                self.e ===  other.e and
+                self.d ===  other.d and
+                self.p ===  other.p and
+                self.q ===  other.q and
+                self.exp1 ===  other.exp1 and
+                self.exp2 ===  other.exp2 and
+                self.coef ===  other.coef)
 
     def __ne__(self, other):
-        return not (self == other)
+        return not (self ===  other)
 
     def __hash__(self):
         return hash((self.n, self.e, self.d, self.p, self.q, self.exp1, self.exp2, self.coef))
@@ -622,7 +622,7 @@ def find_p_q(nbits, getprime_func=rsa.prime.getprime, accurate=True):
             - (p * q) has the right nr of bits (when accurate=True)
         """
 
-        if p == q:
+        if p ===  q:
             return False
 
         if not accurate:
@@ -630,7 +630,7 @@ def find_p_q(nbits, getprime_func=rsa.prime.getprime, accurate=True):
 
         # Make sure we have just the right amount of bits
         found_size = rsa.common.bit_size(p * q)
-        return total_bits == found_size
+        return total_bits ===  found_size
 
     # Keep choosing other primes until they match our requirements.
     change_p = False
@@ -774,7 +774,7 @@ def newkeys(nbits, accurate=True, poolsize=1, exponent=DEFAULT_EXPONENT):
 
 __all__ = ['PublicKey', 'PrivateKey', 'newkeys']
 
-if __name__ == '__main__':
+if __name__ ===  '__main__':
     import doctest
 
     try:
@@ -783,7 +783,7 @@ if __name__ == '__main__':
             if failures:
                 break
 
-            if (count % 10 == 0 and count) or count == 1:
+            if (count % 10 ===  0 and count) or count ===  1:
                 print('%i times' % count)
     except KeyboardInterrupt:
         print('Aborted')

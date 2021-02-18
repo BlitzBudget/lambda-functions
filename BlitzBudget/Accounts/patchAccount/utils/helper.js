@@ -1,54 +1,52 @@
-var helper = function () {};
+const Helper = () => {};
 
 // Load the AWS SDK for Node.js
-var AWS = require('aws-sdk');
+const AWS = require('aws-sdk');
 // Set the region
 AWS.config.update({
   region: 'eu-west-1',
 });
 
 // Create the DynamoDB service object
-var docClient = new AWS.DynamoDB.DocumentClient();
+const docClient = new AWS.DynamoDB.DocumentClient();
+const parameters = require('./parameters');
 const fetchBudget = require('../fetch/budget');
 const updateBudget = require('../update/budget');
-const parameters = require('parameters');
 
-let isEmpty = (obj) => {
+const isEmpty = (obj) => {
   // Check if objext is a number or a boolean
-  if (typeof obj == 'number' || typeof obj == 'boolean') return false;
+  if (typeof obj === 'number' || typeof obj === 'boolean') return false;
 
   // Check if obj is null or undefined
-  if (obj == null || obj === undefined) return true;
+  if (obj === null || obj === undefined) return true;
 
   // Check if the length of the obj is defined
-  if (typeof obj.length != 'undefined') return obj.length == 0;
+  if (typeof obj.length !== 'undefined') return obj.length === 0;
 
   // check if obj is a custom obj
-  for (let key in obj) {
-    if (obj.hasOwnProperty(key)) return false;
-  }
+  if (obj && Object.keys(obj).length !== 0) { return false; }
 
   return true;
 };
 
-let isNotEmpty = (obj) => {
-  return !isEmpty(obj);
-};
+const includesStr = (arr, val) => (isEmpty(arr) ? null : arr.includes(val));
 
-let updateBankAccountToUnselected = (result, events) => {
-  let bankAccounts = result.Account;
+const isNotEmpty = (obj) => !isEmpty(obj);
+
+const updateBankAccountToUnselected = (result, events) => {
+  const bankAccounts = result.Account;
   if (isNotEmpty(bankAccounts)) {
-    for (const account of bankAccounts) {
-      if (account['selected_account']) {
+    Object.keys(bankAccounts).forEach((account) => {
+      if (account.selected_account) {
         console.log('The account %j is being unselected', account.sk);
-        let result = {};
-        result['body-json'] = {};
-        result['body-json'].selectedAccount = false;
-        result['body-json'].walletId = account.pk;
-        result['body-json'].accountId = account.sk;
-        events.push(updateBudget.updatingBankAccounts(result));
+        const updateItem = {};
+        updateItem['body-json'] = {};
+        updateItem['body-json'].selectedAccount = false;
+        updateItem['body-json'].walletId = account.pk;
+        updateItem['body-json'].accountId = account.sk;
+        events.push(updateBudget.updatingBankAccounts(updateItem, docClient));
       }
-    }
+    });
   } else {
     console.log('There are no bank accounts to unselect');
   }
@@ -56,65 +54,40 @@ let updateBankAccountToUnselected = (result, events) => {
 
 async function unselectSelectedBankAccount(event, events) {
   if (isNotEmpty(event['body-json'].selectedAccount)) {
-    await fetchBudget.getBankAccountItem(event['body-json'].walletId).then(
-      function (result) {
+    await fetchBudget.getBankAccountItem(event['body-json'].walletId, docClient).then(
+      (result) => {
         updateBankAccountToUnselected(result, events);
       },
-      function (err) {
+      (err) => {
         throw new Error(
-          'Unable error occured while fetching the BankAccount ' + err
+          `Unable error occured while fetching the BankAccount ${err}`,
         );
-      }
+      },
     );
   }
 }
 
-async function handleUpdateBankAccounts(events, event) {
-  if (isEmpty(event['body-json'])) {
-    return;
-  }
-
-  var params = buildParameterToUpdate(
-    event,
-    updateExp,
-    expAttrNames,
-    expAttrVal
-  );
-
-  events.push(updateBudget.updatingBankAccounts(params));
-  await Promise.all(events).then(
-    function (result) {
-      console.log('successfully patched the BankAccounts');
-    },
-    function (err) {
-      throw new Error('Unable to patch the BankAccounts ' + err);
-    }
-  );
-}
-
-let buildParameterToUpdate = (event) => {
+const buildParameterToUpdate = (event) => {
   let updateExp = 'set';
-  let expAttrVal = {};
-  let expAttrNames = {};
+  const expAttrVal = {};
+  const expAttrNames = {};
 
   for (let i = 0, len = parameters.length; i < len; i++) {
-    let prm = parameters[i];
+    const prm = parameters[i];
 
     // If the parameter is not found then do not save
-    if (isEmpty(event['body-json'][prm.prmName])) {
-      continue;
+    if (isNotEmpty(event['body-json'][prm.prmName])) {
+      // Add a comma to update expression
+      if (includesStr(updateExp, '#variable')) {
+        updateExp += ',';
+      }
+
+      console.log(`param name - ${event['body-json'][prm.prmName]}`);
+
+      updateExp += ` #variable${i} = :v${i}`;
+      expAttrVal[`:v${i}`] = event['body-json'][prm.prmName];
+      expAttrNames[`#variable${i}`] = prm.prmValue;
     }
-
-    // Add a comma to update expression
-    if (includesStr(updateExp, '#variable')) {
-      updateExp += ',';
-    }
-
-    console.log('param name - ' + event['body-json'][prm.prmName]);
-
-    updateExp += ' #variable' + i + ' = :v' + i;
-    expAttrVal[':v' + i] = event['body-json'][prm.prmName];
-    expAttrNames['#variable' + i] = prm.prmValue;
   }
 
   console.log(
@@ -125,10 +98,11 @@ let buildParameterToUpdate = (event) => {
     ' expression Attribute Names ',
     JSON.stringify(expAttrNames),
     ' for the account id ',
-    event['body-json'].accountId
+    event['body-json'].accountId,
   );
+
   if (isEmpty(expAttrVal)) {
-    return;
+    return undefined;
   }
 
   updateExp += ', #update = :u';
@@ -147,21 +121,39 @@ let buildParameterToUpdate = (event) => {
   };
 };
 
-helper.prototype.buildParameterToUpdate = buildParameterToUpdate;
+async function handleUpdateBankAccounts(events, event) {
+  if (isEmpty(event['body-json'])) {
+    return;
+  }
 
-helper.prototype.handleUpdateBankAccounts = handleUpdateBankAccounts;
+  const params = buildParameterToUpdate(
+    event,
+  );
 
-helper.prototype.isEmpty = isEmpty;
+  events.push(updateBudget.updatingBankAccounts(params));
+  await Promise.all(events).then(
+    () => {
+      console.log('successfully patched the BankAccounts');
+    },
+    (err) => {
+      throw new Error(`Unable to patch the BankAccounts ${err}`);
+    },
+  );
+}
 
-helper.prototype.isNotEmpty = isNotEmpty;
+Helper.prototype.buildParameterToUpdate = buildParameterToUpdate;
 
-helper.prototype.includesStr = (arr, val) => {
-  return isEmpty(arr) ? null : arr.includes(val);
-};
+Helper.prototype.handleUpdateBankAccounts = handleUpdateBankAccounts;
 
-helper.prototype.updateBankAccountToUnselected = updateBankAccountToUnselected;
+Helper.prototype.isEmpty = isEmpty;
 
-helper.prototype.unselectSelectedBankAccount = unselectSelectedBankAccount;
+Helper.prototype.isNotEmpty = isNotEmpty;
+
+Helper.prototype.includesStr = includesStr;
+
+Helper.prototype.updateBankAccountToUnselected = updateBankAccountToUnselected;
+
+Helper.prototype.unselectSelectedBankAccount = unselectSelectedBankAccount;
 
 // Export object
-module.exports = new helper();
+module.exports = new Helper();

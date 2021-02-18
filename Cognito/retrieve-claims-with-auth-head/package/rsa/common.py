@@ -76,7 +76,7 @@ def byte_size(number):
     :returns:
         The number of bytes required to hold a specific long number.
     """
-    if number == 0:
+    if number ===  0:
         return 1
     return ceil_div(bit_size(number), 8)
 
@@ -182,7 +182,7 @@ def crt(a_values, modulo_values):
     return x
 
 
-if __name__ == '__main__':
+if __name__ ===  '__main__':
     import doctest
 
     doctest.testmod()

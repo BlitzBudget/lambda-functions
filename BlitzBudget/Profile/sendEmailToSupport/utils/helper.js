@@ -1,4 +1,4 @@
-var helper = function() {};
+const Helper = () => {};
 
 function createParameters(event) {
   return {
@@ -9,10 +9,10 @@ function createParameters(event) {
       Body: {
         Text: {
           Data:
-            'From Address: ' +
-            event['body-json'].email +
-            ' Message:' +
-            event['body-json'].message,
+            `From Address: ${
+              event['body-json'].email
+            } Message:${
+              event['body-json'].message}`,
         },
       },
       Subject: {
@@ -24,6 +24,6 @@ function createParameters(event) {
   };
 }
 
-helper.prototype.createParameters = createParameters;
+Helper.prototype.createParameters = createParameters;
 // Export object
-module.exports = new helper();
+module.exports = new Helper();

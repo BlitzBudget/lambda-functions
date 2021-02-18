@@ -1,12 +1,12 @@
-var fetchUser = function () {};
+const FetchUser = () => {};
 
-fetchUser.prototype.getUser = (response, cognitoidentityserviceprovider) => {
-  let params = {
+FetchUser.prototype.getUser = (response, cognitoidentityserviceprovider) => {
+  const params = {
     AccessToken: response.AuthenticationResult.AccessToken /* required */,
   };
 
   return new Promise((resolve, reject) => {
-    cognitoidentityserviceprovider.getUser(params, function (err, data) {
+    cognitoidentityserviceprovider.getUser(params, (err, data) => {
       if (err) {
         console.log(err, err.stack); // an error occurred
         reject(err);
@@ -19,4 +19,4 @@ fetchUser.prototype.getUser = (response, cognitoidentityserviceprovider) => {
 };
 
 // Export object
-module.exports = new fetchUser();
+module.exports = new FetchUser();

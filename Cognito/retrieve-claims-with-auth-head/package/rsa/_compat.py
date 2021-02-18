@@ -27,13 +27,13 @@ MAX_INT64 = (1 << 63) - 1
 MAX_INT32 = (1 << 31) - 1
 MAX_INT16 = (1 << 15) - 1
 
-PY2 = sys.version_info[0] == 2
+PY2 = sys.version_info[0] ===  2
 
 # Determine the word size of the processor.
-if MAX_INT == MAX_INT64:
+if MAX_INT ===  MAX_INT64:
     # 64-bit processor.
     MACHINE_WORD_SIZE = 64
-elif MAX_INT == MAX_INT32:
+elif MAX_INT ===  MAX_INT32:
     # 32-bit processor.
     MACHINE_WORD_SIZE = 32
 else:
@@ -148,7 +148,7 @@ def get_word_alignment(num, force_arch=64,
     max_uint16 = 0xffff
     max_uint8 = 0xff
 
-    if force_arch == 64 and _machine_word_size >= 64 and num > max_uint32:
+    if force_arch ===  64 and _machine_word_size >= 64 and num > max_uint32:
         # 64-bit unsigned integer.
         return 64, 8, max_uint64, "Q"
     elif num > max_uint16:

@@ -113,7 +113,7 @@ class NamedValues(object):
             self.__class__.__name__, representation)
 
     def __eq__(self, other):
-        return dict(self) == other
+        return dict(self) ===  other
 
     def __ne__(self, other):
         return dict(self) != other

@@ -1,52 +1,65 @@
-var utils = function () {};
+const Utils = () => {};
+
+function isEmpty(obj) {
+  // Check if objext is a number or a boolean
+  if (typeof obj === 'number' || typeof obj === 'boolean') return false;
+
+  // Check if obj is null or undefined
+  if (obj === null || obj === undefined) return true;
+
+  // Check if the length of the obj is defined
+  if (typeof obj.length !== 'undefined') return obj.length === 0;
+
+  // check if obj is a custom obj
+  if (obj
+&& Object.keys(obj).length !== 0) { return false; }
+
+  // Check if obj is an element
+  if (obj instanceof Element) return false;
+
+  return true;
+}
 
 // Includes String
-utils.prototype.includesStr = function (arr, val) {
-  return isEmpty(arr) ? null : arr.includes(val);
-};
+Utils.prototype.includesStr = (arr, val) => (isEmpty(arr) ? null : arr.includes(val));
 
 // Is Empty Check
-utils.prototype.isEmpty = function (obj) {
-  return isEmpty(obj);
-};
+Utils.prototype.isEmpty = (obj) => isEmpty(obj);
 
-utils.prototype.isNotEmpty = function (obj) {
-  return !isEmpty(obj);
-};
+Utils.prototype.isNotEmpty = (obj) => !isEmpty(obj);
 
-utils.prototype.isEqual = function (obj1, obj2) {
+Utils.prototype.isEqual = (obj1, obj2) => {
   if (JSON.stringify(obj1) === JSON.stringify(obj2)) {
     return true;
   }
   return false;
 };
 
-utils.prototype.getSlotValues = function (filledSlots) {
+Utils.prototype.getSlotValues = (filledSlots) => {
   const slotValues = {};
 
   Object.keys(filledSlots).forEach((item) => {
-    const name = filledSlots[item].name;
+    const { name } = filledSlots[item];
     console.log(
       'The Slot Values calculated are',
-      JSON.stringify(filledSlots[item])
+      JSON.stringify(filledSlots[item]),
     );
 
     if (
-      filledSlots[item] &&
-      filledSlots[item].resolutions &&
-      filledSlots[item].resolutions.resolutionsPerAuthority[0] &&
-      filledSlots[item].resolutions.resolutionsPerAuthority[0].status &&
-      filledSlots[item].resolutions.resolutionsPerAuthority[0].status.code
+      filledSlots[item]
+      && filledSlots[item].resolutions
+      && filledSlots[item].resolutions.resolutionsPerAuthority[0]
+      && filledSlots[item].resolutions.resolutionsPerAuthority[0].status
+      && filledSlots[item].resolutions.resolutionsPerAuthority[0].status.code
     ) {
       let slotId = '';
       if (
-        filledSlots[item].resolutions.resolutionsPerAuthority[0].values &&
-        filledSlots[item].resolutions.resolutionsPerAuthority[0].values[0].value
+        filledSlots[item].resolutions.resolutionsPerAuthority[0].values
+        && filledSlots[item].resolutions.resolutionsPerAuthority[0].values[0].value
           .id
       ) {
-        slotId =
-          filledSlots[item].resolutions.resolutionsPerAuthority[0].values[0]
-            .value.id;
+        slotId = filledSlots[item].resolutions.resolutionsPerAuthority[0].values[0]
+          .value.id;
       }
 
       switch (
@@ -85,25 +98,4 @@ utils.prototype.getSlotValues = function (filledSlots) {
   return slotValues;
 };
 
-function isEmpty(obj) {
-  // Check if objext is a number or a boolean
-  if (typeof obj == 'number' || typeof obj == 'boolean') return false;
-
-  // Check if obj is null or undefined
-  if (obj == null || obj === undefined) return true;
-
-  // Check if the length of the obj is defined
-  if (typeof obj.length != 'undefined') return obj.length == 0;
-
-  // check if obj is a custom obj
-  for (let key in obj) {
-    if (obj.hasOwnProperty(key)) return false;
-  }
-
-  // Check if obj is an element
-  if (obj instanceof Element) return false;
-
-  return true;
-}
-
-module.exports = new utils();
+module.exports = new Utils();

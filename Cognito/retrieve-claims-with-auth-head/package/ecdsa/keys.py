@@ -177,7 +177,7 @@ class VerifyingKey(object):
         """
         order = curve.order
         # real assert, from_string() should not call us with different length
-        assert len(string) == curve.verifying_key_length
+        assert len(string) ===  curve.verifying_key_length
         xs = string[:curve.baselen]
         ys = string[curve.baselen:]
         if len(xs) != curve.baselen:
@@ -197,7 +197,7 @@ class VerifyingKey(object):
         if string[:1] not in (b('\x02'), b('\x03')):
             raise MalformedPointError("Malformed compressed point encoding")
 
-        is_even = string[:1] == b('\x02')
+        is_even = string[:1] ===  b('\x02')
         x = string_to_number(string[1:])
         order = curve.order
         p = curve.curve.p()
@@ -207,7 +207,7 @@ class VerifyingKey(object):
         except SquareRootError as e:
             raise MalformedPointError(
                 "Encoding does not correspond to a point on curve", e)
-        if is_even == bool(beta & 1):
+        if is_even ===  bool(beta & 1):
             y = p - beta
         else:
             y = beta
@@ -262,18 +262,18 @@ class VerifyingKey(object):
         """
         string = normalise_bytes(string)
         sig_len = len(string)
-        if sig_len == curve.verifying_key_length:
+        if sig_len ===  curve.verifying_key_length:
             point = cls._from_raw_encoding(string, curve, validate_point)
-        elif sig_len == curve.verifying_key_length + 1:
+        elif sig_len ===  curve.verifying_key_length + 1:
             if string[:1] in (b('\x06'), b('\x07')):
                 point = cls._from_hybrid(string, curve, validate_point)
-            elif string[:1] == b('\x04'):
+            elif string[:1] ===  b('\x04'):
                 point = cls._from_raw_encoding(string[1:], curve,
                                                validate_point)
             else:
                 raise MalformedPointError(
                     "Invalid X9.62 encoding of the public point")
-        elif sig_len == curve.baselen + 1:
+        elif sig_len ===  curve.baselen + 1:
             point = cls._from_compressed(string, curve, validate_point)
         else:
             raise MalformedPointError(
@@ -346,7 +346,7 @@ class VerifyingKey(object):
         if empty != b"":
             raise der.UnexpectedDER("trailing junk after DER pubkey objects: %s" %
                                     binascii.hexlify(empty))
-        if not oid_pk == oid_ecPublicKey:
+        if not oid_pk ===  oid_ecPublicKey:
             raise der.UnexpectedDER("Unexpected object identifier in DER "
                                     "encoding: {0!r}".format(oid_pk))
         curve = find_curve(oid_curve)
@@ -355,7 +355,7 @@ class VerifyingKey(object):
             raise der.UnexpectedDER("trailing junk after pubkey pointstring: %s" %
                                     binascii.hexlify(empty))
         # raw encoding of point is invalid in DER files
-        if len(point_str) == curve.verifying_key_length:
+        if len(point_str) ===  curve.verifying_key_length:
             raise der.UnexpectedDER("Malformed encoding of public point")
         return cls.from_string(point_str, curve)
 
@@ -483,11 +483,11 @@ class VerifyingKey(object):
         :rtype: bytes
         """
         assert encoding in ("raw", "uncompressed", "compressed", "hybrid")
-        if encoding == "raw":
+        if encoding ===  "raw":
             return self._raw_encode()
-        elif encoding == "uncompressed":
+        elif encoding ===  "uncompressed":
             return b('\x04') + self._raw_encode()
-        elif encoding == "hybrid":
+        elif encoding ===  "hybrid":
             return self._hybrid_encode()
         else:
             return self._compressed_encode()
@@ -528,7 +528,7 @@ class VerifyingKey(object):
         :return: DER encoding of the public key
         :rtype: bytes
         """
-        if point_encoding == "raw":
+        if point_encoding ===  "raw":
             raise ValueError("raw point_encoding not allowed in DER")
         point_str = self.to_string(point_encoding)
         return der.encode_sequence(der.encode_sequence(encoded_oid_ecPublicKey,
@@ -921,7 +921,7 @@ class SigningKey(object):
         """
         # SEQ([int(1), octetstring(privkey),cont[0], oid(secp224r1),
         #      cont[1],bitstring])
-        if point_encoding == "raw":
+        if point_encoding ===  "raw":
             raise ValueError("raw encoding not allowed in DER")
         encoded_vk = self.get_verifying_key().to_string(point_encoding)
         # the 0 in encode_bitstring specifies the number of unused bits

@@ -1,19 +1,45 @@
-var transaction = function () {};
+const Transaction = () => {};
 
+const helper = require('../utils/helper');
 /*
  * Populate the date meant for attribute in the transactions
  */
-function constructTransactionsWithDateMeantForAndCategory(
+function constructTransactions(
   datesMap,
   categoryMap,
   event,
-  addItemArray
+  addItemArray,
 ) {
-  let {
-    nextScheduledDate,
+  function extractVariablesFromRequest() {
+    const recurrence = event.Records[0].Sns.MessageAttributes.recurrence.Value;
+    const walletId = event.Records[0].Sns.MessageAttributes.walletId.Value;
+    const amount = parseInt(event.Records[0].Sns.MessageAttributes.amount.Value, 10);
+    const description = event.Records[0].Sns.MessageAttributes.description.Value;
+    const account = event.Records[0].Sns.MessageAttributes.account.Value;
+    let { tags } = event.Records[0].Sns.MessageAttributes;
+
+    if (helper.isNotEmpty(tags)) {
+      tags = JSON.parse(tags.Value);
+      console.log('The tags for the transaction is ', tags);
+    }
+
+    const futureDateToCreate = event.Records[0].Sns.MessageAttributes.next_scheduled.Value;
+    const today = new Date();
+    return {
+      futureDateToCreate,
+      today,
+      walletId,
+      recurrence,
+      amount,
+      description,
+      account,
+      tags,
+    };
+  }
+
+  const {
+    futureDateToCreate,
     today,
-    dateMeantFor,
-    category,
     walletId,
     recurrence,
     amount,
@@ -22,50 +48,29 @@ function constructTransactionsWithDateMeantForAndCategory(
     tags,
   } = extractVariablesFromRequest();
 
-  while (nextScheduledDate < today) {
-    let sk = 'Transaction#' + nextScheduledDate.toISOString();
-
-    let compareString = sk.substring(12, 19);
-    calculateDateMeanFor(compareString, sk);
-    calculateCategory(compareString, sk);
-    createTransactionPutRequest(sk);
-
-    // Update recurrence
-    switch (recurrence) {
-      case 'MONTHLY':
-        nextScheduledDate.setMonth(nextScheduledDate.getMonth() + 1);
-        break;
-      case 'WEEKLY':
-        nextScheduledDate.setDate(nextScheduledDate.getDate() + 7);
-        break;
-      case 'BI-MONTHLY':
-        nextScheduledDate.setDate(nextScheduledDate.getDate() + 15);
-        break;
-      default:
-        nextScheduledDate = new Date();
-        break;
-    }
-  }
+  let category = event.Records[0].Sns.MessageAttributes.category.Value;
+  let dateMeantFor;
+  let futureDatesToCreate = new Date(futureDateToCreate);
 
   function calculateCategory(compareString, sk) {
-    if (isNotEmpty(categoryMap[compareString])) {
+    if (helper.isNotEmpty(categoryMap[compareString])) {
       console.log(
         'The category for the transaction %j ',
         sk,
         ' is ',
-        categoryMap[compareString]
+        categoryMap[compareString],
       );
       category = categoryMap[compareString];
     }
   }
 
   function calculateDateMeanFor(compareString, sk) {
-    if (isNotEmpty(datesMap[compareString])) {
+    if (helper.isNotEmpty(datesMap[compareString])) {
       console.log(
         'The date for the transaction %j ',
         sk,
         ' is ',
-        datesMap[compareString]
+        datesMap[compareString],
       );
       dateMeantFor = datesMap[compareString];
     }
@@ -76,55 +81,47 @@ function constructTransactionsWithDateMeantForAndCategory(
       PutRequest: {
         Item: {
           pk: walletId,
-          sk: sk,
-          recurrence: recurrence,
-          amount: amount,
-          description: description,
-          category: category,
-          account: account,
-          tags: tags,
+          sk,
+          recurrence,
+          amount,
+          description,
+          category,
+          account,
+          tags,
           date_meant_for: dateMeantFor,
-          creation_date: nextScheduledDate.toISOString(),
+          creation_date: futureDatesToCreate.toISOString(),
           updated_date: new Date().toISOString(),
         },
       },
     });
   }
 
-  function extractVariablesFromRequest() {
-    let recurrence = event.Records[0].Sns.MessageAttributes.recurrence.Value;
-    let walletId = event.Records[0].Sns.MessageAttributes.walletId.Value;
-    let amount = parseInt(event.Records[0].Sns.MessageAttributes.amount.Value);
-    let description = event.Records[0].Sns.MessageAttributes.description.Value;
-    let category = event.Records[0].Sns.MessageAttributes.category.Value;
-    let account = event.Records[0].Sns.MessageAttributes.account.Value;
-    let tags = event.Records[0].Sns.MessageAttributes.tags;
+  while (futureDatesToCreate < today) {
+    const sk = `Transaction#${futureDatesToCreate.toISOString()}`;
 
-    if (isNotEmpty(tags)) {
-      tags = JSON.parse(tags.Value);
-      console.log('The tags for the transaction is ', tags);
+    const compareString = sk.substring(12, 19);
+    calculateDateMeanFor(compareString, sk);
+    calculateCategory(compareString, sk);
+    createTransactionPutRequest(sk);
+
+    // Update recurrence
+    switch (recurrence) {
+      case 'MONTHLY':
+        futureDatesToCreate.setMonth(futureDatesToCreate.getMonth() + 1);
+        break;
+      case 'WEEKLY':
+        futureDatesToCreate.setDate(futureDatesToCreate.getDate() + 7);
+        break;
+      case 'BI-MONTHLY':
+        futureDatesToCreate.setDate(futureDatesToCreate.getDate() + 15);
+        break;
+      default:
+        futureDatesToCreate = new Date();
+        break;
     }
-    let dateMeantFor;
-
-    let nextScheduled =
-      event.Records[0].Sns.MessageAttributes['next_scheduled'].Value;
-    let nextScheduledDate = new Date(nextScheduled);
-    let today = new Date();
-    return {
-      nextScheduledDate,
-      today,
-      dateMeantFor,
-      category,
-      walletId,
-      recurrence,
-      amount,
-      description,
-      account,
-      tags,
-    };
   }
 }
 
-transaction.prototype.constructTransactionsWithDateMeantForAndCategory = constructTransactionsWithDateMeantForAndCategory;
+Transaction.prototype.constructTransactions = constructTransactions;
 // Export object
-module.exports = new transaction();
+module.exports = new Transaction();

@@ -1,19 +1,18 @@
-var helper = function () {};
+const Helper = () => {};
 
 function isEmpty(obj) {
   // Check if objext is a number or a boolean
-  if (typeof obj == 'number' || typeof obj == 'boolean') return false;
+  if (typeof obj === 'number' || typeof obj === 'boolean') return false;
 
   // Check if obj is null or undefined
-  if (obj == null || obj === undefined) return true;
+  if (obj === null || obj === undefined) return true;
 
   // Check if the length of the obj is defined
-  if (typeof obj.length != 'undefined') return obj.length == 0;
+  if (typeof obj.length !== 'undefined') return obj.length === 0;
 
   // check if obj is a custom obj
-  for (let key in obj) {
-    if (obj.hasOwnProperty(key)) return false;
-  }
+  if (obj
+&& Object.keys(obj).length !== 0) { return false; }
 
   // Check if obj is an element
   if (obj instanceof Element) return false;
@@ -21,11 +20,15 @@ function isEmpty(obj) {
   return true;
 }
 
+function includesStr(arr, val) {
+  return isEmpty(arr) ? null : arr.includes(val);
+}
+
 function isNotEmpty(obj) {
   return !isEmpty(obj);
 }
 
-let splitElement = (str, splitString) => {
+const splitElement = (str, splitString) => {
   if (includesStr(str, splitString)) {
     return isEmpty(str) ? str : str.split(splitString);
   }
@@ -34,13 +37,14 @@ let splitElement = (str, splitString) => {
 };
 
 // Calculate First Name and Last Name
-let fetchFirstAndFamilyName = (fullName) => {
-  let possibleSym = /[!#$%&'*+-\/=?^_`{|}~]/;
-  let name = {};
-  let matchFound = fullName.match(possibleSym);
+const fetchFirstAndFamilyName = (fullName) => {
+  // eslint-disable-next-line no-useless-escape
+  const possibleSym = /[!#$%&'*+-\/=?^_`{|}~]/;
+  const name = {};
+  const matchFound = fullName.match(possibleSym);
 
   if (isNotEmpty(matchFound)) {
-    let nameArr = splitElement(fullName, matchFound);
+    const nameArr = splitElement(fullName, matchFound);
     let firstName = nameArr[0];
     let familyName = nameArr[1];
 
@@ -51,42 +55,42 @@ let fetchFirstAndFamilyName = (fullName) => {
     }
 
     // First Letter Upper case
-    firstName =
-      firstName.length > 1
-        ? firstName.charAt(0).toUpperCase() + firstName.slice(1)
-        : firstName.charAt(0).toUpperCase();
-    familyName = isEmpty(familyName)
-      ? ' '
-      : familyName.length > 1
-      ? familyName.charAt(0).toUpperCase() + familyName.slice(1)
-      : familyName.charAt(0).toUpperCase();
+    firstName = firstName.length > 1
+      ? firstName.charAt(0).toUpperCase() + firstName.slice(1)
+      : firstName.charAt(0).toUpperCase();
+    familyName = ' ';
 
-    name['firstName'] = firstName;
-    name['familyName'] = familyName;
+    if (isEmpty(familyName)) {
+      familyName = familyName.length > 1
+        ? familyName.charAt(0).toUpperCase() + familyName.slice(1)
+        : familyName.charAt(0).toUpperCase();
+    }
+
+    name.firstName = firstName;
+    name.familyName = familyName;
   } else {
     // First Letter Upper case
-    fullName = isEmpty(fullName)
-      ? ''
-      : fullName.length > 1
-      ? fullName.charAt(0).toUpperCase() + fullName.slice(1)
-      : fullName.charAt(0).toUpperCase();
-    name['firstName'] = fullName;
-    name['familyName'] = ' ';
+    let firstName = '';
+
+    if (isNotEmpty(fullName)) {
+      firstName = fullName.length > 1
+        ? fullName.charAt(0).toUpperCase() + fullName.slice(1)
+        : fullName.charAt(0).toUpperCase();
+    }
+
+    name.firstName = firstName;
+    name.familyName = ' ';
   }
 
   /*
    * Family name
    */
-  if (isEmpty(name['familyName'])) {
-    name['familyName'] = ' ';
+  if (isEmpty(name.familyName)) {
+    name.familyName = ' ';
   }
 
   return name;
 };
-
-function includesStr(arr, val) {
-  return isEmpty(arr) ? null : arr.includes(val);
-}
 
 function fetchFirstElement(arr) {
   if (Array.isArray(arr)) {
@@ -95,80 +99,78 @@ function fetchFirstElement(arr) {
   return arr;
 }
 
-helper.prototype.buildParamForSignup = (
+Helper.prototype.buildParamForSignup = (
   password,
   email,
   firstName,
   lastName,
-  accepLan
-) => {
-  return {
-    ClientId: '2ftlbs1kfmr2ub0e4p15tsag8g',
-    /* required */
-    Password: password,
-    /* required */
-    Username: email,
-    /* required */
-    UserAttributes: [
-      {
-        Name: 'email',
-        /* required */
-        Value: email,
-      },
-      {
-        Name: 'name',
-        /* required */
-        Value: firstName,
-      },
-      {
-        Name: 'family_name',
-        /* required */
-        Value: lastName,
-      },
-      {
-        Name: 'locale',
-        /* required */
-        Value:
+  accepLan,
+) => ({
+  ClientId: '2ftlbs1kfmr2ub0e4p15tsag8g',
+  /* required */
+  Password: password,
+  /* required */
+  Username: email,
+  /* required */
+  UserAttributes: [
+    {
+      Name: 'email',
+      /* required */
+      Value: email,
+    },
+    {
+      Name: 'name',
+      /* required */
+      Value: firstName,
+    },
+    {
+      Name: 'family_name',
+      /* required */
+      Value: lastName,
+    },
+    {
+      Name: 'locale',
+      /* required */
+      Value:
           accepLan.length <= 4
             ? accepLan.substring(1, 3)
             : accepLan.substring(1, 6) /* take en or en-US if available */,
-      },
-      {
-        Name: 'custom:financialPortfolioId',
-        /* required */
-        Value: 'User#' + new Date().toISOString(),
-      },
-      {
-        Name: 'custom:exportFileFormat',
-        /* required */
-        Value: 'XLS',
-      },
-    ],
-  };
-};
+    },
+    {
+      Name: 'custom:financialPortfolioId',
+      /* required */
+      Value: `User#${new Date().toISOString()}`,
+    },
+    {
+      Name: 'custom:exportFileFormat',
+      /* required */
+      Value: 'XLS',
+    },
+  ],
+});
 
-helper.prototype.extractFirstAndLastName = (firstName, lastName, email) => {
+Helper.prototype.extractFirstAndLastName = (firstName, lastName, email) => {
+  let username = firstName;
+  let surname = lastName;
   if (isEmpty(firstName) || isEmpty(lastName)) {
     // Set Name
-    let fullName = fetchFirstElement(splitElement(email, '@'));
-    let name = fetchFirstAndFamilyName(fullName);
-    firstName = name.firstName;
-    lastName = name.familyName;
+    const fullName = fetchFirstElement(splitElement(email, '@'));
+    const name = fetchFirstAndFamilyName(fullName);
+    username = name.firstName;
+    surname = name.familyName;
   }
-  return {firstName, lastName};
+  return { username, surname };
 };
 
-helper.prototype.emailToLowerCase = (email) => {
-  return email.toLowerCase().trim();
-};
+Helper.prototype.emailToLowerCase = (email) => email.toLowerCase().trim();
 
-helper.prototype.isEmpty = isEmpty;
+Helper.prototype.isEmpty = isEmpty;
 
-helper.prototype.isNotEmpty = isNotEmpty;
+Helper.prototype.isNotEmpty = isNotEmpty;
 
-helper.prototype.splitElement = splitElement;
+Helper.prototype.splitElement = splitElement;
 
-helper.prototype.fetchFirstAndFamilyName = fetchFirstAndFamilyName;
+Helper.prototype.fetchFirstAndFamilyName = fetchFirstAndFamilyName;
 
 // Export object
-module.exports = new helper();
+module.exports = new Helper();

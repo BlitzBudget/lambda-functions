@@ -1,38 +1,15 @@
-var wallet = function () {};
+const FetchWallet = () => {};
 
-function getWalletData(userId, walletId, overviewData, docClient) {
-  console.log(
-    'fetching the wallet information for the user %j',
-    userId,
-    ' with the wallet ',
-    walletId
-  );
-  var params = createParameters();
-
-  // Call DynamoDB to read the item from the table
-  return new Promise((resolve, reject) => {
-    docClient.get(params, function (err, data) {
-      if (err) {
-        console.log('Error ', err);
-        reject(err);
-      } else {
-        organizeRetrievedItems(data);
-        resolve({
-          Wallet: data,
-        });
-      }
-    });
-  });
-
+function getWalletData(userId, walletId, docClient) {
   function organizeRetrievedItems(data) {
     console.log('data retrieved - Wallet %j', JSON.stringify(data));
     if (data.Item) {
-      data.Item.walletId = data.Item.sk;
-      data.Item.userId = data.Item.pk;
-      delete data.Item.sk;
-      delete data.Item.pk;
+      const item = data.Item;
+      item.walletId = data.Item.sk;
+      item.userId = data.Item.pk;
+      delete item.sk;
+      delete item.pk;
     }
-    overviewData['Wallet'] = data.Item;
   }
 
   function createParameters() {
@@ -50,37 +27,43 @@ function getWalletData(userId, walletId, overviewData, docClient) {
       },
     };
   }
-}
 
-function getWalletsData(userId, overviewData, docClient) {
-  var params = createParameters();
+  console.log(
+    'fetching the wallet information for the user %j',
+    userId,
+    ' with the wallet ',
+    walletId,
+  );
+  const params = createParameters();
 
   // Call DynamoDB to read the item from the table
   return new Promise((resolve, reject) => {
-    docClient.query(params, function (err, data) {
+    docClient.get(params, (err, data) => {
       if (err) {
         console.log('Error ', err);
         reject(err);
       } else {
         organizeRetrievedItems(data);
         resolve({
-          Wallet: data.Items,
+          Wallet: data,
         });
       }
     });
   });
+}
 
+function getWalletsData(userId, docClient) {
   function organizeRetrievedItems(data) {
     console.log('data retrieved - Wallet %j', data.Count);
     if (data.Items) {
-      for (const walletObj of data.Items) {
-        walletObj.walletId = walletObj.sk;
-        walletObj.userId = walletObj.pk;
-        delete walletObj.sk;
-        delete walletObj.pk;
-      }
+      Object.keys(data.Items).forEach((walletObj) => {
+        const walletData = walletObj;
+        walletData.walletId = walletObj.sk;
+        walletData.userId = walletObj.pk;
+        delete walletData.sk;
+        delete walletData.pk;
+      });
     }
-    overviewData['Wallet'] = data.Items;
   }
 
   function createParameters() {
@@ -95,9 +78,26 @@ function getWalletsData(userId, overviewData, docClient) {
         'currency, pk, sk, read_only, total_asset_balance, total_debt_balance, wallet_balance',
     };
   }
+
+  const params = createParameters();
+
+  // Call DynamoDB to read the item from the table
+  return new Promise((resolve, reject) => {
+    docClient.query(params, (err, data) => {
+      if (err) {
+        console.log('Error ', err);
+        reject(err);
+      } else {
+        organizeRetrievedItems(data);
+        resolve({
+          Wallet: data.Items,
+        });
+      }
+    });
+  });
 }
 
-wallet.prototype.getWalletData = getWalletData;
-wallet.prototype.getWalletsData = getWalletsData;
+FetchWallet.prototype.getWalletData = getWalletData;
+FetchWallet.prototype.getWalletsData = getWalletsData;
 // Export object
-module.exports = new wallet();
+module.exports = new FetchWallet();

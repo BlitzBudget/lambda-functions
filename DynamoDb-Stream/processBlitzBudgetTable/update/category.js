@@ -1,11 +1,11 @@
-var category = function () {};
+const UpdateCategory = () => {};
 
-function updateCategoryItem(pk, sk, difference) {
-  let params = {
+function updateCategoryItem(pk, sk, difference, docClient) {
+  const params = {
     TableName: 'blitzbudget',
     Key: {
-      pk: pk,
-      sk: sk,
+      pk,
+      sk,
     },
     UpdateExpression: 'set category_total = category_total + :ab',
     ConditionExpression: 'attribute_exists(category_total)',
@@ -17,11 +17,11 @@ function updateCategoryItem(pk, sk, difference) {
 
   console.log('Updating the item...');
   return new Promise((resolve, reject) => {
-    docClient.update(params, function (err, data) {
+    docClient.update(params, (err, data) => {
       if (err) {
         console.error(
           'Unable to update item. Error JSON:',
-          JSON.stringify(err, null, 2)
+          JSON.stringify(err, null, 2),
         );
         reject(err);
       } else {
@@ -32,6 +32,6 @@ function updateCategoryItem(pk, sk, difference) {
   });
 }
 
-category.prototype.updateCategoryItem = updateCategoryItem;
+UpdateCategory.prototype.updateCategoryItem = updateCategoryItem;
 // Export object
-module.exports = new category();
+module.exports = new UpdateCategory();

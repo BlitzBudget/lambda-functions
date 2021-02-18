@@ -1,10 +1,10 @@
-var fetchHelper = function () {};
+const FetchHelper = () => {};
 
-const deleteHelper = require('delete-helper');
+const deleteHelper = require('./delete-helper');
 
 // Get goal Item
 function getAllItems(userId, DB) {
-  var params = {
+  const params = {
     TableName: 'blitzbudget',
     KeyConditionExpression: 'pk = :userId',
     ExpressionAttributeValues: {
@@ -15,7 +15,7 @@ function getAllItems(userId, DB) {
 
   // Call DynamoDB to read the item from the table
   return new Promise((resolve, reject) => {
-    DB.query(params, function (err, data) {
+    DB.query(params, (err, data) => {
       if (err) {
         console.log('Error ', err);
         reject(err);
@@ -27,25 +27,26 @@ function getAllItems(userId, DB) {
   });
 }
 
-async function fetchAllItemsToDelete(userId, deleteParams, sns, DB, events) {
+async function fetchAllItemsToDelete(userId, sns, DB, events) {
+  let paramsForDelete;
   await getAllItems(userId, DB).then(
-    function (result) {
+    (result) => {
       console.log('successfully fetched all the wallets ', result);
-      deleteParams = deleteHelper.buildParamsForDelete(
+      paramsForDelete = deleteHelper.buildParamsForDelete(
         result,
         userId,
         sns,
-        events
+        events,
       );
     },
-    function (err) {
-      throw new Error('Unable to delete the goals ' + err);
-    }
+    (err) => {
+      throw new Error(`Unable to delete the goals ${err}`);
+    },
   );
-  return deleteParams;
+  return paramsForDelete;
 }
 
-fetchHelper.prototype.fetchAllItemsToDelete = fetchAllItemsToDelete;
+FetchHelper.prototype.fetchAllItemsToDelete = fetchAllItemsToDelete;
 
 // Export object
-module.exports = new fetchHelper();
+module.exports = new FetchHelper();

@@ -6,9 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint ./ --cache --ignore-pattern .gitignore",
-    "precommit-msg": "echo 'Pre-commit checks...' && exit 0",
-    "pretest": "eslint --ignore-path .gitignore .",
-    "postinstall": "node-git-hooks"
+    "pretest": "eslint ./ --cache --ignore-path .gitignore ."
   },
   "repository": {
     "type": "git",
@@ -21,13 +19,15 @@
   },
   "homepage": "https://github.com/NagarjunNagesh/Lambda-Functions#readme",
   "devDependencies": {
-    "eslint": "^2.13.1",
-    "eslint-config-strongloop": "^2.1.0",
-    "jest": "^26.6.3",
-    "pre-commit": "^1.2.2"
+    "eslint": "^7.20.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-plugin-import": "^2.22.1",
+    "ghooks": "^2.0.4",
+    "jest": "^26.6.3"
   },
-  "dependencies": {
-    "node-git-hooks": "^1.0.5",
-    "prettier": "^2.2.1"
+  "config": {
+    "ghooks": {
+      "pre-commit": "npm run pretest"
+    }
   }
 }

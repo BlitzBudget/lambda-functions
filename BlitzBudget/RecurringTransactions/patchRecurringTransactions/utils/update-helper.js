@@ -1,21 +1,25 @@
-var updateHelper = function () {};
+const UpdateHelper = () => {};
 
-const patchRecurringTransaction = require('utils/update-helper');
+const patchRecurringTransaction = require('../patch/recurring-transactions');
 
 async function updateRecurringTransaction(events, event, docClient) {
+  let allResponses;
   events.push(
-    patchRecurringTransaction.updatingRecurringTransactions(event, docClient)
+    patchRecurringTransaction.updatingRecurringTransactions(event, docClient),
   );
   await Promise.all(events).then(
-    function () {
+    (response) => {
+      allResponses = response;
       console.log('successfully saved the new transactions');
     },
-    function (err) {
-      throw new Error('Unable to add the transactions ' + err);
-    }
+    (err) => {
+      throw new Error(`Unable to add the transactions ${err}`);
+    },
   );
+
+  return allResponses;
 }
 
-updateHelper.prototype.updateRecurringTransaction = updateRecurringTransaction;
+UpdateHelper.prototype.updateRecurringTransaction = updateRecurringTransaction;
 // Export object
-module.exports = new updateHelper();
+module.exports = new UpdateHelper();

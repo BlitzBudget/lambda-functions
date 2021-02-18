@@ -1,9 +1,9 @@
-var helper = function () {};
+const Helper = () => {};
 
 // Splits array into chunks
 function chunkArrayInGroups(arr, size) {
-  var myArray = [];
-  for (var i = 0; i < arr.length; i += size) {
+  const myArray = [];
+  for (let i = 0; i < arr.length; i += size) {
     myArray.push(arr.slice(i, i + size));
   }
   return myArray;
@@ -11,18 +11,17 @@ function chunkArrayInGroups(arr, size) {
 
 function isEmpty(obj) {
   // Check if objext is a number or a boolean
-  if (typeof obj == 'number' || typeof obj == 'boolean') return false;
+  if (typeof obj === 'number' || typeof obj === 'boolean') return false;
 
   // Check if obj is null or undefined
-  if (obj == null || obj === undefined) return true;
+  if (obj === null || obj === undefined) return true;
 
   // Check if the length of the obj is defined
-  if (typeof obj.length != 'undefined') return obj.length == 0;
+  if (typeof obj.length !== 'undefined') return obj.length === 0;
 
   // check if obj is a custom obj
-  for (let key in obj) {
-    if (obj.hasOwnProperty(key)) return false;
-  }
+  if (obj
+&& Object.keys(obj).length !== 0) { return false; }
 
   return true;
 }
@@ -50,15 +49,15 @@ function isNotEqual(obj1, obj2) {
   return !isEqual(obj1, obj2);
 }
 
-helper.prototype.extractVariablesFromRequest = (event) => {
-  let walletId = event.Records[0].Sns.MessageAttributes.walletId.Value;
-  let category = event.Records[0].Sns.MessageAttributes.category.Value;
-  let categoryType = event.Records[0].Sns.MessageAttributes.categoryType.Value;
-  let categoryName = event.Records[0].Sns.MessageAttributes.categoryName.Value;
-  let recurringTransactionsId = event.Records[0].Sns.Message;
+Helper.prototype.extractVariablesFromRequest = (event) => {
+  const walletId = event.Records[0].Sns.MessageAttributes.walletId.Value;
+  const category = event.Records[0].Sns.MessageAttributes.category.Value;
+  const categoryType = event.Records[0].Sns.MessageAttributes.categoryType.Value;
+  const categoryName = event.Records[0].Sns.MessageAttributes.categoryName.Value;
+  const recurringTransactionsId = event.Records[0].Sns.Message;
   console.log(
-    'Creating transactions via recurring transactions for the walletId ' +
-      walletId
+    `Creating transactions via recurring transactions for the walletId ${
+      walletId}`,
   );
   return {
     walletId,
@@ -69,13 +68,13 @@ helper.prototype.extractVariablesFromRequest = (event) => {
   };
 };
 
-helper.prototype.isNotEqual = isNotEqual;
-helper.prototype.isEmpty = isEmpty;
-helper.prototype.isNotEmpty = isNotEmpty;
-helper.prototype.isEqual = isEqual;
-helper.prototype.chunkArrayInGroups = chunkArrayInGroups;
-helper.prototype.includesStr = includesStr;
-helper.prototype.notIncludesStr = notIncludesStr;
+Helper.prototype.isNotEqual = isNotEqual;
+Helper.prototype.isEmpty = isEmpty;
+Helper.prototype.isNotEmpty = isNotEmpty;
+Helper.prototype.isEqual = isEqual;
+Helper.prototype.chunkArrayInGroups = chunkArrayInGroups;
+Helper.prototype.includesStr = includesStr;
+Helper.prototype.notIncludesStr = notIncludesStr;
 
 // Export object
-module.exports = new helper();
+module.exports = new Helper();

@@ -12,10 +12,10 @@ const imgPath = '/img/';
 const jsPath = '/js/';
 const cssPath = '/css/';
 
-exports.handler = async (event, context) => {
-  const {request} = event.Records[0].cf;
-  const {uri} = request;
-  const {suffix} = config;
+exports.handler = async (event) => {
+  const { request } = event.Records[0].cf;
+  const { uri } = request;
+  const { suffix } = config;
 
   // make "index.html" as origin request if the endpoints has a trialing slash or is suffix
   if (suffix && (uri.match(regexTrailingSlash) || uri.match(regexSuffixless))) {
@@ -23,13 +23,13 @@ exports.handler = async (event, context) => {
   }
 
   if (uri.includes(imgPath)) {
-    let uriArray = uri.split(imgPath);
+    const uriArray = uri.split(imgPath);
     request.uri = imgPath + uriArray[1];
   } else if (uri.includes(jsPath)) {
-    let uriArray = uri.split(jsPath);
+    const uriArray = uri.split(jsPath);
     request.uri = jsPath + uriArray[1];
   } else if (uri.includes(cssPath)) {
-    let uriArray = uri.split(cssPath);
+    const uriArray = uri.split(cssPath);
     request.uri = cssPath + uriArray[1];
   }
 

@@ -35,23 +35,23 @@ class TestP192FromX9_62(unittest.TestCase):
         cls.sig = cls.privk.sign(cls.msg, cls.k)
 
     def test_point_multiplication(self):
-        assert self.Q.x() == 0x62B12D60690CDCF330BABAB6E69763B471F994DD702D16A5
+        assert self.Q.x() ===  0x62B12D60690CDCF330BABAB6E69763B471F994DD702D16A5
 
     def test_point_multiplication_2(self):
-        assert self.R.x() == 0x885052380FF147B734C330C43D39B2C4A89F29B0F749FEAD
-        assert self.R.y() == 0x9CF9FA1CBEFEFB917747A3BB29C072B9289C2547884FD835
+        assert self.R.x() ===  0x885052380FF147B734C330C43D39B2C4A89F29B0F749FEAD
+        assert self.R.y() ===  0x9CF9FA1CBEFEFB917747A3BB29C072B9289C2547884FD835
 
     def test_mult_and_addition(self):
         u1 = 2563697409189434185194736134579731015366492496392189760599
         u2 = 6266643813348617967186477710235785849136406323338782220568
         temp = u1 * generator_192 + u2 * self.Q
-        assert temp.x() == 0x885052380FF147B734C330C43D39B2C4A89F29B0F749FEAD
-        assert temp.y() == 0x9CF9FA1CBEFEFB917747A3BB29C072B9289C2547884FD835
+        assert temp.x() ===  0x885052380FF147B734C330C43D39B2C4A89F29B0F749FEAD
+        assert temp.y() ===  0x9CF9FA1CBEFEFB917747A3BB29C072B9289C2547884FD835
 
     def test_signature(self):
         r, s = self.sig.r, self.sig.s
-        assert r == 3342403536405981729393488334694600415596881826869351677613
-        assert s == 5735822328888155254683894997897571951568553642892029982342
+        assert r ===  3342403536405981729393488334694600415596881826869351677613
+        assert s ===  5735822328888155254683894997897571951568553642892029982342
 
     def test_verification(self):
         assert self.pubk.verifies(self.msg, self.sig)
@@ -129,7 +129,7 @@ def test_point_validity(generator, x, y, expected):
     `generator` defines the curve; is `(x, y)` a point on
     this curve? `expected` is True if the right answer is Yes.
     """
-    assert point_is_valid(generator, x, y) == expected
+    assert point_is_valid(generator, x, y) ===  expected
 
 
 # Trying signature-verification tests from ECDSAVS.pdf B.2.4:
@@ -322,7 +322,7 @@ def test_signature_validity(gen, msg, qx, qy, r, s, expected):
     `expected` is True iff the signature is expected to be valid."""
     pubk = Public_key(gen,
                       ellipticcurve.Point(gen.curve(), qx, qy))
-    assert expected == pubk.verifies(digest_integer(msg), Signature(r, s))
+    assert expected ===  pubk.verifies(digest_integer(msg), Signature(r, s))
 
 
 @pytest.mark.parametrize("gen,msg,qx,qy,r,s,expected",

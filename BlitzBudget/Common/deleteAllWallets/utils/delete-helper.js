@@ -1,26 +1,26 @@
-var deleteHelper = function () {};
+const DeleteHelper = () => {};
 
-const helper = require('helper');
+const helper = require('./helper');
 const deleteItems = require('../delete/items');
 const publish = require('../sns/publish');
 
-deleteHelper.prototype.buildParamsForDelete = (result, userId, events) => {
+DeleteHelper.prototype.buildParamsForDelete = (result, userId, sns, events) => {
   if (helper.isEmpty(result.Items)) {
-    return;
+    return undefined;
   }
 
-  let params = {};
+  const params = {};
   params.RequestItems = {};
   params.RequestItems.blitzbudget = [];
 
   for (let i = 0, len = result.Items.length; i < len; i++) {
-    let item = result.Items[i];
-    let sk = item['sk'];
+    const item = result.Items[i];
+    const { sk } = item;
     params.RequestItems.blitzbudget[i] = {
       DeleteRequest: {
         Key: {
           pk: userId,
-          sk: sk,
+          sk,
         },
       },
     };
@@ -37,16 +37,16 @@ deleteHelper.prototype.buildParamsForDelete = (result, userId, events) => {
 async function deleteAllWallets(deleteParams, DB, events) {
   events.push(deleteItems.deleteItems(deleteParams, DB));
   await Promise.all(events).then(
-    function () {
+    () => {
       console.log('successfully deleted the goals');
     },
-    function (err) {
-      throw new Error('Unable to delete the goals ' + err);
-    }
+    (err) => {
+      throw new Error(`Unable to delete the goals ${err}`);
+    },
   );
 }
 
-deleteHelper.prototype.deleteAllWallets = deleteAllWallets;
+DeleteHelper.prototype.deleteAllWallets = deleteAllWallets;
 
 // Export object
-module.exports = new deleteHelper();
+module.exports = new DeleteHelper();

@@ -1,29 +1,12 @@
-var addTransaction = function () {};
+const AddTransaction = () => {};
 
 function addNewTransaction(event, docClient) {
-  let today = new Date();
+  const today = new Date();
   today.setYear(event['body-json'].dateMeantFor.substring(5, 9));
   today.setMonth(
-    parseInt(event['body-json'].dateMeantFor.substring(10, 12)) - 1
+    parseInt(event['body-json'].dateMeantFor.substring(10, 12), 10) - 1,
   );
-  let randomValue = 'Transaction#' + today.toISOString();
-
-  var params = createParameters();
-
-  console.log('Adding a new item...');
-  return new Promise((resolve, reject) => {
-    docClient.put(params, function (err, data) {
-      if (err) {
-        console.log('Error ', err);
-        reject(err);
-      } else {
-        resolve({
-          success: data,
-        });
-        event['body-json'].transactionId = randomValue;
-      }
-    });
-  });
+  const randomValue = `Transaction#${today.toISOString()}`;
 
   function createParameters() {
     return {
@@ -43,8 +26,25 @@ function addNewTransaction(event, docClient) {
       },
     };
   }
+
+  const params = createParameters();
+
+  console.log('Adding a new item...');
+  return new Promise((resolve, reject) => {
+    docClient.put(params, (err, data) => {
+      if (err) {
+        console.log('Error ', err);
+        reject(err);
+      } else {
+        resolve({
+          success: data,
+          transactionId: randomValue,
+        });
+      }
+    });
+  });
 }
 
-addTransaction.prototype.addNewTransaction = addNewTransaction;
+AddTransaction.prototype.addNewTransaction = addNewTransaction;
 // Export object
-module.exports = new addTransaction();
+module.exports = new AddTransaction();

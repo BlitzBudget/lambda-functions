@@ -1,19 +1,22 @@
-var updateHelper = function () {};
+const UpdateHelper = () => {};
 
 const updateTransaction = require('../update/transaction');
 
-async function updateAllItems(events, event) {
-  events.push(updateTransaction.updatingTransactions(event));
+async function updateAllItems(events, event, docClient) {
+  let updateResponse;
+  events.push(updateTransaction.updatingTransactions(event, docClient));
   await Promise.all(events).then(
-    function () {
+    (response) => {
+      updateResponse = response;
       console.log('successfully saved the new transactions');
     },
-    function (err) {
-      throw new Error('Unable to add the transactions ' + err);
-    }
+    (err) => {
+      throw new Error(`Unable to add the transactions ${err}`);
+    },
   );
+  return updateResponse;
 }
 
-updateHelper.prototype.updateAllItems = updateAllItems;
+UpdateHelper.prototype.updateAllItems = updateAllItems;
 // Export object
-module.exports = new updateHelper();
+module.exports = new UpdateHelper();

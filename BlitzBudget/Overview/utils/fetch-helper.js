@@ -1,11 +1,11 @@
-var fetchHelper = function () {};
+const FetchHelper = () => {};
 
+const helper = require('./helper');
 const bankAccount = require('../fetch/bank-account');
 const category = require('../fetch/category');
 const date = require('../fetch/date');
 const transaction = require('../fetch/transaction');
 const wallet = require('../fetch/wallet');
-const helper = require('helper');
 
 async function fetchAllItems(
   walletId,
@@ -13,17 +13,17 @@ async function fetchAllItems(
   endsWithDate,
   oneYearAgo,
   overviewData,
-  docClient
+  docClient,
+  events,
 ) {
-  let events = [];
   events.push(
     category.getCategoryData(
       walletId,
       startsWithDate,
       endsWithDate,
       overviewData,
-      docClient
-    )
+      docClient,
+    ),
   );
   // Get Transaction Items
   events.push(
@@ -32,12 +32,12 @@ async function fetchAllItems(
       startsWithDate,
       endsWithDate,
       overviewData,
-      docClient
-    )
+      docClient,
+    ),
   );
   // Get Bank account for preview
   events.push(
-    bankAccount.getBankAccountData(walletId, overviewData, docClient)
+    bankAccount.getBankAccountData(walletId, overviewData, docClient),
   );
   // Get Dates information to calculate the monthly Income / expense per month
   events.push(
@@ -46,49 +46,51 @@ async function fetchAllItems(
       oneYearAgo,
       endsWithDate,
       overviewData,
-      docClient
-    )
+      docClient,
+    ),
   );
 
   await Promise.all(events).then(
-    function () {
+    () => {
       console.log('Cumilative data retrieved ', overviewData);
     },
-    function (err) {
+    (err) => {
       throw new Error(
-        'Unable error occured while fetching the transaction ' + err
+        `Unable error occured while fetching the transaction ${err}`,
       );
-    }
+    },
   );
 }
 
 async function fetchAllWallets(walletId, userId, overviewData, docClient) {
+  let walletPK = walletId;
+  const events = [];
+  async function fetchWalletsFromUser() {
+    await wallet.getWalletsData(userId, overviewData, docClient).then(
+      (result) => {
+        walletPK = result.Wallet[0].walletId;
+        console.log('retrieved the wallet for the item ', walletId);
+      },
+      (err) => {
+        throw new Error(
+          `Unable error occured while fetching the transaction ${err}`,
+        );
+      },
+    );
+  }
+
   if (helper.isEmpty(walletId) && helper.isNotEmpty(userId)) {
     await fetchWalletsFromUser(overviewData, docClient);
   } else if (helper.isNotEmpty(walletId) && helper.isNotEmpty(userId)) {
     events.push(
-      wallet.getWalletData(userId, walletId, overviewData, docClient)
+      wallet.getWalletData(userId, walletId, overviewData, docClient),
     );
   }
-  return walletId;
-
-  async function fetchWalletsFromUser(overviewData, docClient) {
-    await wallet.getWalletsData(userId, overviewData, docClient).then(
-      function (result) {
-        walletId = result.Wallet[0].walletId;
-        console.log('retrieved the wallet for the item ', walletId);
-      },
-      function (err) {
-        throw new Error(
-          'Unable error occured while fetching the transaction ' + err
-        );
-      }
-    );
-  }
+  return { walletPK, events };
 }
 
-fetchHelper.prototype.fetchAllWallets = fetchAllWallets;
-fetchHelper.prototype.fetchAllItems = fetchAllItems;
+FetchHelper.prototype.fetchAllWallets = fetchAllWallets;
+FetchHelper.prototype.fetchAllItems = fetchAllItems;
 
 // Export object
-module.exports = new fetchHelper();
+module.exports = new FetchHelper();

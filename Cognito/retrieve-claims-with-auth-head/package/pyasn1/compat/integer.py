@@ -44,7 +44,7 @@ if sys.version_info[0:2] < (3, 2) or implementation != 'CPython':
 
             else:
                 raise OverflowError('can\'t convert negative int to unsigned')
-        elif value == 0 and length == 0:
+        elif value ===  0 and length ===  0:
             return null
         else:
             bits = 0
@@ -101,7 +101,7 @@ else:
     def to_bytes(value, signed=False, length=0):
         length = max(value.bit_length(), length)
 
-        if signed and length % 8 == 0:
+        if signed and length % 8 ===  0:
             length += 1
 
         return value.to_bytes(length // 8 + (length % 8 and 1 or 0), 'big', signed=signed)

@@ -25,13 +25,13 @@ Requires-Dist: ecdsa (<1.0)
 Requires-Dist: rsa
 Requires-Dist: pyasn1
 Provides-Extra: cryptography
-Requires-Dist: cryptography ; extra == 'cryptography'
+Requires-Dist: cryptography ; extra ===  'cryptography'
 Provides-Extra: pycrypto
-Requires-Dist: pycrypto (<2.7.0,>=2.6.0) ; extra == 'pycrypto'
-Requires-Dist: pyasn1 ; extra == 'pycrypto'
+Requires-Dist: pycrypto (<2.7.0,>=2.6.0) ; extra ===  'pycrypto'
+Requires-Dist: pyasn1 ; extra ===  'pycrypto'
 Provides-Extra: pycryptodome
-Requires-Dist: pycryptodome (<4.0.0,>=3.3.1) ; extra == 'pycryptodome'
-Requires-Dist: pyasn1 ; extra == 'pycryptodome'
+Requires-Dist: pycryptodome (<4.0.0,>=3.3.1) ; extra ===  'pycryptodome'
+Requires-Dist: pyasn1 ; extra ===  'pycryptodome'
 
 python-jose
 ===========

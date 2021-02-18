@@ -1,28 +1,31 @@
-var deleteHelper = function () {};
+const DeleteHelper = () => {};
+
+const deleteUser = require('../cognito/delete-user');
+const globalSignout = require('../cognito/global-signout');
 
 const userPoolId = 'eu-west-1_cjfC8qNiB';
-let paramsDelete = {
+const paramsDelete = {
   UserPoolId: userPoolId,
   /* required */
 };
 
 function handleDeleteAccount(event, cognitoIdServiceProvider) {
-  let events = [];
+  const events = [];
   paramsDelete.Username = event['body-json'].userName;
-
-  if (isDeleteAccount()) {
-    events.push(globalSignoutFromAllDevices(event, cognitoIdServiceProvider));
-    events.push(deleteCognitoAccount(paramsDelete, cognitoIdServiceProvider));
-  }
-
-  return events;
 
   function isDeleteAccount() {
     return event['body-json'].deleteAccount;
   }
+
+  if (isDeleteAccount()) {
+    events.push(globalSignout.globalSignoutFromAllDevices(event, cognitoIdServiceProvider));
+    events.push(deleteUser.deleteCognitoAccount(paramsDelete, cognitoIdServiceProvider));
+  }
+
+  return events;
 }
 
-deleteHelper.prototype.handleDeleteAccount = handleDeleteAccount;
+DeleteHelper.prototype.handleDeleteAccount = handleDeleteAccount;
 
 // Export object
-module.exports = new deleteHelper();
+module.exports = new DeleteHelper();

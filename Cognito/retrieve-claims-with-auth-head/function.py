@@ -61,7 +61,7 @@ def lambda_handler(event, context):
         print('Authorization is empty')
         return errorRespUA
     token = event['Authorization']
-    if str(token) == 'null':
+    if str(token) ===  'null':
         print('Authorization is null')
         return errorRespUA
     # get the kid from the headers prior to verification
@@ -70,10 +70,10 @@ def lambda_handler(event, context):
     # search for the kid in the downloaded public keys
     key_index = -1
     for i in range(len(keys)):
-        if kid == keys[i]['kid']:
+        if kid ===  keys[i]['kid']:
             key_index = i
             break
-    if key_index == -1:
+    if key_index ===  -1:
         print('Public key not found in jwks.json')
         return errorRespUA
     # construct the public key
@@ -105,7 +105,7 @@ def lambda_handler(event, context):
         
 # the following is useful to make this script executable in both
 # AWS Lambda and any other local environments
-if __name__ == '__main__':
+if __name__ ===  '__main__':
     # for testing locally you can enter the JWT ID Token here
     event = {'token': ''}
     lambda_handler(event, None)

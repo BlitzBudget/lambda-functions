@@ -1,56 +1,34 @@
-const helper = require('utils/helper');
-
 // Load the AWS SDK for Node.js
-var AWS = require('aws-sdk');
+const AWS = require('aws-sdk');
+
+const helper = require('./utils/helper');
+const deleteHelper = require('./utils/delete-helper');
+
 // Set the region
 AWS.config.update({
   region: 'eu-west-1',
 });
 
 // Create the DynamoDB service object
-var DB = new AWS.DynamoDB.DocumentClient();
+const DB = new AWS.DynamoDB.DocumentClient();
 
 exports.handler = async (event) => {
-  console.log('event ' + JSON.stringify(event));
-  let walletId = event['body-json'].walletId;
-  let accountToDelete = event['body-json'].account;
-  let result = {};
-  let events = [];
+  console.log(`event ${JSON.stringify(event)}`);
+  const { walletId } = event['body-json'];
+  const accountToDelete = event['body-json'].account;
 
   // Recurring Transactions and Transactions
-  result = await helper.fetchAccountsTransactionsAndRecurringTrans(
-    events,
+  const result = await helper.fetchAccountsTransactionData(
     walletId,
-    result,
-    DB
+    DB,
   );
 
-  events = await buildRequestAndDeleteAccount(
+  await deleteHelper.buildRequestAndDeleteAccount(
     result,
     walletId,
     accountToDelete,
-    events,
-    DB
+    DB,
   );
 
   return event;
 };
-
-async function buildRequestAndDeleteAccount(
-  result,
-  walletId,
-  accountToDelete,
-  events
-) {
-  helper.logResultIfEmpty(result, walletId);
-
-  let deleteRequests = helper.buildDeleteRequest(
-    result,
-    walletId,
-    accountToDelete
-  );
-
-  // Push Events  to be executed in bulk
-  events = await helper.deleteAccountsAndItsData(events, deleteRequests, DB);
-  return events;
-}

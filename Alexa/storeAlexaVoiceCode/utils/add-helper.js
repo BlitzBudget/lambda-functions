@@ -1,4 +1,4 @@
-var addHelper = function () {};
+const AddHelper = () => {};
 
 const addVoiceCode = require('../voice-code/add');
 
@@ -6,16 +6,20 @@ const addVoiceCode = require('../voice-code/add');
  * Add a new voice code
  */
 async function handleAddNewVoiceCode(event, userId, alexaId, docClient) {
+  let alexaVoiceCodeId;
   await addVoiceCode.addNewVoiceCode(event, userId, alexaId, docClient).then(
-    function () {
+    (response) => {
+      alexaVoiceCodeId = response.alexaVoiceCodeId;
       console.log('successfully added a new voice code');
     },
-    function (err) {
-      throw new Error('Unable to add a new voice code ' + err);
-    }
+    (err) => {
+      throw new Error(`Unable to add a new voice code ${err}`);
+    },
   );
+
+  return alexaVoiceCodeId;
 }
 
-addHelper.prototype.handleAddNewVoiceCode = handleAddNewVoiceCode;
+AddHelper.prototype.handleAddNewVoiceCode = handleAddNewVoiceCode;
 // Export object
-module.exports = new addHelper();
+module.exports = new AddHelper();

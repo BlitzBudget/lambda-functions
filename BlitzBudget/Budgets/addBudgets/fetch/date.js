@@ -1,23 +1,23 @@
-var fetchDate = function () {};
+const FetchDate = () => {};
 
-fetchDate.prototype.getDateData = (pk, today) => {
-  var params = {
+FetchDate.prototype.getDateData = (pk, today, docClient) => {
+  const params = {
     TableName: 'blitzbudget',
     KeyConditionExpression: 'pk = :pk AND begins_with(sk, :items)',
     ExpressionAttributeValues: {
       ':pk': pk,
       ':items':
-        'Date#' +
-        today.getFullYear() +
-        '-' +
-        ('0' + (today.getMonth() + 1)).slice(-2),
+        `Date#${
+          today.getFullYear()
+        }-${
+          (`0${today.getMonth() + 1}`).slice(-2)}`,
     },
     ProjectionExpression: 'pk, sk',
   };
 
   // Call DynamoDB to read the item from the table
   return new Promise((resolve, reject) => {
-    docClient.query(params, function (err, data) {
+    docClient.query(params, (err, data) => {
       if (err) {
         console.log('Error ', err);
         reject(err);
@@ -32,4 +32,4 @@ fetchDate.prototype.getDateData = (pk, today) => {
 };
 
 // Export object
-module.exports = new fetchDate();
+module.exports = new FetchDate();

@@ -1,7 +1,7 @@
-const helper = require('utils/helper');
+const helper = require('./utils/helper');
 
 exports.handler = async (event) => {
-  let events = [];
+  const events = [];
   console.log('updating BankAccounts for ', JSON.stringify(event['body-json']));
   /*
    * Change all the selected account to false

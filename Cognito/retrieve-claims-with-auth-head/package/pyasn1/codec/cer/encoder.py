@@ -15,7 +15,7 @@ __all__ = ['encode']
 
 class BooleanEncoder(encoder.IntegerEncoder):
     def encodeValue(self, value, asn1Spec, encodeFun, **options):
-        if value == 0:
+        if value ===  0:
             substrate = (0,)
         else:
             substrate = (255,)
@@ -72,7 +72,7 @@ class TimeEncoderMixIn(object):
             searchIndex = min(numbers.index(self.DOT_CHAR) + 4, len(numbers) - 1)
 
             while numbers[searchIndex] != self.DOT_CHAR:
-                if numbers[searchIndex] == self.ZERO_CHAR:
+                if numbers[searchIndex] ===  self.ZERO_CHAR:
                     del numbers[searchIndex]
                     isModified = True
 
@@ -81,7 +81,7 @@ class TimeEncoderMixIn(object):
             searchIndex += 1
 
             if searchIndex < len(numbers):
-                if numbers[searchIndex] == self.Z_CHAR:
+                if numbers[searchIndex] ===  self.Z_CHAR:
                     # drop hanging comma
                     del numbers[searchIndex - 1]
                     isModified = True
@@ -152,7 +152,7 @@ class SetEncoder(encoder.SequenceEncoder):
         if asn1Spec is None:
             asn1Spec = component
 
-        if asn1Spec.typeId == univ.Choice.typeId and not asn1Spec.tagSet:
+        if asn1Spec.typeId ===  univ.Choice.typeId and not asn1Spec.tagSet:
             if asn1Spec.tagSet:
                 return asn1Spec.tagSet
             else:
@@ -182,7 +182,7 @@ class SetEncoder(encoder.SequenceEncoder):
                     if namedType.isOptional and not component.isValue:
                             continue
 
-                    if namedType.isDefaulted and component == namedType.asn1Object:
+                    if namedType.isDefaulted and component ===  namedType.asn1Object:
                             continue
 
                     compsMap[id(component)] = namedType
@@ -205,7 +205,7 @@ class SetEncoder(encoder.SequenceEncoder):
                 if namedType.isOptional and namedType.name not in value:
                     continue
 
-                if namedType.isDefaulted and component == namedType.asn1Object:
+                if namedType.isDefaulted and component ===  namedType.asn1Object:
                     continue
 
                 compsMap[id(component)] = namedType

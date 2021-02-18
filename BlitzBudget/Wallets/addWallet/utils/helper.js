@@ -1,19 +1,18 @@
-var helper = function () {};
+const Helper = () => {};
 
 function isEmpty(obj) {
   // Check if objext is a number or a boolean
-  if (typeof obj == 'number' || typeof obj == 'boolean') return false;
+  if (typeof obj === 'number' || typeof obj === 'boolean') return false;
 
   // Check if obj is null or undefined
-  if (obj == null || obj === undefined) return true;
+  if (obj === null || obj === undefined) return true;
 
   // Check if the length of the obj is defined
-  if (typeof obj.length != 'undefined') return obj.length == 0;
+  if (typeof obj.length !== 'undefined') return obj.length === 0;
 
   // check if obj is a custom obj
-  for (let key in obj) {
-    if (obj.hasOwnProperty(key)) return false;
-  }
+  if (obj
+&& Object.keys(obj).length !== 0) { return false; }
 
   return true;
 }
@@ -23,14 +22,14 @@ function isNotEmpty(obj) {
 }
 
 function extractVariablesFromRequest(event) {
-  let userId = event['body-json'].userId;
-  let currency = event['body-json'].currency;
-  let walletName = event['body-json']['walletName'];
-  return {userId, currency, walletName};
+  const { userId } = event['body-json'];
+  const { currency } = event['body-json'];
+  const { walletName } = event['body-json'];
+  return { userId, currency, walletName };
 }
 
-helper.prototype.isEmpty = isEmpty;
-helper.prototype.isNotEmpty = isNotEmpty;
-helper.prototype.extractVariablesFromRequest = extractVariablesFromRequest;
+Helper.prototype.isEmpty = isEmpty;
+Helper.prototype.isNotEmpty = isNotEmpty;
+Helper.prototype.extractVariablesFromRequest = extractVariablesFromRequest;
 // Export object
-module.exports = new helper();
+module.exports = new Helper();

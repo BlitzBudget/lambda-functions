@@ -1,36 +1,19 @@
-var createTransaction = function () {};
+const CreateTransaction = () => {};
+
+const helper = require('../utils/helper');
 
 function markTransactionForCreation(recurringTransaction, sns) {
-  console.log(
-    'Marking the recurring transaction for creation %j',
-    recurringTransaction.sk
-  );
-
-  fetchDescription();
-
-  let currentTag = fetchTagValue();
-
-  let params = createParameterForSns();
-
-  return new Promise((resolve, reject) => {
-    sns.publish(params, function (err, data) {
-      if (err) {
-        console.log('Error ', err);
-        reject(err);
-      } else {
-        resolve('Reset account to SNS published');
-      }
-    });
-  });
-
-  function fetchDescription() {
-    if (isEmpty(recurringTransaction.description)) {
-      recurringTransaction.description = 'No description';
-    }
+  let { description } = recurringTransaction;
+  function fetchTagValue() {
+    return helper.isEmpty(recurringTransaction.tags) ? [] : recurringTransaction.tags;
   }
 
-  function fetchTagValue() {
-    return isEmpty(recurringTransaction.tags) ? [] : recurringTransaction.tags;
+  const currentTag = fetchTagValue();
+
+  function fetchDescription() {
+    if (helper.isEmpty(recurringTransaction.description)) {
+      description = 'No description';
+    }
   }
 
   function createParameterForSns() {
@@ -43,7 +26,7 @@ function markTransactionForCreation(recurringTransaction, sns) {
         },
         next_scheduled: {
           DataType: 'String',
-          StringValue: recurringTransaction['next_scheduled'],
+          StringValue: recurringTransaction.next_scheduled,
         },
         amount: {
           DataType: 'String',
@@ -55,7 +38,7 @@ function markTransactionForCreation(recurringTransaction, sns) {
         },
         description: {
           DataType: 'String',
-          StringValue: recurringTransaction.description,
+          StringValue: description,
         },
         account: {
           DataType: 'String',
@@ -63,11 +46,11 @@ function markTransactionForCreation(recurringTransaction, sns) {
         },
         categoryType: {
           DataType: 'String',
-          StringValue: recurringTransaction['category_type'],
+          StringValue: recurringTransaction.category_type,
         },
         categoryName: {
           DataType: 'String',
-          StringValue: recurringTransaction['category_name'],
+          StringValue: recurringTransaction.category_name,
         },
         walletId: {
           DataType: 'String',
@@ -81,8 +64,28 @@ function markTransactionForCreation(recurringTransaction, sns) {
       TopicArn: 'arn:aws:sns:eu-west-1:064559090307:addRecurringTransactions',
     };
   }
+
+  console.log(
+    'Marking the recurring transaction for creation %j',
+    recurringTransaction.sk,
+  );
+
+  fetchDescription();
+
+  const params = createParameterForSns();
+
+  return new Promise((resolve, reject) => {
+    sns.publish(params, (err) => {
+      if (err) {
+        console.log('Error ', err);
+        reject(err);
+      } else {
+        resolve('Reset account to SNS published');
+      }
+    });
+  });
 }
 
-createTransaction.prototype.markTransactionForCreation = markTransactionForCreation;
+CreateTransaction.prototype.markTransactionForCreation = markTransactionForCreation;
 // Export object
-module.exports = new createTransaction();
+module.exports = new CreateTransaction();

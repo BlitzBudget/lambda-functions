@@ -1,30 +1,11 @@
-var category = function () {};
+const AddCategory = () => {};
 
-category.prototype.createCategoryItem = (
+AddCategory.prototype.createCategoryItem = (
   event,
   skForCategory,
   categoryName,
-  docClient
+  docClient,
 ) => {
-  var params = createParameters();
-
-  console.log('Adding a new item...');
-  return new Promise((resolve, reject) => {
-    docClient.update(params, function (err, data) {
-      if (err) {
-        console.log('Error ', err);
-        reject(err);
-      } else {
-        console.log(
-          'Successfully created a new category %j',
-          data.Attributes.sk
-        );
-        event['body-json'].category = data.Attributes.sk;
-        resolve({Category: data.Attributes});
-      }
-    });
-  });
-
   function createParameters() {
     return {
       TableName: 'blitzbudget',
@@ -45,7 +26,25 @@ category.prototype.createCategoryItem = (
       ReturnValues: 'ALL_NEW',
     };
   }
+
+  const params = createParameters();
+
+  console.log('Adding a new item...');
+  return new Promise((resolve, reject) => {
+    docClient.update(params, (err, data) => {
+      if (err) {
+        console.log('Error ', err);
+        reject(err);
+      } else {
+        console.log(
+          'Successfully created a new category %j',
+          data.Attributes.sk,
+        );
+        resolve({ Category: data.Attributes });
+      }
+    });
+  });
 };
 
 // Export object
-module.exports = new category();
+module.exports = new AddCategory();

@@ -1,11 +1,12 @@
-var addCategory = function () {};
+const AddCategory = () => {};
 
-addCategory.prototype.createCategoryItem = (
+AddCategory.prototype.createCategoryItem = (
   event,
   skForCategory,
-  categoryName
+  categoryName,
+  docClient,
 ) => {
-  var params = {
+  const params = {
     TableName: 'blitzbudget',
     Key: {
       pk: event['body-json'].walletId,
@@ -26,16 +27,15 @@ addCategory.prototype.createCategoryItem = (
 
   console.log('Adding a new item...');
   return new Promise((resolve, reject) => {
-    docClient.update(params, function (err, data) {
+    docClient.update(params, (err, data) => {
       if (err) {
         console.log('Error ', err);
         reject(err);
       } else {
         console.log(
           'Successfully created a new category %j',
-          data.Attributes.sk
+          data.Attributes.sk,
         );
-        event['body-json'].category = data.Attributes.sk;
         resolve({
           Category: data.Attributes,
         });
@@ -44,4 +44,4 @@ addCategory.prototype.createCategoryItem = (
   });
 };
 
-module.exports = new addCategory();
+module.exports = new AddCategory();

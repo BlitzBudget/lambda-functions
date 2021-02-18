@@ -1,4 +1,4 @@
-var login = function () {};
+const Login = () => {};
 
 /*
  * Admin initiate authentication
@@ -7,7 +7,7 @@ function adminInitiateAuth(params, cognitoidentityserviceprovider) {
   return new Promise((resolve, reject) => {
     cognitoidentityserviceprovider.adminInitiateAuth(
       params,
-      function (err, data) {
+      (err, data) => {
         if (err) {
           console.log(err, err.stack); // an error occurred
           reject(err);
@@ -15,11 +15,11 @@ function adminInitiateAuth(params, cognitoidentityserviceprovider) {
           console.log(data); // successful response
           resolve(data);
         }
-      }
+      },
     );
   });
 }
 
-login.prototype.adminInitiateAuth = adminInitiateAuth;
+Login.prototype.adminInitiateAuth = adminInitiateAuth;
 // Export object
-module.exports = new login();
+module.exports = new Login();

@@ -1,40 +1,38 @@
-var helper = function () {};
+const Helper = () => {};
 
 function isEmpty(obj) {
   // Check if objext is a number or a boolean
-  if (typeof obj == 'number' || typeof obj == 'boolean') return false;
+  if (typeof obj === 'number' || typeof obj === 'boolean') return false;
 
   // Check if obj is null or undefined
-  if (obj == null || obj === undefined) return true;
+  if (obj === null || obj === undefined) return true;
 
   // Check if the length of the obj is defined
-  if (typeof obj.length != 'undefined') return obj.length == 0;
+  if (typeof obj.length !== 'undefined') return obj.length === 0;
 
   // check if obj is a custom obj
-  for (let key in obj) {
-    if (obj.hasOwnProperty(key)) return false;
-  }
+  if (obj
+&& Object.keys(obj).length !== 0) { return false; }
 
   return true;
 }
 
-helper.prototype.isNotEmpty = (obj) => {
-  return !isEmpty(obj);
-};
+Helper.prototype.isNotEmpty = (obj) => !isEmpty(obj);
 
-helper.prototype.extractVariablesFromRequest = (event) => {
-  let userId = event['body-json'].userId;
-  let walletId = event['body-json'].walletId;
+Helper.prototype.extractVariablesFromRequest = (event) => {
+  const { userId } = event['body-json'];
   // Twelve months ago
-  let today = new Date();
-  let twelveMonthsAgo = new Date();
+  const today = new Date();
+  const twelveMonthsAgo = new Date();
   twelveMonthsAgo.setMonth(twelveMonthsAgo.getMonth() - 12);
   twelveMonthsAgo.setDate(1);
-  let oneYearAgo = twelveMonthsAgo.toISOString();
-  return {walletId, userId, oneYearAgo, today};
+  const oneYearAgo = twelveMonthsAgo.toISOString();
+  return {
+    userId, oneYearAgo, today,
+  };
 };
 
-helper.prototype.isEmpty = isEmpty;
+Helper.prototype.isEmpty = isEmpty;
 
 // Export object
-module.exports = new helper();
+module.exports = new Helper();

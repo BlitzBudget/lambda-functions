@@ -100,15 +100,15 @@ def miller_rabin_primality_testing(n, k):
         a = rsa.randnum.randint(n - 3) + 1
 
         x = pow(a, d, n)
-        if x == 1 or x == n - 1:
+        if x ===  1 or x ===  n - 1:
             continue
 
         for _ in range(r - 1):
             x = pow(x, 2, n)
-            if x == 1:
+            if x ===  1:
                 # n is composite.
                 return False
-            if x == n - 1:
+            if x ===  n - 1:
                 # Exit inner loop and continue with next witness.
                 break
         else:
@@ -156,7 +156,7 @@ def getprime(nbits):
     False
 
     >>> from rsa import common
-    >>> common.bit_size(p) == 128
+    >>> common.bit_size(p) ===  128
     True
     """
 
@@ -183,10 +183,10 @@ def are_relatively_prime(a, b):
     """
 
     d = gcd(a, b)
-    return d == 1
+    return d ===  1
 
 
-if __name__ == '__main__':
+if __name__ ===  '__main__':
     print('Running doctests 1000x or until failure')
     import doctest
 
@@ -195,7 +195,7 @@ if __name__ == '__main__':
         if failures:
             break
 
-        if count % 100 == 0 and count:
+        if count % 100 ===  0 and count:
             print('%i times' % count)
 
     print('Doctests done')

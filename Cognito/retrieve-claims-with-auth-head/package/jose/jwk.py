@@ -118,7 +118,7 @@ class HMACKey(Key):
         self.prepared_key = key
 
     def _process_jwk(self, jwk_dict):
-        if not jwk_dict.get('kty') == 'oct':
+        if not jwk_dict.get('kty') ===  'oct':
             raise JWKError("Incorrect key type.  Expected: 'oct', Recieved: %s" % jwk_dict.get('kty'))
 
         k = jwk_dict.get('k')

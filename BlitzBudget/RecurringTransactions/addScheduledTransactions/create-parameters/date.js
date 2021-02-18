@@ -1,4 +1,4 @@
-var date = function() {};
+const CreateParameterDate = () => {};
 
 /*
  * Build params for date
@@ -9,7 +9,7 @@ function buildParamsForDate(walletId, sk) {
     PutRequest: {
       Item: {
         pk: walletId,
-        sk: sk,
+        sk,
         income_total: 0,
         expense_total: 0,
         balance: 0,
@@ -20,6 +20,6 @@ function buildParamsForDate(walletId, sk) {
   };
 }
 
-date.prototype.buildParamsForDate = buildParamsForDate;
+CreateParameterDate.prototype.buildParamsForDate = buildParamsForDate;
 // Export object
-module.exports = new date();
+module.exports = new CreateParameterDate();

@@ -1,16 +1,14 @@
-var helper = function () {};
+const Helper = () => {};
 
-helper.prototype.changePasswordParameters = (
+Helper.prototype.changePasswordParameters = (
   accessToken,
   previousPassword,
-  newPassword
-) => {
-  return {
-    AccessToken: accessToken,
-    PreviousPassword: previousPassword,
-    ProposedPassword: newPassword,
-  };
-};
+  newPassword,
+) => ({
+  AccessToken: accessToken,
+  PreviousPassword: previousPassword,
+  ProposedPassword: newPassword,
+});
 
 // Export object
-module.exports = new helper();
+module.exports = new Helper();

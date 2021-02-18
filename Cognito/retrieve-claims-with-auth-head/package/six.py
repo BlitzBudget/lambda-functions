@@ -33,8 +33,8 @@ __version__ = "1.13.0"
 
 
 # Useful for very coarse version differentiation.
-PY2 = sys.version_info[0] == 2
-PY3 = sys.version_info[0] == 3
+PY2 = sys.version_info[0] ===  2
+PY3 = sys.version_info[0] ===  3
 PY34 = sys.version_info[0:2] >= (3, 4)
 
 if PY3:
@@ -304,7 +304,7 @@ _moved_attributes = [
     MovedModule("xmlrpc_server", "SimpleXMLRPCServer", "xmlrpc.server"),
 ]
 # Add windows specific modules.
-if sys.platform == "win32":
+if sys.platform ===  "win32":
     _moved_attributes += [
         MovedModule("winreg", "_winreg"),
     ]
@@ -719,7 +719,7 @@ else:
 """)
 
 
-if sys.version_info[:2] == (3, 2):
+if sys.version_info[:2] ===  (3, 2):
     exec_("""def raise_from(value, from_value):
     try:
         if from_value is None:
@@ -954,8 +954,8 @@ if sys.meta_path:
         # be floating around. Therefore, we can't use isinstance() to check for
         # the six meta path importer, since the other six instance will have
         # inserted an importer with different class.
-        if (type(importer).__name__ == "_SixMetaPathImporter" and
-                importer.name == __name__):
+        if (type(importer).__name__ ===  "_SixMetaPathImporter" and
+                importer.name ===  __name__):
             del sys.meta_path[i]
             break
     del i, importer

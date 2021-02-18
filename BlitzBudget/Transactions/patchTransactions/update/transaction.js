@@ -1,54 +1,34 @@
-var updateTransaction = function () {};
+const UpdateTransaction = () => {};
 
 const parameters = require('../utils/parameter');
 const helper = require('../utils/helper');
 
-function updatingTransactions(event) {
-  var params = createParameters(events);
-
-  console.log('Updating an item...');
-  return new Promise((resolve, reject) => {
-    docClient.update(params, function (err, data) {
-      if (err) {
-        console.log('Error ', err);
-        reject(err);
-      } else {
-        event['body-json'].category = data.Attributes.category;
-        event['body-json'].amount = data.Attributes.amount;
-        resolve({
-          success: data,
-        });
-      }
-    });
-  });
-
-  function createParameters(events) {
+function updatingTransactions(event, docClient) {
+  function createParameters() {
     let updateExp = 'set';
-    let expAttrVal = {};
-    let expAttrNames = {};
+    const expAttrVal = {};
+    const expAttrNames = {};
 
     if (helper.isEmpty(event['body-json'])) {
-      return;
+      return undefined;
     }
 
     for (let i = 0, len = parameters.length; i < len; i++) {
-      let prm = parameters[i];
+      const prm = parameters[i];
 
       // If the parameter is not found then do not save
-      if (helper.isEmpty(event['body-json'][prm.prmName])) {
-        continue;
+      if (helper.isNotEmpty(event['body-json'][prm.prmName])) {
+        // Add a comma to update expression
+        if (helper.includesStr(updateExp, '#variable')) {
+          updateExp += ',';
+        }
+
+        console.log(`param name - ${event['body-json'][prm.prmName]}`);
+
+        updateExp += ` #variable${i} = :v${i}`;
+        expAttrVal[`:v${i}`] = event['body-json'][prm.prmName];
+        expAttrNames[`#variable${i}`] = prm.prmValue;
       }
-
-      // Add a comma to update expression
-      if (helper.includesStr(updateExp, '#variable')) {
-        updateExp += ',';
-      }
-
-      console.log('param name - ' + event['body-json'][prm.prmName]);
-
-      updateExp += ' #variable' + i + ' = :v' + i;
-      expAttrVal[':v' + i] = event['body-json'][prm.prmName];
-      expAttrNames['#variable' + i] = prm.prmValue;
     }
 
     console.log(
@@ -57,10 +37,10 @@ function updatingTransactions(event) {
       ' expression attribute value ',
       JSON.stringify(expAttrVal),
       ' expression Attribute Names ',
-      JSON.stringify(expAttrNames)
+      JSON.stringify(expAttrNames),
     );
     if (helper.isEmpty(expAttrVal)) {
-      return;
+      return undefined;
     }
 
     updateExp += ', #update = :u';
@@ -79,8 +59,24 @@ function updatingTransactions(event) {
       ReturnValues: 'ALL_NEW',
     };
   }
+
+  const params = createParameters();
+
+  console.log('Updating an item...');
+  return new Promise((resolve, reject) => {
+    docClient.update(params, (err, data) => {
+      if (err) {
+        console.log('Error ', err);
+        reject(err);
+      } else {
+        resolve({
+          Transaction: data,
+        });
+      }
+    });
+  });
 }
 
-updateTransaction.prototype.updatingTransactions = updatingTransactions;
+UpdateTransaction.prototype.updatingTransactions = updatingTransactions;
 // Export object
-module.exports = new updateTransaction();
+module.exports = new UpdateTransaction();

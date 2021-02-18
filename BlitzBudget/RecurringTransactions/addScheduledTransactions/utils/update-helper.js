@@ -1,4 +1,4 @@
-var updateHelper = function () {};
+const UpdateHelper = () => {};
 
 const recurringTransaction = require('../update/recurring-transaction');
 
@@ -9,32 +9,33 @@ async function updateRecurringTransaction(
   walletId,
   recurringTransactionsId,
   futureTransactionCreationDate,
-  DB
+  DB,
+  events,
 ) {
   events.push(
     recurringTransaction.updateRecurringTransactionsData(
       walletId,
       recurringTransactionsId,
       futureTransactionCreationDate,
-      DB
-    )
+      DB,
+    ),
   );
 
   await Promise.all(events).then(
-    function () {
+    () => {
       console.log(
         'Successfully updated the recurring transactions field %j',
-        futureTransactionCreationDate
+        futureTransactionCreationDate,
       );
     },
-    function (err) {
+    (err) => {
       throw new Error(
-        'Unable to update the recurring transactions field ' + err
+        `Unable to update the recurring transactions field ${err}`,
       );
-    }
+    },
   );
 }
 
-updateHelper.prototype.updateRecurringTransaction = updateRecurringTransaction;
+UpdateHelper.prototype.updateRecurringTransaction = updateRecurringTransaction;
 // Export object
-module.exports = new updateHelper();
+module.exports = new UpdateHelper();

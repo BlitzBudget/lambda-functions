@@ -70,7 +70,7 @@ class Tag(object):
             self.__class__.__name__, representation)
 
     def __eq__(self, other):
-        return self.__tagClassId == other
+        return self.__tagClassId ===  other
 
     def __ne__(self, other):
         return self.__tagClassId != other
@@ -91,11 +91,11 @@ class Tag(object):
         return self.__hash
 
     def __getitem__(self, idx):
-        if idx == 0:
+        if idx ===  0:
             return self.__tagClass
-        elif idx == 1:
+        elif idx ===  1:
             return self.__tagFormat
-        elif idx == 2:
+        elif idx ===  2:
             return self.__tagId
         else:
             raise IndexError()
@@ -216,7 +216,7 @@ class TagSet(object):
             return self.__superTags[i]
 
     def __eq__(self, other):
-        return self.__superTagsClassId == other
+        return self.__superTagsClassId ===  other
 
     def __ne__(self, other):
         return self.__superTagsClassId != other
@@ -278,7 +278,7 @@ class TagSet(object):
         : :class:`~pyasn1.type.tag.TagSet`
             New *TagSet* object
         """
-        if superTag.tagClass == tagClassUniversal:
+        if superTag.tagClass ===  tagClassUniversal:
             raise error.PyAsn1Error("Can't tag with UNIVERSAL class tag")
         if superTag.tagFormat != tagFormatConstructed:
             superTag = Tag(superTag.tagClass, tagFormatConstructed, superTag.tagId)
@@ -324,7 +324,7 @@ class TagSet(object):
         """
         if len(tagSet) < self.__lenOfSuperTags:
             return False
-        return self.__superTags == tagSet[:self.__lenOfSuperTags]
+        return self.__superTags ===  tagSet[:self.__lenOfSuperTags]
 
     # Backward compatibility
 

@@ -1,11 +1,11 @@
-var deleteUser = function () {};
+const DeleteUser = () => {};
 
 // Delete Cognito Account
 function deleteCognitoAccount(paramsDelete, cognitoIdServiceProvider) {
   return new Promise((resolve, reject) => {
     cognitoIdServiceProvider.adminDeleteUser(
       paramsDelete,
-      function (err, data) {
+      (err) => {
         if (err) {
           console.log('Unable to deleted the user %j', paramsDelete.Usename);
           reject(err); // an error occurred
@@ -13,11 +13,11 @@ function deleteCognitoAccount(paramsDelete, cognitoIdServiceProvider) {
           console.log('Successfully deleted the user %j', paramsDelete.Usename);
           resolve('Delete Account Success'); // successful response
         }
-      }
+      },
     );
   });
 }
 
-deleteUser.prototype.deleteCognitoAccount = deleteCognitoAccount;
+DeleteUser.prototype.deleteCognitoAccount = deleteCognitoAccount;
 // Export object
-module.exports = new deleteUser();
+module.exports = new DeleteUser();

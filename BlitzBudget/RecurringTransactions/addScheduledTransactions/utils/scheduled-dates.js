@@ -1,37 +1,23 @@
-var scheduledDate = function () {};
+const ScheduledDate = () => {};
 
-const helper = require('helper');
+const helper = require('./helper');
 
 /*
  * Build params for put items (transactions)
  */
 function calculateNextDateToCreates(
   event,
-  futureTransactionCreationDate,
-  datesToCreateTransactions
+  datesToCreateTransactions,
 ) {
-  if (isEmpty(event.Records[0])) {
-    return;
+  let futureCreationDate;
+  if (helper.isEmpty(event.Records[0])) {
+    return futureCreationDate;
   }
 
-  let nextScheduled =
-    event.Records[0].Sns.MessageAttributes['next_scheduled'].Value;
-  let recurrence = event.Records[0].Sns.MessageAttributes.recurrence.Value;
+  const nextScheduled = event.Records[0].Sns.MessageAttributes.next_scheduled.Value;
+  const recurrence = event.Records[0].Sns.MessageAttributes.recurrence.Value;
   let nextDateToCreate = new Date(nextScheduled);
-  let today = new Date();
-  let i = 0;
-
-  calculateDatesToCreate();
-
-  console.log(
-    ' The dates to create are %j',
-    datesToCreateTransactions.toString()
-  );
-
-  /*
-   * Set the next date field for recurring transaction
-   */
-  futureTransactionCreationDate = nextDateToCreate.toISOString();
+  const today = new Date();
 
   function calculateDatesToCreate() {
     while (nextDateToCreate < today) {
@@ -40,14 +26,13 @@ function calculateNextDateToCreates(
       /*
        * Scheduled Transactions
        */
-      let nextDateToCreateAsString =
-        nextDateToCreate.getFullYear() +
-        '-' +
-        ('0' + (nextDateToCreate.getMonth() + 1)).slice(-2);
+      const nextDateToCreateAsString = `${nextDateToCreate.getFullYear()
+      }-${
+        (`0${nextDateToCreate.getMonth() + 1}`).slice(-2)}`;
       if (
         helper.notIncludesStr(
           datesToCreateTransactions,
-          nextDateToCreateAsString
+          nextDateToCreateAsString,
         )
       ) {
         datesToCreateTransactions.push(nextDateToCreateAsString);
@@ -68,12 +53,23 @@ function calculateNextDateToCreates(
           nextDateToCreate = new Date();
           break;
       }
-      // Update counter
-      i++;
     }
   }
+
+  calculateDatesToCreate();
+
+  console.log(
+    ' The dates to create are %j',
+    datesToCreateTransactions.toString(),
+  );
+
+  /*
+   * Set the next date field for recurring transaction
+   */
+  futureCreationDate = nextDateToCreate.toISOString();
+  return futureCreationDate;
 }
 
-scheduledDate.prototype.calculateNextDateToCreates = calculateNextDateToCreates;
+ScheduledDate.prototype.calculateNextDateToCreates = calculateNextDateToCreates;
 // Export object
-module.exports = new scheduledDate();
+module.exports = new ScheduledDate();

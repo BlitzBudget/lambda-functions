@@ -1,33 +1,16 @@
-var bankAccount = function () {};
+const BankAccount = () => {};
 
-bankAccount.prototype.getBankAccountData = (pk, budgetData, docClient) => {
-  var params = createParameters();
-
-  // Call DynamoDB to read the item from the table
-  return new Promise((resolve, reject) => {
-    docClient.query(params, function (err, data) {
-      if (err) {
-        console.log('Error ', err);
-        reject(err);
-      } else {
-        organizeAccountData(data);
-        budgetData['BankAccount'] = data.Items;
-        resolve({
-          BankAccount: data.Items,
-        });
-      }
-    });
-  });
-
+BankAccount.prototype.getBankAccountData = (pk, docClient) => {
   function organizeAccountData(data) {
     console.log('data retrieved - Bank Account %j', data.Count);
     if (data.Items) {
-      for (const accountObj of data.Items) {
-        accountObj.accountId = accountObj.sk;
-        accountObj.walletId = accountObj.pk;
-        delete accountObj.sk;
-        delete accountObj.pk;
-      }
+      Object.keys(data.Items).forEach((accountObj) => {
+        const account = accountObj;
+        account.accountId = accountObj.sk;
+        account.walletId = accountObj.pk;
+        delete account.sk;
+        delete account.pk;
+      });
     }
   }
 
@@ -43,7 +26,24 @@ bankAccount.prototype.getBankAccountData = (pk, budgetData, docClient) => {
         'bank_account_name, linked, bank_account_number, account_balance, sk, pk, selected_account, number_of_times_selected, account_type',
     };
   }
+
+  const params = createParameters();
+
+  // Call DynamoDB to read the item from the table
+  return new Promise((resolve, reject) => {
+    docClient.query(params, (err, data) => {
+      if (err) {
+        console.log('Error ', err);
+        reject(err);
+      } else {
+        organizeAccountData(data);
+        resolve({
+          BankAccount: data.Items,
+        });
+      }
+    });
+  });
 };
 
 // Export object
-module.exports = new bankAccount();
+module.exports = new BankAccount();

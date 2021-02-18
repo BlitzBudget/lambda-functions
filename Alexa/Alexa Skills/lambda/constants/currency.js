@@ -1,4 +1,4 @@
-var currencyInfo = [
+const currencyInfo = [
   {
     currency: 'Afghan Afghani',
     symbol: '؋',
