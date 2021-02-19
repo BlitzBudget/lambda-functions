@@ -1,4 +1,4 @@
-const Helper = () => {};
+function Helper() {}
 
 Helper.prototype.createParameters = (event) => ({
   AuthFlow: 'REFRESH_TOKEN_AUTH',

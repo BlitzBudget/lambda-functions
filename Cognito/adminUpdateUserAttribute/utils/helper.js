@@ -1,4 +1,4 @@
-const Helper = () => {};
+function Helper() {}
 
 const userPoolId = 'eu-west-1_cjfC8qNiB';
 
