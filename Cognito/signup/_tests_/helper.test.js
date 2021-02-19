@@ -102,43 +102,43 @@ describe('emailToLowerCase', () => {
 
 describe('extractFirstAndLastName', () => {
   test('With Firstname and Lastname: Success', () => {
-    const { firstName, lastName } = helper.extractFirstAndLastName(
+    const { username, surname } = helper.extractFirstAndLastName(
       'Nagarjun',
       'Nagesh',
       null,
     );
-    expect(firstName).toBe('Nagarjun');
-    expect(lastName).toBe('Nagesh');
+    expect(username).toBe('Nagarjun');
+    expect(surname).toBe('Nagesh');
   });
 
   test('Without Firstname and Lastname: Success', () => {
-    const { firstName, lastName } = helper.extractFirstAndLastName(
+    const { username, surname } = helper.extractFirstAndLastName(
       null,
       null,
       'nagarjun_nagesh@outlook.com',
     );
-    expect(firstName).toBe('Nagarjun');
-    expect(lastName).toBe('Nagesh');
+    expect(username).toBe('Nagarjun');
+    expect(surname).toBe('Nagesh');
   });
 
   test('Without Firstname and with Lastname: Success', () => {
-    const { firstName, lastName } = helper.extractFirstAndLastName(
+    const { username, surname } = helper.extractFirstAndLastName(
       null,
       'ABCD',
       'nagarjun_nagesh@outlook.com',
     );
-    expect(firstName).toBe('Nagarjun');
-    expect(lastName).toBe('Nagesh');
+    expect(username).toBe('Nagarjun');
+    expect(surname).toBe('Nagesh');
   });
 
   test('With Firstname and without Lastname: Success', () => {
-    const { firstName, lastName } = helper.extractFirstAndLastName(
+    const { username, surname } = helper.extractFirstAndLastName(
       null,
       'ABCD',
       'nagarjun_nagesh@outlook.com',
     );
-    expect(firstName).toBe('Nagarjun');
-    expect(lastName).toBe('Nagesh');
+    expect(username).toBe('Nagarjun');
+    expect(surname).toBe('Nagesh');
   });
 });
 
