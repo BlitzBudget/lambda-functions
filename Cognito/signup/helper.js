@@ -1,4 +1,4 @@
-const Helper = () => {};
+function Helper() {}
 
 function isEmpty(obj) {
   // Check if objext is a number or a boolean
@@ -54,17 +54,18 @@ const fetchFirstAndFamilyName = (fullName) => {
       familyName = nameArr.length > 2 ? nameArr[2] : ' ';
     }
 
+    if (isEmpty(familyName)) {
+      familyName = ' ';
+    }
+
     // First Letter Upper case
     firstName = firstName.length > 1
       ? firstName.charAt(0).toUpperCase() + firstName.slice(1)
       : firstName.charAt(0).toUpperCase();
-    familyName = ' ';
 
-    if (isEmpty(familyName)) {
-      familyName = familyName.length > 1
-        ? familyName.charAt(0).toUpperCase() + familyName.slice(1)
-        : familyName.charAt(0).toUpperCase();
-    }
+    familyName = familyName.length > 1
+      ? familyName.charAt(0).toUpperCase() + familyName.slice(1)
+      : familyName.charAt(0).toUpperCase();
 
     name.firstName = firstName;
     name.familyName = familyName;
