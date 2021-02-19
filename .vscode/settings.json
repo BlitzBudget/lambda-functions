@@ -1,9 +1,0 @@
-
-{
-    "jest.pathToJest": "node_modules/.bin/jest",
-    "editor.codeActionsOnSave": {
-      "source.fixAll.eslint": true
-    },
-    "eslint.validate": ["javascript"],
-    "eslint.workingDirectories": [{ "mode": "auto" }]
-}
