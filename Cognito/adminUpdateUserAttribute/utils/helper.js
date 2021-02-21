@@ -13,13 +13,78 @@ const isEmpty = (obj) => {
   if (typeof obj.length !== 'undefined') return obj.length === 0;
 
   // check if obj is a custom obj
-  if (obj
-&& Object.keys(obj).length !== 0) { return false; }
+  if (obj && Object.keys(obj).length !== 0) { return false; }
 
   return true;
 };
 
 const isNotEmpty = (obj) => !isEmpty(obj);
+
+function createFileFormatParameter(event, params, index) {
+  const parameter = params;
+  let i = index;
+  if (isNotEmpty(event['body-json'].exportFileFormat)) {
+    parameter.UserAttributes[i] = {
+      Name: 'custom:exportFileFormat',
+      Value: event['body-json'].exportFileFormat,
+    };
+    i += 1;
+  }
+  return i;
+}
+
+function createCurrencyParameter(event, params, index) {
+  const parameter = params;
+  let i = index;
+  if (isNotEmpty(event['body-json'].currency)) {
+    parameter.UserAttributes[i] = {
+      Name: 'custom:currency',
+      Value: event['body-json'].currency,
+    };
+    i += 1;
+  }
+  return i;
+}
+
+function createLocaleParameter(event, params, index) {
+  const parameter = params;
+  let i = index;
+  if (isNotEmpty(event['body-json'].locale)) {
+    parameter.UserAttributes[i] = {
+      Name: 'locale',
+      Value: event['body-json'].locale,
+    };
+    i += 1;
+  }
+  return i;
+}
+
+function createFamilyNameParameter(event, params, index) {
+  const parameter = params;
+  let i = index;
+  if (isNotEmpty(event['body-json'].family_name)) {
+    parameter.UserAttributes[i] = {
+      Name: 'family_name',
+      Value: event['body-json'].family_name,
+    };
+    i += 1;
+  }
+  return i;
+}
+
+function createNameParameter(event, params, index) {
+  const parameter = params;
+  let i = index;
+  if (isNotEmpty(event['body-json'].name)) {
+    parameter.UserAttributes[i] = {
+      Name: 'name',
+      /* required */
+      Value: event['body-json'].name,
+    };
+    i += 1;
+  }
+  return i;
+}
 
 // Build parameter
 Helper.prototype.buildParams = (event) => {
@@ -35,50 +100,19 @@ Helper.prototype.buildParams = (event) => {
   let index = 0;
 
   // If the name attribute is present
-  if (isNotEmpty(event['body-json'].name)) {
-    params.UserAttributes[index] = {
-      Name: 'name',
-      /* required */
-      Value: event['body-json'].name,
-    };
-    index += 1;
-  }
+  index = createNameParameter(event, params, index);
 
   // If the family name is present
-  if (isNotEmpty(event['body-json'].family_name)) {
-    params.UserAttributes[index] = {
-      Name: 'family_name',
-      Value: event['body-json'].family_name,
-    };
-    index += 1;
-  }
+  index = createFamilyNameParameter(event, params, index);
 
   // If locale is present
-  if (isNotEmpty(event['body-json'].locale)) {
-    params.UserAttributes[index] = {
-      Name: 'locale',
-      Value: event['body-json'].locale,
-    };
-    index += 1;
-  }
+  index = createLocaleParameter(event, params, index);
 
   // If currency is present
-  if (isNotEmpty(event['body-json'].currency)) {
-    params.UserAttributes[index] = {
-      Name: 'custom:currency',
-      Value: event['body-json'].currency,
-    };
-    index += 1;
-  }
+  index = createCurrencyParameter(event, params, index);
 
   // If exportFileFormat is present
-  if (isNotEmpty(event['body-json'].exportFileFormat)) {
-    params.UserAttributes[index] = {
-      Name: 'custom:exportFileFormat',
-      Value: event['body-json'].exportFileFormat,
-    };
-    index += 1;
-  }
+  createFileFormatParameter(event, params, index);
 
   return params;
 };
