@@ -1,4 +1,4 @@
-const Helper = () => {};
+function Helper() {}
 
 const localeToCurrency = require('./locale-to-currency');
 
@@ -33,11 +33,11 @@ Helper.prototype.isEmpty = isEmpty;
 Helper.prototype.isNotEmpty = isNotEmpty;
 
 Helper.prototype.fetchCurrencyInformation = (countryLocale) => {
-  let currenyChosen = localeToCurrency.localeToCurrency[countryLocale];
   /*
    * If chosen currency is empty then revert to Dollars
    */
-  currenyChosen = Helper.isEmpty(currenyChosen) ? '$' : currenyChosen;
+  let currenyChosen = isEmpty(countryLocale) ? 'US' : countryLocale;
+  currenyChosen = localeToCurrency.localeToCurrency[currenyChosen.toUpperCase()];
   console.log('Fetching the country header from cloudfront ', currenyChosen);
   return currenyChosen;
 };

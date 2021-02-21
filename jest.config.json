@@ -1,12 +1,18 @@
 {
-    "name": "Debug Jest Tests",
-    "type": "node",
-    "request": "launch",
-    "program": "${workspaceFolder}/node_modules/jest/bin/jest.js",
-    "args": [
-        "-i",
-        "-t should dispatch GetAccessToken Test",
-        "-c jest-config.json"  
-    ],
-    "console": "integratedTerminal"
+    "collectCoverage": true,
+    "collectCoverageFrom": [
+        "**/*.{js,jsx}",
+        "!**/node_modules/**",
+        "!**/vendor/**"
+      ],
+    "coverageDirectory": "./coverage/",
+    "coveragePathIgnorePatterns": ["/node_modules/"],
+    "coverageThreshold": {
+        "global": {
+          "branches": 1,
+          "functions": 1,
+          "lines": 1,
+          "statements": 1
+        }
+      }
 }
