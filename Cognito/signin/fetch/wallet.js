@@ -1,16 +1,9 @@
 const FetchWallet = () => {};
 
+const walletParameter = require('../create-parameter/wallet');
+
 FetchWallet.prototype.getWallet = (userId, docClient) => {
-  const params = {
-    TableName: 'blitzbudget',
-    KeyConditionExpression: 'pk = :userId and begins_with(sk, :items)',
-    ExpressionAttributeValues: {
-      ':userId': userId,
-      ':items': 'Wallet#',
-    },
-    ProjectionExpression:
-      'currency, pk, sk, total_asset_balance, total_debt_balance, wallet_balance',
-  };
+  const params = walletParameter.createParameters(userId);
 
   // Call DynamoDB to read the item from the table
   return new Promise((resolve, reject) => {

@@ -1,8 +1,9 @@
 const ForgotPassword = () => {};
 
 const AWS = require('aws-sdk');
+const constants = require('../constants/constant');
 
-AWS.config.update({ region: 'eu-west-1' });
+AWS.config.update({ region: constants.EU_WEST_ONE });
 const cognitoidentityserviceprovider = new AWS.CognitoIdentityServiceProvider();
 
 ForgotPassword.prototype.handleForgotPassword = (params) => new Promise((resolve, reject) => {

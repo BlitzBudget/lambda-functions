@@ -1,13 +1,9 @@
-const AWS = require('aws-sdk');
 const helper = require('./utils/helper');
 const deletUser = require('./cognito/delete-user');
 
-AWS.config.update({ region: 'eu-west-1' });
-const cognitoidentityserviceprovider = new AWS.CognitoIdentityServiceProvider();
-
 async function handleDeleteUser(params, response) {
   let deleteResponse = response;
-  await deletUser.handleDeleteUser(params, cognitoidentityserviceprovider).then(
+  await deletUser.handleDeleteUser(params).then(
     (result) => {
       deleteResponse = result;
     },

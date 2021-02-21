@@ -1,7 +1,9 @@
 function Helper() {}
 
+const constants = require('../constants/constant');
+
 Helper.prototype.createParameters = (event) => ({
-  ClientId: '2ftlbs1kfmr2ub0e4p15tsag8g',
+  ClientId: constants.CLIENT_ID,
   Username: event['body-json'].username,
 });
 

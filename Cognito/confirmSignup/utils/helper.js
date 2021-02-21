@@ -13,8 +13,7 @@ const isEmpty = (obj) => {
   if (typeof obj.length !== 'undefined') return obj.length === 0;
 
   // check if obj is a custom obj
-  if (obj
-&& Object.keys(obj).length !== 0) { return false; }
+  if (obj && Object.keys(obj).length !== 0) { return false; }
 
   return true;
 };
@@ -41,21 +40,6 @@ Helper.prototype.fetchCurrencyInformation = (countryLocale) => {
   console.log('Fetching the country header from cloudfront ', currenyChosen);
   return currenyChosen;
 };
-
-Helper.prototype.createLoginParameters = (event) => ({
-  AuthFlow: 'USER_PASSWORD_AUTH',
-  ClientId: '2ftlbs1kfmr2ub0e4p15tsag8g',
-  AuthParameters: {
-    USERNAME: event['body-json'].username,
-    PASSWORD: event['body-json'].password,
-  },
-});
-
-Helper.prototype.createConfirmSignupParameters = (event) => ({
-  ClientId: '2ftlbs1kfmr2ub0e4p15tsag8g',
-  ConfirmationCode: event['body-json'].confirmationCode,
-  Username: event['body-json'].username,
-});
 
 // Export object
 module.exports = new Helper();

@@ -42,38 +42,6 @@ describe('isEqual', () => {
   });
 });
 
-describe('createLoginParameters', () => {
-  const event = {};
-  event['body-json'] = {};
-  event['body-json'].username = 'notempty';
-  event['body-json'].password = 'notempty';
-
-  test('With Data: Success', () => {
-    const parameters = helper.createLoginParameters(event);
-    expect(parameters).not.toBeNull();
-    expect(parameters.AuthFlow).not.toBeNull();
-    expect(parameters.ClientId).not.toBeNull();
-    expect(parameters.AuthParameters).not.toBeNull();
-    expect(parameters.AuthParameters.USERNAME).not.toBeNull();
-    expect(parameters.AuthParameters.PASSWORD).not.toBeNull();
-  });
-});
-
-describe('createConfirmSignupParameters', () => {
-  const event = {};
-  event['body-json'] = {};
-  event['body-json'].confirmationCode = 'notempty';
-  event['body-json'].username = 'notempty';
-
-  test('With Data: Success', () => {
-    const parameters = helper.createConfirmSignupParameters(event);
-    expect(parameters).not.toBeNull();
-    expect(parameters.ClientId).not.toBeNull();
-    expect(parameters.ConfirmationCode).not.toBeNull();
-    expect(parameters.Username).not.toBeNull();
-  });
-});
-
 describe('fetchCurrencyInformation', () => {
   const event = {};
   event['body-json'] = {};

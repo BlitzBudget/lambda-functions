@@ -1,8 +1,9 @@
 const ResendConfirmation = () => {};
 
 const AWS = require('aws-sdk');
+const constants = require('../constants/constant');
 
-AWS.config.update({ region: 'eu-west-1' });
+AWS.config.update({ region: constants.EU_WEST_ONE });
 const cognitoidentityserviceprovider = new AWS.CognitoIdentityServiceProvider();
 
 ResendConfirmation.prototype.resendConfirmationCode = (params) => new Promise((resolve, reject) => {

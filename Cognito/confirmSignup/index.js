@@ -1,8 +1,8 @@
 const AWS = require('aws-sdk');
 const wallet = require('./wallet/add-new-wallet');
-const login = require('./user/login');
-const fetchUser = require('./user/fetch-user');
-const confirmSignup = require('./user/confirm-signup');
+const login = require('./cognito/login');
+const fetchUser = require('./cognito/fetch-user');
+const confirmSignup = require('./cognito/confirm-signup');
 const helper = require('./utils/helper');
 
 AWS.config.update({ region: 'eu-west-1' });

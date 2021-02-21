@@ -4,6 +4,7 @@ const helper = require('./utils/helper');
 const fetchUser = require('./fetch/user');
 const fetchWallet = require('./fetch/wallet');
 const login = require('./cognito/login');
+const loginParameter = require('./create-parameter/login');
 
 AWS.config.update({ region: 'eu-west-1' });
 // Create the DynamoDB service object
@@ -41,14 +42,7 @@ async function fetchUserFromCognito(response) {
 // Login to user
 async function loginToCognito(event, response) {
   let loginResponse = response;
-  const params = {
-    AuthFlow: 'USER_PASSWORD_AUTH',
-    ClientId: '2ftlbs1kfmr2ub0e4p15tsag8g',
-    AuthParameters: {
-      USERNAME: event['body-json'].username,
-      PASSWORD: event['body-json'].password,
-    },
-  };
+  const params = loginParameter.createParameter(event);
 
   await login.initiateAuth(params, cognitoidentityserviceprovider).then(
     (result) => {
