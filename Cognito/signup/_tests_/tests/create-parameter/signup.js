@@ -1,4 +1,4 @@
-const signupParameter = require('../../create-parameter/signup');
+const signupParameter = require('../../../create-parameter/signup');
 
 describe('buildParamForSignup', () => {
   test('Build Param for signup', () => {

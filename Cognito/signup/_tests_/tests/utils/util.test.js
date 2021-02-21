@@ -1,4 +1,4 @@
-const util = require('../../utils/util');
+const util = require('../../../utils/util');
 
 describe('isEmpty', () => {
   test('With Data: Success', () => {

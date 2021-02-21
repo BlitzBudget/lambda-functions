@@ -1,4 +1,4 @@
-const helper = require('../utils/helper');
+const helper = require('../../../utils/helper');
 
 describe('isEmpty', () => {
   test('With Data: Success', () => {

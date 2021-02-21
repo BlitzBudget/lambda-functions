@@ -1,5 +1,5 @@
-const helper = require('./helper');
-const refreshToken = require('./refresh-token');
+const helper = require('./utils/helper');
+const refreshToken = require('./cognito/refresh-token');
 
 exports.handler = async (event) => {
   let response = {};

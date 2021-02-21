@@ -1,4 +1,4 @@
-const helper = require('../utils/helper');
+const helper = require('../../../utils/helper');
 
 describe('changePasswordParameters', () => {
   test('With Data: Success', () => {

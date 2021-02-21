@@ -1,9 +1,9 @@
 const AWS = require('aws-sdk');
 
-const helper = require('./helper');
-const fetchUser = require('./fetch-user');
-const fetchWallet = require('./fetch-wallet');
-const login = require('./login');
+const helper = require('./utils/helper');
+const fetchUser = require('./fetch/user');
+const fetchWallet = require('./fetch/wallet');
+const login = require('./cognito/login');
 
 AWS.config.update({ region: 'eu-west-1' });
 // Create the DynamoDB service object
