@@ -1,0 +1,10 @@
+module.exports.CLIENT_ID = '2ftlbs1kfmr2ub0e4p15tsag8g';
+module.exports.EMAIL = 'email';
+module.exports.NAME = 'name';
+module.exports.FAMILY_NAME = 'family_name';
+module.exports.LOCALE = 'locale';
+module.exports.FINANCIAL_PORTFOLIO_ID = 'custom:financialPortfolioId';
+module.exports.FILE_FORMAT = 'custom:exportFileFormat';
+module.exports.XLS = 'XLS';
+module.exports.USER_ID = 'User#';
+module.exports.EU_WEST_ONE = 'eu-west-1';

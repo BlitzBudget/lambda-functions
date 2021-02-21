@@ -1,10 +1,11 @@
 const Signup = () => {};
 
 const AWS = require('aws-sdk');
+const constants = require('../constants/constant');
 const signupParameter = require('../create-parameter/signup');
 
 AWS.config.update({
-  region: 'eu-west-1',
+  region: constants.EU_WEST_ONE,
 });
 const cognitoidentityserviceprovider = new AWS.CognitoIdentityServiceProvider();
 

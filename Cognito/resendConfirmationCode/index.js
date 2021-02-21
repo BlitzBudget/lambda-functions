@@ -1,5 +1,5 @@
-const helper = require('./helper');
-const resendConfirmation = require('./resend-confirmation');
+const helper = require('./utils/helper');
+const resendConfirmation = require('./cognito/resend-confirmation');
 
 async function handleResendConfirmationCode(params, response) {
   let resendResponse = response;

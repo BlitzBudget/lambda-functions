@@ -1,5 +1,5 @@
-const helper = require('./helper');
-const forgotPassword = require('./forgot-password');
+const helper = require('./utils/helper');
+const forgotPassword = require('./cognito/forgot-password');
 
 async function handleForgotPassword(params, response) {
   let forgotPasswordResponse = response;

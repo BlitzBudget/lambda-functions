@@ -1,6 +1,6 @@
 const AWS = require('aws-sdk');
-const helper = require('./helper');
-const deletUser = require('./delete-user');
+const helper = require('./utils/helper');
+const deletUser = require('./cognito/delete-user');
 
 AWS.config.update({ region: 'eu-west-1' });
 const cognitoidentityserviceprovider = new AWS.CognitoIdentityServiceProvider();

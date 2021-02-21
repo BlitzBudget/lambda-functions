@@ -1,6 +1,7 @@
 function Signup() {}
 
 const helper = require('../utils/helper');
+const constants = require('../constants/constant');
 
 Signup.prototype.createParameter = (
   event,
@@ -10,7 +11,7 @@ Signup.prototype.createParameter = (
   } = helper.extractVariablesFromRequest(event);
 
   return {
-    ClientId: '2ftlbs1kfmr2ub0e4p15tsag8g',
+    ClientId: constants.CLIENT_ID,
     /* required */
     Password: password,
     /* required */
@@ -18,22 +19,22 @@ Signup.prototype.createParameter = (
     /* required */
     UserAttributes: [
       {
-        Name: 'email',
+        Name: constants.EMAIL,
         /* required */
         Value: email,
       },
       {
-        Name: 'name',
+        Name: constants.NAME,
         /* required */
         Value: firstName,
       },
       {
-        Name: 'family_name',
+        Name: constants.FAMILY_NAME,
         /* required */
         Value: lastName,
       },
       {
-        Name: 'locale',
+        Name: constants.LOCALE,
         /* required */
         Value:
         accepLanguage.length <= 4
@@ -41,14 +42,14 @@ Signup.prototype.createParameter = (
           : accepLanguage.substring(1, 6) /* take en or en-US if available */,
       },
       {
-        Name: 'custom:financialPortfolioId',
+        Name: constants.FINANCIAL_PORTFOLIO_ID,
         /* required */
-        Value: `User#${new Date().toISOString()}`,
+        Value: `${constants.USER_ID}${new Date().toISOString()}`,
       },
       {
-        Name: 'custom:exportFileFormat',
+        Name: constants.FILE_FORMAT,
         /* required */
-        Value: 'XLS',
+        Value: constants.XLS,
       },
     ],
   };
