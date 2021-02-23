@@ -1,4 +1,4 @@
-const helper = require('../../../utils/helper');
+const deleteUserParameter = require('../../../create-parameter/delete-user');
 
 describe('createParameter', () => {
   const event = {};
@@ -6,7 +6,7 @@ describe('createParameter', () => {
   event['body-json'].accessToken = 'notempty';
 
   test('With Data: Success', () => {
-    const parameters = helper.createParameters(event);
+    const parameters = deleteUserParameter.createParameters(event);
     const accessToken = parameters.AccessToken;
     expect(accessToken).not.toBeNull();
   });

@@ -1,4 +1,4 @@
-const helper = require('./utils/helper');
+const deleteUserParameter = require('./create-parameter/delete-user');
 const deletUser = require('./cognito/delete-user');
 
 async function handleDeleteUser(params, response) {
@@ -16,7 +16,7 @@ async function handleDeleteUser(params, response) {
 
 exports.handler = async (event) => {
   let response = {};
-  const params = helper.createParameters(event);
+  const params = deleteUserParameter.createParameters(event);
 
   response = await handleDeleteUser(params, response);
 

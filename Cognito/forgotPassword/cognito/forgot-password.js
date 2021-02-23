@@ -7,7 +7,7 @@ AWS.config.update({ region: constants.EU_WEST_ONE });
 const cognitoidentityserviceprovider = new AWS.CognitoIdentityServiceProvider();
 
 ForgotPassword.prototype.handleForgotPassword = (params) => new Promise((resolve, reject) => {
-  cognitoidentityserviceprovider.ForgotPassword(params, (err, data) => {
+  cognitoidentityserviceprovider.forgotPassword(params, (err, data) => {
     if (err) {
       console.log(err, err.stack); // an error occurred
       reject(err);

@@ -1,6 +1,6 @@
-function Helper() {}
+function ChangePassword() {}
 
-Helper.prototype.changePasswordParameters = (
+ChangePassword.prototype.changePasswordParameters = (
   accessToken,
   previousPassword,
   newPassword,
@@ -11,4 +11,4 @@ Helper.prototype.changePasswordParameters = (
 });
 
 // Export object
-module.exports = new Helper();
+module.exports = new ChangePassword();

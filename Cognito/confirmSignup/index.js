@@ -1,102 +1,33 @@
 const AWS = require('aws-sdk');
-const wallet = require('./wallet/add-new-wallet');
-const login = require('./cognito/login');
-const fetchUser = require('./cognito/fetch-user');
-const confirmSignup = require('./cognito/confirm-signup');
-const helper = require('./utils/helper');
 
-AWS.config.update({ region: 'eu-west-1' });
+const walletHelper = require('./utils/wallet-helper');
+const loginHelper = require('./utils/login-helper');
+const confirmSignupHelper = require('./utils/confirm-signup-helper');
+const fetchUserHelper = require('./utils/fetch-user-helper');
+const constants = require('./constants/constant');
+
+AWS.config.update({ region: constants.EU_WEST_ONE });
 const cognitoidentityserviceprovider = new AWS.CognitoIdentityServiceProvider();
 
 // Create the DynamoDB service object
 const DB = new AWS.DynamoDB.DocumentClient();
-
-async function handleAddANewWallet(
-  response,
-  doNotCreateANewWallet,
-  countryLocale,
-) {
-  let walletResponse = response;
-
-  /*
-   * Do not create wallet
-   */
-  if (doNotCreateANewWallet) {
-    return walletResponse;
-  }
-
-  /*
-   * Get locale to currency
-   */
-  const currency = helper.fetchCurrencyInformation(countryLocale);
-
-  await wallet.addNewWallet(response.UserAttributes, currency, DB).then(
-    (addResponse) => {
-      walletResponse = addResponse.Wallet;
-    },
-    (err) => {
-      throw new Error(`Unable to add new wallet${err}`);
-    },
-  );
-  return walletResponse;
-}
-
-async function handleFetchUserInformation(response) {
-  await fetchUser.getUser(response, cognitoidentityserviceprovider).then(
-    (result) => {
-      response.Username = result.Username;
-      response.UserAttributes = result.UserAttributes;
-      console.log(`logged in the user ${JSON.stringify(result.Username)}`);
-    },
-    (err) => {
-      throw new Error(`Unable to signin from cognito  ${err}`);
-    },
-  );
-}
-
-async function handleLogin(event, response) {
-  let loginResponse = response;
-  const loginParams = helper.createLoginParameters(event);
-
-  await login.initiateAuth(loginParams, cognitoidentityserviceprovider).then(
-    (result) => {
-      loginResponse = result;
-    },
-    (err) => {
-      throw new Error(`Unable to login from cognito  ${err}`);
-    },
-  );
-  return loginResponse;
-}
-
-async function handleConfirmSignup(event) {
-  const params = helper.createConfirmSignupParameters(event);
-
-  await confirmSignup
-    .confirmSignUp(params, cognitoidentityserviceprovider)
-    .then(
-      () => {},
-      (err) => {
-        throw new Error(`Unable to confirm signup from cognito  ${err}`);
-      },
-    );
-}
 
 exports.handler = async (event) => {
   let response = {};
   const doNotCreateANewWallet = event['body-json'].doNotCreateWallet;
   const countryLocale = event.params.header['CloudFront-Viewer-Country'];
 
-  await handleConfirmSignup(event);
+  await confirmSignupHelper.confirmSignup(event, cognitoidentityserviceprovider);
 
-  response = await handleLogin(event, response);
+  response = await loginHelper.login(event, response, cognitoidentityserviceprovider);
 
-  await handleFetchUserInformation(response);
+  await fetchUserHelper.fetchUserInformation(response, cognitoidentityserviceprovider);
 
-  await handleAddANewWallet(
+  await walletHelper.addNewWallet(
     response,
     doNotCreateANewWallet,
     countryLocale,
+    DB,
   );
 
   return response;

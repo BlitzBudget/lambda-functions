@@ -1,4 +1,4 @@
-const helper = require('../../../utils/helper');
+const forgotPasswordParameter = require('../../../create-parameter/forgot-password');
 
 describe('createParameter', () => {
   const event = {};
@@ -6,7 +6,7 @@ describe('createParameter', () => {
   event['body-json'].username = 'notempty';
 
   test('With Data: Success', () => {
-    const parameters = helper.createParameters(event);
+    const parameters = forgotPasswordParameter.createParameter(event);
     const clientId = parameters.ClientId;
     const username = parameters.Username;
     expect(clientId).not.toBeNull();
