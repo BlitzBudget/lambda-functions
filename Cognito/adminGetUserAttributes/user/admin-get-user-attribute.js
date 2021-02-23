@@ -1,6 +1,6 @@
 const AdminGetUser = () => {};
 
-const AWS = require('../../changePassword/cognito/node_modules/aws-sdk');
+const AWS = require('aws-sdk');
 
 AWS.config.update({ region: 'eu-west-1' });
 const cognitoIdServiceProvider = new AWS.CognitoIdentityServiceProvider();

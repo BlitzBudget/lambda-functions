@@ -1,11 +1,11 @@
 const FetchHelper = () => {};
 
-const helper = require('./helper');
+const userAttributeHelper = require('../create-parameter/user-attribute');
 const adminGetUser = require('../user/admin-get-user-attribute');
 
 async function fetchUser(event) {
   let userAttr;
-  const params = helper.createParameters(event); /* required */
+  const params = userAttributeHelper.createParameters(event); /* required */
 
   await adminGetUser.getUser(params).then(
     (result) => {

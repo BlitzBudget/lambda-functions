@@ -1,6 +1,6 @@
 function CognitoHelper() {}
 
-const helper = require('./helper');
+const changePasswordParameter = require('../create-parameter/change-password');
 const cognitoChangePassword = require('../cognito/change-password');
 
 async function changePassword(
@@ -9,7 +9,7 @@ async function changePassword(
   newPassword,
 ) {
   let changePasswordResponse;
-  const params = helper.changePasswordParameters(
+  const params = changePasswordParameter.changePasswordParameters(
     accessToken,
     previousPassword,
     newPassword,
