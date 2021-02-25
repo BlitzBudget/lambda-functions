@@ -3,10 +3,11 @@ const PatchGoal = () => {};
 const AWS = require('aws-sdk');
 const parameters = require('../utils/parameters');
 const helper = require('../utils/helper');
+const constants = require('../constants/constant');
 
 // Load the AWS SDK for Node.js
 // Set the region
-AWS.config.update({ region: 'eu-west-1' });
+AWS.config.update({ region: constants.EU_WEST_ONE });
 
 // Create the DynamoDB service object
 const docClient = new AWS.DynamoDB.DocumentClient();
@@ -56,7 +57,7 @@ function updatingGoals(event) {
     expAttrNames['#update'] = 'updated_date';
 
     return {
-      TableName: 'blitzbudget',
+      TableName: constants.TABLE_NAME,
       Key: {
         pk: event['body-json'].walletId,
         sk: event['body-json'].goalId,

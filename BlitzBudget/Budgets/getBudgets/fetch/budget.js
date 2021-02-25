@@ -1,5 +1,7 @@
 const Budget = () => {};
 
+const constants = require('../constants/constant');
+
 // Get Budget Item
 Budget.prototype.getBudgetsItem = (
   walletId,
@@ -10,7 +12,7 @@ Budget.prototype.getBudgetsItem = (
 ) => {
   function createParameters() {
     return {
-      TableName: 'blitzBudget',
+      TableName: constants.TABLE_NAME,
       KeyConditionExpression: 'pk = :walletId AND sk BETWEEN :bt1 AND :bt2',
       ExpressionAttributeValues: {
         ':walletId': walletId,

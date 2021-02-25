@@ -1,11 +1,12 @@
 const FetchHelper = () => {};
 
 const deleteHelper = require('./delete-helper');
+const constants = require('../constants/constant');
 
 // Get goal Item
 function getAllItems(userId, DB) {
   const params = {
-    TableName: 'blitzbudget',
+    TableName: constants.TABLE_NAME,
     KeyConditionExpression: 'pk = :userId',
     ExpressionAttributeValues: {
       ':userId': userId,

@@ -1,9 +1,11 @@
 const Wallet = () => {};
 
+const constants = require('../constants/constant');
+
 Wallet.prototype.getWalletsData = (userId, docClient) => {
   function createParameters() {
     return {
-      TableName: 'blitzbudget',
+      TableName: constants.TABLE_NAME,
       KeyConditionExpression: 'pk = :pk and begins_with(sk, :items)',
       ExpressionAttributeValues: {
         ':pk': userId,

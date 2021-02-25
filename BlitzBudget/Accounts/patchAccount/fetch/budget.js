@@ -1,9 +1,11 @@
 const FetchBudget = () => {};
 
+const constants = require('../constants/constant');
+
 // Get BankAccount Item
 FetchBudget.prototype.getBankAccountItem = (walletId, docClient) => {
   const params = {
-    TableName: 'blitzbudget',
+    TableName: constants.TABLE_NAME,
     KeyConditionExpression: 'pk = :walletId and begins_with(sk, :items)',
     ExpressionAttributeValues: {
       ':walletId': walletId,

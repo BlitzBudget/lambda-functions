@@ -1,5 +1,7 @@
 const FetchWallet = () => {};
 
+const constants = require('../constants/constant');
+
 function getWalletData(userId, walletId, docClient) {
   function organizeRetrievedItems(data) {
     console.log('data retrieved - Wallet %j', JSON.stringify(data));
@@ -20,7 +22,7 @@ function getWalletData(userId, walletId, docClient) {
         'total_debt_balance',
         'wallet_balance',
       ],
-      TableName: 'blitzbudget',
+      TableName: constants.TABLE_NAME,
       Key: {
         pk: userId,
         sk: walletId,

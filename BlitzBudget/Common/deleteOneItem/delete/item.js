@@ -1,10 +1,12 @@
 const DeleteItems = () => {};
 
+const constants = require('../constants/constant');
+
 DeleteItems.prototype.deleteOneItem = (pk, sk, DB) => {
   console.log(`user Id selected for deletion is ${pk}`);
 
   const params = {
-    TableName: 'blitzbudget',
+    TableName: constants.TABLE_NAME,
     Key: {
       pk,
       sk,

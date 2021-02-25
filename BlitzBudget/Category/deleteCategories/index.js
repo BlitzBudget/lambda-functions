@@ -1,12 +1,13 @@
 // Load the AWS SDK for Node.js
 const AWS = require('aws-sdk');
 const helper = require('./utils/helper');
+const constants = require('./constants/constant');
 const fetchHelper = require('./utils/fetch-helper');
 const deleteHelper = require('./utils/delete-helper');
 
 // Set the region
 AWS.config.update({
-  region: 'eu-west-1',
+  region: constants.EU_WEST_ONE,
 });
 
 // Create the DynamoDB service object

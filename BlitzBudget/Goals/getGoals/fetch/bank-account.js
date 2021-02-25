@@ -1,5 +1,7 @@
 const FetchBankAccount = () => {};
 
+const constants = require('../constants/constant');
+
 FetchBankAccount.prototype.getBankAccountData = function getBankAccountData(
   pk,
   docClient,
@@ -19,7 +21,7 @@ FetchBankAccount.prototype.getBankAccountData = function getBankAccountData(
 
   function createParameters() {
     return {
-      TableName: 'blitzbudget',
+      TableName: constants.TABLE_NAME,
       KeyConditionExpression: 'pk = :pk and begins_with(sk, :items)',
       ExpressionAttributeValues: {
         ':pk': pk,

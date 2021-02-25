@@ -1,5 +1,7 @@
 const FetchTransaction = () => {};
 
+const constants = require('../constants/constant');
+
 // Get all transaction Items
 FetchTransaction.prototype.getTransactionItems = (
   walletId,
@@ -7,7 +9,7 @@ FetchTransaction.prototype.getTransactionItems = (
   DB,
 ) => {
   const params = {
-    TableName: 'blitzbudget',
+    TableName: constants.TABLE_NAME,
     KeyConditionExpression: 'pk = :pk and begins_with(sk, :items)',
     ExpressionAttributeValues: {
       ':pk': walletId,

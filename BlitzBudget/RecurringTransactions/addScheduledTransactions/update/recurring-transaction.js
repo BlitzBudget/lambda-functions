@@ -1,5 +1,7 @@
 const RecurringTransaction = () => {};
 
+const constants = require('../constants/constant');
+
 /*
  * Update the recurring transaction
  */
@@ -11,7 +13,7 @@ function updateRecurringTransactionsData(
 ) {
   function createParameters() {
     return {
-      TableName: 'blitzbudget',
+      TableName: constants.TABLE_NAME,
       Key: {
         pk: walletId,
         sk,

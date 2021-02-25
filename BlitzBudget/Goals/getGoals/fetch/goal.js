@@ -1,5 +1,7 @@
 const FetchGoal = () => {};
 
+const constants = require('../constants/constant');
+
 // Get goal Item
 FetchGoal.prototype.getGoalItem = function getGoalItem(
   walletId,
@@ -20,7 +22,7 @@ FetchGoal.prototype.getGoalItem = function getGoalItem(
 
   function createParameter() {
     return {
-      TableName: 'blitzbudget',
+      TableName: constants.TABLE_NAME,
       KeyConditionExpression: 'pk = :walletId and begins_with(sk, :items)',
       ExpressionAttributeValues: {
         ':walletId': walletId,

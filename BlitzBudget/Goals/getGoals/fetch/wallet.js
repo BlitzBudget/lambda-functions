@@ -1,5 +1,7 @@
 const FetchWallet = () => {};
 
+const constants = require('../constants/constant');
+
 /*
  * Wallet data
  */
@@ -27,7 +29,7 @@ FetchWallet.prototype.getWalletData = function getWalletData(
         'total_debt_balance',
         'wallet_balance',
       ],
-      TableName: 'blitzbudget',
+      TableName: constants.TABLE_NAME,
       Key: {
         pk: userId,
         sk: walletId,

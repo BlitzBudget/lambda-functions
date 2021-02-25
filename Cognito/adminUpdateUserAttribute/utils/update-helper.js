@@ -1,7 +1,7 @@
 function UpdateHelper() {}
 
 const userAttributeParameter = require('../create-parameter/user-attribute');
-const adminUpdateUser = require('../user/admin-update-user-attributes');
+const adminUpdateUser = require('../cognito/admin-update-user-attributes');
 
 async function updateUserAttributes(event) {
   const params = userAttributeParameter.createParameter(event);

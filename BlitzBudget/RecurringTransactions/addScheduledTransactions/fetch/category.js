@@ -1,5 +1,7 @@
 const FetchCategory = () => {};
 
+const constants = require('../constants/constant');
+
 /*
  * Get Category Data
  */
@@ -31,7 +33,7 @@ function getCategoryData(pk, today, categoryType, categoryName, category, DB) {
   }
 
   const params = {
-    TableName: 'blitzbudget',
+    TableName: constants.TABLE_NAME,
     KeyConditionExpression: 'pk = :pk AND begins_with(sk, :items)',
     ExpressionAttributeValues: {
       ':pk': pk,

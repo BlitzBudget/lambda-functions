@@ -1,7 +1,7 @@
 const FetchHelper = () => {};
 
 const userAttributeHelper = require('../create-parameter/user-attribute');
-const adminGetUser = require('../user/admin-get-user-attribute');
+const adminGetUser = require('../cognito/admin-get-user-attribute');
 
 async function fetchUser(event) {
   let userAttr;

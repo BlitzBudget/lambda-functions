@@ -1,7 +1,9 @@
 const Helper = () => {};
 
+const constants = require('../constants/constant');
+
 Helper.prototype.createParameters = (walletId) => ({
-  TableName: 'blitzbudget',
+  TableName: constants.EU_WEST_ONE,
   KeyConditionExpression: 'pk = :walletId and begins_with(sk, :items)',
   ExpressionAttributeValues: {
     ':walletId': walletId,

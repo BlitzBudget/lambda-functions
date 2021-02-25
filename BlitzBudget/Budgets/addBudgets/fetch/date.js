@@ -1,8 +1,10 @@
 const FetchDate = () => {};
 
+const constants = require('../constants/constant');
+
 FetchDate.prototype.getDateData = (pk, today, docClient) => {
   const params = {
-    TableName: 'blitzbudget',
+    TableName: constants.TABLE_NAME,
     KeyConditionExpression: 'pk = :pk AND begins_with(sk, :items)',
     ExpressionAttributeValues: {
       ':pk': pk,

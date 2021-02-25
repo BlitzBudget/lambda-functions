@@ -1,10 +1,11 @@
 const FetchCategory = () => {};
 
 const helper = require('../utils/helper');
+const constants = require('../constants/constant');
 
 FetchCategory.prototype.getCategoryData = (event, today, docClient) => {
   const params = {
-    TableName: 'blitzbudget',
+    TableName: constants.TABLE_NAME,
     KeyConditionExpression: 'pk = :pk AND begins_with(sk, :items)',
     ExpressionAttributeValues: {
       ':pk': event['body-json'].walletId,

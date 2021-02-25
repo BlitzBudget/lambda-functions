@@ -1,5 +1,7 @@
 const FetchDate = () => {};
 
+const constants = require('../constants/constant');
+
 FetchDate.prototype.getDateData = function getDateData(
   pk,
   startsWithDate,
@@ -21,7 +23,7 @@ FetchDate.prototype.getDateData = function getDateData(
 
   function createParameter() {
     return {
-      TableName: 'blitzbudget',
+      TableName: constants.TABLE_NAME,
       KeyConditionExpression: 'pk = :pk and sk BETWEEN :bt1 AND :bt2',
       ExpressionAttributeValues: {
         ':pk': pk,

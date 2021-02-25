@@ -2,6 +2,7 @@ const PatchRecurringTransaction = () => {};
 
 const helper = require('../utils/helper');
 const parameters = require('../utils/parameters');
+const constants = require('../constants/constant');
 
 function updatingRecurringTransactions(event, docClient) {
   function createParameters() {
@@ -48,7 +49,7 @@ function updatingRecurringTransactions(event, docClient) {
     expAttrNames['#update'] = 'updated_date';
 
     return {
-      TableName: 'blitzbudget',
+      TableName: constants.TABLE_NAME,
       Key: {
         pk: event['body-json'].walletId,
         sk: event['body-json'].recurringTransactionId,

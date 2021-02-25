@@ -1,5 +1,7 @@
 const FetchDate = () => {};
 
+const constants = require('../constants/constant');
+
 function getDateData(pk, startsWithDate, endsWithDate, docClient) {
   function organizeRetrievedItems(data) {
     console.log('data retrieved - Date ', data.Count);
@@ -16,7 +18,7 @@ function getDateData(pk, startsWithDate, endsWithDate, docClient) {
 
   function createParameters() {
     return {
-      TableName: 'blitzbudget',
+      TableName: constants.TABLE_NAME,
       KeyConditionExpression: 'pk = :pk and sk BETWEEN :bt1 AND :bt2',
       ExpressionAttributeValues: {
         ':pk': pk,

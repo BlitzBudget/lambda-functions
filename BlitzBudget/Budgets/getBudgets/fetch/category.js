@@ -1,5 +1,7 @@
 const Category = () => {};
 
+const constants = require('../constants/constant');
+
 Category.prototype.getCategoryData = (
   pk,
   startsWithDate,
@@ -21,7 +23,7 @@ Category.prototype.getCategoryData = (
 
   function createParameters() {
     return {
-      TableName: 'blitzbudget',
+      TableName: constants.TABLE_NAME,
       KeyConditionExpression: 'pk = :pk and sk BETWEEN :bt1 AND :bt2',
       ExpressionAttributeValues: {
         ':pk': pk,

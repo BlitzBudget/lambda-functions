@@ -1,12 +1,13 @@
 const FetchBudget = () => {};
 
 const helper = require('../utils/helper');
+const constants = require('../constants/constant');
 
 // Get Budget Item
 FetchBudget.prototype.getBudgetsItem = (today, event, docClient) => {
   function createParameters() {
     return {
-      TableName: 'blitzbudget',
+      TableName: constants.TABLE_NAME,
       KeyConditionExpression: 'pk = :pk AND begins_with(sk, :items)',
       ExpressionAttributeValues: {
         ':pk': event['body-json'].walletId,

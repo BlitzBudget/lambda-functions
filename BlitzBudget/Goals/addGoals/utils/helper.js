@@ -2,9 +2,10 @@ const Helper = () => {};
 
 // Load the AWS SDK for Node.js
 const AWS = require('aws-sdk');
+const constants = require('../constants/constant');
 // Set the region
 AWS.config.update({
-  region: 'eu-west-1',
+  region: constants.EU_WEST_ONE,
 });
 
 // Create the DynamoDB service object
@@ -16,7 +17,7 @@ function addNewGoals(event) {
 
   function createParameter() {
     return {
-      TableName: 'blitzbudget',
+      TableName: constants.TABLE_NAME,
       Item: {
         pk: event['body-json'].walletId,
         sk: randomValue,

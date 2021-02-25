@@ -1,6 +1,6 @@
 function Helper() {}
 
-Helper.prototype.includesStr = (arr, val) => {
+const includesStr = (arr, val) => {
   function isEmpty(obj) {
     // Check if objext is a number or a boolean
     if (typeof obj === 'number' || typeof obj === 'boolean') return false;
@@ -24,10 +24,12 @@ Helper.prototype.includesStr = (arr, val) => {
   return isEmpty(arr) ? false : arr.includes(val);
 };
 
+Helper.prototype.includesStr = includesStr;
+
 Helper.prototype.fetchUserId = (response) => {
   let userIdParam;
   Object.keys(response.UserAttributes).forEach((userId) => {
-    if (Helper.includesStr(userId.Name, 'custom:financialPortfolioId')) {
+    if (includesStr(userId.Name, 'custom:financialPortfolioId')) {
       userIdParam = userId.Value;
     }
   });

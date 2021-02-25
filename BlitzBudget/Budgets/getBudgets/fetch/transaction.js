@@ -1,5 +1,7 @@
 const TransactionFunction = () => {};
 
+const constants = require('../constants/constant');
+
 // Get Transaction Item
 TransactionFunction.prototype.getTransactionsData = (
   pk,
@@ -9,7 +11,7 @@ TransactionFunction.prototype.getTransactionsData = (
 ) => {
   function createParameters() {
     return {
-      TableName: 'blitzbudget',
+      TableName: constants.TABLE_NAME,
       KeyConditionExpression: 'pk = :pk and sk BETWEEN :bt1 AND :bt2',
       ExpressionAttributeValues: {
         ':pk': pk,
