@@ -1,9 +1,11 @@
 const FetchCategory = () => {};
 
+const constants = require('../constants/constant');
+
 function getCategoryData(pk, startsWithDate, endsWithDate, docClient) {
   function createParameters() {
     return {
-      TableName: 'blitzbudget',
+      TableName: constants.TABLE_NAME,
       KeyConditionExpression: 'pk = :pk and sk BETWEEN :bt1 AND :bt2',
       ExpressionAttributeValues: {
         ':pk': pk,

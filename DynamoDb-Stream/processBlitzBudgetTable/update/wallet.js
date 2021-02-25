@@ -1,8 +1,10 @@
 const Wallet = () => {};
 
+const constants = require('../constants/constant');
+
 function updateWalletBalance(pk, sk, balance, assetBalance, debtBalance, docClient) {
   const params = {
-    TableName: 'blitzbudget',
+    TableName: constants.TABLE_NAME,
     Key: {
       pk,
       sk,

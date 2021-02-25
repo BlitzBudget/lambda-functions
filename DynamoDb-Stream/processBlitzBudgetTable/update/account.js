@@ -1,5 +1,7 @@
 const UpdateAccount = () => {};
 
+const constants = require('../constants/constant');
+
 function updateAccountBalanceItem(pk, sk, balance, docClient) {
   console.log(
     'Updating account balance for the account with walelt Id %j',
@@ -10,7 +12,7 @@ function updateAccountBalanceItem(pk, sk, balance, docClient) {
     balance,
   );
   const params = {
-    TableName: 'blitzbudget',
+    TableName: constants.TABLE_NAME,
     Key: {
       pk,
       sk,

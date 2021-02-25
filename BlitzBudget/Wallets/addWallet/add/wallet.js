@@ -2,9 +2,11 @@ const wallet = () => {};
 
 // Load the AWS SDK for Node.js
 const AWS = require('aws-sdk');
+const constants = require('../constants/constant');
+
 // Set the region
 AWS.config.update({
-  region: 'eu-west-1',
+  region: constants.EU_WEST_ONE,
 });
 
 const Helper = require('../utils/helper');
@@ -18,7 +20,7 @@ function addNewWallet(event, userId, currency, walletName) {
 
   function createParameters() {
     return {
-      TableName: 'blitzbudget',
+      TableName: constants.TABLE_NAME,
       Item: {
         pk: userId,
         sk: randomValue,

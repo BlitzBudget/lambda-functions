@@ -1,6 +1,7 @@
 const FetchCategory = () => {};
 
 const helper = require('../utils/helper');
+const constants = require('../constants/constant');
 
 function getCategoryData(event, today, docClient) {
   function organizeCategoryObject(data) {
@@ -33,7 +34,7 @@ function getCategoryData(event, today, docClient) {
 
   function createParameters() {
     return {
-      TableName: 'blitzbudget',
+      TableName: constants.TABLE_NAME,
       KeyConditionExpression: 'pk = :pk AND begins_with(sk, :items)',
       ExpressionAttributeValues: {
         ':pk': event['body-json'].walletId,

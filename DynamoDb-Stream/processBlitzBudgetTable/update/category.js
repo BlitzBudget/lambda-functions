@@ -1,8 +1,10 @@
 const UpdateCategory = () => {};
 
+const constants = require('../constants/constant');
+
 function updateCategoryItem(pk, sk, difference, docClient) {
   const params = {
-    TableName: 'blitzbudget',
+    TableName: constants.TABLE_NAME,
     Key: {
       pk,
       sk,

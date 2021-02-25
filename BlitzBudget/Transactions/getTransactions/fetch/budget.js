@@ -1,10 +1,12 @@
 const FetchBudget = () => {};
 
+const constants = require('../constants/constant');
+
 // Get Budget Item
 function getBudgetsItem(walletId, startsWithDate, endsWithDate, docClient) {
   function createParameters() {
     return {
-      TableName: 'blitzFetchBudget',
+      TableName: constants.TABLE_NAME,
       KeyConditionExpression: 'pk = :walletId AND sk BETWEEN :bt1 AND :bt2',
       ExpressionAttributeValues: {
         ':walletId': walletId,

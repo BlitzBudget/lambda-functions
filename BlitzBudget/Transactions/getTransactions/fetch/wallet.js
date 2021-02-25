@@ -1,5 +1,7 @@
 const FetchWallet = () => {};
 
+const constants = require('../constants/constant');
+
 function getWalletsData(userId, docClient) {
   function organizeTransactionData(data) {
     console.log('data retrieved - Wallet %j', data.Count);
@@ -14,7 +16,7 @@ function getWalletsData(userId, docClient) {
 
   function createParameters() {
     return {
-      TableName: 'blitzbudget',
+      TableName: constants.TABLE_NAME,
       KeyConditionExpression: 'pk = :pk and begins_with(sk, :items)',
       ExpressionAttributeValues: {
         ':pk': userId,

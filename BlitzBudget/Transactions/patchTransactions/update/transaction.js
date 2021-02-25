@@ -1,6 +1,7 @@
 const UpdateTransaction = () => {};
 
 const parameters = require('../utils/parameter');
+const constants = require('../constants/constant');
 const helper = require('../utils/helper');
 
 function updatingTransactions(event, docClient) {
@@ -48,7 +49,7 @@ function updatingTransactions(event, docClient) {
     expAttrNames['#update'] = 'updated_date';
 
     return {
-      TableName: 'blitzbudget',
+      TableName: constants.TABLE_NAME,
       Key: {
         pk: event['body-json'].walletId,
         sk: event['body-json'].transactionId,

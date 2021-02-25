@@ -3,6 +3,7 @@ const FetchHelper = () => {};
 // Load the AWS SDK for Node.js
 const AWS = require('aws-sdk');
 const helper = require('./helper');
+const constants = require('../constants/constant');
 const transaction = require('../fetch/transaction');
 const wallet = require('../fetch/wallet');
 const date = require('../fetch/date');
@@ -13,12 +14,12 @@ const recurringTransaction = require('../fetch/recurring-transaction');
 
 // Set the region
 AWS.config.update({
-  region: 'eu-west-1',
+  region: constants.EU_WEST_ONE,
 });
 
 // Create the DynamoDB service object
 const docClient = new AWS.DynamoDB.DocumentClient({
-  region: 'eu-west-1',
+  region: constants.EU_WEST_ONE,
 });
 
 const sns = new AWS.SNS();

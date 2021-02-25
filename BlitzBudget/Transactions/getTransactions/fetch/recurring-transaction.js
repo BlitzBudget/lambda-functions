@@ -1,12 +1,14 @@
 const RecurringTransaction = () => {};
 
+const constants = require('../constants/constant');
+
 const createTransactionSNS = require('../sns/create-transaction');
 
 // Get Budget Item
 function getRecurringTransactions(walletId, docClient, snsEvents, sns) {
   function createParameters() {
     return {
-      TableName: 'blitzbudget',
+      TableName: constants.TABLE_NAME,
       KeyConditionExpression: 'pk = :walletId AND begins_with(sk, :items)',
       ExpressionAttributeValues: {
         ':walletId': walletId,

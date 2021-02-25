@@ -1,8 +1,10 @@
 const UpdateDate = () => {};
 
+const constants = require('../constants/constant');
+
 function updateDateItem(pk, sk, difference, income, expense, docClient) {
   const params = {
-    TableName: 'blitzbudget',
+    TableName: constants.TABLE_NAME,
     Key: {
       pk,
       sk,

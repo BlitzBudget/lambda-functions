@@ -5,13 +5,14 @@ const helper = require('./helper');
 const updateAccount = require('../update/account');
 const updateCategory = require('../update/category');
 const updateDate = require('../update/date');
+const constants = require('../constants/constant');
 const updateWallet = require('../update/wallet');
 const addBankAccount = require('../add/bank-account');
 
 // Load the AWS SDK for Node.js
 // Set the region
 AWS.config.update({
-  region: 'eu-west-1',
+  region: constants.EU_WEST_ONE,
 });
 
 // Create the DynamoDB service object

@@ -2,6 +2,7 @@ const Wallet = () => {};
 
 // Load the AWS SDK for Node.js
 const AWS = require('aws-sdk');
+const constants = require('../constants/constant');
 // Set the region
 AWS.config.update({ region: 'eu-west-1' });
 
@@ -12,7 +13,7 @@ const docClient = new AWS.DynamoDB.DocumentClient({ region: 'eu-west-1' });
 function getWalletItem(userId, walletData) {
   const walletResponse = walletData;
   const params = {
-    TableName: 'blitzbudget',
+    TableName: constants.TABLE_NAME,
     KeyConditionExpression: 'pk = :userId and begins_with(sk, :items)',
     ExpressionAttributeValues: {
       ':userId': userId,
