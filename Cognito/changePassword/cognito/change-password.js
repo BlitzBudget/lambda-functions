@@ -1,6 +1,6 @@
 const ChangePassword = () => {};
 
-const AWS = require('../../adminGetUserAttributes/cognito/node_modules/aws-sdk');
+const AWS = require('aws-sdk');
 const constants = require('../constants/constant');
 
 AWS.config.update({ region: constants.EU_WEST_ONE });
