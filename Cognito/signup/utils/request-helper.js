@@ -3,20 +3,20 @@ function RequestHelper() {}
 const helper = require('./helper');
 
 RequestHelper.prototype.extractVariablesFromRequest = (event) => {
-  let { firstname } = event['body-json'];
-  let { lastname } = event['body-json'];
+  let { username } = event['body-json'];
+  let { surname } = event['body-json'];
   const { password } = event['body-json'];
   const email = helper.emailToLowerCase(event['body-json'].username);
-  const accepLanguage = JSON.stringify(event.params.header['Accept-Language']);
+  const accepLanguage = event.params.header['Accept-Language'];
 
-  ({ firstname, lastname } = helper.extractFirstAndLastName(
-    firstname,
-    lastname,
+  ({ username, surname } = helper.extractFirstAndLastName(
+    username,
+    surname,
     email,
   ));
 
   return {
-    email, firstname, lastname, accepLanguage, password,
+    email, username, surname, accepLanguage, password,
   };
 };
 

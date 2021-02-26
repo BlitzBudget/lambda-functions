@@ -38,9 +38,14 @@ const splitElement = (str, splitString) => {
 };
 
 function checkIfEmailContainsSpecialCharacters(fullname) {
-  // eslint-disable-next-line no-useless-escape
-  const possibleSym = /[!#$%&'*+-\/=?^_`{|}~]/;
-  const matchFound = fullname.match(possibleSym);
+  let matchFound = false;
+
+  if (isNotEmpty(fullname)) {
+    // eslint-disable-next-line no-useless-escape
+    const possibleSym = /[!#$%&'*+-\/=?^_`{|}~]/;
+    matchFound = fullname.match(possibleSym);
+  }
+
   return { matchFound };
 }
 
