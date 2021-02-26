@@ -8,3 +8,4 @@ module.exports.FILE_FORMAT = 'custom:exportFileFormat';
 module.exports.XLS = 'XLS';
 module.exports.USER_ID = 'User#';
 module.exports.EU_WEST_ONE = 'eu-west-1';
+module.exports.EMPTY = ' ';

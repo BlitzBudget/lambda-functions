@@ -1,10 +1,10 @@
 const forgotPasswordParameter = require('../create-parameter/forgot-password');
 const cognitoForgotPassword = require('../cognito/forgot-password');
 
-async function forgotPassword(event, response) {
+async function forgotPassword(event) {
   const params = forgotPasswordParameter.createParameter(event);
 
-  let forgotPasswordResponse = response;
+  let forgotPasswordResponse;
   await cognitoForgotPassword.handleForgotPassword(params).then(
     (result) => {
       forgotPasswordResponse = result;

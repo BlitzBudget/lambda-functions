@@ -1,5 +1,7 @@
 function Util() {}
 
+const constants = require('../constants/constant');
+
 function isEmpty(obj) {
   // Check if objext is a number or a boolean
   if (typeof obj === 'number' || typeof obj === 'boolean') return false;
@@ -17,6 +19,10 @@ function isEmpty(obj) {
   if (obj instanceof Element) return false;
 
   return true;
+}
+
+function isNotEmpty(obj) {
+  return !isEmpty(obj);
 }
 
 function includesStr(arr, val) {
@@ -41,7 +47,7 @@ function checkIfEmailContainsSpecialCharacters(fullname) {
 // First Letter Upper case
 function capitalizeFirstLetter(name) {
   if (isEmpty(name)) {
-    return ' ';
+    return constants.EMPTY;
   }
 
   return name.length > 1
@@ -49,10 +55,31 @@ function capitalizeFirstLetter(name) {
     : name.charAt(0).toUpperCase();
 }
 
+function fetchUsername(name) {
+  if (Array.isArray(name)) {
+    return capitalizeFirstLetter(name[0]);
+  }
+  return capitalizeFirstLetter(name);
+}
+
+function fetchSurname(name) {
+  if (Array.isArray(name)) {
+    return capitalizeFirstLetter(name[1]) + capitalizeFirstLetter(name[2]).trim();
+  }
+  return constants.EMPTY;
+}
+
+function filterEmptyElementsFromArray(arr) {
+  if (Array.isArray(arr)) {
+    return arr.filter((el) => isNotEmpty(el));
+  }
+  return arr;
+}
+
 function fetchNames(fullname, matchFound) {
-  const nameArray = splitElement(fullname, matchFound);
-  const username = capitalizeFirstLetter(nameArray[0]);
-  const surname = capitalizeFirstLetter(nameArray[1]) + capitalizeFirstLetter(nameArray[2]).trim();
+  const name = filterEmptyElementsFromArray(splitElement(fullname, matchFound));
+  const username = fetchUsername(name);
+  const surname = fetchSurname(name);
   return { username, surname };
 }
 
