@@ -1,6 +1,6 @@
 function Signup() {}
 
-const helper = require('../utils/helper');
+const requestHelper = require('../utils/request-helper');
 const constants = require('../constants/constant');
 
 Signup.prototype.createParameter = (
@@ -8,7 +8,7 @@ Signup.prototype.createParameter = (
 ) => {
   const {
     email, firstName, lastName, accepLanguage, password,
-  } = helper.extractVariablesFromRequest(event);
+  } = requestHelper.extractVariablesFromRequest(event);
 
   return {
     ClientId: constants.CLIENT_ID,
