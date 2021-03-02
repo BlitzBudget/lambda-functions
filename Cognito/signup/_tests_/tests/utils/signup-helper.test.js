@@ -1,15 +1,8 @@
 const util = require('../../../utils/signup-helper');
+const mockSuccess = require('../../fixtures/response/success');
 
 jest.mock('../../../cognito/signup', () => ({
-  signup: (parameters) => Promise.resolve(JSON.stringify({
-    UserConfirmed: false,
-    CodeDeliveryDetails: {
-      Destination: parameters.email,
-      DeliveryMedium: 'EMAIL',
-      AttributeName: 'email',
-    },
-    UserSub: 'c5f9af98-ebcb-4c9c-8be4-9c1bc6bfbcad',
-  })),
+  signup: (parameters) => Promise.resolve(mockSuccess(parameters)),
 }));
 
 describe('signupUser', () => {
