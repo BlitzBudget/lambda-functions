@@ -1,4 +1,4 @@
-const Signup = () => {};
+function Signup() {}
 
 const AWS = require('aws-sdk');
 const constants = require('../constants/constant');
