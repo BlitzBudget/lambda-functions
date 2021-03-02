@@ -1,3 +1,5 @@
+function AddAccount() {}
+
 // Load the AWS SDK for Node.js
 const AWS = require('aws-sdk');
 const constants = require('../constants/constant');
@@ -8,8 +10,6 @@ AWS.config.update({
 
 // Create the DynamoDB service object
 const docClient = new AWS.DynamoDB.DocumentClient();
-
-const AddAccount = () => {};
 
 AddAccount.prototype.addNewBankAccounts = (event) => {
   const today = new Date();
