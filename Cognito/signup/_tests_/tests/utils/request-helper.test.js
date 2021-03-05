@@ -17,7 +17,7 @@ describe('extractVariablesFromRequest', () => {
     expect(parameters.username).toBe(event['body-json'].firstname);
     expect(parameters.surname).toBe(event['body-json'].lastname);
     expect(parameters.password).toBe(event['body-json'].password);
-    expect(parameters.accepLanguage).toBe(event.params.header['Accept-Language']);
+    expect(parameters.acceptLanguage).toBe(event.params.header['Accept-Language']);
   });
 
   test('Without Data: Success', () => {
@@ -31,6 +31,6 @@ describe('extractVariablesFromRequest', () => {
       },
     });
     expect(parameters).not.toBeNull();
-    expect(parameters.accepLanguage).toBe(EN_IN);
+    expect(parameters.acceptLanguage).toBe(EN_IN);
   });
 });

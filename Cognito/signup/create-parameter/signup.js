@@ -7,7 +7,7 @@ Signup.prototype.createParameter = (
   event,
 ) => {
   const {
-    email, firstName, lastName, accepLanguage, password,
+    email, username, surname, acceptLanguage, password,
   } = requestHelper.extractVariablesFromRequest(event);
 
   return {
@@ -26,20 +26,19 @@ Signup.prototype.createParameter = (
       {
         Name: constants.NAME,
         /* required */
-        Value: firstName,
+        Value: username,
       },
       {
         Name: constants.FAMILY_NAME,
         /* required */
-        Value: lastName,
+        Value: surname,
       },
       {
         Name: constants.LOCALE,
         /* required */
-        Value:
-        accepLanguage.length <= 4
-          ? accepLanguage.substring(1, 3)
-          : accepLanguage.substring(1, 6) /* take en or en-US if available */,
+        Value: acceptLanguage.length <= 4
+          ? acceptLanguage.substring(1, 3)
+          : acceptLanguage.substring(1, 6) /* take en or en-US if available */,
       },
       {
         Name: constants.FINANCIAL_PORTFOLIO_ID,
