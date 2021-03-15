@@ -24,3 +24,16 @@ describe('signupUser without name', () => {
     expect(response.UserConfirmed).toBe(false);
   }));
 });
+
+describe('signupUser without name: ERROR', () => {
+  jest.mock('../../cognito/signup', () => ({
+    signup: (parameters) => Promise.reject(mockSuccess(parameters)),
+  }));
+
+  const event = mockRequestWithoutNames;
+  test('With Data: Success', () => handle.handler(event).catch((response) => {
+    expect(response).not.toBeNull();
+    expect(response.message).not.toBeNull();
+    expect(response.message).stringContaining('Unable to signin from cognito');
+  }));
+});

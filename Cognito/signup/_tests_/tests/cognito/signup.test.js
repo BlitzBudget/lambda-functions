@@ -1,16 +1,16 @@
 const cognitoSignup = require('../../../cognito/signup');
 const mockSuccess = require('../../fixtures/response/success');
-const mockUsernameExistsException = require('../../fixtures/response/user-already-exists');
 
 jest.mock('aws-sdk', () => ({
+  CognitoIdentityServiceProvider: jest.fn(() => ({
+    signUp: jest.fn((params) => ({
+      promise: jest.fn()
+        .mockResolvedValueOnce(Promise.resolve(mockSuccess(params))),
+    })),
+  })),
   config: {
     update: jest.fn(),
   },
-  CognitoIdentityServiceProvider: jest.fn(() => ({
-    signUp: (parameters) => jest.fn()
-      .mockReturnValueOnce(mockSuccess(parameters))
-      .mockReturnValueOnce(mockUsernameExistsException),
-  })),
 }));
 
 describe('signup', () => {
@@ -23,15 +23,10 @@ describe('signup', () => {
   event.params = {};
   event.params.header = {};
   event.params.header['Accept-Language'] = 'en';
-  test('With Data: Success', () => {
-    const response = cognitoSignup.signup(event);
+  test('With Data: Success', async () => {
+    const response = await cognitoSignup.signup(event);
     expect(response).not.toBeNull();
-    expect(response.UserConfirmed).not.toBeNull();
-  });
-
-  test('User Already Present: Error', () => {
-    const response = cognitoSignup.signup(event);
-    expect(response).not.toBeNull();
-    expect(response.errorType).not.toBeNull();
+    expect(response.UserConfirmed).toBe(false);
+    expect(response.CodeDeliveryDetails.Destination).toBe(event['body-json'].username);
   });
 });

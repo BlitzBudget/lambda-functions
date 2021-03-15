@@ -1,20 +1,48 @@
 const helper = require('../../../utils/helper');
+const mockLogin = require('../../fixtures/response/login');
+const mockGetUser = require('../../fixtures/response/get-user');
+const mockWalletResponse = require('../../fixtures/response/wallet');
 
-describe('includesStr', () => {
-  test('With Data: Success', () => {
-    expect(helper.includesStr(['en', 'es'], 'es')).toBe(true);
-    expect(helper.includesStr('falstru', 'tru')).toBe(true);
-    expect(helper.includesStr('falstru', 'tr')).toBe(true);
-  });
+jest.mock('../../../fetch/wallet', () => ({
+  getWallet: () => Promise.resolve(mockWalletResponse.Items),
+}));
 
-  test('With False Data: Success', () => {
-    expect(helper.includesStr(['en', 'es'], 'e')).toBe(false);
-    expect(helper.includesStr(['false', 'true'], 'tru')).toBe(false);
-    expect(helper.includesStr(['fals', 'tru'], 'true')).toBe(false);
-  });
+jest.mock('aws-sdk', () => ({
+  DynamoDB: jest.fn(() => ({
+    DocumentClient: jest.fn(() => ({
+      query: jest.fn()
+        .mockResolvedValueOnce({}),
+    })),
+  })),
+  config: {
+    update: jest.fn(),
+  },
+  CognitoIdentityServiceProvider: jest.fn(() => ({
+    initiateAuth: jest.fn(() => ({
+      promise: jest.fn()
+        .mockResolvedValueOnce(mockLogin),
+    })),
+    getUser: jest.fn(() => ({
+      promise: jest.fn()
+        .mockResolvedValueOnce(mockGetUser),
+    })),
+  })),
+}));
 
-  test('Without Data: Success', () => {
-    expect(helper.includesStr(['en', 'es'], '')).toBe(false);
-    expect(helper.includesStr([], 'en')).toBe(false);
+describe('formulateResponse', () => {
+  const event = {};
+  event['body-json'] = {};
+  event['body-json'].password = '12345678';
+  event['body-json'].username = 'nagarjun_nagesh@outlook.com';
+  event['body-json'].checkPassword = false;
+
+  test('With Data: Success', async () => {
+    const response = await helper.formulateResponse(event);
+    expect(response).not.toBeUndefined();
+    expect(response.Username).not.toBeUndefined();
+    expect(response.UserAttributes).not.toBeUndefined();
+    expect(response.Wallet).not.toBeUndefined();
+    expect(response.AuthenticationResult).not.toBeUndefined();
+    expect(response.ChallengeParameters).not.toBeUndefined();
   });
 });

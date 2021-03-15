@@ -1,16 +1,9 @@
-const Login = () => {};
+function Login() {}
 
-const initiateAuth = (params, cognitoidentityserviceprovider) => new Promise((resolve, reject) => {
-  cognitoidentityserviceprovider.initiateAuth(params, (err, data) => {
-    if (err) {
-      console.log(err, err.stack); // an error occurred
-      reject(err);
-    } else {
-      console.log(data); // successful response
-      resolve(data);
-    }
-  });
-});
+async function initiateAuth(params, cognitoidentityserviceprovider) {
+  const response = await cognitoidentityserviceprovider.initiateAuth(params).promise();
+  return response;
+}
 
 Login.prototype.initiateAuth = initiateAuth;
 

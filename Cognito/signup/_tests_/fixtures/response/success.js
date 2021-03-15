@@ -1,7 +1,7 @@
 module.exports = (parameters) => ({
   UserConfirmed: false,
   CodeDeliveryDetails: {
-    Destination: parameters.email,
+    Destination: parameters.Username,
     DeliveryMedium: 'EMAIL',
     AttributeName: 'email',
   },

@@ -1,29 +1,14 @@
-const FetchWallet = () => {};
+function FetchWallet() {}
 
 const walletParameter = require('../create-parameter/wallet');
+const util = require('../utils/util');
 
-FetchWallet.prototype.getWallet = (userId, docClient) => {
-  const params = walletParameter.createParameters(userId);
+FetchWallet.prototype.getWallet = async (userId, docClient) => {
+  const params = walletParameter.createParameter(userId);
 
   // Call DynamoDB to read the item from the table
-  return new Promise((resolve, reject) => {
-    docClient.query(params, (err, data) => {
-      if (err) {
-        console.log('Error ', err);
-        reject(err);
-      } else {
-        console.log('data retrieved ', data.Count);
-        Object.keys(data.Items).forEach((walletObj) => {
-          const wallet = walletObj;
-          wallet.walletId = walletObj.sk;
-          wallet.userId = walletObj.pk;
-          delete wallet.sk;
-          delete wallet.pk;
-        });
-        resolve(data.Items);
-      }
-    });
-  });
+  const response = await docClient.query(params).promise();
+  return util.nameKeysAppropriately(response);
 };
 
 // Export object

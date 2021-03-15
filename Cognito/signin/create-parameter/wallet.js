@@ -2,7 +2,7 @@ function Wallet() {}
 
 const constants = require('../constants/constant');
 
-Wallet.prototype.createParameters = (userId) => ({
+Wallet.prototype.createParameter = (userId) => ({
   TableName: constants.TABLE_NAME,
   KeyConditionExpression: constants.KEY_CONDITION_EXPRESSION,
   ExpressionAttributeValues: {

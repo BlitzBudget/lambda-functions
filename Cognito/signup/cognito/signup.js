@@ -9,19 +9,11 @@ AWS.config.update({
 });
 const cognitoidentityserviceprovider = new AWS.CognitoIdentityServiceProvider();
 
-Signup.prototype.signup = (event) => new Promise((resolve, reject) => {
+Signup.prototype.signup = async (event) => {
   const parameter = signupParameter.createParameter(event);
-
-  cognitoidentityserviceprovider.signUp(parameter, (err, data) => {
-    if (err) {
-      console.log(err, err.stack); // an error occurred
-      reject(err);
-    } else {
-      console.log(data); // successful response
-      resolve(data);
-    }
-  });
-});
+  const response = await cognitoidentityserviceprovider.signUp(parameter).promise();
+  return response;
+};
 
 // Export object
 module.exports = new Signup();

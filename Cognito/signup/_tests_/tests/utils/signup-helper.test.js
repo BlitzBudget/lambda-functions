@@ -17,5 +17,7 @@ describe('signupUser', () => {
   event.params.header['Accept-Language'] = 'en';
   test('With Data: Success', () => util.signupUser(event).then((response) => {
     expect(response).not.toBeNull();
+    expect(response.UserConfirmed).not.toBeNull();
+    expect(response.UserConfirmed).toBe(false);
   }));
 });

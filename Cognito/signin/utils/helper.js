@@ -1,40 +1,27 @@
-function Helper() {}
+const AWS = require('aws-sdk');
+const loginHelper = require('./login-helper');
+const constants = require('../constants/constant');
+const fetchWalletHelper = require('./fetch-wallet-helper');
+const fetchUserHelper = require('./fetch-user-helper');
 
-const includesStr = (arr, val) => {
-  function isEmpty(obj) {
-    // Check if objext is a number or a boolean
-    if (typeof obj === 'number' || typeof obj === 'boolean') return false;
+AWS.config.update({ region: constants.EU_WEST_ONE });
+// Create the DynamoDB service object
+const dynamoDB = new AWS.DynamoDB();
+const docClient = new dynamoDB.DocumentClient();
+const cognitoidentityserviceprovider = new AWS.CognitoIdentityServiceProvider();
 
-    // Check if obj is null or undefined
-    if (obj === null || obj === undefined) return true;
+async function formulateResponse(event) {
+  const response = await loginHelper.cognitoLogin(event, cognitoidentityserviceprovider);
 
-    // Check if the length of the obj is defined
-    if (typeof obj.length !== 'undefined') return obj.length === 0;
-
-    // check if obj is a custom obj
-    if (obj
-  && Object.keys(obj).length !== 0) { return false; }
-
-    // Check if obj is an element
-    if (obj instanceof Element) return false;
-
-    return true;
+  if (event['body-json'].checkPassword === true) {
+    return response;
   }
 
-  return isEmpty(arr) ? false : arr.includes(val);
-};
+  await fetchUserHelper.fetchUserFromCognito(response, cognitoidentityserviceprovider);
 
-Helper.prototype.includesStr = includesStr;
+  await fetchWalletHelper.fetchWalletFromUser(response, docClient);
 
-Helper.prototype.fetchUserId = (response) => {
-  let userIdParam;
-  Object.keys(response.UserAttributes).forEach((userId) => {
-    if (includesStr(userId.Name, 'custom:financialPortfolioId')) {
-      userIdParam = userId.Value;
-    }
-  });
-  return userIdParam;
-};
+  return response;
+}
 
-// Export object
-module.exports = new Helper();
+module.exports.formulateResponse = formulateResponse;
