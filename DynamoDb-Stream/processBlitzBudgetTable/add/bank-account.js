@@ -1,6 +1,6 @@
 const BankAccount = () => {};
 
-function addNewBankAccount(record, docClient) {
+async function addNewBankAccount(record, docClient) {
   const today = new Date();
   const randomValue = `BankAccount#${today.toISOString()}`;
 
@@ -26,18 +26,9 @@ function addNewBankAccount(record, docClient) {
   const params = createParameters();
 
   console.log('Adding a new item...');
-  return new Promise((resolve, reject) => {
-    docClient.put(params, (err, data) => {
-      if (err) {
-        console.log('Error ', err);
-        reject(err);
-      } else {
-        resolve({
-          success: data,
-        });
-      }
-    });
-  });
+
+  const response = await docClient.put(params).promise();
+  return response;
 }
 
 BankAccount.prototype.addNewBankAccount = addNewBankAccount;

@@ -11,7 +11,7 @@ AWS.config.update({
 // Create the DynamoDB service object
 const docClient = new AWS.DynamoDB.DocumentClient();
 
-AddAccount.prototype.addNewBankAccounts = (event) => {
+AddAccount.prototype.addNewBankAccounts = async (event) => {
   const today = new Date();
   const randomValue = `BankAccount#${today.toISOString()}`;
 
@@ -33,19 +33,12 @@ AddAccount.prototype.addNewBankAccounts = (event) => {
   };
 
   console.log('Adding a new item...');
-  return new Promise((resolve, reject) => {
-    docClient.put(params, (err, data) => {
-      if (err) {
-        console.log('Error ', err);
-        reject(err);
-      } else {
-        resolve({
-          success: data,
-          accountId: randomValue,
-        });
-      }
-    });
-  });
+
+  const response = await docClient.put(params).promise();
+  return {
+    success: response,
+    accountId: randomValue,
+  };
 };
 
 module.exports = new AddAccount();
