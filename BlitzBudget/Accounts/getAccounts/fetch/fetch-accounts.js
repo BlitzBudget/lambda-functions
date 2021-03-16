@@ -12,19 +12,10 @@ const docClient = new AWS.DynamoDB.DocumentClient({
 });
 const FetchAccounts = () => {};
 
-function getBankAccountItem(params) {
+async function getBankAccountItem(params) {
   // Call DynamoDB to read the item from the table
-  return new Promise((resolve, reject) => {
-    docClient.query(params, (err, data) => {
-      if (err) {
-        console.log('Error ', err);
-        reject(err);
-      } else {
-        console.log('data retrieved ', JSON.stringify(data.Items));
-        resolve(data);
-      }
-    });
-  });
+  const response = await docClient.query(params).promise();
+  return response;
 }
 
 // Get BankAccount Item

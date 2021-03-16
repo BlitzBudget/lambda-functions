@@ -3,7 +3,7 @@ const FetchBudget = () => {};
 const constants = require('../constants/constant');
 
 // Get BankAccount Item
-FetchBudget.prototype.getBankAccountItem = (walletId, docClient) => {
+FetchBudget.prototype.getBankAccountItem = async (walletId, docClient) => {
   const params = {
     TableName: constants.TABLE_NAME,
     KeyConditionExpression: 'pk = :walletId and begins_with(sk, :items)',
@@ -16,19 +16,10 @@ FetchBudget.prototype.getBankAccountItem = (walletId, docClient) => {
   };
 
   // Call DynamoDB to read the item from the table
-  return new Promise((resolve, reject) => {
-    docClient.query(params, (err, data) => {
-      if (err) {
-        console.log('Error ', err);
-        reject(err);
-      } else {
-        console.log('data retrieved ', JSON.stringify(data.Items));
-        resolve({
-          Account: data.Items,
-        });
-      }
-    });
-  });
+  const response = await docClient.query(params).promise();
+  return {
+    Account: response.Items,
+  };
 };
 
 // Export object

@@ -3,7 +3,7 @@ const TransactionFunction = () => {};
 const constants = require('../constants/constant');
 
 // Get Transaction Item
-TransactionFunction.prototype.getTransactionsData = (
+TransactionFunction.prototype.getTransactionsData = async (
   pk,
   startsWithDate,
   endsWithDate,
@@ -25,19 +25,11 @@ TransactionFunction.prototype.getTransactionsData = (
   const params = createParameters();
 
   // Call DynamoDB to read the item from the table
-  return new Promise((resolve, reject) => {
-    docClient.query(params, (err, data) => {
-      if (err) {
-        console.log('Error ', err);
-        reject(err);
-      } else {
-        console.log('data retrieved - Transactions %j', data.Count);
-        resolve({
-          Transaction: data.Items,
-        });
-      }
-    });
-  });
+  const response = await docClient.query(params).promise();
+
+  return {
+    Transaction: response.Items,
+  };
 };
 
 // Export object

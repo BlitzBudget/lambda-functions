@@ -1,6 +1,6 @@
 const AddCategory = () => {};
 
-AddCategory.prototype.createCategoryItem = (
+AddCategory.prototype.createCategoryItem = async (
   event,
   skForCategory,
   categoryName,
@@ -30,20 +30,9 @@ AddCategory.prototype.createCategoryItem = (
   const params = createParameters();
 
   console.log('Adding a new item...');
-  return new Promise((resolve, reject) => {
-    docClient.update(params, (err, data) => {
-      if (err) {
-        console.log('Error ', err);
-        reject(err);
-      } else {
-        console.log(
-          'Successfully created a new category %j',
-          data.Attributes.sk,
-        );
-        resolve({ Category: data.Attributes });
-      }
-    });
-  });
+  const response = await docClient.update(params).promise();
+
+  return { Category: response.Attributes };
 };
 
 // Export object

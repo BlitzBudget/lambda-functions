@@ -2,12 +2,7 @@ const Category = () => {};
 
 const constants = require('../constants/constant');
 
-Category.prototype.getCategoryData = (
-  pk,
-  startsWithDate,
-  endsWithDate,
-  docClient,
-) => {
+Category.prototype.getCategoryData = async (pk, startsWithDate, endsWithDate, docClient) => {
   function organizeCategoryData(data) {
     console.log('data retrieved - Category %j', data.Count);
     if (data.Items) {
@@ -38,19 +33,12 @@ Category.prototype.getCategoryData = (
   const params = createParameters();
 
   // Call DynamoDB to read the item from the table
-  return new Promise((resolve, reject) => {
-    docClient.query(params, (err, data) => {
-      if (err) {
-        console.log('Error ', err);
-        reject(err);
-      } else {
-        organizeCategoryData(data);
-        resolve({
-          Category: data.Items,
-        });
-      }
-    });
-  });
+  const response = await docClient.query(params).promise();
+
+  organizeCategoryData(response);
+  return {
+    Category: response.Items,
+  };
 };
 
 // Export object

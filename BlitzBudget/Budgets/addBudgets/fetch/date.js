@@ -2,7 +2,7 @@ const FetchDate = () => {};
 
 const constants = require('../constants/constant');
 
-FetchDate.prototype.getDateData = (pk, today, docClient) => {
+FetchDate.prototype.getDateData = async (pk, today, docClient) => {
   const params = {
     TableName: constants.TABLE_NAME,
     KeyConditionExpression: 'pk = :pk AND begins_with(sk, :items)',
@@ -18,19 +18,11 @@ FetchDate.prototype.getDateData = (pk, today, docClient) => {
   };
 
   // Call DynamoDB to read the item from the table
-  return new Promise((resolve, reject) => {
-    docClient.query(params, (err, data) => {
-      if (err) {
-        console.log('Error ', err);
-        reject(err);
-      } else {
-        console.log('data retrieved - Date %j', data.Count);
-        resolve({
-          Date: data.Items,
-        });
-      }
-    });
-  });
+  const response = await docClient.query(params).promise();
+
+  return {
+    Date: response.Items,
+  };
 };
 
 // Export object

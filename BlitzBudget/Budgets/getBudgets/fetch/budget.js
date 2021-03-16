@@ -3,11 +3,10 @@ const Budget = () => {};
 const constants = require('../constants/constant');
 
 // Get Budget Item
-Budget.prototype.getBudgetsItem = (
+Budget.prototype.getBudgetData = async (
   walletId,
   startsWithDate,
   endsWithDate,
-  BudgetData,
   docClient,
 ) => {
   function createParameters() {
@@ -26,19 +25,11 @@ Budget.prototype.getBudgetsItem = (
   const params = createParameters();
 
   // Call DynamoDB to read the item from the table
-  return new Promise((resolve, reject) => {
-    docClient.query(params, (err, data) => {
-      if (err) {
-        console.log('Error ', err);
-        reject(err);
-      } else {
-        console.log('data retrieved ', data.Count);
-        resolve({
-          Budget: data.Items,
-        });
-      }
-    });
-  });
+  const response = await docClient.query(params).promise();
+
+  return {
+    Budget: response.Items,
+  };
 };
 
 // Export object

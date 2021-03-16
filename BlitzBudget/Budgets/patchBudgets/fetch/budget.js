@@ -4,7 +4,7 @@ const helper = require('../utils/helper');
 const constants = require('../constants/constant');
 
 // Get Budget Item
-FetchBudget.prototype.getBudgetsItem = (today, event, docClient) => {
+FetchBudget.prototype.getBudgetsItem = async (today, event, docClient) => {
   function createParameters() {
     return {
       TableName: constants.TABLE_NAME,
@@ -24,36 +24,20 @@ FetchBudget.prototype.getBudgetsItem = (today, event, docClient) => {
   const params = createParameters();
 
   // Call DynamoDB to read the item from the table
-  return new Promise((resolve, reject) => {
-    docClient.query(params, (err, data) => {
-      if (err) {
-        console.log('Error ', err);
-        reject(err);
-      } else {
-        console.log('data retrieved - Budget', data.Count);
-        let matchingBudget;
-        if (helper.isNotEmpty(data.Items)) {
-          Object.keys(data.Items).forEach((budgetItem) => {
-            if (
-              helper.isEqual(budgetItem.category, event['body-json'].category)
-              && helper.isEqual(
-                budgetItem.date_meant_for,
-                event['body-json'].dateMeantFor,
-              )
-            ) {
-              console.log(
-                'Matching budget found with the same date and category %j',
-                budgetItem.sk,
-              );
-              matchingBudget = budgetItem;
-            }
-          });
-        }
+  const response = await docClient.query(params).promise();
 
-        resolve({ Budget: matchingBudget });
+  let matchingBudget;
+  if (helper.isNotEmpty(response.Items)) {
+    Object.keys(response.Items).forEach((budget) => {
+      if (helper.isEqual(budget.category, event['body-json'].category)
+              && helper.isEqual(budget.date_meant_for, event['body-json'].dateMeantFor)) {
+        console.log('Matching budget found with the same date and category %j', budget.sk);
+        matchingBudget = budget;
       }
     });
-  });
+  }
+
+  return { Budget: matchingBudget };
 };
 
 // Export object

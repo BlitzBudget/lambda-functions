@@ -1,17 +1,9 @@
 const UpdateBudget = () => {};
 
-UpdateBudget.prototype.updatingBudgets = (params, docClient) => {
+UpdateBudget.prototype.updatingBudgets = async (params, docClient) => {
   console.log('Updating an item...');
-  return new Promise((resolve, reject) => {
-    docClient.update(params, (err, data) => {
-      if (err) {
-        console.log('Error ', err);
-        reject(err);
-      } else {
-        resolve({ success: data });
-      }
-    });
-  });
+  const response = await docClient.update(params).promise();
+  return response;
 };
 
 // Export object
