@@ -1,18 +1,8 @@
 const ConfirmSignup = () => {};
 
-ConfirmSignup.prototype.confirmSignUp = (
-  params,
-  cognitoidentityserviceprovider,
-) => new Promise((resolve, reject) => {
-  cognitoidentityserviceprovider.confirmSignUp(params, (err, data) => {
-    if (err) {
-      console.log(err, err.stack); // an error occurred
-      reject(err);
-    } else {
-      console.log(data); // successful response
-      resolve(data);
-    }
-  });
-});
+ConfirmSignup.prototype.confirmSignUp = async (params, cognitoidentityserviceprovider) => {
+  const response = await cognitoidentityserviceprovider.confirmSignUp(params).promise();
+  return response;
+};
 
 module.exports = new ConfirmSignup();

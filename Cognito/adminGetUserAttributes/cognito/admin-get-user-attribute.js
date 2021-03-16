@@ -6,13 +6,10 @@ AWS.config.update({ region: 'eu-west-1' });
 const cognitoIdServiceProvider = new AWS.CognitoIdentityServiceProvider();
 
 // Get User Attributes
-AdminGetUser.prototype.getUser = (params) => new Promise((resolve, reject) => {
-  cognitoIdServiceProvider.adminGetUser(params, (err, data) => {
-    if (err) reject(err);
-    // an error occurred
-    else resolve(data); // successful response
-  });
-});
+AdminGetUser.prototype.getUser = async (params) => {
+  const response = await cognitoIdServiceProvider.adminGetUser(params).promise();
+  return response;
+};
 
 // Export object
 module.exports = new AdminGetUser();

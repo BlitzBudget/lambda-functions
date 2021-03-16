@@ -8,19 +8,11 @@ AWS.config.update({
 const cognitoIdServiceProvider = new AWS.CognitoIdentityServiceProvider();
 
 // Update User Attributes
-AdminUpdateUser.prototype.updateAttributes = (params) => {
+AdminUpdateUser.prototype.updateAttributes = async (params) => {
   console.log(`update attribute - ${JSON.stringify(params)}`);
 
-  return new Promise((resolve, reject) => {
-    cognitoIdServiceProvider.adminUpdateUserAttributes(
-      params,
-      (err, data) => {
-        if (err) reject(err);
-        // an error occurred
-        else resolve(data); // successful response
-      },
-    );
-  });
+  const response = await cognitoIdServiceProvider.adminUpdateUserAttributes(params).promise();
+  return response;
 };
 
 // Export object

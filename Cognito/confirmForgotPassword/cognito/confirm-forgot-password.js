@@ -1,22 +1,12 @@
 const ConfirmForgotPassword = () => {};
 
-ConfirmForgotPassword.confirmForgotPassword = (
+ConfirmForgotPassword.confirmForgotPassword = async (
   params,
   cognitoidentityserviceprovider,
-) => new Promise((resolve, reject) => {
-  cognitoidentityserviceprovider.confirmForgotPassword(
-    params,
-    (err, data) => {
-      if (err) {
-        console.log(err, err.stack); // an error occurred
-        reject(err);
-      } else {
-        console.log(data); // successful response
-        resolve(data);
-      }
-    },
-  );
-});
+) => {
+  const response = await cognitoidentityserviceprovider.confirmForgotPassword(params).promise();
+  return response;
+};
 
 // Export object
 module.exports = new ConfirmForgotPassword();
