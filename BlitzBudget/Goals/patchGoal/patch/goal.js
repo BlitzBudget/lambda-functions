@@ -12,7 +12,7 @@ AWS.config.update({ region: constants.EU_WEST_ONE });
 // Create the DynamoDB service object
 const docClient = new AWS.DynamoDB.DocumentClient();
 
-function updatingGoals(event) {
+async function updatingGoals(event) {
   function createParameters() {
     let updateExp = 'set';
     const expAttrVal = {};
@@ -75,16 +75,8 @@ function updatingGoals(event) {
   }
 
   console.log('Updating an item...');
-  return new Promise((resolve, reject) => {
-    docClient.update(params, (err, data) => {
-      if (err) {
-        console.log('Error ', err);
-        reject(err);
-      } else {
-        resolve({ success: data });
-      }
-    });
-  });
+  const response = await docClient.update(params).promise();
+  return response;
 }
 
 PatchGoal.prototype.updatingGoals = updatingGoals;

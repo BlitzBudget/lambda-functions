@@ -2,7 +2,7 @@ const FetchBankAccount = () => {};
 
 const constants = require('../constants/constant');
 
-FetchBankAccount.prototype.getBankAccountData = function getBankAccountData(
+FetchBankAccount.prototype.getBankAccountData = async function getBankAccountData(
   pk,
   docClient,
 ) {
@@ -35,19 +35,12 @@ FetchBankAccount.prototype.getBankAccountData = function getBankAccountData(
   const params = createParameters();
 
   // Call DynamoDB to read the item from the table
-  return new Promise((resolve, reject) => {
-    docClient.query(params, (err, data) => {
-      if (err) {
-        console.log('Error ', err);
-        reject(err);
-      } else {
-        organizeRetrivedItems(data);
-        resolve({
-          BankAccount: data.Items,
-        });
-      }
-    });
-  });
+  const response = await docClient.query(params).promise();
+
+  organizeRetrivedItems(response);
+  return {
+    BankAccount: response.Items,
+  };
 };
 
 // Export object

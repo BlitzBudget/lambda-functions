@@ -2,7 +2,7 @@ const DeleteItems = () => {};
 
 const constants = require('../constants/constant');
 
-DeleteItems.prototype.deleteOneItem = (pk, sk, DB) => {
+DeleteItems.prototype.deleteOneItem = async (pk, sk, DB) => {
   console.log(`user Id selected for deletion is ${pk}`);
 
   const params = {
@@ -13,16 +13,8 @@ DeleteItems.prototype.deleteOneItem = (pk, sk, DB) => {
     },
   };
 
-  return new Promise((resolve, reject) => {
-    DB.delete(params, (err, data) => {
-      if (err) {
-        console.log('Error ', err);
-        reject(err);
-      } else {
-        resolve({ success: data });
-      }
-    });
-  });
+  const response = await DB.delete(params).promise();
+  return response;
 };
 
 // Export object

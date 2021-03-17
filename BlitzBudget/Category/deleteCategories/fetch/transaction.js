@@ -3,7 +3,7 @@ const FetchTransaction = () => {};
 const constants = require('../constants/constant');
 
 // Get all transaction Items
-FetchTransaction.prototype.getTransactionItems = (
+FetchTransaction.prototype.getTransactionItems = async (
   walletId,
   currentPeriod,
   DB,
@@ -20,17 +20,9 @@ FetchTransaction.prototype.getTransactionItems = (
   };
 
   // Call DynamoDB to read the item from the table
-  return new Promise((resolve, reject) => {
-    DB.query(params, (err, data) => {
-      if (err) {
-        console.log('Error ', err);
-        reject(err);
-      } else {
-        console.log('data retrieved ', JSON.stringify(data.Items));
-        resolve(data);
-      }
-    });
-  });
+
+  const response = await DB.query(params).promise();
+  return response;
 };
 
 // Export object

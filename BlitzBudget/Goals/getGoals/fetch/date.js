@@ -2,7 +2,7 @@ const FetchDate = () => {};
 
 const constants = require('../constants/constant');
 
-FetchDate.prototype.getDateData = function getDateData(
+FetchDate.prototype.getDateData = async function getDateData(
   pk,
   startsWithDate,
   endsWithDate,
@@ -37,19 +37,12 @@ FetchDate.prototype.getDateData = function getDateData(
   const params = createParameter();
 
   // Call DynamoDB to read the item from the table
-  return new Promise((resolve, reject) => {
-    docClient.query(params, (err, data) => {
-      if (err) {
-        console.log('Error ', err);
-        reject(err);
-      } else {
-        organizeRetrivedItems(data);
-        resolve({
-          Date: data.Items,
-        });
-      }
-    });
-  });
+  const response = await docClient.query(params).promise();
+
+  organizeRetrivedItems(response);
+  return {
+    Date: response.Items,
+  };
 };
 
 // Export object

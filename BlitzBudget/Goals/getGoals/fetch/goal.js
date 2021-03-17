@@ -3,7 +3,7 @@ const FetchGoal = () => {};
 const constants = require('../constants/constant');
 
 // Get goal Item
-FetchGoal.prototype.getGoalItem = function getGoalItem(
+FetchGoal.prototype.getGoalItem = async function getGoalItem(
   walletId,
   docClient,
 ) {
@@ -36,19 +36,12 @@ FetchGoal.prototype.getGoalItem = function getGoalItem(
   const params = createParameter();
 
   // Call DynamoDB to read the item from the table
-  return new Promise((resolve, reject) => {
-    docClient.query(params, (err, data) => {
-      if (err) {
-        console.log('Error ', err);
-        reject(err);
-      } else {
-        organizeRetrievedItems(data);
-        resolve({
-          Goal: data.Items,
-        });
-      }
-    });
-  });
+  const response = await docClient.query(params).promise();
+
+  organizeRetrievedItems(response);
+  return {
+    Goal: response.Items,
+  };
 };
 
 // Export object

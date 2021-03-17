@@ -5,7 +5,7 @@ const constants = require('../constants/constant');
 /*
  * Wallet data
  */
-FetchWallet.prototype.getWalletData = function getWalletData(
+FetchWallet.prototype.getWalletData = async function getWalletData(
   userId,
   walletId,
   docClient,
@@ -46,22 +46,15 @@ FetchWallet.prototype.getWalletData = function getWalletData(
   const params = createParameter();
 
   // Call DynamoDB to read the item from the table
-  return new Promise((resolve, reject) => {
-    docClient.get(params, (err, data) => {
-      if (err) {
-        console.log('Error ', err);
-        reject(err);
-      } else {
-        organizeRetrivedItems(data);
-        resolve({
-          Wallet: data,
-        });
-      }
-    });
+  const response = await docClient.get(params).promise();
+
+  organizeRetrivedItems(response);
+  return ({
+    Wallet: response,
   });
 };
 
-FetchWallet.prototype.getWalletsData = function getWalletsData(
+FetchWallet.prototype.getWalletsData = async function getWalletsData(
   userId,
   docClient,
 ) {
@@ -94,19 +87,12 @@ FetchWallet.prototype.getWalletsData = function getWalletsData(
   const params = createParameter();
 
   // Call DynamoDB to read the item from the table
-  return new Promise((resolve, reject) => {
-    docClient.query(params, (err, data) => {
-      if (err) {
-        console.log('Error ', err);
-        reject(err);
-      } else {
-        organizeRetrivedItems(data);
-        resolve({
-          Wallet: data.Items,
-        });
-      }
-    });
-  });
+  const response = await docClient.query(params).promise();
+
+  organizeRetrivedItems(response);
+  return {
+    Wallet: response.Items,
+  };
 };
 
 // Export object

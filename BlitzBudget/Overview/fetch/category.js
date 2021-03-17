@@ -2,7 +2,7 @@ const FetchCategory = () => {};
 
 const constants = require('../constants/constant');
 
-function getCategoryData(pk, startsWithDate, endsWithDate, docClient) {
+async function getCategoryData(pk, startsWithDate, endsWithDate, docClient) {
   function organizeRetrievedItems(data) {
     console.log('data retrieved - Category %j', data.Count);
     if (data.Items) {
@@ -33,18 +33,11 @@ function getCategoryData(pk, startsWithDate, endsWithDate, docClient) {
   const params = createParameters();
 
   // Call DynamoDB to read the item from the table
-  return new Promise((resolve, reject) => {
-    docClient.query(params, (err, data) => {
-      if (err) {
-        console.log('Error ', err);
-        reject(err);
-      } else {
-        organizeRetrievedItems(data);
-        resolve({
-          Category: data.Items,
-        });
-      }
-    });
+  const response = await docClient.query(params).promise();
+
+  organizeRetrievedItems(response);
+  return ({
+    Category: response.Items,
   });
 }
 

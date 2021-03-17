@@ -11,7 +11,7 @@ AWS.config.update({
 // Create the DynamoDB service object
 const docClient = new AWS.DynamoDB.DocumentClient();
 
-function addNewGoals(event) {
+async function addNewGoals(event) {
   const today = new Date();
   const randomValue = `Goal#${today.toISOString()}`;
 
@@ -37,18 +37,12 @@ function addNewGoals(event) {
   const params = createParameter();
 
   console.log('Adding a new item...');
-  return new Promise((resolve, reject) => {
-    docClient.put(params, (err, data) => {
-      if (err) {
-        console.log('Error ', err);
-        reject(err);
-      } else {
-        resolve({
-          Goal: data,
-        });
-      }
-    });
-  });
+
+  const response = await docClient.put(params).promise();
+
+  return {
+    Goal: response,
+  };
 }
 
 const handleAddNewGoal = async (event) => {
