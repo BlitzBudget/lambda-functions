@@ -27,7 +27,10 @@
   },
   "config": {
     "ghooks": {
-      "pre-commit": "npm run pretest"
+      "pre-commit": "npm test"
     }
+  },
+  "dependencies": {
+    "aws-sdk": "^2.854.0"
   }
 }

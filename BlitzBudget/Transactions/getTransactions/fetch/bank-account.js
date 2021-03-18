@@ -1,6 +1,8 @@
 const FetchBankAccount = () => {};
 
-function getBankAccountData(pk, docClient) {
+const constants = require('../constants/constant');
+
+async function getBankAccountData(pk, docClient) {
   function organizeAccountItems(data) {
     console.log('data retrieved - Bank Account %j', data.Count);
     Object.keys(data.Items).forEach((accountObj) => {
@@ -14,7 +16,7 @@ function getBankAccountData(pk, docClient) {
 
   function createParameters() {
     return {
-      TableName: 'blitzbudget',
+      TableName: constants.TABLE_NAME,
       KeyConditionExpression: 'pk = :pk and begins_with(sk, :items)',
       ExpressionAttributeValues: {
         ':pk': pk,
@@ -28,19 +30,11 @@ function getBankAccountData(pk, docClient) {
   const params = createParameters();
 
   // Call DynamoDB to read the item from the table
-  return new Promise((resolve, reject) => {
-    docClient.query(params, (err, data) => {
-      if (err) {
-        console.log('Error ', err);
-        reject(err);
-      } else {
-        organizeAccountItems(data);
-        resolve({
-          BankAccount: data.Items,
-        });
-      }
-    });
-  });
+  const response = await docClient.query(params).promise();
+  organizeAccountItems(response);
+  return {
+    BankAccount: response.Items,
+  };
 }
 
 FetchBankAccount.prototype.getBankAccountData = getBankAccountData;

@@ -1,9 +1,11 @@
 const RecurringTransaction = () => {};
 
+const constants = require('../constants/constant');
+
 /*
  * Update the recurring transaction
  */
-function updateRecurringTransactionsData(
+async function updateRecurringTransactionsData(
   walletId,
   sk,
   futureTransactionCreationDate,
@@ -11,7 +13,7 @@ function updateRecurringTransactionsData(
 ) {
   function createParameters() {
     return {
-      TableName: 'blitzbudget',
+      TableName: constants.TABLE_NAME,
       Key: {
         pk: walletId,
         sk,
@@ -28,20 +30,8 @@ function updateRecurringTransactionsData(
   const params = createParameters();
 
   console.log('Adding a new item...');
-  return new Promise((resolve, reject) => {
-    DB.update(params, (err, data) => {
-      if (err) {
-        console.log('Error ', err);
-        reject(err);
-      } else {
-        console.log(
-          'successfully updated the recurring transaction %j',
-          data.Attributes.sk,
-        );
-        resolve(data.Attributes);
-      }
-    });
-  });
+  const response = await DB.update(params).promise();
+  return response.Attributes;
 }
 
 RecurringTransaction.prototype.updateRecurringTransactionsData = updateRecurringTransactionsData;

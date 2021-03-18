@@ -1,17 +1,8 @@
 const Helper = () => {};
 
-function deleteItems(params, DB) {
-  return new Promise((resolve, reject) => {
-    DB.batchWrite(params, (err, data) => {
-      if (err) {
-        console.log('Error ', err);
-        reject(err);
-      } else {
-        console.log('All items are successfully deleted');
-        resolve({ success: data });
-      }
-    });
-  });
+async function deleteItems(params, DB) {
+  const response = await DB.batchWrite(params).promise();
+  return response;
 }
 
 Helper.prototype.deleteItems = deleteItems;

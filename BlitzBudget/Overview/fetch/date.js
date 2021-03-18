@@ -1,6 +1,8 @@
 const FetchDate = () => {};
 
-function getDateData(pk, startsWithDate, endsWithDate, docClient) {
+const constants = require('../constants/constant');
+
+async function getDateData(pk, startsWithDate, endsWithDate, docClient) {
   function organizeRetrievedItems(data) {
     console.log('data retrieved - Date ', data.Count);
     if (data.Items) {
@@ -16,7 +18,7 @@ function getDateData(pk, startsWithDate, endsWithDate, docClient) {
 
   function createParameters() {
     return {
-      TableName: 'blitzbudget',
+      TableName: constants.TABLE_NAME,
       KeyConditionExpression: 'pk = :pk and sk BETWEEN :bt1 AND :bt2',
       ExpressionAttributeValues: {
         ':pk': pk,
@@ -30,18 +32,11 @@ function getDateData(pk, startsWithDate, endsWithDate, docClient) {
   const params = createParameters();
 
   // Call DynamoDB to read the item from the table
-  return new Promise((resolve, reject) => {
-    docClient.query(params, (err, data) => {
-      if (err) {
-        console.log('Error ', err);
-        reject(err);
-      } else {
-        organizeRetrievedItems(data);
-        resolve({
-          Date: data.Items,
-        });
-      }
-    });
+  const response = await docClient.query(params).promise();
+
+  organizeRetrievedItems(response);
+  return ({
+    Date: response.Items,
   });
 }
 

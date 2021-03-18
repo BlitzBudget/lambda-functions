@@ -2,8 +2,9 @@ const PatchRecurringTransaction = () => {};
 
 const helper = require('../utils/helper');
 const parameters = require('../utils/parameters');
+const constants = require('../constants/constant');
 
-function updatingRecurringTransactions(event, docClient) {
+async function updatingRecurringTransactions(event, docClient) {
   function createParameters() {
     let updateExp = 'set';
     const expAttrVal = {};
@@ -48,7 +49,7 @@ function updatingRecurringTransactions(event, docClient) {
     expAttrNames['#update'] = 'updated_date';
 
     return {
-      TableName: 'blitzbudget',
+      TableName: constants.TABLE_NAME,
       Key: {
         pk: event['body-json'].walletId,
         sk: event['body-json'].recurringTransactionId,
@@ -63,18 +64,11 @@ function updatingRecurringTransactions(event, docClient) {
   const params = createParameters();
 
   console.log('Updating an item...');
-  return new Promise((resolve, reject) => {
-    docClient.update(params, (err, data) => {
-      if (err) {
-        console.log('Error ', err);
-        reject(err);
-      } else {
-        resolve({
-          Transaction: data,
-        });
-      }
-    });
-  });
+  const response = await docClient.update(params).promise();
+
+  return {
+    Transaction: response,
+  };
 }
 
 PatchRecurringTransaction.prototype.updatingRecurringTransactions = updatingRecurringTransactions;

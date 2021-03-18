@@ -1,9 +1,11 @@
 const Wallet = () => {};
 
-Wallet.prototype.getWalletsData = (userId, docClient) => {
+const constants = require('../constants/constant');
+
+Wallet.prototype.getWalletsData = async (userId, docClient) => {
   function createParameters() {
     return {
-      TableName: 'blitzbudget',
+      TableName: constants.TABLE_NAME,
       KeyConditionExpression: 'pk = :pk and begins_with(sk, :items)',
       ExpressionAttributeValues: {
         ':pk': userId,
@@ -29,20 +31,12 @@ Wallet.prototype.getWalletsData = (userId, docClient) => {
   const params = createParameters();
 
   // Call DynamoDB to read the item from the table
-  return new Promise((resolve, reject) => {
-    docClient.query(params, (err, data) => {
-      if (err) {
-        console.log('Error ', err);
-        reject(err);
-      } else {
-        console.log('data retrieved - Wallet %j', data.Count);
-        organizeWalletData(data);
-        resolve({
-          Wallet: data.Items,
-        });
-      }
-    });
-  });
+  const response = docClient.query(params).promise();
+
+  organizeWalletData(response);
+  return {
+    Wallet: response.Items,
+  };
 };
 
 // Export object

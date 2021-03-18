@@ -1,8 +1,10 @@
 const UpdateCategory = () => {};
 
-function updateCategoryItem(pk, sk, difference, docClient) {
+const constants = require('../constants/constant');
+
+async function updateCategoryItem(pk, sk, difference, docClient) {
   const params = {
-    TableName: 'blitzbudget',
+    TableName: constants.TABLE_NAME,
     Key: {
       pk,
       sk,
@@ -16,20 +18,9 @@ function updateCategoryItem(pk, sk, difference, docClient) {
   };
 
   console.log('Updating the item...');
-  return new Promise((resolve, reject) => {
-    docClient.update(params, (err, data) => {
-      if (err) {
-        console.error(
-          'Unable to update item. Error JSON:',
-          JSON.stringify(err, null, 2),
-        );
-        reject(err);
-      } else {
-        console.log('UpdateItem succeeded:', JSON.stringify(data, null, 2));
-        resolve(data);
-      }
-    });
-  });
+
+  const response = await docClient.update(params).promise();
+  return response;
 }
 
 UpdateCategory.prototype.updateCategoryItem = updateCategoryItem;

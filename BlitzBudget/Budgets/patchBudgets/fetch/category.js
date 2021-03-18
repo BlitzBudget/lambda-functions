@@ -1,11 +1,12 @@
 const FetchCategory = () => {};
 
 const helper = require('../utils/helper');
+const constants = require('../constants/constant');
 
-FetchCategory.prototype.getCategoryData = (event, today, docClient) => {
+FetchCategory.prototype.getCategoryData = async (event, today, docClient) => {
   function createParameters() {
     return {
-      TableName: 'blitzbudget',
+      TableName: constants.TABLE_NAME,
       KeyConditionExpression: 'pk = :pk AND begins_with(sk, :items)',
       ExpressionAttributeValues: {
         ':pk': event['body-json'].walletId,
@@ -24,17 +25,9 @@ FetchCategory.prototype.getCategoryData = (event, today, docClient) => {
     let obj;
     if (helper.isNotEmpty(data.Items)) {
       Object.keys(data.Items).forEach((categoryObj) => {
-        if (
-          helper.isEqual(
-            categoryObj.category_type,
-            event['body-json'].categoryType,
-          )
-          && helper.isEqual(categoryObj.category_name, event['body-json'].category)
-        ) {
-          console.log(
-            'Found a match for the mentioned category %j',
-            categoryObj.sk,
-          );
+        if (helper.isEqual(categoryObj.category_type, event['body-json'].categoryType)
+          && helper.isEqual(categoryObj.category_name, event['body-json'].category)) {
+          console.log('Found a match for the mentioned category %j', categoryObj.sk);
           obj = categoryObj;
         }
       });
@@ -49,18 +42,10 @@ FetchCategory.prototype.getCategoryData = (event, today, docClient) => {
   const params = createParameters();
 
   // Call DynamoDB to read the item from the table
-  return new Promise((resolve, reject) => {
-    docClient.query(params, (err, data) => {
-      if (err) {
-        console.log('Error ', err);
-        reject(err);
-      } else {
-        const obj = calculateCategory(data);
+  const response = await docClient.query(params).promise();
+  const categories = calculateCategory(response);
 
-        resolve({ Category: obj });
-      }
-    });
-  });
+  return { Category: categories };
 };
 
 // Export object

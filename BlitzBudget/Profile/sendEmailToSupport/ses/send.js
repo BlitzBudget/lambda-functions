@@ -4,9 +4,10 @@ const SesSend = () => {};
 // SPDX-License-Identifier: Apache-2.0
 
 const aws = require('aws-sdk');
+const constants = require('../constants/constant');
 
 const ses = new aws.SES({
-  region: 'eu-west-1',
+  region: constants.EU_WEST_ONE,
 });
 
 async function sendEmail(params) {

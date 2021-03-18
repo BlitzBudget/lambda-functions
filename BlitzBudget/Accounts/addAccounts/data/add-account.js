@@ -1,21 +1,23 @@
+function AddAccount() {}
+
 // Load the AWS SDK for Node.js
 const AWS = require('aws-sdk');
+const constants = require('../constants/constant');
 // Set the region
 AWS.config.update({
-  region: 'eu-west-1',
+  region: constants.EU_WEST_ONE,
 });
 
 // Create the DynamoDB service object
-const docClient = new AWS.DynamoDB.DocumentClient();
+const dynamoDB = new AWS.DynamoDB();
+const documentClient = dynamoDB.DocumentClient();
 
-const AddAccount = () => {};
-
-AddAccount.prototype.addNewBankAccounts = (event) => {
+AddAccount.prototype.addNewBankAccounts = async (event) => {
   const today = new Date();
   const randomValue = `BankAccount#${today.toISOString()}`;
 
   const params = {
-    TableName: 'blitzbudget',
+    TableName: constants.TABLE_NAME,
     Item: {
       pk: event['body-json'].walletId,
       sk: randomValue,
@@ -32,19 +34,12 @@ AddAccount.prototype.addNewBankAccounts = (event) => {
   };
 
   console.log('Adding a new item...');
-  return new Promise((resolve, reject) => {
-    docClient.put(params, (err, data) => {
-      if (err) {
-        console.log('Error ', err);
-        reject(err);
-      } else {
-        resolve({
-          success: data,
-          accountId: randomValue,
-        });
-      }
-    });
-  });
+
+  const response = await documentClient.put(params).promise();
+  return {
+    success: response,
+    accountId: randomValue,
+  };
 };
 
 module.exports = new AddAccount();

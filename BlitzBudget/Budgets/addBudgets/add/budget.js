@@ -1,6 +1,6 @@
 const AddBudget = () => {};
 
-AddBudget.prototype.addNewBudget = (event, docClient) => {
+AddBudget.prototype.addNewBudget = async (event, docClient) => {
   const today = new Date();
   today.setYear(event['body-json'].dateMeantFor.substring(5, 9));
   today.setMonth(
@@ -23,19 +23,13 @@ AddBudget.prototype.addNewBudget = (event, docClient) => {
   };
 
   console.log('Adding a new item...');
-  return new Promise((resolve, reject) => {
-    docClient.put(params, (err, data) => {
-      if (err) {
-        console.log('Error ', err);
-        reject(err);
-      } else {
-        resolve({
-          success: data,
-          budgetId: randomValue,
-        });
-      }
-    });
-  });
+
+  const response = await docClient.put(params).promise();
+
+  return {
+    success: response,
+    budgetId: randomValue,
+  };
 };
 
 module.exports = new AddBudget();

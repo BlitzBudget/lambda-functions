@@ -1,10 +1,12 @@
 const FetchTransaction = () => {};
 
+const constants = require('../constants/constant');
+
 // Get Transaction Item
-function getTransactionItems(pk, startsWithDate, endsWithDate, docClient) {
+async function getTransactionItems(pk, startsWithDate, endsWithDate, docClient) {
   function createParameters() {
     return {
-      TableName: 'blitzbudget',
+      TableName: constants.TABLE_NAME,
       KeyConditionExpression: 'pk = :pk and sk BETWEEN :bt1 AND :bt2',
       ExpressionAttributeValues: {
         ':pk': pk,
@@ -20,19 +22,11 @@ function getTransactionItems(pk, startsWithDate, endsWithDate, docClient) {
   const params = createParameters();
 
   // Call DynamoDB to read the item from the table
-  return new Promise((resolve, reject) => {
-    docClient.query(params, (err, data) => {
-      if (err) {
-        console.log('Error ', err);
-        reject(err);
-      } else {
-        console.log('data retrieved - Transactions %j', data.Count);
-        resolve({
-          Transaction: data.Items,
-        });
-      }
-    });
-  });
+  const response = await docClient.query(params).promise();
+
+  return {
+    Transaction: response.Items,
+  };
 }
 
 FetchTransaction.prototype.getTransactionItems = getTransactionItems;

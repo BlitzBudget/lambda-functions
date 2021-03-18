@@ -37,7 +37,7 @@ async function fetchAllInformationForBudget(
 ) {
   let allResponse = {};
   events.push(
-    budget.getBudgetsItem(
+    budget.getBudgetData(
       walletId,
       startsWithDate,
       endsWithDate,

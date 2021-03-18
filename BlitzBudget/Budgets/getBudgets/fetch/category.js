@@ -1,11 +1,8 @@
 const Category = () => {};
 
-Category.prototype.getCategoryData = (
-  pk,
-  startsWithDate,
-  endsWithDate,
-  docClient,
-) => {
+const constants = require('../constants/constant');
+
+Category.prototype.getCategoryData = async (pk, startsWithDate, endsWithDate, docClient) => {
   function organizeCategoryData(data) {
     console.log('data retrieved - Category %j', data.Count);
     if (data.Items) {
@@ -21,7 +18,7 @@ Category.prototype.getCategoryData = (
 
   function createParameters() {
     return {
-      TableName: 'blitzbudget',
+      TableName: constants.TABLE_NAME,
       KeyConditionExpression: 'pk = :pk and sk BETWEEN :bt1 AND :bt2',
       ExpressionAttributeValues: {
         ':pk': pk,
@@ -36,19 +33,12 @@ Category.prototype.getCategoryData = (
   const params = createParameters();
 
   // Call DynamoDB to read the item from the table
-  return new Promise((resolve, reject) => {
-    docClient.query(params, (err, data) => {
-      if (err) {
-        console.log('Error ', err);
-        reject(err);
-      } else {
-        organizeCategoryData(data);
-        resolve({
-          Category: data.Items,
-        });
-      }
-    });
-  });
+  const response = await docClient.query(params).promise();
+
+  organizeCategoryData(response);
+  return {
+    Category: response.Items,
+  };
 };
 
 // Export object

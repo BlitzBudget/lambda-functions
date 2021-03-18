@@ -1,9 +1,11 @@
 const Date = () => {};
 
-Date.prototype.getDateData = (pk, year, docClient) => {
+const constants = require('../constants/constant');
+
+Date.prototype.getDateData = async (pk, year, docClient) => {
   function createParameters() {
     return {
-      TableName: 'blitzbudget',
+      TableName: constants.TABLE_NAME,
       KeyConditionExpression: 'pk = :pk and begins_with(sk, :items)',
       ExpressionAttributeValues: {
         ':pk': pk,
@@ -16,19 +18,11 @@ Date.prototype.getDateData = (pk, year, docClient) => {
   const params = createParameters();
 
   // Call DynamoDB to read the item from the table
-  return new Promise((resolve, reject) => {
-    docClient.query(params, (err, data) => {
-      if (err) {
-        console.log('Error ', err);
-        reject(err);
-      } else {
-        console.log('data retrieved - Date %j', data.Count);
-        resolve({
-          Date: data.Items,
-        });
-      }
-    });
-  });
+  const response = await docClient.query(params).promise();
+
+  return {
+    Date: response.Items,
+  };
 };
 
 // Export object

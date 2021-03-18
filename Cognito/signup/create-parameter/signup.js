@@ -1,16 +1,17 @@
 function Signup() {}
 
-const helper = require('../utils/helper');
+const requestHelper = require('../utils/request-helper');
+const constants = require('../constants/constant');
 
 Signup.prototype.createParameter = (
   event,
 ) => {
   const {
-    email, firstName, lastName, accepLanguage, password,
-  } = helper.extractVariablesFromRequest(event);
+    email, username, surname, acceptLanguage, password,
+  } = requestHelper.extractVariablesFromRequest(event);
 
   return {
-    ClientId: '2ftlbs1kfmr2ub0e4p15tsag8g',
+    ClientId: constants.CLIENT_ID,
     /* required */
     Password: password,
     /* required */
@@ -18,37 +19,36 @@ Signup.prototype.createParameter = (
     /* required */
     UserAttributes: [
       {
-        Name: 'email',
+        Name: constants.EMAIL,
         /* required */
         Value: email,
       },
       {
-        Name: 'name',
+        Name: constants.NAME,
         /* required */
-        Value: firstName,
+        Value: username,
       },
       {
-        Name: 'family_name',
+        Name: constants.FAMILY_NAME,
         /* required */
-        Value: lastName,
+        Value: surname,
       },
       {
-        Name: 'locale',
+        Name: constants.LOCALE,
         /* required */
-        Value:
-        accepLanguage.length <= 4
-          ? accepLanguage.substring(1, 3)
-          : accepLanguage.substring(1, 6) /* take en or en-US if available */,
+        Value: acceptLanguage.length <= 4
+          ? acceptLanguage.substring(1, 3)
+          : acceptLanguage.substring(1, 6) /* take en or en-US if available */,
       },
       {
-        Name: 'custom:financialPortfolioId',
+        Name: constants.FINANCIAL_PORTFOLIO_ID,
         /* required */
-        Value: `User#${new Date().toISOString()}`,
+        Value: `${constants.USER_ID}${new Date().toISOString()}`,
       },
       {
-        Name: 'custom:exportFileFormat',
+        Name: constants.FILE_FORMAT,
         /* required */
-        Value: 'XLS',
+        Value: constants.XLS,
       },
     ],
   };

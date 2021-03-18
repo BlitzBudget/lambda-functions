@@ -1,26 +1,19 @@
-const Signup = () => {};
+function Signup() {}
 
 const AWS = require('aws-sdk');
+const constants = require('../constants/constant');
 const signupParameter = require('../create-parameter/signup');
 
 AWS.config.update({
-  region: 'eu-west-1',
+  region: constants.EU_WEST_ONE,
 });
 const cognitoidentityserviceprovider = new AWS.CognitoIdentityServiceProvider();
 
-Signup.prototype.signup = (event) => new Promise((resolve, reject) => {
+Signup.prototype.signup = async (event) => {
   const parameter = signupParameter.createParameter(event);
-
-  cognitoidentityserviceprovider.signUp(parameter, (err, data) => {
-    if (err) {
-      console.log(err, err.stack); // an error occurred
-      reject(err);
-    } else {
-      console.log(data); // successful response
-      resolve(data);
-    }
-  });
-});
+  const response = await cognitoidentityserviceprovider.signUp(parameter).promise();
+  return response;
+};
 
 // Export object
 module.exports = new Signup();

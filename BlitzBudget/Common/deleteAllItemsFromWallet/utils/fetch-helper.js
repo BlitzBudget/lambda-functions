@@ -1,9 +1,11 @@
 const FetchHelper = () => {};
 
+const constants = require('../constants/constant');
+
 // Get all Items
 function getAllItems(walletId, DB) {
   const params = {
-    TableName: 'blitzbudget',
+    TableName: constants.TABLE_NAME,
     KeyConditionExpression: 'pk = :walletId',
     ExpressionAttributeValues: {
       ':walletId': walletId,

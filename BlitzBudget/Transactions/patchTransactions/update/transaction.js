@@ -1,9 +1,10 @@
 const UpdateTransaction = () => {};
 
 const parameters = require('../utils/parameter');
+const constants = require('../constants/constant');
 const helper = require('../utils/helper');
 
-function updatingTransactions(event, docClient) {
+async function updatingTransactions(event, docClient) {
   function createParameters() {
     let updateExp = 'set';
     const expAttrVal = {};
@@ -48,7 +49,7 @@ function updatingTransactions(event, docClient) {
     expAttrNames['#update'] = 'updated_date';
 
     return {
-      TableName: 'blitzbudget',
+      TableName: constants.TABLE_NAME,
       Key: {
         pk: event['body-json'].walletId,
         sk: event['body-json'].transactionId,
@@ -63,18 +64,10 @@ function updatingTransactions(event, docClient) {
   const params = createParameters();
 
   console.log('Updating an item...');
-  return new Promise((resolve, reject) => {
-    docClient.update(params, (err, data) => {
-      if (err) {
-        console.log('Error ', err);
-        reject(err);
-      } else {
-        resolve({
-          Transaction: data,
-        });
-      }
-    });
-  });
+  const response = await docClient.update(params).promise();
+  return {
+    Transaction: response,
+  };
 }
 
 UpdateTransaction.prototype.updatingTransactions = updatingTransactions;

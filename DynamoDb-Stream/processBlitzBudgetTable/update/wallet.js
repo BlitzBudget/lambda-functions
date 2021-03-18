@@ -1,8 +1,10 @@
 const Wallet = () => {};
 
-function updateWalletBalance(pk, sk, balance, assetBalance, debtBalance, docClient) {
+const constants = require('../constants/constant');
+
+async function updateWalletBalance(pk, sk, balance, assetBalance, debtBalance, docClient) {
   const params = {
-    TableName: 'blitzbudget',
+    TableName: constants.TABLE_NAME,
     Key: {
       pk,
       sk,
@@ -19,20 +21,9 @@ function updateWalletBalance(pk, sk, balance, assetBalance, debtBalance, docClie
   };
 
   console.log('Updating the item...');
-  return new Promise((resolve, reject) => {
-    docClient.update(params, (err, data) => {
-      if (err) {
-        console.error(
-          'Unable to update item. Error JSON:',
-          JSON.stringify(err, null, 2),
-        );
-        reject(err);
-      } else {
-        console.log('UpdateItem succeeded:', JSON.stringify(data, null, 2));
-        resolve(data);
-      }
-    });
-  });
+
+  const response = await docClient.update(params).promise();
+  return response;
 }
 
 Wallet.prototype.updateWalletBalance = updateWalletBalance;

@@ -2,7 +2,7 @@ const Publish = () => {};
 
 const helper = require('../utils/helper');
 
-function resetAccountSubscriberThroughSNS(event, sns) {
+async function resetAccountSubscriberThroughSNS(event, sns) {
   console.log(
     `Publishing to ResetAccountListener SNS or wallet id - ${
       event['body-json'].walletId}`,
@@ -29,16 +29,8 @@ function resetAccountSubscriberThroughSNS(event, sns) {
 
   const params = createParameters();
 
-  return new Promise((resolve, reject) => {
-    sns.publish(params, (err) => {
-      if (err) {
-        console.log('Error ', err);
-        reject(err);
-      } else {
-        resolve('Reset account to SNS published');
-      }
-    });
-  });
+  const response = await sns.publish(params).promise();
+  return response;
 }
 
 Publish.prototype.resetAccountSubscriberThroughSNS = resetAccountSubscriberThroughSNS;

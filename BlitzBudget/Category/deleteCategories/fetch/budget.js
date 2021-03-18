@@ -1,9 +1,11 @@
 const FetchBudget = () => {};
 
+const constants = require('../constants/constant');
+
 // Get all budget Items
-FetchBudget.prototype.getBudgetItems = (walletId, currentPeriod, DB) => {
+FetchBudget.prototype.getBudgetItems = async (walletId, currentPeriod, DB) => {
   const params = {
-    TableName: 'blitzbudget',
+    TableName: constants.TABLE_NAME,
     KeyConditionExpression: 'pk = :pk and begins_with(sk, :items)',
     ExpressionAttributeValues: {
       ':pk': walletId,
@@ -13,17 +15,9 @@ FetchBudget.prototype.getBudgetItems = (walletId, currentPeriod, DB) => {
   };
 
   // Call DynamoDB to read the item from the table
-  return new Promise((resolve, reject) => {
-    DB.query(params, (err, data) => {
-      if (err) {
-        console.log('Error ', err);
-        reject(err);
-      } else {
-        console.log('data retrieved ', JSON.stringify(data.Items));
-        resolve(data);
-      }
-    });
-  });
+
+  const response = await DB.query(params).promise();
+  return response;
 };
 
 // Export object

@@ -1,8 +1,9 @@
 const FetchCategory = () => {};
 
 const helper = require('../utils/helper');
+const constants = require('../constants/constant');
 
-function getCategoryData(event, today, docClient) {
+async function getCategoryData(event, today, docClient) {
   function organizeCategoryObject(data) {
     console.log('data retrieved - Category %j', data.Count);
     let obj;
@@ -33,7 +34,7 @@ function getCategoryData(event, today, docClient) {
 
   function createParameters() {
     return {
-      TableName: 'blitzbudget',
+      TableName: constants.TABLE_NAME,
       KeyConditionExpression: 'pk = :pk AND begins_with(sk, :items)',
       ExpressionAttributeValues: {
         ':pk': event['body-json'].walletId,
@@ -50,19 +51,10 @@ function getCategoryData(event, today, docClient) {
   const params = createParameters();
 
   // Call DynamoDB to read the item from the table
-  return new Promise((resolve, reject) => {
-    docClient.query(params, (err, data) => {
-      if (err) {
-        console.log('Error ', err);
-        reject(err);
-      } else {
-        const obj = organizeCategoryObject(data);
+  const response = await docClient.query(params).promise();
 
-        resolve({
-          Category: obj,
-        });
-      }
-    });
+  return ({
+    Category: organizeCategoryObject(response),
   });
 }
 

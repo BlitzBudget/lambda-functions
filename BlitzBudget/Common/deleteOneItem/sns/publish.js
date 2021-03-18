@@ -1,6 +1,6 @@
 const Publish = () => {};
 
-Publish.prototype.publishToResetAccountsSNS = (item, sns) => {
+Publish.prototype.publishToResetAccountsSNS = async (item, sns) => {
   const params = {
     Message: item,
     MessageAttributes: {
@@ -12,16 +12,8 @@ Publish.prototype.publishToResetAccountsSNS = (item, sns) => {
     TopicArn: 'arn:aws:sns:eu-west-1:064559090307:ResetAccountSubscriber',
   };
 
-  return new Promise((resolve, reject) => {
-    sns.publish(params, (err) => {
-      if (err) {
-        console.log('Error ', err);
-        reject(err);
-      } else {
-        resolve('Reset account to SNS published');
-      }
-    });
-  });
+  const response = await sns.publish(params).promise();
+  return response;
 };
 
 // Export object

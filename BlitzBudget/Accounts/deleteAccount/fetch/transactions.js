@@ -1,9 +1,11 @@
 const Transaction = () => {};
 
+const constants = require('../constants/constant');
+
 // Get all Transaction Items
-Transaction.prototype.getTransactionItems = (walletId, DB) => {
+Transaction.prototype.getTransactionItems = async (walletId, DB) => {
   const params = {
-    TableName: 'blitzbudget',
+    TableName: constants.TABLE_NAME,
     KeyConditionExpression: 'pk = :pk and begins_with(sk, :items)',
     ExpressionAttributeValues: {
       ':pk': walletId,
@@ -14,17 +16,8 @@ Transaction.prototype.getTransactionItems = (walletId, DB) => {
   };
 
   // Call DynamoDB to read the item from the table
-  return new Promise((resolve, reject) => {
-    DB.query(params, (err, data) => {
-      if (err) {
-        console.log('Error ', err);
-        reject(err);
-      } else {
-        console.log('data retrieved ', JSON.stringify(data.Items));
-        resolve(data);
-      }
-    });
-  });
+  const response = await DB.query(params).promise();
+  return response;
 };
 
 // Export object

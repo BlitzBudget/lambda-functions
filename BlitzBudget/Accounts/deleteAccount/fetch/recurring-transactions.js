@@ -1,7 +1,7 @@
 const RecurringTransaction = () => {};
 
 // Get all transaction Items
-RecurringTransaction.prototype.getRecurringTransactionItems = (
+RecurringTransaction.prototype.getRecurringTransactionItems = async (
   walletId,
   DB,
 ) => {
@@ -17,17 +17,8 @@ RecurringTransaction.prototype.getRecurringTransactionItems = (
   };
 
   // Call DynamoDB to read the item from the table
-  return new Promise((resolve, reject) => {
-    DB.query(params, (err, data) => {
-      if (err) {
-        console.log('Error ', err);
-        reject(err);
-      } else {
-        console.log('data retrieved ', JSON.stringify(data.Items));
-        resolve(data);
-      }
-    });
-  });
+  const response = await DB.query(params).promise();
+  return response;
 };
 
 // Export object

@@ -2,9 +2,11 @@ const wallet = () => {};
 
 // Load the AWS SDK for Node.js
 const AWS = require('aws-sdk');
+const constants = require('../constants/constant');
+
 // Set the region
 AWS.config.update({
-  region: 'eu-west-1',
+  region: constants.EU_WEST_ONE,
 });
 
 const Helper = require('../utils/helper');
@@ -12,13 +14,13 @@ const Helper = require('../utils/helper');
 // Create the DynamoDB service object
 const DB = new AWS.DynamoDB.DocumentClient();
 
-function addNewWallet(event, userId, currency, walletName) {
+async function addNewWallet(event, userId, currency, walletName) {
   const today = new Date();
   const randomValue = `Wallet#${today.toISOString()}`;
 
   function createParameters() {
     return {
-      TableName: 'blitzbudget',
+      TableName: constants.TABLE_NAME,
       Item: {
         pk: userId,
         sk: randomValue,
@@ -46,18 +48,12 @@ function addNewWallet(event, userId, currency, walletName) {
   }
 
   console.log('Adding a new item...');
-  return new Promise((resolve, reject) => {
-    DB.put(params, (err, data) => {
-      if (err) {
-        console.log('Error ', err);
-        reject(err);
-      } else {
-        addInfoToResponse();
-        resolve({
-          success: data,
-        });
-      }
-    });
+
+  const response = await DB.put(params).promise();
+
+  addInfoToResponse();
+  return ({
+    success: response,
   });
 }
 

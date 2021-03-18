@@ -1,9 +1,10 @@
 const AWS = require('aws-sdk');
 const deleteHelper = require('./utils/delete-helper');
 const publish = require('./sns/publish');
+const constants = require('./constants/constant');
 
 AWS.config.update({
-  region: 'eu-west-1',
+  region: constants.EU_WEST_ONE,
 });
 // Delete User
 const cognitoIdServiceProvider = new AWS.CognitoIdentityServiceProvider();
