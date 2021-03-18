@@ -3,6 +3,7 @@ const Helper = () => {};
 // Load the AWS SDK for Node.js
 const AWS = require('aws-sdk');
 const constants = require('../constants/constant');
+const goalParameter = require('../create-parameter/goal');
 // Set the region
 AWS.config.update({
   region: constants.EU_WEST_ONE,
@@ -15,26 +16,7 @@ async function addNewGoals(event) {
   const today = new Date();
   const randomValue = `Goal#${today.toISOString()}`;
 
-  function createParameter() {
-    return {
-      TableName: constants.TABLE_NAME,
-      Item: {
-        pk: event['body-json'].walletId,
-        sk: randomValue,
-        goal_type: event['body-json'].goalType,
-        final_amount: event['body-json'].targetAmount,
-        preferable_target_date: event['body-json'].targetDate,
-        actual_target_date: event['body-json'].actualTargetDate,
-        monthly_contribution: event['body-json'].monthlyContribution,
-        target_id: event['body-json'].targetId,
-        target_type: event['body-json'].targetType,
-        creation_date: new Date().toISOString(),
-        updated_date: new Date().toISOString(),
-      },
-    };
-  }
-
-  const params = createParameter();
+  const params = goalParameter.createParameter(randomValue, event);
 
   console.log('Adding a new item...');
 

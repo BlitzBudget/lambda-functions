@@ -1,30 +1,14 @@
 const FetchHelper = () => {};
 
-const constants = require('../constants/constant');
+const fetchParameter = require('../create-parameter/fetch');
 
 // Get all Items
-function getAllItems(walletId, DB) {
-  const params = {
-    TableName: constants.TABLE_NAME,
-    KeyConditionExpression: 'pk = :walletId',
-    ExpressionAttributeValues: {
-      ':walletId': walletId,
-    },
-    ProjectionExpression: 'sk',
-  };
+async function getAllItems(walletId, DB) {
+  const params = fetchParameter.createParameter(walletId);
 
   // Call DynamoDB to read the item from the table
-  return new Promise((resolve, reject) => {
-    DB.query(params, (err, data) => {
-      if (err) {
-        console.log('Error ', err);
-        reject(err);
-      } else {
-        console.log('data retrieved ', JSON.stringify(data.Items));
-        resolve(data);
-      }
-    });
-  });
+  const response = await DB.query(params).promise();
+  return response;
 }
 
 async function fetchAllItemsForWallet(walletId, DB) {

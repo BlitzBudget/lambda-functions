@@ -1,6 +1,6 @@
 const FetchGoal = () => {};
 
-const constants = require('../constants/constant');
+const goalParameter = require('../create-parameter/goal');
 
 // Get goal Item
 FetchGoal.prototype.getGoalItem = async function getGoalItem(
@@ -20,20 +20,7 @@ FetchGoal.prototype.getGoalItem = async function getGoalItem(
     }
   }
 
-  function createParameter() {
-    return {
-      TableName: constants.TABLE_NAME,
-      KeyConditionExpression: 'pk = :walletId and begins_with(sk, :items)',
-      ExpressionAttributeValues: {
-        ':walletId': walletId,
-        ':items': 'Goal#',
-      },
-      ProjectionExpression:
-        'preferable_target_date, target_id, target_type, goal_type, monthly_contribution, sk, pk, final_amount',
-    };
-  }
-
-  const params = createParameter();
+  const params = goalParameter.createParameter(walletId);
 
   // Call DynamoDB to read the item from the table
   const response = await documentClient.query(params).promise();

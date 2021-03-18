@@ -1,6 +1,6 @@
 const FetchWallet = () => {};
 
-const constants = require('../constants/constant');
+const walletParameter = require('../create-parameter/wallet');
 
 async function getWalletData(userId, walletId, documentClient) {
   function organizeRetrievedItems(data) {
@@ -14,29 +14,13 @@ async function getWalletData(userId, walletId, documentClient) {
     }
   }
 
-  function createParameters() {
-    return {
-      AttributesToGet: [
-        'currency',
-        'total_asset_balance',
-        'total_debt_balance',
-        'wallet_balance',
-      ],
-      TableName: constants.TABLE_NAME,
-      Key: {
-        pk: userId,
-        sk: walletId,
-      },
-    };
-  }
-
   console.log(
     'fetching the wallet information for the user %j',
     userId,
     ' with the wallet ',
     walletId,
   );
-  const params = createParameters();
+  const params = walletParameter.createParameters(userId, walletId);
 
   // Call DynamoDB to read the item from the table
 

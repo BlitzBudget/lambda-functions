@@ -1,6 +1,6 @@
 const FetchCategory = () => {};
 
-const constants = require('../constants/constant');
+const categoryParameter = require('../create-parameter/category');
 
 async function getCategoryData(pk, startsWithDate, endsWithDate, documentClient) {
   function organizeRetrievedItems(data) {
@@ -16,21 +16,7 @@ async function getCategoryData(pk, startsWithDate, endsWithDate, documentClient)
     }
   }
 
-  function createParameters() {
-    return {
-      TableName: constants.TABLE_NAME,
-      KeyConditionExpression: 'pk = :pk and sk BETWEEN :bt1 AND :bt2',
-      ExpressionAttributeValues: {
-        ':pk': pk,
-        ':bt1': `Category#${startsWithDate}`,
-        ':bt2': `Category#${endsWithDate}`,
-      },
-      ProjectionExpression:
-        'pk, sk, category_name, category_total, category_type',
-    };
-  }
-
-  const params = createParameters();
+  const params = categoryParameter.createParameters(pk, startsWithDate, endsWithDate);
 
   // Call DynamoDB to read the item from the table
   const response = await documentClient.query(params).promise();

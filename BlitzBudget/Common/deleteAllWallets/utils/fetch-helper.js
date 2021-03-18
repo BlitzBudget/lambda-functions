@@ -4,7 +4,7 @@ const deleteHelper = require('./delete-helper');
 const constants = require('../constants/constant');
 
 // Get goal Item
-function getAllItems(userId, DB) {
+async function getAllItems(userId, DB) {
   const params = {
     TableName: constants.TABLE_NAME,
     KeyConditionExpression: 'pk = :userId',
@@ -15,17 +15,9 @@ function getAllItems(userId, DB) {
   };
 
   // Call DynamoDB to read the item from the table
-  return new Promise((resolve, reject) => {
-    DB.query(params, (err, data) => {
-      if (err) {
-        console.log('Error ', err);
-        reject(err);
-      } else {
-        console.log('data retrieved ', JSON.stringify(data.Items));
-        resolve(data);
-      }
-    });
-  });
+
+  const response = await DB.query(params).promise();
+  return response;
 }
 
 async function fetchAllItemsToDelete(userId, sns, DB, events) {

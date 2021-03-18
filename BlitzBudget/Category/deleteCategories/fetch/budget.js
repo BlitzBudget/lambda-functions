@@ -1,18 +1,10 @@
 const FetchBudget = () => {};
 
-const constants = require('../constants/constant');
+const budget = require('../create-parameter/budget');
 
 // Get all budget Items
 FetchBudget.prototype.getBudgetItems = async (walletId, currentPeriod, DB) => {
-  const params = {
-    TableName: constants.TABLE_NAME,
-    KeyConditionExpression: 'pk = :pk and begins_with(sk, :items)',
-    ExpressionAttributeValues: {
-      ':pk': walletId,
-      ':items': `Budget#${currentPeriod}`,
-    },
-    ProjectionExpression: 'category, planned, sk, pk',
-  };
+  const params = budget.createParameter(walletId, currentPeriod);
 
   // Call DynamoDB to read the item from the table
 

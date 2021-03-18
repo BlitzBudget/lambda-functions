@@ -2,6 +2,7 @@ const DeleteHelper = () => {};
 
 const helper = require('./helper');
 const deleteItems = require('../delete/items.js');
+const deleteParameter = require('../create-parameter/delete.js');
 
 function buildDeleteRequest(result, walletId, DB) {
   console.log(
@@ -11,7 +12,7 @@ function buildDeleteRequest(result, walletId, DB) {
   const requestArr = [];
   const events = [];
 
-  Object.keys(result.Items).forEach((item) => {
+  result.Items.forEach((item) => {
     console.log('Building the delete params for the item %j', item.sk);
     requestArr.push({
       DeleteRequest: {
@@ -27,10 +28,8 @@ function buildDeleteRequest(result, walletId, DB) {
   const deleteRequests = helper.chunkArrayInGroups(requestArr, 25);
 
   // Push Events  to be executed in bulk
-  Object.keys(deleteRequests).forEach((deleteRequest) => {
-    const params = {};
-    params.RequestItems = {};
-    params.RequestItems.blitzbudget = deleteRequest;
+  deleteRequests.forEach((deleteRequest) => {
+    const params = deleteParameter.createParameter(deleteRequest);
     console.log(
       'The delete request is in batch  with length %j',
       params.RequestItems.blitzbudget.length,

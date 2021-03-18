@@ -1,6 +1,6 @@
 const FetchDate = () => {};
 
-const constants = require('../constants/constant');
+const dateParameter = require('../create-parameter/date');
 
 async function getDateData(pk, startsWithDate, endsWithDate, documentClient) {
   function organizeRetrievedItems(data) {
@@ -16,20 +16,7 @@ async function getDateData(pk, startsWithDate, endsWithDate, documentClient) {
     }
   }
 
-  function createParameters() {
-    return {
-      TableName: constants.TABLE_NAME,
-      KeyConditionExpression: 'pk = :pk and sk BETWEEN :bt1 AND :bt2',
-      ExpressionAttributeValues: {
-        ':pk': pk,
-        ':bt1': `Date#${startsWithDate}`,
-        ':bt2': `Date#${endsWithDate}`,
-      },
-      ProjectionExpression: 'pk, sk, income_total, expense_total, balance',
-    };
-  }
-
-  const params = createParameters();
+  const params = dateParameter.createParameters(pk, startsWithDate, endsWithDate);
 
   // Call DynamoDB to read the item from the table
   const response = await documentClient.query(params).promise();
