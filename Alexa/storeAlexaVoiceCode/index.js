@@ -74,7 +74,12 @@ exports.handler = async (event) => {
   if (deleteVoiceCode && voiceCodePresent) {
     await deleteHelper.handleDeleteOldVoiceCode(userId, alexaId, documentClient);
   } else {
-    alexaVoiceCodeId = await addHelper.handleAddNewVoiceCode(event, userId, alexaId, documentClient);
+    alexaVoiceCodeId = await addHelper.handleAddNewVoiceCode(
+      event,
+      userId,
+      alexaId,
+      documentClient,
+    );
     response.alexaVoiceCodeId = alexaVoiceCodeId;
   }
 

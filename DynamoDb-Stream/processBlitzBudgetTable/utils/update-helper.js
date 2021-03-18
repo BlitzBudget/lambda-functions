@@ -38,7 +38,12 @@ function updateAccountBalance(record, events) {
       const oldBalance = (parseFloat(record.dynamodb.OldImage.amount.N) * -1);
       const newBalance = parseFloat(record.dynamodb.NewImage.amount.N);
       events.push(updateAccount.updateAccountBalanceItem(pk, account, newBalance, documentClient));
-      events.push(updateAccount.updateAccountBalanceItem(pk, oldAccount, oldBalance, documentClient));
+      events.push(updateAccount.updateAccountBalanceItem(
+        pk,
+        oldAccount,
+        oldBalance,
+        documentClient,
+      ));
       return;
     }
   }
@@ -90,7 +95,14 @@ function updateWalletBalance(record, events) {
   }
 
   events.push(
-    updateWallet.updateWalletBalance(walletId, pk, balance, assetBalance, debtBalance, documentClient),
+    updateWallet.updateWalletBalance(
+      walletId,
+      pk,
+      balance,
+      assetBalance,
+      debtBalance,
+      documentClient,
+    ),
   );
 }
 
