@@ -1,11 +1,11 @@
 const FetchHelper = () => {};
 
-const helper = require('./helper');
+const fetchAccount = require('../create-parameter/fetch-account');
 const fetchAccounts = require('../fetch/fetch-accounts');
 
 async function handleFetchBankAccount(event) {
   let BankAccountData;
-  const params = helper.createParameters(event.params.querystring.walletId);
+  const params = fetchAccount.createParameters(event.params.querystring.walletId);
 
   await fetchAccounts.getBankAccountItem(params).then(
     (result) => {

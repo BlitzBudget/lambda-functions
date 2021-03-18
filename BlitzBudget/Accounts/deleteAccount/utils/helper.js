@@ -2,6 +2,7 @@ const Helper = () => {};
 
 const deleteItems = require('../delete/delete-items');
 const transaction = require('../fetch/transactions');
+const deleteItemParameter = require('../create-parameter/delete-item');
 const recurringTransaction = require('../fetch/recurring-transactions');
 
 async function fetchAccountsTransactionData(
@@ -44,9 +45,7 @@ const isEqual = (obj1, obj2) => {
 async function deleteAccountsAndItsData(deleteRequests) {
   const events = [];
   Object.keys(deleteRequests).forEach((deleteRequest) => {
-    const params = {};
-    params.RequestItems = {};
-    params.RequestItems.blitzbudget = deleteRequest;
+    const params = deleteItemParameter.createParameter(deleteRequest);
     console.log(
       'The delete request is in batch  with length %j',
       params.RequestItems.blitzbudget.length,

@@ -1,8 +1,8 @@
-const Helper = () => {};
+const FetchAccount = () => {};
 
 const constants = require('../constants/constant');
 
-Helper.prototype.createParameters = (walletId) => ({
+FetchAccount.prototype.createParameters = (walletId) => ({
   TableName: constants.EU_WEST_ONE,
   KeyConditionExpression: 'pk = :walletId and begins_with(sk, :items)',
   ExpressionAttributeValues: {
@@ -14,4 +14,4 @@ Helper.prototype.createParameters = (walletId) => ({
 });
 
 // Export object
-module.exports = new Helper();
+module.exports = new FetchAccount();
