@@ -1,24 +1,11 @@
 const RecurringTransaction = () => {};
 
-const constants = require('../constants/constant');
+const recurringTransactionParameter = require('../create-parameter/recurring-transaction');
 
 const createTransactionSNS = require('../sns/create-transaction');
 
 // Get Budget Item
 async function getRecurringTransactions(walletId, documentClient, snsEvents, sns) {
-  function createParameters() {
-    return {
-      TableName: constants.TABLE_NAME,
-      KeyConditionExpression: 'pk = :walletId AND begins_with(sk, :items)',
-      ExpressionAttributeValues: {
-        ':walletId': walletId,
-        ':items': 'RecurringTransactions#',
-      },
-      ProjectionExpression:
-        'sk, pk, amount, description, category, recurrence, account, next_scheduled, tags, creation_date, category_type, category_name',
-    };
-  }
-
   function organizeRecurringTransactionItem(data) {
     console.log('data retrieved - RecurringTransactions ', data.Count);
     const today = new Date();
@@ -35,7 +22,7 @@ async function getRecurringTransactions(walletId, documentClient, snsEvents, sns
     });
   }
 
-  const params = createParameters();
+  const params = recurringTransactionParameter.createParameters(walletId);
 
   // Call DynamoDB to read the item from the table
   const response = await documentClient.query(params).promise();
