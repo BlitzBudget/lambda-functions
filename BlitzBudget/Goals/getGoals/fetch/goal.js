@@ -5,7 +5,7 @@ const constants = require('../constants/constant');
 // Get goal Item
 FetchGoal.prototype.getGoalItem = async function getGoalItem(
   walletId,
-  docClient,
+  documentClient,
 ) {
   function organizeRetrievedItems(data) {
     console.log('data retrieved - Goal %j', data.Count);
@@ -36,7 +36,7 @@ FetchGoal.prototype.getGoalItem = async function getGoalItem(
   const params = createParameter();
 
   // Call DynamoDB to read the item from the table
-  const response = await docClient.query(params).promise();
+  const response = await documentClient.query(params).promise();
 
   organizeRetrievedItems(response);
   return {

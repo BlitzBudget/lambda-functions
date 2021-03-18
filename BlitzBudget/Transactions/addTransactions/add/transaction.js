@@ -1,6 +1,6 @@
 const AddTransaction = () => {};
 
-async function addNewTransaction(event, docClient) {
+async function addNewTransaction(event, documentClient) {
   const today = new Date();
   today.setYear(event['body-json'].dateMeantFor.substring(5, 9));
   today.setMonth(
@@ -31,7 +31,7 @@ async function addNewTransaction(event, docClient) {
 
   console.log('Adding a new item...');
 
-  const response = await docClient.put(params).promise();
+  const response = await documentClient.put(params).promise();
   return {
     success: response,
     transactionId: randomValue,

@@ -5,7 +5,7 @@ const constants = require('../constants/constant');
 const createTransactionSNS = require('../sns/create-transaction');
 
 // Get Budget Item
-async function getRecurringTransactions(walletId, docClient, snsEvents, sns) {
+async function getRecurringTransactions(walletId, documentClient, snsEvents, sns) {
   function createParameters() {
     return {
       TableName: constants.TABLE_NAME,
@@ -38,7 +38,7 @@ async function getRecurringTransactions(walletId, docClient, snsEvents, sns) {
   const params = createParameters();
 
   // Call DynamoDB to read the item from the table
-  const response = await docClient.query(params).promise();
+  const response = await documentClient.query(params).promise();
   organizeRecurringTransactionItem(response);
   return ({
     RecurringTransactions: response.Items,

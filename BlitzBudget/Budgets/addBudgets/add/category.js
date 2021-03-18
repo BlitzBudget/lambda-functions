@@ -4,7 +4,7 @@ AddCategory.prototype.createCategoryItem = async (
   event,
   skForCategory,
   categoryName,
-  docClient,
+  documentClient,
 ) => {
   const params = {
     TableName: 'blitzbudget',
@@ -27,7 +27,7 @@ AddCategory.prototype.createCategoryItem = async (
 
   console.log('Adding a new item...');
 
-  const response = await docClient.update(params).promise();
+  const response = await documentClient.update(params).promise();
   return {
     Category: response.Attributes,
   };

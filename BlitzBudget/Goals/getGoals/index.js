@@ -10,7 +10,7 @@ AWS.config.update({
 });
 
 // Create the DynamoDB service object
-const docClient = new AWS.DynamoDB.DocumentClient({
+const documentClient = new AWS.DynamoDB.DocumentClient({
   region: constants.EU_WEST_ONE,
 });
 
@@ -28,7 +28,7 @@ exports.handler = async (event) => {
     event['body-json'].walletId,
     userId,
     events,
-    docClient,
+    documentClient,
   );
 
   const allResponses = await fetchHelper.fetchOtherRelevantInformation(
@@ -36,7 +36,7 @@ exports.handler = async (event) => {
     walletId,
     oneYearAgo,
     today,
-    docClient,
+    documentClient,
   );
 
   return allResponses;

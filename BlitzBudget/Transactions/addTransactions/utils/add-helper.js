@@ -7,22 +7,22 @@ const helper = require('./helper');
 /*
  * Add a new recurring transaction if recurrence is required
  */
-function addNewRecurringTransaction(event, events, docClient) {
+function addNewRecurringTransaction(event, events, documentClient) {
   if (
     helper.isNotEmpty(event['body-json'].recurrence)
     && event['body-json'].recurrence !== 'NEVER'
   ) {
     events.push(
-      createRecurringTransaction.addRecurringTransaction(event, docClient),
+      createRecurringTransaction.addRecurringTransaction(event, documentClient),
     );
   }
 }
 
-async function addAllItems(events, event, docClient) {
+async function addAllItems(events, event, documentClient) {
   let transactionId;
-  addNewRecurringTransaction(event, events, docClient);
+  addNewRecurringTransaction(event, events, documentClient);
 
-  events.push(createTransaction.addNewTransaction(event, docClient));
+  events.push(createTransaction.addNewTransaction(event, documentClient));
 
   await Promise.all(events).then(
     (response) => {

@@ -7,7 +7,7 @@ async function checkIfBudgetAlreadyPresent(
   categoryName,
   checkIfBudgetIsPresent,
   event,
-  docClient,
+  documentClient,
 ) {
   if (helper.isNotEmpty(categoryName) && checkIfBudgetIsPresent) {
     const today = new Date();
@@ -16,7 +16,7 @@ async function checkIfBudgetAlreadyPresent(
       parseInt(event['body-json'].dateMeantFor.substring(10, 12), 10) - 1,
     );
     // Check if the budget is present for the mentioned category
-    await budget.getBudgetsItem(today, event, docClient).then(
+    await budget.getBudgetsItem(today, event, documentClient).then(
       (result) => {
         if (helper.isNotEmpty(result.Budget)) {
           throw new Error(

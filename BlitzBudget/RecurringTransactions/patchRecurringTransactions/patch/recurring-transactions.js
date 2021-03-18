@@ -4,7 +4,7 @@ const helper = require('../utils/helper');
 const parameters = require('../utils/parameters');
 const constants = require('../constants/constant');
 
-async function updatingRecurringTransactions(event, docClient) {
+async function updatingRecurringTransactions(event, documentClient) {
   function createParameters() {
     let updateExp = 'set';
     const expAttrVal = {};
@@ -64,7 +64,7 @@ async function updatingRecurringTransactions(event, docClient) {
   const params = createParameters();
 
   console.log('Updating an item...');
-  const response = await docClient.update(params).promise();
+  const response = await documentClient.update(params).promise();
 
   return {
     Transaction: response,

@@ -4,7 +4,7 @@ AddCategory.prototype.createCategoryItem = async (
   event,
   skForCategory,
   categoryName,
-  docClient,
+  documentClient,
 ) => {
   function createParameters() {
     return {
@@ -30,7 +30,7 @@ AddCategory.prototype.createCategoryItem = async (
   const params = createParameters();
 
   console.log('Adding a new item...');
-  const response = await docClient.update(params).promise();
+  const response = await documentClient.update(params).promise();
 
   return { Category: response.Attributes };
 };

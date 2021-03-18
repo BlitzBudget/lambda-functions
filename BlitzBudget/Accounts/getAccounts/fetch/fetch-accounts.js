@@ -7,14 +7,14 @@ AWS.config.update({
 });
 
 // Create the DynamoDB service object
-const docClient = new AWS.DynamoDB.DocumentClient({
+const documentClient = new AWS.DynamoDB.DocumentClient({
   region: constants.EU_WEST_ONE,
 });
 const FetchAccounts = () => {};
 
 async function getBankAccountItem(params) {
   // Call DynamoDB to read the item from the table
-  const response = await docClient.query(params).promise();
+  const response = await documentClient.query(params).promise();
   return response;
 }
 

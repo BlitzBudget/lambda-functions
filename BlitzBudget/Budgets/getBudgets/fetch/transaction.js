@@ -1,31 +1,18 @@
 const TransactionFunction = () => {};
 
-const constants = require('../constants/constant');
+const transactionParameter = require('../create-parameter/transaction');
 
 // Get Transaction Item
 TransactionFunction.prototype.getTransactionsData = async (
   pk,
   startsWithDate,
   endsWithDate,
-  docClient,
+  documentClient,
 ) => {
-  function createParameters() {
-    return {
-      TableName: constants.TABLE_NAME,
-      KeyConditionExpression: 'pk = :pk and sk BETWEEN :bt1 AND :bt2',
-      ExpressionAttributeValues: {
-        ':pk': pk,
-        ':bt1': `Transaction#${startsWithDate}`,
-        ':bt2': `Transaction#${endsWithDate}`,
-      },
-      ProjectionExpression: 'amount, description, category, recurrence, sk, pk',
-    };
-  }
-
-  const params = createParameters();
+  const params = transactionParameter.createParameters(pk, startsWithDate, endsWithDate);
 
   // Call DynamoDB to read the item from the table
-  const response = await docClient.query(params).promise();
+  const response = await documentClient.query(params).promise();
 
   return {
     Transaction: response.Items,

@@ -13,7 +13,7 @@ async function fetchAllItems(
   endsWithDate,
   oneYearAgo,
   overviewData,
-  docClient,
+  documentClient,
   events,
 ) {
   events.push(
@@ -22,7 +22,7 @@ async function fetchAllItems(
       startsWithDate,
       endsWithDate,
       overviewData,
-      docClient,
+      documentClient,
     ),
   );
   // Get Transaction Items
@@ -32,12 +32,12 @@ async function fetchAllItems(
       startsWithDate,
       endsWithDate,
       overviewData,
-      docClient,
+      documentClient,
     ),
   );
   // Get Bank account for preview
   events.push(
-    bankAccount.getBankAccountData(walletId, overviewData, docClient),
+    bankAccount.getBankAccountData(walletId, overviewData, documentClient),
   );
   // Get Dates information to calculate the monthly Income / expense per month
   events.push(
@@ -46,7 +46,7 @@ async function fetchAllItems(
       oneYearAgo,
       endsWithDate,
       overviewData,
-      docClient,
+      documentClient,
     ),
   );
 
@@ -62,11 +62,11 @@ async function fetchAllItems(
   );
 }
 
-async function fetchAllWallets(walletId, userId, overviewData, docClient) {
+async function fetchAllWallets(walletId, userId, overviewData, documentClient) {
   let walletPK = walletId;
   const events = [];
   async function fetchWalletsFromUser() {
-    await wallet.getWalletsData(userId, overviewData, docClient).then(
+    await wallet.getWalletsData(userId, overviewData, documentClient).then(
       (result) => {
         walletPK = result.Wallet[0].walletId;
         console.log('retrieved the wallet for the item ', walletId);
@@ -80,10 +80,10 @@ async function fetchAllWallets(walletId, userId, overviewData, docClient) {
   }
 
   if (helper.isEmpty(walletId) && helper.isNotEmpty(userId)) {
-    await fetchWalletsFromUser(overviewData, docClient);
+    await fetchWalletsFromUser(overviewData, documentClient);
   } else if (helper.isNotEmpty(walletId) && helper.isNotEmpty(userId)) {
     events.push(
-      wallet.getWalletData(userId, walletId, overviewData, docClient),
+      wallet.getWalletData(userId, walletId, overviewData, documentClient),
     );
   }
   return { walletPK, events };

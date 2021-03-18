@@ -3,7 +3,7 @@ const FetchCategory = () => {};
 const helper = require('../utils/helper');
 const constants = require('../constants/constant');
 
-async function getCategoryData(event, today, docClient) {
+async function getCategoryData(event, today, documentClient) {
   const params = {
     TableName: constants.TABLE_NAME,
     KeyConditionExpression: 'pk = :pk AND begins_with(sk, :items)',
@@ -19,7 +19,7 @@ async function getCategoryData(event, today, docClient) {
   };
 
   // Call DynamoDB to read the item from the table
-  const response = await docClient.query(params).promise();
+  const response = await documentClient.query(params).promise();
 
   let obj;
   if (helper.isNotEmpty(response.Items)) {

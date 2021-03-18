@@ -10,10 +10,10 @@ async function addNewCategoryIfNotPresent(
   today,
   categoryName,
   events,
-  docClient,
+  documentClient,
 ) {
   let isBudgetPresent = true;
-  await category.getCategoryData(event, today, docClient).then(
+  await category.getCategoryData(event, today, documentClient).then(
     (result) => {
       if (helper.isNotEmpty(result.Category)) {
         console.log(
@@ -33,7 +33,7 @@ async function addNewCategoryIfNotPresent(
             createCategory,
             categoryId,
             categoryName,
-            docClient,
+            documentClient,
           ),
         );
         // Do not check the budget for a newly created category
@@ -53,7 +53,7 @@ async function addNewCategoryIfNotPresent(
 async function addANewCategoryIfNotPresent(
   event,
   events,
-  docClient,
+  documentClient,
 ) {
   const categoryName = event['body-json'].category;
   let isBudgetPresent = true;
@@ -73,7 +73,7 @@ async function addANewCategoryIfNotPresent(
       today,
       categoryName,
       events,
-      docClient,
+      documentClient,
     );
   }
   return { categoryName, isBudgetPresent };

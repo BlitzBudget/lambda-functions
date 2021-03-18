@@ -3,7 +3,7 @@ const FetchCategory = () => {};
 const helper = require('../utils/helper');
 const constants = require('../constants/constant');
 
-async function getCategoryData(event, today, docClient) {
+async function getCategoryData(event, today, documentClient) {
   function organizeCategoryObject(data) {
     console.log('data retrieved - Category %j', data.Count);
     let obj;
@@ -51,7 +51,7 @@ async function getCategoryData(event, today, docClient) {
   const params = createParameters();
 
   // Call DynamoDB to read the item from the table
-  const response = await docClient.query(params).promise();
+  const response = await documentClient.query(params).promise();
 
   return ({
     Category: organizeCategoryObject(response),

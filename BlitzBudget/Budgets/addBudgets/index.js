@@ -12,7 +12,7 @@ AWS.config.update({
 });
 
 // Create the DynamoDB service object
-const docClient = new AWS.DynamoDB.DocumentClient();
+const documentClient = new AWS.DynamoDB.DocumentClient();
 
 exports.handler = async (event) => {
   console.log('adding Budget for ', JSON.stringify(event['body-json']));
@@ -45,7 +45,7 @@ exports.handler = async (event) => {
     isBudgetPresent,
     today,
     event,
-    docClient,
+    documentClient,
   );
 
   const response = event['body-json'];

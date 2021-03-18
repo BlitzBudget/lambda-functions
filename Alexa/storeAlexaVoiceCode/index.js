@@ -15,7 +15,7 @@ AWS.config.update({
 });
 
 // Create the DynamoDB service object
-const docClient = new AWS.DynamoDB.DocumentClient();
+const documentClient = new AWS.DynamoDB.DocumentClient();
 const cognitoidentityserviceprovider = new AWS.CognitoIdentityServiceProvider();
 
 exports.handler = async (event) => {
@@ -68,13 +68,13 @@ exports.handler = async (event) => {
 
   ({ alexaId, voiceCodePresent } = await fetchHelper.handleGetNewVoiceCode(
     userId,
-    docClient,
+    documentClient,
   ));
 
   if (deleteVoiceCode && voiceCodePresent) {
-    await deleteHelper.handleDeleteOldVoiceCode(userId, alexaId, docClient);
+    await deleteHelper.handleDeleteOldVoiceCode(userId, alexaId, documentClient);
   } else {
-    alexaVoiceCodeId = await addHelper.handleAddNewVoiceCode(event, userId, alexaId, docClient);
+    alexaVoiceCodeId = await addHelper.handleAddNewVoiceCode(event, userId, alexaId, documentClient);
     response.alexaVoiceCodeId = alexaVoiceCodeId;
   }
 

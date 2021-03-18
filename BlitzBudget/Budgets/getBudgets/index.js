@@ -11,7 +11,7 @@ AWS.config.update({
 });
 
 // Create the DynamoDB service object
-const docClient = new AWS.DynamoDB.DocumentClient({
+const documentClient = new AWS.DynamoDB.DocumentClient({
   region: constants.EU_WEST_ONE,
 });
 
@@ -31,7 +31,7 @@ exports.handler = async (event) => {
   } = await fetchHelper.fetchWalletsIfEmpty(
     event['body-json'].walletId,
     userId,
-    docClient,
+    documentClient,
   );
 
   const otherResponse = await fetchHelper.fetchAllInformationForBudget(
@@ -40,7 +40,7 @@ exports.handler = async (event) => {
     startsWithDate,
     endsWithDate,
     fullMonth,
-    docClient,
+    documentClient,
   );
 
   const budgetResponse = otherResponse;

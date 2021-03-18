@@ -7,7 +7,7 @@ const fetchUserHelper = require('./fetch-user-helper');
 AWS.config.update({ region: constants.EU_WEST_ONE });
 // Create the DynamoDB service object
 const dynamoDB = new AWS.DynamoDB();
-const docClient = new dynamoDB.DocumentClient();
+const documentClient = new dynamoDB.DocumentClient();
 const cognitoidentityserviceprovider = new AWS.CognitoIdentityServiceProvider();
 
 async function formulateResponse(event) {
@@ -19,7 +19,7 @@ async function formulateResponse(event) {
 
   await fetchUserHelper.fetchUserFromCognito(response, cognitoidentityserviceprovider);
 
-  await fetchWalletHelper.fetchWalletFromUser(response, docClient);
+  await fetchWalletHelper.fetchWalletFromUser(response, documentClient);
 
   return response;
 }

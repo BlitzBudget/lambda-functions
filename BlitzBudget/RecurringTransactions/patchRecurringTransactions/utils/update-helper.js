@@ -2,10 +2,10 @@ const UpdateHelper = () => {};
 
 const patchRecurringTransaction = require('../patch/recurring-transactions');
 
-async function updateRecurringTransaction(events, event, docClient) {
+async function updateRecurringTransaction(events, event, documentClient) {
   let allResponses;
   events.push(
-    patchRecurringTransaction.updatingRecurringTransactions(event, docClient),
+    patchRecurringTransaction.updatingRecurringTransactions(event, documentClient),
   );
   await Promise.all(events).then(
     (response) => {

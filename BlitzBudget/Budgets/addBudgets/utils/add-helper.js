@@ -4,13 +4,13 @@ const addDate = require('../add/date.js');
 const budget = require('../add/budget.js');
 const fetchHelper = require('./fetch-helper.js');
 
-async function addBudget(addNewBudgetBl, event, docClient) {
+async function addBudget(addNewBudgetBl, event, documentClient) {
   if (!addNewBudgetBl) {
     return;
   }
 
   const events = [];
-  events.push(budget.addNewBudget(event, docClient));
+  events.push(budget.addNewBudget(event, documentClient));
 
   /*
    * Only if there are items to be added
@@ -34,7 +34,7 @@ async function addBudgetIfNotAlreadyPresent(
   checkIfBudgetIsPresent,
   today,
   event,
-  docClient,
+  documentClient,
 ) {
   const addNewBudgetBl = await fetchHelper.checkIfBudgetAlreadyPresent(
     categoryName,
@@ -46,7 +46,7 @@ async function addBudgetIfNotAlreadyPresent(
   /*
    * Only if the new budget has to be created
    */
-  const response = await addBudget(addNewBudgetBl, event, docClient);
+  const response = await addBudget(addNewBudgetBl, event, documentClient);
   return response.budgetId;
 }
 

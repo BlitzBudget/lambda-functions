@@ -9,7 +9,7 @@ AWS.config.update({
 });
 
 // Create the DynamoDB service object
-const docClient = new AWS.DynamoDB.DocumentClient();
+const documentClient = new AWS.DynamoDB.DocumentClient();
 
 async function addNewGoals(event) {
   const today = new Date();
@@ -38,7 +38,7 @@ async function addNewGoals(event) {
 
   console.log('Adding a new item...');
 
-  const response = await docClient.put(params).promise();
+  const response = await documentClient.put(params).promise();
 
   return {
     Goal: response,

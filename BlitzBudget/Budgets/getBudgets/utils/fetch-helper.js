@@ -7,11 +7,11 @@ const date = require('../fetch/date');
 const transaction = require('../fetch/transaction');
 const wallet = require('../fetch/wallet');
 
-async function fetchWalletsIfEmpty(walletId, userId, docClient) {
+async function fetchWalletsIfEmpty(walletId, userId, documentClient) {
   let response;
   let walletPK = walletId;
   if (helper.isEmpty(walletId) && helper.isNotEmpty(userId)) {
-    await wallet.getWalletsData(userId, docClient).then(
+    await wallet.getWalletsData(userId, documentClient).then(
       (result) => {
         response = result.Wallet;
         walletPK = result.Wallet[0].walletId;
@@ -33,7 +33,7 @@ async function fetchAllInformationForBudget(
   startsWithDate,
   endsWithDate,
   fullMonth,
-  docClient,
+  documentClient,
 ) {
   let allResponse = {};
   events.push(
@@ -41,7 +41,7 @@ async function fetchAllInformationForBudget(
       walletId,
       startsWithDate,
       endsWithDate,
-      docClient,
+      documentClient,
     ),
   );
   events.push(
@@ -49,24 +49,24 @@ async function fetchAllInformationForBudget(
       walletId,
       startsWithDate,
       endsWithDate,
-      docClient,
+      documentClient,
     ),
   );
   events.push(
     date.getDateData(
       walletId,
       startsWithDate.substring(0, 4),
-      docClient,
+      documentClient,
     ),
   );
-  events.push(bankAccount.getBankAccountData(walletId, docClient));
+  events.push(bankAccount.getBankAccountData(walletId, documentClient));
   if (!fullMonth) {
     events.push(
       transaction.getTransactionsData(
         walletId,
         startsWithDate,
         endsWithDate,
-        docClient,
+        documentClient,
       ),
     );
   }

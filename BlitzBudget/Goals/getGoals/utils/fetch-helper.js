@@ -11,14 +11,14 @@ const fetchOtherRelevantInformation = async (
   walletId,
   oneYearAgo,
   today,
-  docClient,
+  documentClient,
 ) => {
   let response;
-  events.push(bankAccount.getBankAccountData(walletId, docClient));
-  events.push(goal.getGoalItem(walletId, docClient));
+  events.push(bankAccount.getBankAccountData(walletId, documentClient));
+  events.push(goal.getGoalItem(walletId, documentClient));
   // Get Dates information to calculate the monthly Income / expense per month
   events.push(
-    date.getDateData(walletId, oneYearAgo, today, docClient),
+    date.getDateData(walletId, oneYearAgo, today, documentClient),
   );
 
   await Promise.all(events).then(
@@ -38,11 +38,11 @@ const fetchWalletInformation = async (
   walletId,
   userId,
   events,
-  docClient,
+  documentClient,
 ) => {
   let walletPK = walletId;
   async function fetchWalletsFromUser() {
-    await wallet.getWalletsData(userId, docClient).then(
+    await wallet.getWalletsData(userId, documentClient).then(
       (result) => {
         walletPK = result.Wallet[0].walletId;
         console.log('retrieved the wallet for the item ', walletId);
@@ -58,7 +58,7 @@ const fetchWalletInformation = async (
   if (helper.isEmpty(walletId) && helper.isNotEmpty(userId)) {
     walletPK = await fetchWalletsFromUser();
   } else if (helper.isNotEmpty(walletId) && helper.isNotEmpty(userId)) {
-    events.push(wallet.getWalletData(userId, walletId, docClient));
+    events.push(wallet.getWalletData(userId, walletId, documentClient));
   }
   return walletPK;
 };

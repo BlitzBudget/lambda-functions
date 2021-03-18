@@ -2,7 +2,7 @@ const UpdateDate = () => {};
 
 const constants = require('../constants/constant');
 
-async function updateDateItem(pk, sk, difference, income, expense, docClient) {
+async function updateDateItem(pk, sk, difference, income, expense, documentClient) {
   const params = {
     TableName: constants.TABLE_NAME,
     Key: {
@@ -22,7 +22,7 @@ async function updateDateItem(pk, sk, difference, income, expense, docClient) {
 
   console.log('Updating the item...');
 
-  const response = await docClient.update(params).promise();
+  const response = await documentClient.update(params).promise();
   return response;
 }
 

@@ -9,14 +9,14 @@ const createCategory = require('../add/category');
 /*
  * If Date Id is not present
  */
-async function calculateAndFetchDate(event, walletId, events, docClient) {
+async function calculateAndFetchDate(event, walletId, events, documentClient) {
   let { dateMeantFor } = event['body-json'];
   if (helper.notIncludesStr(dateMeantFor, 'Date#')) {
     const today = new Date(event['body-json'].dateMeantFor);
     /*
      * Check if date is present before adding them
      */
-    await fetchDate.getDateData(walletId, today, docClient).then(
+    await fetchDate.getDateData(walletId, today, documentClient).then(
       (result) => {
         if (helper.isNotEmpty(result.Date)) {
           console.log(
@@ -42,7 +42,7 @@ async function calculateAndFetchDate(event, walletId, events, docClient) {
 /*
  * If category Id is not present
  */
-async function calculateAndFetchCategory(event, events, docClient) {
+async function calculateAndFetchCategory(event, events, documentClient) {
   const categoryName = event['body-json'].category;
   if (
     helper.isNotEmpty(categoryName)
@@ -59,7 +59,7 @@ async function calculateAndFetchCategory(event, events, docClient) {
      * Check if category is present before adding them
      */
     await fetchCategory
-      .getCategoryData(categoryId, event, today, docClient)
+      .getCategoryData(categoryId, event, today, documentClient)
       .then(
         (result) => {
           if (helper.isNotEmpty(result.Category)) {

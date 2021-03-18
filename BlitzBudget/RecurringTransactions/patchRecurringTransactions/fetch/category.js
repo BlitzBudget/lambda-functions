@@ -3,7 +3,7 @@ const FetchCategory = () => {};
 const helper = require('../utils/helper');
 const constants = require('../constants/constant');
 
-async function getCategoryData(docClient, event, today) {
+async function getCategoryData(documentClient, event, today) {
   function createParameter() {
     return {
       TableName: constants.TABLE_NAME,
@@ -23,7 +23,7 @@ async function getCategoryData(docClient, event, today) {
   const params = createParameter();
 
   // Call DynamoDB to read the item from the table
-  const response = await docClient.query(params).promise();
+  const response = await documentClient.query(params).promise();
 
   let obj;
   if (helper.isNotEmpty(response.Items)) {

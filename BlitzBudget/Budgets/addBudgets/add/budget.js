@@ -1,6 +1,6 @@
 const AddBudget = () => {};
 
-AddBudget.prototype.addNewBudget = async (event, docClient) => {
+AddBudget.prototype.addNewBudget = async (event, documentClient) => {
   const today = new Date();
   today.setYear(event['body-json'].dateMeantFor.substring(5, 9));
   today.setMonth(
@@ -24,7 +24,7 @@ AddBudget.prototype.addNewBudget = async (event, docClient) => {
 
   console.log('Adding a new item...');
 
-  const response = await docClient.put(params).promise();
+  const response = await documentClient.put(params).promise();
 
   return {
     success: response,

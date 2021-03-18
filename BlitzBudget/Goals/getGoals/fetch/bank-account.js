@@ -4,7 +4,7 @@ const constants = require('../constants/constant');
 
 FetchBankAccount.prototype.getBankAccountData = async function getBankAccountData(
   pk,
-  docClient,
+  documentClient,
 ) {
   function organizeRetrivedItems(data) {
     console.log('data retrieved - Bank Account %j', data.Count);
@@ -35,7 +35,7 @@ FetchBankAccount.prototype.getBankAccountData = async function getBankAccountDat
   const params = createParameters();
 
   // Call DynamoDB to read the item from the table
-  const response = await docClient.query(params).promise();
+  const response = await documentClient.query(params).promise();
 
   organizeRetrivedItems(response);
   return {

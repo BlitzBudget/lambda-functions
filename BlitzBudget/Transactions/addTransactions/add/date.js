@@ -1,6 +1,6 @@
 const AddDate = () => {};
 
-async function createDateData(event, skForDate, docClient) {
+async function createDateData(event, skForDate, documentClient) {
   const params = {
     TableName: 'blitzbudget',
     Key: {
@@ -20,7 +20,7 @@ async function createDateData(event, skForDate, docClient) {
   };
 
   console.log('Adding a new item...');
-  const response = await docClient.update(params).promise();
+  const response = await documentClient.update(params).promise();
 
   return {
     Date: response.Attributes,

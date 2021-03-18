@@ -1,25 +1,9 @@
 const FetchCategory = () => {};
 
 const helper = require('../utils/helper');
-const constants = require('../constants/constant');
+const categoryParameter = require('../create-parameter/category');
 
-FetchCategory.prototype.getCategoryData = async (event, today, docClient) => {
-  function createParameters() {
-    return {
-      TableName: constants.TABLE_NAME,
-      KeyConditionExpression: 'pk = :pk AND begins_with(sk, :items)',
-      ExpressionAttributeValues: {
-        ':pk': event['body-json'].walletId,
-        ':items':
-          `Category#${
-            today.getFullYear()
-          }-${
-            (`0${today.getMonth() + 1}`).slice(-2)}`,
-      },
-      ProjectionExpression: 'pk, sk, category_name, category_type',
-    };
-  }
-
+FetchCategory.prototype.getCategoryData = async (event, today, documentClient) => {
   function calculateCategory(data) {
     console.log('data retrieved - Category %j', data.Count);
     let obj;
@@ -39,10 +23,10 @@ FetchCategory.prototype.getCategoryData = async (event, today, docClient) => {
     return obj;
   }
 
-  const params = createParameters();
+  const params = categoryParameter.createParameters(event, today);
 
   // Call DynamoDB to read the item from the table
-  const response = await docClient.query(params).promise();
+  const response = await documentClient.query(params).promise();
   const categories = calculateCategory(response);
 
   return { Category: categories };

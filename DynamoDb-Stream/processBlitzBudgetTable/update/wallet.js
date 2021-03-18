@@ -2,7 +2,7 @@ const Wallet = () => {};
 
 const constants = require('../constants/constant');
 
-async function updateWalletBalance(pk, sk, balance, assetBalance, debtBalance, docClient) {
+async function updateWalletBalance(pk, sk, balance, assetBalance, debtBalance, documentClient) {
   const params = {
     TableName: constants.TABLE_NAME,
     Key: {
@@ -22,7 +22,7 @@ async function updateWalletBalance(pk, sk, balance, assetBalance, debtBalance, d
 
   console.log('Updating the item...');
 
-  const response = await docClient.update(params).promise();
+  const response = await documentClient.update(params).promise();
   return response;
 }
 

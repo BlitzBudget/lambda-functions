@@ -5,8 +5,8 @@ const deleteVoiceCode = require('../voice-code/delete');
 /*
  * Delete the old voice code
  */
-async function handleDeleteOldVoiceCode(userId, alexaId, docClient) {
-  await deleteVoiceCode.deleteOldVoiceCode(userId, alexaId, docClient).then(
+async function handleDeleteOldVoiceCode(userId, alexaId, documentClient) {
+  await deleteVoiceCode.deleteOldVoiceCode(userId, alexaId, documentClient).then(
     () => {
       console.log('successfully added the old voice code');
     },

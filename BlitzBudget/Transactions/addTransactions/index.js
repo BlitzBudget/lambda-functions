@@ -11,7 +11,7 @@ AWS.config.update({
 });
 
 // Create the DynamoDB service object
-const docClient = new AWS.DynamoDB.DocumentClient();
+const documentClient = new AWS.DynamoDB.DocumentClient();
 
 exports.handler = async (event) => {
   console.log('adding transactions for ', JSON.stringify(event['body-json']));
@@ -20,11 +20,11 @@ exports.handler = async (event) => {
 
   helper.throwErrorIfEmpty(event, walletId);
 
-  await fetchHelper.calculateAndFetchDate(event, walletId, events, docClient);
+  await fetchHelper.calculateAndFetchDate(event, walletId, events, documentClient);
 
-  await fetchHelper.calculateAndFetchCategory(event, events, docClient);
+  await fetchHelper.calculateAndFetchCategory(event, events, documentClient);
 
-  const transactionId = await addHelper.addAllItems(events, event, docClient);
+  const transactionId = await addHelper.addAllItems(events, event, documentClient);
 
   const response = event['body-json'];
   response.transactionId = transactionId;

@@ -10,15 +10,15 @@ AWS.config.update({
 });
 
 // Create the DynamoDB service object
-const docClient = new AWS.DynamoDB.DocumentClient();
+const documentClient = new AWS.DynamoDB.DocumentClient();
 
 exports.handler = async (event) => {
   const events = [];
   console.log('updating transactions for ', JSON.stringify(event['body-json']));
 
-  await fetchHelper.calculateAndFetchCategory(event, events, docClient);
+  await fetchHelper.calculateAndFetchCategory(event, events, documentClient);
 
-  const response = await updateHelper.updateRecurringTransaction(events, event, docClient);
+  const response = await updateHelper.updateRecurringTransaction(events, event, documentClient);
 
   const patchResponse = event['body-json'];
   // patchResponse.category = response.Category.Attributes.sk;

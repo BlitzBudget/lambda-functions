@@ -16,7 +16,7 @@ AWS.config.update({
 });
 
 // Create the DynamoDB service object
-const docClient = new AWS.DynamoDB.DocumentClient();
+const documentClient = new AWS.DynamoDB.DocumentClient();
 
 function updateAccountBalance(record, events) {
   const pk = record.dynamodb.Keys.pk.S;
@@ -37,8 +37,8 @@ function updateAccountBalance(record, events) {
     if (helper.isNotEqual(account, oldAccount)) {
       const oldBalance = (parseFloat(record.dynamodb.OldImage.amount.N) * -1);
       const newBalance = parseFloat(record.dynamodb.NewImage.amount.N);
-      events.push(updateAccount.updateAccountBalanceItem(pk, account, newBalance, docClient));
-      events.push(updateAccount.updateAccountBalanceItem(pk, oldAccount, oldBalance, docClient));
+      events.push(updateAccount.updateAccountBalanceItem(pk, account, newBalance, documentClient));
+      events.push(updateAccount.updateAccountBalanceItem(pk, oldAccount, oldBalance, documentClient));
       return;
     }
   }
@@ -50,7 +50,7 @@ function updateAccountBalance(record, events) {
     return;
   }
 
-  events.push(updateAccount.updateAccountBalanceItem(pk, account, balance, docClient));
+  events.push(updateAccount.updateAccountBalanceItem(pk, account, balance, documentClient));
 }
 
 function updateWalletBalance(record, events) {
@@ -90,7 +90,7 @@ function updateWalletBalance(record, events) {
   }
 
   events.push(
-    updateWallet.updateWalletBalance(walletId, pk, balance, assetBalance, debtBalance, docClient),
+    updateWallet.updateWalletBalance(walletId, pk, balance, assetBalance, debtBalance, documentClient),
   );
 }
 
@@ -117,7 +117,7 @@ function updateCategoryTotal(record, events) {
       category = record.dynamodb.OldImage.category.S;
       // Event is pushed to the array
       console.log('adding the difference %j', balance, 'to the category %j', category);
-      events.push(updateCategory.updateCategoryItem(pk, category, balance, docClient));
+      events.push(updateCategory.updateCategoryItem(pk, category, balance, documentClient));
       // The new balance is added to the new category
       balance = parseFloat(record.dynamodb.NewImage.amount.N);
       category = record.dynamodb.NewImage.category.S;
@@ -131,7 +131,7 @@ function updateCategoryTotal(record, events) {
     return;
   }
 
-  events.push(updateCategory.updateCategoryItem(pk, category, balance, docClient));
+  events.push(updateCategory.updateCategoryItem(pk, category, balance, documentClient));
 }
 
 function updateDateTotal(record, events) {
@@ -166,7 +166,7 @@ function updateDateTotal(record, events) {
     income = balance;
   }
 
-  events.push(updateDate.updateDateItem(pk, date, balance, income, expense, docClient));
+  events.push(updateDate.updateDateItem(pk, date, balance, income, expense, documentClient));
 }
 
 async function updateRelevantItems(event) {
@@ -190,7 +190,7 @@ async function updateRelevantItems(event) {
         updateWalletBalance(record, events);
       } else if (helper.includesStr(sortKey, 'Wallet#') && helper.isEqual(record.eventName, 'INSERT')) {
         console.log('Adding a new bank account for the newly created wallet');
-        events.push(addBankAccount.addNewBankAccount(record, docClient));
+        events.push(addBankAccount.addNewBankAccount(record, documentClient));
       } else if (helper.includesStr(sortKey, 'Category#')) {
         console.log('Updating the date wrapper with the total');
         updateDateTotal(record, events);

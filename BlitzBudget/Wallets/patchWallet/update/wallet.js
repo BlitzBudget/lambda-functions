@@ -12,7 +12,7 @@ AWS.config.update({
 });
 
 // Create the DynamoDB service object
-const docClient = new AWS.DynamoDB.DocumentClient();
+const documentClient = new AWS.DynamoDB.DocumentClient();
 
 async function updatingItem(event) {
   function createParameters() {
@@ -73,7 +73,7 @@ async function updatingItem(event) {
   const params = createParameters(event);
 
   console.log('Updating an item...');
-  const response = await docClient.update(params).promise();
+  const response = await documentClient.update(params).promise();
   return response;
 }
 

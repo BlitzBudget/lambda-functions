@@ -10,7 +10,7 @@ const constants = require('../constants/constant');
 AWS.config.update({ region: constants.EU_WEST_ONE });
 
 // Create the DynamoDB service object
-const docClient = new AWS.DynamoDB.DocumentClient();
+const documentClient = new AWS.DynamoDB.DocumentClient();
 
 async function updatingGoals(event) {
   function createParameters() {
@@ -75,7 +75,7 @@ async function updatingGoals(event) {
   }
 
   console.log('Updating an item...');
-  const response = await docClient.update(params).promise();
+  const response = await documentClient.update(params).promise();
   return response;
 }
 

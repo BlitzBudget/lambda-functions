@@ -61,9 +61,9 @@ function createParametersToUpdate(event) {
   };
 }
 
-async function updateBudget(events, event, docClient) {
+async function updateBudget(events, event, documentClient) {
   const params = createParametersToUpdate(event);
-  events.push(updateBudgets.updatingBudgets(params, docClient));
+  events.push(updateBudgets.updatingBudgets(params, documentClient));
 
   await Promise.all(events).then(
     () => {
@@ -84,16 +84,16 @@ async function updateBudgetIfNotPresent(
   checkIfBudgetIsPresent,
   event,
   events,
-  docClient,
+  documentClient,
 ) {
   await fetchHelper.checkIfBudgetAlreadyPresent(
     categoryName,
     checkIfBudgetIsPresent,
     event,
-    docClient,
+    documentClient,
   );
 
-  await updateBudget(events, event, docClient);
+  await updateBudget(events, event, documentClient);
 }
 
 UpdateHelper.prototype.updateBudgetIfNotPresent = updateBudgetIfNotPresent;

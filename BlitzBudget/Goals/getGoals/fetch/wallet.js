@@ -8,7 +8,7 @@ const constants = require('../constants/constant');
 FetchWallet.prototype.getWalletData = async function getWalletData(
   userId,
   walletId,
-  docClient,
+  documentClient,
 ) {
   function organizeRetrivedItems(data) {
     console.log('data retrieved - Wallet %j', JSON.stringify(data));
@@ -46,7 +46,7 @@ FetchWallet.prototype.getWalletData = async function getWalletData(
   const params = createParameter();
 
   // Call DynamoDB to read the item from the table
-  const response = await docClient.get(params).promise();
+  const response = await documentClient.get(params).promise();
 
   organizeRetrivedItems(response);
   return ({
@@ -56,7 +56,7 @@ FetchWallet.prototype.getWalletData = async function getWalletData(
 
 FetchWallet.prototype.getWalletsData = async function getWalletsData(
   userId,
-  docClient,
+  documentClient,
 ) {
   function organizeRetrivedItems(data) {
     console.log('data retrieved - Wallet %j', data.Count);
@@ -87,7 +87,7 @@ FetchWallet.prototype.getWalletsData = async function getWalletsData(
   const params = createParameter();
 
   // Call DynamoDB to read the item from the table
-  const response = await docClient.query(params).promise();
+  const response = await documentClient.query(params).promise();
 
   organizeRetrivedItems(response);
   return {

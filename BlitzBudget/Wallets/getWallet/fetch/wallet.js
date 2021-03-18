@@ -7,7 +7,7 @@ const constants = require('../constants/constant');
 AWS.config.update({ region: 'eu-west-1' });
 
 // Create the DynamoDB service object
-const docClient = new AWS.DynamoDB.DocumentClient({ region: 'eu-west-1' });
+const documentClient = new AWS.DynamoDB.DocumentClient({ region: 'eu-west-1' });
 
 // Get Wallet Item
 async function getWalletItem(userId, walletData) {
@@ -24,7 +24,7 @@ async function getWalletItem(userId, walletData) {
   };
 
   // Call DynamoDB to read the item from the table
-  const response = await docClient.query(params).promise();
+  const response = await documentClient.query(params).promise();
 
   if (response.Items) {
     Object.keys(response.Items).forEach((walletObj) => {

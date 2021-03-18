@@ -8,7 +8,7 @@ const updateHelper = require('./utils/update-helper');
 AWS.config.update({ region: 'eu-west-1' });
 
 // Create the DynamoDB service object
-const docClient = new AWS.DynamoDB.DocumentClient();
+const documentClient = new AWS.DynamoDB.DocumentClient();
 
 exports.handler = async (event) => {
   console.log('updating Budgets for ', JSON.stringify(event['body-json']));
@@ -20,7 +20,7 @@ exports.handler = async (event) => {
   } = await addHelper.addANewCategoryIfNotPresent(
     event,
     events,
-    docClient,
+    documentClient,
   );
 
   await updateHelper.updateBudgetIfNotPresent(
@@ -28,7 +28,7 @@ exports.handler = async (event) => {
     isBudgetPresent,
     event,
     events,
-    docClient,
+    documentClient,
   );
 
   return event;

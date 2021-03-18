@@ -18,7 +18,7 @@ AWS.config.update({
 });
 
 // Create the DynamoDB service object
-const docClient = new AWS.DynamoDB.DocumentClient({
+const documentClient = new AWS.DynamoDB.DocumentClient({
   region: constants.EU_WEST_ONE,
 });
 
@@ -37,23 +37,23 @@ async function fetchAllRelevantItems(
       walletId,
       startsWithDate,
       endsWithDate,
-      docClient,
+      documentClient,
     ),
   );
   events.push(
-    budget.getBudgetsItem(walletId, startsWithDate, endsWithDate, docClient),
+    budget.getBudgetsItem(walletId, startsWithDate, endsWithDate, documentClient),
   );
   events.push(
-    category.getCategoryData(walletId, startsWithDate, endsWithDate, docClient),
+    category.getCategoryData(walletId, startsWithDate, endsWithDate, documentClient),
   );
-  events.push(bankAccount.getBankAccountData(walletId, docClient));
+  events.push(bankAccount.getBankAccountData(walletId, documentClient));
   events.push(
-    date.getDateData(walletId, startsWithDate.substring(0, 4), docClient),
+    date.getDateData(walletId, startsWithDate.substring(0, 4), documentClient),
   );
   events.push(
     recurringTransaction.getRecurringTransactions(
       walletId,
-      docClient,
+      documentClient,
       snsEvents,
       sns,
     ),
@@ -73,7 +73,7 @@ async function fetchAllRelevantItems(
 async function fetchWalletItem(walletId, userId) {
   let walletPK = walletId;
   async function handleWalletItem() {
-    await wallet.getWalletsData(userId, docClient).then(
+    await wallet.getWalletsData(userId, documentClient).then(
       (result) => {
         walletPK = result.Wallet[0].walletId;
         console.log('retrieved the wallet for the item ', walletId);

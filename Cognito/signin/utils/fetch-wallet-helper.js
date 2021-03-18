@@ -2,9 +2,9 @@ const fetchWallet = require('../fetch/wallet');
 const util = require('./util');
 
 // Fetch Wallets
-async function fetchWalletFromUser(response, docClient) {
+async function fetchWalletFromUser(response, documentClient) {
   const userIdParam = util.fetchUserId(response);
-  await fetchWallet.getWallet(userIdParam, docClient).then(
+  await fetchWallet.getWallet(userIdParam, documentClient).then(
     (result) => {
       response.Wallet = result;
       console.log(`Logged in the user ${JSON.stringify(result)}`);

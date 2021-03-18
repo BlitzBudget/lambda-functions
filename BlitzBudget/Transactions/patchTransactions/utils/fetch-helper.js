@@ -4,7 +4,7 @@ const helper = require('./helper');
 const fetchCategory = require('../fetch/category');
 const createCategory = require('../add/category');
 
-async function calculateAndFetchCategory(event, events, docClient) {
+async function calculateAndFetchCategory(event, events, documentClient) {
   const categoryName = event['body-json'].category;
   if (
     helper.isNotEmpty(categoryName)
@@ -20,7 +20,7 @@ async function calculateAndFetchCategory(event, events, docClient) {
     /*
      * Check if category is present before adding them
      */
-    await fetchCategory.getCategoryData(event, today, docClient).then(
+    await fetchCategory.getCategoryData(event, today, documentClient).then(
       (result) => {
         if (helper.isNotEmpty(result.Category)) {
           console.log(
@@ -35,7 +35,7 @@ async function calculateAndFetchCategory(event, events, docClient) {
             categoryId,
             categoryName,
             events,
-            docClient,
+            documentClient,
           );
         }
       },

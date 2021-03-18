@@ -9,9 +9,9 @@ async function fetchOrCreateANewCategory(
   today,
   categoryName,
   events,
-  docClient,
+  documentClient,
 ) {
-  await fetchCategory.getCategoryData(docClient, event, today).then(
+  await fetchCategory.getCategoryData(documentClient, event, today).then(
     (result) => {
       if (helper.isNotEmpty(result.Category)) {
         console.log(
@@ -26,7 +26,7 @@ async function fetchOrCreateANewCategory(
           categoryId,
           categoryName,
           events,
-          docClient,
+          documentClient,
         );
       }
     },
@@ -39,7 +39,7 @@ async function fetchOrCreateANewCategory(
 /*
  * If category Id is not present
  */
-async function calculateAndFetchCategory(event, events, docClient) {
+async function calculateAndFetchCategory(event, events, documentClient) {
   const categoryName = event['body-json'].category;
   if (
     helper.isNotEmpty(categoryName)
@@ -61,7 +61,7 @@ async function calculateAndFetchCategory(event, events, docClient) {
       today,
       categoryName,
       events,
-      docClient,
+      documentClient,
     );
   }
 }

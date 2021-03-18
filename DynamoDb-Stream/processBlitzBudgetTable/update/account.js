@@ -2,7 +2,7 @@ const UpdateAccount = () => {};
 
 const constants = require('../constants/constant');
 
-async function updateAccountBalanceItem(pk, sk, balance, docClient) {
+async function updateAccountBalanceItem(pk, sk, balance, documentClient) {
   console.log(
     'Updating account balance for the account with walelt Id %j',
     pk,
@@ -27,7 +27,7 @@ async function updateAccountBalanceItem(pk, sk, balance, docClient) {
 
   console.log('Updating the item...');
 
-  const response = await docClient.update(params).promise();
+  const response = await documentClient.update(params).promise();
   return response;
 }
 

@@ -7,7 +7,7 @@ function createANewCategory(
   categoryId,
   categoryName,
   events,
-  docClient,
+  documentClient,
 ) {
   const createCategoryParam = event['body-json'];
   createCategoryParam.category = categoryId;
@@ -15,7 +15,7 @@ function createANewCategory(
   // If it is a newly created category then the category total is 0
   createCategoryParam.used = 0;
   events.push(
-    addCategory.createCategoryItem(createCategoryParam, categoryId, categoryName, docClient),
+    addCategory.createCategoryItem(createCategoryParam, categoryId, categoryName, documentClient),
   );
 }
 

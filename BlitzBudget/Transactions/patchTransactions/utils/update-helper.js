@@ -2,9 +2,9 @@ const UpdateHelper = () => {};
 
 const updateTransaction = require('../update/transaction');
 
-async function updateAllItems(events, event, docClient) {
+async function updateAllItems(events, event, documentClient) {
   let updateResponse;
-  events.push(updateTransaction.updatingTransactions(event, docClient));
+  events.push(updateTransaction.updatingTransactions(event, documentClient));
   await Promise.all(events).then(
     (response) => {
       updateResponse = response;

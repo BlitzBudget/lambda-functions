@@ -8,10 +8,10 @@ AWS.config.update({
 });
 
 // Create the DynamoDB service object
-const docClient = new AWS.DynamoDB.DocumentClient();
+const documentClient = new AWS.DynamoDB.DocumentClient();
 const parameters = require('./parameters');
-const fetchBudget = require('../fetch/budget');
-const updateBudget = require('../update/budget');
+const fetchBankAccount = require('../fetch/bank-account');
+const updateBankAccount = require('../update/bank-account');
 
 const isEmpty = (obj) => {
   // Check if objext is a number or a boolean
@@ -44,7 +44,7 @@ const updateBankAccountToUnselected = (result, events) => {
         updateItem['body-json'].selectedAccount = false;
         updateItem['body-json'].walletId = account.pk;
         updateItem['body-json'].accountId = account.sk;
-        events.push(updateBudget.updatingBankAccounts(updateItem, docClient));
+        events.push(updateBankAccount.updatingBankAccounts(updateItem, documentClient));
       }
     });
   } else {
@@ -54,7 +54,7 @@ const updateBankAccountToUnselected = (result, events) => {
 
 async function unselectSelectedBankAccount(event, events) {
   if (isNotEmpty(event['body-json'].selectedAccount)) {
-    await fetchBudget.getBankAccountItem(event['body-json'].walletId, docClient).then(
+    await fetchBankAccount.getBankAccountItem(event['body-json'].walletId, documentClient).then(
       (result) => {
         updateBankAccountToUnselected(result, events);
       },
@@ -130,7 +130,7 @@ async function handleUpdateBankAccounts(events, event) {
     event,
   );
 
-  events.push(updateBudget.updatingBankAccounts(params));
+  events.push(updateBankAccount.updatingBankAccounts(params));
   await Promise.all(events).then(
     () => {
       console.log('successfully patched the BankAccounts');

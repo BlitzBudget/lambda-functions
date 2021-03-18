@@ -6,7 +6,7 @@ FetchDate.prototype.getDateData = async function getDateData(
   pk,
   startsWithDate,
   endsWithDate,
-  docClient,
+  documentClient,
 ) {
   function organizeRetrivedItems(data) {
     console.log('data retrieved - Date ', data.Count);
@@ -37,7 +37,7 @@ FetchDate.prototype.getDateData = async function getDateData(
   const params = createParameter();
 
   // Call DynamoDB to read the item from the table
-  const response = await docClient.query(params).promise();
+  const response = await documentClient.query(params).promise();
 
   organizeRetrivedItems(response);
   return {

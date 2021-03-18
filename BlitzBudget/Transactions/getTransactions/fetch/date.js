@@ -2,7 +2,7 @@ const FetchDate = () => {};
 
 const constants = require('../constants/constant');
 
-async function getDateData(pk, year, docClient) {
+async function getDateData(pk, year, documentClient) {
   function createParameters() {
     return {
       TableName: constants.TABLE_NAME,
@@ -18,7 +18,7 @@ async function getDateData(pk, year, docClient) {
   const params = createParameters();
 
   // Call DynamoDB to read the item from the table
-  const response = await docClient.query(params).promise();
+  const response = await documentClient.query(params).promise();
   return {
     Date: response.Items,
   };

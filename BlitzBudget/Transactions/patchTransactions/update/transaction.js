@@ -4,7 +4,7 @@ const parameters = require('../utils/parameter');
 const constants = require('../constants/constant');
 const helper = require('../utils/helper');
 
-async function updatingTransactions(event, docClient) {
+async function updatingTransactions(event, documentClient) {
   function createParameters() {
     let updateExp = 'set';
     const expAttrVal = {};
@@ -64,7 +64,7 @@ async function updatingTransactions(event, docClient) {
   const params = createParameters();
 
   console.log('Updating an item...');
-  const response = await docClient.update(params).promise();
+  const response = await documentClient.update(params).promise();
   return {
     Transaction: response,
   };

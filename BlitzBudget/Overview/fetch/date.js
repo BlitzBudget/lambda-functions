@@ -2,7 +2,7 @@ const FetchDate = () => {};
 
 const constants = require('../constants/constant');
 
-async function getDateData(pk, startsWithDate, endsWithDate, docClient) {
+async function getDateData(pk, startsWithDate, endsWithDate, documentClient) {
   function organizeRetrievedItems(data) {
     console.log('data retrieved - Date ', data.Count);
     if (data.Items) {
@@ -32,7 +32,7 @@ async function getDateData(pk, startsWithDate, endsWithDate, docClient) {
   const params = createParameters();
 
   // Call DynamoDB to read the item from the table
-  const response = await docClient.query(params).promise();
+  const response = await documentClient.query(params).promise();
 
   organizeRetrievedItems(response);
   return ({

@@ -10,7 +10,7 @@ AWS.config.update({
 });
 
 // Create the DynamoDB service object
-const docClient = new AWS.DynamoDB.DocumentClient({
+const documentClient = new AWS.DynamoDB.DocumentClient({
   region: constants.EU_WEST_ONE,
 });
 
@@ -30,7 +30,7 @@ exports.handler = async (event) => {
     event['body-json'].walletId,
     userId,
     overviewData,
-    docClient,
+    documentClient,
   );
 
   // To display Category name
@@ -40,7 +40,7 @@ exports.handler = async (event) => {
     endsWithDate,
     oneYearAgo,
     overviewData,
-    docClient,
+    documentClient,
     events,
   );
 
