@@ -2,7 +2,7 @@ const CreateTransaction = () => {};
 
 const helper = require('../utils/helper');
 
-function markTransactionForCreation(recurringTransaction, sns) {
+async function markTransactionForCreation(recurringTransaction, sns) {
   let { description } = recurringTransaction;
   function fetchTagValue() {
     return helper.isEmpty(recurringTransaction.tags) ? [] : recurringTransaction.tags;
@@ -74,16 +74,8 @@ function markTransactionForCreation(recurringTransaction, sns) {
 
   const params = createParameterForSns();
 
-  return new Promise((resolve, reject) => {
-    sns.publish(params, (err) => {
-      if (err) {
-        console.log('Error ', err);
-        reject(err);
-      } else {
-        resolve('Reset account to SNS published');
-      }
-    });
-  });
+  const response = await sns.publish(params).promise();
+  return response;
 }
 
 CreateTransaction.prototype.markTransactionForCreation = markTransactionForCreation;

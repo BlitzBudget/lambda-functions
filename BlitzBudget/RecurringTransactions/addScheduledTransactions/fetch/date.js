@@ -5,7 +5,7 @@ const constants = require('../constants/constant');
 /*
  * Get Date Data
  */
-function getDateData(pk, today, DB) {
+async function getDateData(pk, today, DB) {
   const params = {
     TableName: constants.TABLE_NAME,
     KeyConditionExpression: 'pk = :pk AND begins_with(sk, :items)',
@@ -17,29 +17,17 @@ function getDateData(pk, today, DB) {
   };
 
   // Call DynamoDB to read the item from the table
-  return new Promise((resolve, reject) => {
-    DB.query(params, (err, data) => {
-      if (err) {
-        console.log('Error ', err);
-        reject(err);
-      } else {
-        console.log(
-          'data retrieved - Date %j',
-          data.Count,
-          ' for the date ',
-          today,
-        );
-        if (data.Count !== 0) {
-          resolve({
-            Date: data.Items,
-          });
-        }
-        resolve({
-          dateToCreate: today,
-        });
-      }
-    });
-  });
+  const data = await DB.query(params).promise();
+
+  if (data.Count !== 0) {
+    return {
+      Date: data.Items,
+    };
+  }
+
+  return {
+    dateToCreate: today,
+  };
 }
 
 FetchDate.prototype.getDateData = getDateData;

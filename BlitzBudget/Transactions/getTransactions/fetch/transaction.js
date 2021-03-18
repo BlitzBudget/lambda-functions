@@ -3,7 +3,7 @@ const FetchTransaction = () => {};
 const constants = require('../constants/constant');
 
 // Get Transaction Item
-function getTransactionItem(pk, startsWithDate, endsWithDate, docClient) {
+async function getTransactionItem(pk, startsWithDate, endsWithDate, docClient) {
   function createParameters() {
     return {
       TableName: constants.TABLE_NAME,
@@ -22,19 +22,10 @@ function getTransactionItem(pk, startsWithDate, endsWithDate, docClient) {
   const params = createParameters();
 
   // Call DynamoDB to read the item from the table
-  return new Promise((resolve, reject) => {
-    docClient.query(params, (err, data) => {
-      if (err) {
-        console.log('Error ', err);
-        reject(err);
-      } else {
-        console.log('data retrieved - Transactions %j', data.Count);
-        resolve({
-          Transaction: data.Items,
-        });
-      }
-    });
-  });
+  const response = await docClient.query(params).promise();
+  return {
+    Transaction: response.Items,
+  };
 }
 
 FetchTransaction.prototype.getTransactionItem = getTransactionItem;

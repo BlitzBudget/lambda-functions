@@ -14,7 +14,7 @@ const Helper = require('../utils/helper');
 // Create the DynamoDB service object
 const DB = new AWS.DynamoDB.DocumentClient();
 
-function addNewWallet(event, userId, currency, walletName) {
+async function addNewWallet(event, userId, currency, walletName) {
   const today = new Date();
   const randomValue = `Wallet#${today.toISOString()}`;
 
@@ -48,18 +48,12 @@ function addNewWallet(event, userId, currency, walletName) {
   }
 
   console.log('Adding a new item...');
-  return new Promise((resolve, reject) => {
-    DB.put(params, (err, data) => {
-      if (err) {
-        console.log('Error ', err);
-        reject(err);
-      } else {
-        addInfoToResponse();
-        resolve({
-          success: data,
-        });
-      }
-    });
+
+  const response = await DB.put(params).promise();
+
+  addInfoToResponse();
+  return ({
+    success: response,
   });
 }
 

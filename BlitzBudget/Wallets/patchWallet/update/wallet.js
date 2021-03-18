@@ -14,7 +14,7 @@ AWS.config.update({
 // Create the DynamoDB service object
 const docClient = new AWS.DynamoDB.DocumentClient();
 
-function updatingItem(event) {
+async function updatingItem(event) {
   function createParameters() {
     let updateExp = 'set';
     const expAttrVal = {};
@@ -73,18 +73,8 @@ function updatingItem(event) {
   const params = createParameters(event);
 
   console.log('Updating an item...');
-  return new Promise((resolve, reject) => {
-    docClient.update(params, (err, data) => {
-      if (err) {
-        console.log('Error ', err);
-        reject(err);
-      } else {
-        resolve({
-          success: data,
-        });
-      }
-    });
-  });
+  const response = await docClient.update(params).promise();
+  return response;
 }
 
 UpdateHelper.prototype.updatingItem = updatingItem;

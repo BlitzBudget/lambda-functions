@@ -1,6 +1,6 @@
 const CreateRecurringTransaction = () => {};
 
-function addRecurringTransaction(event, docClient) {
+async function addRecurringTransaction(event, docClient) {
   const today = new Date();
   today.setYear(event['body-json'].dateMeantFor.substring(5, 9));
   today.setMonth(
@@ -50,19 +50,8 @@ function addRecurringTransaction(event, docClient) {
   const params = createParameters();
 
   console.log('Adding a new item...');
-  return new Promise((resolve, reject) => {
-    docClient.put(params, (err, data) => {
-      if (err) {
-        console.log('Error ', err);
-        reject(err);
-      } else {
-        resolve({
-          success: data,
-        });
-        // event['body-json'].id = randomValue;
-      }
-    });
-  });
+  const response = await docClient.put(params).promise();
+  return response;
 }
 
 CreateRecurringTransaction.prototype.addRecurringTransaction = addRecurringTransaction;

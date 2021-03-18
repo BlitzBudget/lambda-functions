@@ -5,7 +5,7 @@ const constants = require('../constants/constant');
 /*
  * Get Category Data
  */
-function getCategoryData(pk, today, categoryType, categoryName, category, DB) {
+async function getCategoryData(pk, today, categoryType, categoryName, category, DB) {
   function calculateSortKey(data) {
     const sortKeyDate = new Date();
     sortKeyDate.setFullYear(today.substring(0, 4));
@@ -44,29 +44,16 @@ function getCategoryData(pk, today, categoryType, categoryName, category, DB) {
   };
 
   // Call DynamoDB to read the item from the table
-  return new Promise((resolve, reject) => {
-    DB.query(params, (err, data) => {
-      if (err) {
-        console.log('Error ', err);
-        reject(err);
-      } else {
-        console.log(
-          'data retrieved - Category %j',
-          data.Count,
-          ' for the date ',
-          today,
-        );
-        /*
-         * Create a new sortkey is necessary
-         */
-        const sortKey = calculateSortKey(data);
+  const response = await DB.query(params).promise();
 
-        resolve({
-          sortKey,
-          dateMeantFor: today,
-        });
-      }
-    });
+  /*
+  * Create a new sortkey is necessary
+  */
+  const sortKey = calculateSortKey(response);
+
+  return ({
+    sortKey,
+    dateMeantFor: today,
   });
 }
 

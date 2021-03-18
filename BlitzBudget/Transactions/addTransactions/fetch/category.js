@@ -3,7 +3,7 @@ const FetchCategory = () => {};
 const helper = require('../utils/helper');
 const constants = require('../constants/constant');
 
-function getCategoryData(event, today, docClient) {
+async function getCategoryData(event, today, docClient) {
   const params = {
     TableName: constants.TABLE_NAME,
     KeyConditionExpression: 'pk = :pk AND begins_with(sk, :items)',
@@ -19,44 +19,36 @@ function getCategoryData(event, today, docClient) {
   };
 
   // Call DynamoDB to read the item from the table
-  return new Promise((resolve, reject) => {
-    docClient.query(params, (err, data) => {
-      if (err) {
-        console.log('Error ', err);
-        reject(err);
-      } else {
-        console.log('data retrieved - Category %j', data.Count);
-        let obj;
-        if (helper.isNotEmpty(data.Items)) {
-          Object.keys(data.Items).forEach((categoryObj) => {
-            if (
-              helper.isEqual(
-                categoryObj.category_type,
-                event['body-json'].categoryType,
-              )
+  const response = await docClient.query(params).promise();
+
+  let obj;
+  if (helper.isNotEmpty(response.Items)) {
+    response.Items.forEach((categoryObj) => {
+      if (
+        helper.isEqual(
+          categoryObj.category_type,
+          event['body-json'].categoryType,
+        )
               && helper.isEqual(
                 categoryObj.category_name,
                 event['body-json'].category,
               )
-            ) {
-              console.log(
-                'Found a match for the mentioned category %j',
-                categoryObj.sk,
-              );
-              obj = categoryObj;
-            }
-          });
-        }
-
-        if (helper.isEmpty(obj)) {
-          console.log('No matching categories found');
-        }
-
-        resolve({
-          Category: obj,
-        });
+      ) {
+        console.log(
+          'Found a match for the mentioned category %j',
+          categoryObj.sk,
+        );
+        obj = categoryObj;
       }
     });
+  }
+
+  if (helper.isEmpty(obj)) {
+    console.log('No matching categories found');
+  }
+
+  return ({
+    Category: obj,
   });
 }
 

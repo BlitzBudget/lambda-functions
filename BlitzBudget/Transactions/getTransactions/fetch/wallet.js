@@ -2,7 +2,7 @@ const FetchWallet = () => {};
 
 const constants = require('../constants/constant');
 
-function getWalletsData(userId, docClient) {
+async function getWalletsData(userId, docClient) {
   function organizeTransactionData(data) {
     console.log('data retrieved - Wallet %j', data.Count);
     Object.keys(data.Items).forEach((walletObj) => {
@@ -30,19 +30,11 @@ function getWalletsData(userId, docClient) {
   const params = createParameters();
 
   // Call DynamoDB to read the item from the table
-  return new Promise((resolve, reject) => {
-    docClient.query(params, (err, data) => {
-      if (err) {
-        console.log('Error ', err);
-        reject(err);
-      } else {
-        organizeTransactionData(data);
-        resolve({
-          Wallet: data.Items,
-        });
-      }
-    });
-  });
+  const response = await docClient.query(params).promise();
+  organizeTransactionData(response);
+  return {
+    Wallet: response.Items,
+  };
 }
 
 FetchWallet.prototype.getWalletsData = getWalletsData;
