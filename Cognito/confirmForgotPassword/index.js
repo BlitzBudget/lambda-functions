@@ -1,13 +1,23 @@
-const cognitoHelper = require('./utils/cognito-helper');
+const AWS = require('aws-sdk');
+const constants = require('./constants/constant');
+const confirmForgotPasswordHelper = require('./utils/confirm-forgot-password-helper');
+const fetchUserHelper = require('./utils/fetch-user-helper');
+const loginHelper = require('./utils/login-helper');
+
+AWS.config.update({
+  region: constants.EU_WEST_ONE,
+});
+const cognitoidentityserviceprovider = new AWS.CognitoIdentityServiceProvider();
 
 exports.handler = async (event) => {
-  let response = {};
+  const response = await confirmForgotPasswordHelper.confirmForgotPassword(
+    event,
+    cognitoidentityserviceprovider,
+  );
 
-  response = await cognitoHelper.confirmForgotPassword(event, response);
+  await loginHelper.login(event, response, cognitoidentityserviceprovider);
 
-  response = await cognitoHelper.login(event, response);
-
-  await cognitoHelper.fetchUser(response);
+  await fetchUserHelper.fetchUser(response, cognitoidentityserviceprovider);
 
   return response;
 };
