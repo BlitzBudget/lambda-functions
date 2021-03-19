@@ -6,7 +6,7 @@ module.exports.login = async (event, response, cognitoidentityserviceprovider) =
 
   await cognitoLogin.initiateAuth(loginParams, cognitoidentityserviceprovider).then(
     (result) => {
-      response.Login = result;
+      response.AuthenticationResult = result.AuthenticationResult;
     },
     (err) => {
       throw new Error(`Unable to login from cognito  ${err}`);
