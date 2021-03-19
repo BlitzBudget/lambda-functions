@@ -1,24 +1,9 @@
 const UpdateDate = () => {};
 
-const constants = require('../constants/constant');
+const dateParameter = require('../create-parameter/date');
 
 async function updateDateItem(pk, sk, difference, income, expense, documentClient) {
-  const params = {
-    TableName: constants.TABLE_NAME,
-    Key: {
-      pk,
-      sk,
-    },
-    UpdateExpression:
-      'set balance = balance + :ab, income_total = income_total + :it, expense_total = expense_total + :et',
-    ConditionExpression: 'attribute_exists(balance)',
-    ExpressionAttributeValues: {
-      ':ab': difference,
-      ':it': income,
-      ':et': expense,
-    },
-    ReturnValues: 'NONE',
-  };
+  const params = dateParameter.createParameter(pk, sk, difference, income, expense);
 
   console.log('Updating the item...');
 
