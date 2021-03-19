@@ -19,6 +19,14 @@ AWS.config.update({
 // Create the DynamoDB service object
 const documentClient = new AWS.DynamoDB.DocumentClient();
 
+async function fulfillPromise(events) {
+  try {
+    await Promise.all(events);
+  } catch (ex) {
+    console.log('Could not complete operation ', ex);
+  }
+}
+
 async function updateRelevantItems(event) {
   const events = [];
 
@@ -51,15 +59,7 @@ async function updateRelevantItems(event) {
     }
   });
 
-  async function fulfillPromise() {
-    try {
-      await Promise.all(events);
-    } catch (ex) {
-      console.log('Could not complete operation ', ex);
-    }
-  }
-
-  await fulfillPromise();
+  await fulfillPromise(events);
 }
 
 UpdateHelper.prototype.updateRelevantItems = updateRelevantItems;
