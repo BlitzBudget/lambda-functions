@@ -1,4 +1,4 @@
-const resendConfirmationCode = require('../../create-parameter/resend-confirmation-code');
+const resendConfirmationCode = require('../../../create-parameter/resend-confirmation-code');
 
 describe('createParameter', () => {
   const event = {};

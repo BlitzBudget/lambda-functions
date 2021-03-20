@@ -1,4 +1,4 @@
-const ResendConfirmation = () => {};
+function ResendConfirmation() {}
 
 const AWS = require('aws-sdk');
 const constants = require('../constants/constant');
