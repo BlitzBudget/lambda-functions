@@ -1,6 +1,7 @@
 const DeleteHelper = () => {};
 
 const helper = require('./helper');
+const util = require('./util');
 const deleteItems = require('../delete/items');
 
 async function bulkDeleteItems(eventsArray, result, walletId, event, DB) {

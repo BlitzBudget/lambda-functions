@@ -1,7 +1,7 @@
 const UpdateHelper = () => { };
 
 const AWS = require('aws-sdk');
-const helper = require('./helper');
+const util = require('./util');
 
 const constants = require('../constants/constant');
 const addBankAccount = require('../add/bank-account');

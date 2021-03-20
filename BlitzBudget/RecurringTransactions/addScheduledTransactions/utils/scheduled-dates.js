@@ -1,6 +1,6 @@
 const ScheduledDate = () => {};
 
-const helper = require('./helper');
+const util = require('./util');
 
 /*
  * Build params for put items (transactions)

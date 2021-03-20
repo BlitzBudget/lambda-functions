@@ -1,5 +1,5 @@
 const updateWallet = require('../update/wallet');
-const helper = require('./helper');
+const util = require('./util');
 
 module.exports.updateWalletBalance = (record, events, documentClient) => {
   const pk = record.dynamodb.Keys.pk.S;

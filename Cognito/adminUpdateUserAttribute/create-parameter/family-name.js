@@ -1,4 +1,4 @@
-const helper = require('../utils/helper');
+const util = require('../utils/util');
 
 module.exports.createParameter = (event, params, index) => {
   const parameter = params;

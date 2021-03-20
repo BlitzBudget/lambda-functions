@@ -1,5 +1,5 @@
 const FetchHelper = () => {};
-const helper = require('./helper');
+const util = require('./util');
 const addHelper = require('./add-helper');
 const fetchCategory = require('../fetch/category');
 

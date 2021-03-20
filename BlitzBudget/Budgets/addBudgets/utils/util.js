@@ -1,4 +1,4 @@
-function Helper() {}
+const Util = () => {};
 
 const isEmpty = (obj) => {
   // Check if objext is a number or a boolean
@@ -18,8 +18,19 @@ const isEmpty = (obj) => {
 
 const isNotEmpty = (obj) => !isEmpty(obj);
 
-Helper.prototype.isEmpty = isEmpty;
-Helper.prototype.isNotEmpty = isNotEmpty;
+const isEqual = (obj1, obj2) => {
+  if (JSON.stringify(obj1) === JSON.stringify(obj2)) {
+    return true;
+  }
+  return false;
+};
+
+const isNotEqual = (obj1, obj2) => !isEqual(obj1, obj2);
+
+Util.prototype.isEmpty = isEmpty;
+Util.prototype.isNotEmpty = isNotEmpty;
+Util.prototype.isEqual = isEqual;
+Util.prototype.isNotEqual = isNotEqual;
 
 // Export object
-module.exports = new Helper();
+module.exports = new Util();

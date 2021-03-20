@@ -1,6 +1,6 @@
 const FetchHelper = () => {};
 
-const helper = require('./helper');
+const util = require('./util');
 const bankAccount = require('../fetch/bank-account');
 const category = require('../fetch/category');
 const date = require('../fetch/date');

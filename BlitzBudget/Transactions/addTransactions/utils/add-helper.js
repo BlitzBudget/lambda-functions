@@ -2,7 +2,7 @@ const AddHelper = () => {};
 
 const createRecurringTransaction = require('../add/recurring-transaction');
 const createTransaction = require('../add/transaction');
-const helper = require('./helper');
+const util = require('./util');
 
 /*
  * Add a new recurring transaction if recurrence is required

@@ -1,6 +1,6 @@
 const Transaction = () => {};
 
-const helper = require('../utils/helper');
+const util = require('../utils/util');
 /*
  * Populate the date meant for attribute in the transactions
  */

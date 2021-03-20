@@ -1,5 +1,5 @@
 const updateDate = require('../update/date');
-const helper = require('./helper');
+const util = require('./util');
 
 module.exports.updateDateTotal = (record, events, documentClient) => {
   const pk = record.dynamodb.Keys.pk.S;

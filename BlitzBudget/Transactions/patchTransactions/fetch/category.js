@@ -1,6 +1,6 @@
 const FetchCategory = () => {};
 
-const helper = require('../utils/helper');
+const util = require('../utils/util');
 const categoryParameter = require('../create-parameter/category');
 
 async function getCategoryData(event, today, documentClient) {

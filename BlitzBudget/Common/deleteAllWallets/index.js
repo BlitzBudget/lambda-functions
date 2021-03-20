@@ -1,6 +1,6 @@
 // Load the AWS SDK for Node.js
 const AWS = require('aws-sdk');
-const helper = require('./utils/helper');
+const util = require('./utils/util');
 const fetchHelper = require('./utils/fetch-helper');
 const deleteHelper = require('./utils/delete-helper');
 

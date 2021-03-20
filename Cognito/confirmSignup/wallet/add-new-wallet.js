@@ -1,6 +1,6 @@
 const wallet = () => {};
 
-const helper = require('../utils/helper');
+const util = require('../utils/util');
 const walletParameter = require('../create-parameter/wallet');
 
 wallet.prototype.addNewWallet = (userAttributes, currency, DB) => {

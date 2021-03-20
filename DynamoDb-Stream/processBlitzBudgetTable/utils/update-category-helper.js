@@ -1,5 +1,5 @@
 const updateCategory = require('../update/category');
-const helper = require('./helper');
+const util = require('./util');
 
 module.exports.updateCategoryTotal = (record, events, documentClient) => {
   const pk = record.dynamodb.Keys.pk.S;

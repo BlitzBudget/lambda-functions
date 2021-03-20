@@ -2,7 +2,7 @@ const FetchHelper = () => {};
 
 // Load the AWS SDK for Node.js
 const AWS = require('aws-sdk');
-const helper = require('./helper');
+const util = require('./util');
 const constants = require('../constants/constant');
 const transaction = require('../fetch/transaction');
 const wallet = require('../fetch/wallet');
