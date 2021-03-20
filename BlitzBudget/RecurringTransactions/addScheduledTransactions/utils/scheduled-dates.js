@@ -10,7 +10,7 @@ function calculateNextDateToCreates(
   datesToCreateTransactions,
 ) {
   let futureCreationDate;
-  if (helper.isEmpty(event.Records[0])) {
+  if (util.isEmpty(event.Records[0])) {
     return futureCreationDate;
   }
 
@@ -30,7 +30,7 @@ function calculateNextDateToCreates(
       }-${
         (`0${nextDateToCreate.getMonth() + 1}`).slice(-2)}`;
       if (
-        helper.notIncludesStr(
+        util.notIncludesStr(
           datesToCreateTransactions,
           nextDateToCreateAsString,
         )

@@ -1,5 +1,6 @@
 const AddHelper = () => {};
 
+const util = require('./util');
 const helper = require('./helper');
 const category = require('../fetch/category');
 const addCategory = require('../add/category');
@@ -15,11 +16,8 @@ async function addNewCategoryIfNotPresent(
   let isBudgetPresent = true;
   await category.getCategoryData(event, today, documentClient).then(
     (result) => {
-      if (helper.isNotEmpty(result.Category)) {
-        console.log(
-          'successfully assigned the existing category %j',
-          result.Category.sk,
-        );
+      if (util.isNotEmpty(result.Category)) {
+        console.log('successfully assigned the existing category %j', result.Category.sk);
         // event['body-json'].category = result.Category.sk;
       } else {
         const createCategory = event['body-json'];
@@ -58,8 +56,8 @@ async function addANewCategoryIfNotPresent(
   const categoryName = event['body-json'].category;
   let isBudgetPresent = true;
   if (
-    helper.isNotEmpty(categoryName)
-    && helper.notIncludesStr(categoryName, 'Category#')
+    util.isNotEmpty(categoryName)
+    && util.notIncludesStr(categoryName, 'Category#')
   ) {
     const today = helper.formulateDateFromRequest(event);
     const categoryId = `Category#${today.toISOString()}`;

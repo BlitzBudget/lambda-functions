@@ -18,7 +18,7 @@ function constructTransactions(
     const account = event.Records[0].Sns.MessageAttributes.account.Value;
     let { tags } = event.Records[0].Sns.MessageAttributes;
 
-    if (helper.isNotEmpty(tags)) {
+    if (util.isNotEmpty(tags)) {
       tags = JSON.parse(tags.Value);
       console.log('The tags for the transaction is ', tags);
     }
@@ -53,7 +53,7 @@ function constructTransactions(
   let futureDatesToCreate = new Date(futureDateToCreate);
 
   function calculateCategory(compareString, sk) {
-    if (helper.isNotEmpty(categoryMap[compareString])) {
+    if (util.isNotEmpty(categoryMap[compareString])) {
       console.log(
         'The category for the transaction %j ',
         sk,
@@ -65,7 +65,7 @@ function constructTransactions(
   }
 
   function calculateDateMeanFor(compareString, sk) {
-    if (helper.isNotEmpty(datesMap[compareString])) {
+    if (util.isNotEmpty(datesMap[compareString])) {
       console.log(
         'The date for the transaction %j ',
         sk,

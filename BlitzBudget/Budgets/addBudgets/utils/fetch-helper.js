@@ -13,8 +13,8 @@ async function fetchCategoryIdIfNotProvided(
   let isBudgetPresent = true;
   const categoryName = event['body-json'].category;
   if (
-    helper.isNotEmpty(categoryName)
-    && helper.notIncludesStr(categoryName, 'Category#')
+    util.isNotEmpty(categoryName)
+    && util.notIncludesStr(categoryName, 'Category#')
   ) {
     const categoryId = `Category#${today.toISOString()}`;
 
@@ -23,7 +23,7 @@ async function fetchCategoryIdIfNotProvided(
      */
     await fetchCategory.getCategoryData(categoryId, event, today).then(
       (result) => {
-        if (helper.isNotEmpty(result.Category)) {
+        if (util.isNotEmpty(result.Category)) {
           console.log(
             'successfully assigned the existing category %j',
             result.Category.sk,
@@ -47,7 +47,7 @@ async function fetchCategoryIdIfNotProvided(
 
 async function fetchDateIdIfNotProvided(dateMeantFor, event, walletId) {
   let dateId = dateMeantFor;
-  if (helper.notIncludesStr(dateMeantFor, 'Date#')) {
+  if (util.notIncludesStr(dateMeantFor, 'Date#')) {
     console.log('The date is %j', dateMeantFor);
     const today = new Date(event['body-json'].dateMeantFor);
 
@@ -56,7 +56,7 @@ async function fetchDateIdIfNotProvided(dateMeantFor, event, walletId) {
      */
     await fetchDate.getDateData(walletId, today).then(
       (result) => {
-        if (helper.isNotEmpty(result.Date)) {
+        if (util.isNotEmpty(result.Date)) {
           console.log(
             'successfully assigned the exissting date %j',
             result.Date[0].sk,
@@ -85,11 +85,11 @@ async function checkIfBudgetAlreadyPresent(
   event,
 ) {
   let addNewBudgetBl = true;
-  if (helper.isNotEmpty(categoryName) && checkIfBudgetIsPresent) {
+  if (util.isNotEmpty(categoryName) && checkIfBudgetIsPresent) {
     // Check if the budget is present for the mentioned category
     await fetchBudget.getBudgetsItem(today, event).then(
       (result) => {
-        if (helper.isNotEmpty(result.Budget)) {
+        if (util.isNotEmpty(result.Budget)) {
           addNewBudgetBl = false;
         }
       },

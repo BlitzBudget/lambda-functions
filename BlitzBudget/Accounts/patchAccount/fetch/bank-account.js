@@ -1,6 +1,6 @@
 const FetchBudget = () => {};
 
-const bankAccount = require('../create-parameter/bank-account');
+const bankAccount = require('../create-parameter/fetch-bank-account');
 
 // Get BankAccount Item
 FetchBudget.prototype.getBankAccountItem = async (walletId, documentClient) => {

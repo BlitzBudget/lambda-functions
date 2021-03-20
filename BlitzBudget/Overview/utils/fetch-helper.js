@@ -79,9 +79,9 @@ async function fetchAllWallets(walletId, userId, overviewData, documentClient) {
     );
   }
 
-  if (helper.isEmpty(walletId) && helper.isNotEmpty(userId)) {
+  if (util.isEmpty(walletId) && util.isNotEmpty(userId)) {
     await fetchWalletsFromUser(overviewData, documentClient);
-  } else if (helper.isNotEmpty(walletId) && helper.isNotEmpty(userId)) {
+  } else if (util.isNotEmpty(walletId) && util.isNotEmpty(userId)) {
     events.push(
       wallet.getWalletData(userId, walletId, overviewData, documentClient),
     );

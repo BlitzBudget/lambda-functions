@@ -1,12 +1,12 @@
 const DeleteHelper = () => {};
 
-const helper = require('./helper');
+const util = require('./util');
 const deleteItems = require('../delete/items');
 const publish = require('../sns/publish');
 const deleteParameter = require('../create-parameter/delete');
 
 DeleteHelper.prototype.buildParamsForDelete = (result, userId, sns, events) => {
-  if (helper.isEmpty(result.Items)) {
+  if (util.isEmpty(result.Items)) {
     return undefined;
   }
 
@@ -26,7 +26,7 @@ DeleteHelper.prototype.buildParamsForDelete = (result, userId, sns, events) => {
 
     // TODO clean the below code and use it else where
     // If wallet item  then push to SNS
-    if (helper.includesStr(sk, 'Wallet#')) {
+    if (util.includesStr(sk, 'Wallet#')) {
       events.push(publish.publishToResetAccountsSNS(sk, sns));
     }
   }

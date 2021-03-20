@@ -46,7 +46,7 @@ async function bulkDeleteItems(eventsArray, result, walletId, event, DB) {
     // Iterate through Transaction Item first and then Budget Item
       Object.keys(items.Items).forEach((item) => {
       // If transactions and budgets contain the category.
-        if (helper.isEqual(item.category, event['body-json'].category)) {
+        if (util.isEqual(item.category, event['body-json'].category)) {
           console.log('Building the delete params for the item %j', item.sk);
           requestArr.push({
             DeleteRequest: {

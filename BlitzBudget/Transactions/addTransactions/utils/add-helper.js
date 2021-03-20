@@ -9,7 +9,7 @@ const helper = require('./helper');
  */
 function addNewRecurringTransaction(event, events, documentClient) {
   if (
-    helper.isNotEmpty(event['body-json'].recurrence)
+    util.isNotEmpty(event['body-json'].recurrence)
     && event['body-json'].recurrence !== 'NEVER'
   ) {
     events.push(

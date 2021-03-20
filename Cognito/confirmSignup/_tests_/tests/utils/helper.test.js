@@ -2,43 +2,43 @@ const helper = require('../../../utils/helper');
 
 describe('isEmpty', () => {
   test('With Data: Success', () => {
-    expect(helper.isEmpty('en')).toBe(false);
+    expect(util.isEmpty('en')).toBe(false);
   });
 
   test('Without Data: Success', () => {
-    expect(helper.isEmpty('')).toBe(true);
-    expect(helper.isEmpty(null)).toBe(true);
+    expect(util.isEmpty('')).toBe(true);
+    expect(util.isEmpty(null)).toBe(true);
   });
 });
 
 describe('isNotEmpty', () => {
   test('With Data: Success', () => {
-    expect(helper.isNotEmpty('en')).toBe(true);
+    expect(util.isNotEmpty('en')).toBe(true);
   });
 
   test('Without Data: Success', () => {
-    expect(helper.isNotEmpty('')).toBe(false);
-    expect(helper.isNotEmpty(null)).toBe(false);
+    expect(util.isNotEmpty('')).toBe(false);
+    expect(util.isNotEmpty(null)).toBe(false);
   });
 });
 
 describe('isEqual', () => {
   test('With Data: Success', () => {
-    expect(helper.isEqual('en', 'en')).toBe(true);
+    expect(util.isEqual('en', 'en')).toBe(true);
   });
 
   test('Without Data: Success', () => {
-    expect(helper.isEqual('')).toBe(false);
-    expect(helper.isEqual(null)).toBe(false);
-    expect(helper.isEqual('', '')).toBe(true);
-    expect(helper.isEqual(null, '')).toBe(false);
-    expect(helper.isEqual('', null)).toBe(false);
+    expect(util.isEqual('')).toBe(false);
+    expect(util.isEqual(null)).toBe(false);
+    expect(util.isEqual('', '')).toBe(true);
+    expect(util.isEqual(null, '')).toBe(false);
+    expect(util.isEqual('', null)).toBe(false);
   });
 
   test('False Data: Success', () => {
-    expect(helper.isEqual('en', 'e')).toBe(false);
-    expect(helper.isEqual(null, 'e')).toBe(false);
-    expect(helper.isEqual('en', null)).toBe(false);
+    expect(util.isEqual('en', 'e')).toBe(false);
+    expect(util.isEqual(null, 'e')).toBe(false);
+    expect(util.isEqual('en', null)).toBe(false);
   });
 });
 

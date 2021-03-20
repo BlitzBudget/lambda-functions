@@ -7,13 +7,13 @@ module.exports.updateDateTotal = (record, events, documentClient) => {
   let date; let categoryType; let income = 0;
   let expense = 0;
   console.log('event is %j', record.eventName);
-  if (helper.isEqual(record.eventName, 'INSERT')) {
+  if (util.isEqual(record.eventName, 'INSERT')) {
     return;
-  } if (helper.isEqual(record.eventName, 'REMOVE')) {
+  } if (util.isEqual(record.eventName, 'REMOVE')) {
     balance = parseFloat(record.dynamodb.OldImage.category_total.N) * -1;
     categoryType = record.dynamodb.OldImage.category_type.S;
     date = record.dynamodb.OldImage.date_meant_for.S;
-  } else if (helper.isEqual(record.eventName, 'MODIFY')) {
+  } else if (util.isEqual(record.eventName, 'MODIFY')) {
     balance = parseFloat(record.dynamodb.NewImage.category_total.N)
       + (parseFloat(record.dynamodb.OldImage.category_total.N) * -1);
     categoryType = record.dynamodb.NewImage.category_type.S;
@@ -27,9 +27,9 @@ module.exports.updateDateTotal = (record, events, documentClient) => {
     return;
   }
 
-  if (helper.isEqual(categoryType, 'Expense')) {
+  if (util.isEqual(categoryType, 'Expense')) {
     expense = balance;
-  } else if (helper.isEqual(categoryType, 'Income')) {
+  } else if (util.isEqual(categoryType, 'Income')) {
     income = balance;
   }
 

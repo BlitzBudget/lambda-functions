@@ -6,18 +6,18 @@ module.exports.updateAccountBalance = (record, events, documentClient) => {
   let balance = 0;
   let account;
   console.log('event is %j', record.eventName);
-  if (helper.isEqual(record.eventName, 'INSERT')) {
+  if (util.isEqual(record.eventName, 'INSERT')) {
     balance = parseFloat(record.dynamodb.NewImage.amount.N);
     account = record.dynamodb.NewImage.account.S;
-  } else if (helper.isEqual(record.eventName, 'REMOVE')) {
+  } else if (util.isEqual(record.eventName, 'REMOVE')) {
     balance = parseFloat(record.dynamodb.OldImage.amount.N) * -1;
     account = record.dynamodb.OldImage.account.S;
-  } else if (helper.isEqual(record.eventName, 'MODIFY')) {
+  } else if (util.isEqual(record.eventName, 'MODIFY')) {
     balance = parseFloat(record.dynamodb.NewImage.amount.N)
       + (parseFloat(record.dynamodb.OldImage.amount.N) * -1);
     account = record.dynamodb.NewImage.account.S;
     const oldAccount = record.dynamodb.OldImage.account.S;
-    if (helper.isNotEqual(account, oldAccount)) {
+    if (util.isNotEqual(account, oldAccount)) {
       const oldBalance = (parseFloat(record.dynamodb.OldImage.amount.N) * -1);
       const newBalance = parseFloat(record.dynamodb.NewImage.amount.N);
       events.push(updateAccount.updateAccountBalanceItem(pk, account, newBalance, documentClient));

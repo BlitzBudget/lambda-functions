@@ -18,7 +18,7 @@ function pushAllCategoriesToFetch(
     /*
      * Check if 2020-03 ===  2020-02
      */
-    if (helper.isNotEqual(dateMeantFor, category.substring(9, 16))) {
+    if (util.isNotEqual(dateMeantFor, category.substring(9, 16))) {
       events.push(
         fetchCategory.getCategoryData(
           walletId,
@@ -49,7 +49,7 @@ function calculateDates(result, addItemArray, walletId, datesMap, nextSchArray) 
     /*
      * If Date is empty then
      */
-    if (helper.includesStr(nextSchArray, dateObj.dateToCreate)) {
+    if (util.includesStr(nextSchArray, dateObj.dateToCreate)) {
       const dateToCreate = new Date();
       dateToCreate.setFullYear(dateObj.dateToCreate.substring(0, 4));
       const month = parseInt(dateObj.dateToCreate.substring(5, 7), 10) - 1;

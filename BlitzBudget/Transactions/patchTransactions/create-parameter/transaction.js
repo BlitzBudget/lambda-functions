@@ -7,7 +7,7 @@ module.exports.createParameters = (event) => {
   const expAttrVal = {};
   const expAttrNames = {};
 
-  if (helper.isEmpty(event['body-json'])) {
+  if (util.isEmpty(event['body-json'])) {
     return undefined;
   }
 
@@ -15,9 +15,9 @@ module.exports.createParameters = (event) => {
     const prm = parameters[i];
 
     // If the parameter is not found then do not save
-    if (helper.isNotEmpty(event['body-json'][prm.prmName])) {
+    if (util.isNotEmpty(event['body-json'][prm.prmName])) {
       // Add a comma to update expression
-      if (helper.includesStr(updateExp, '#variable')) {
+      if (util.includesStr(updateExp, '#variable')) {
         updateExp += ',';
       }
 
@@ -37,7 +37,7 @@ module.exports.createParameters = (event) => {
     ' expression Attribute Names ',
     JSON.stringify(expAttrNames),
   );
-  if (helper.isEmpty(expAttrVal)) {
+  if (util.isEmpty(expAttrVal)) {
     return undefined;
   }
 

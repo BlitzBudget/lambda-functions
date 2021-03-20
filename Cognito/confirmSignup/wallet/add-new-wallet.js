@@ -8,7 +8,7 @@ wallet.prototype.addNewWallet = (userAttributes, currency, DB) => {
   for (let i = 0, len = userAttributes.length; i < len; i++) {
     const attribute = userAttributes[i];
 
-    if (helper.isEqual(attribute.Name, 'custom:financialPortfolioId')) {
+    if (util.isEqual(attribute.Name, 'custom:financialPortfolioId')) {
       userId = attribute.Value;
       break;
     }

@@ -1,6 +1,6 @@
 const FetchCategory = () => {};
 
-const helper = require('../utils/helper');
+const util = require('../utils/util');
 const categoryParameter = require('../create-parameter/category');
 
 async function getCategoryData(event, today, documentClient) {
@@ -10,14 +10,14 @@ async function getCategoryData(event, today, documentClient) {
   const response = await documentClient.query(params).promise();
 
   let obj;
-  if (helper.isNotEmpty(response.Items)) {
+  if (util.isNotEmpty(response.Items)) {
     response.Items.forEach((categoryObj) => {
       if (
-        helper.isEqual(
+        util.isEqual(
           categoryObj.category_type,
           event['body-json'].categoryType,
         )
-              && helper.isEqual(
+              && util.isEqual(
                 categoryObj.category_name,
                 event['body-json'].category,
               )
@@ -31,7 +31,7 @@ async function getCategoryData(event, today, documentClient) {
     });
   }
 
-  if (helper.isEmpty(obj)) {
+  if (util.isEmpty(obj)) {
     console.log('No matching categories found');
   }
 

@@ -11,10 +11,10 @@ FetchBudget.prototype.getBudgetsItem = async (today, event, documentClient) => {
   const response = await documentClient.query(params).promise();
 
   let matchingBudget;
-  if (helper.isNotEmpty(response.Items)) {
+  if (util.isNotEmpty(response.Items)) {
     Object.keys(response.Items).forEach((budget) => {
-      if (helper.isEqual(budget.category, event['body-json'].category)
-              && helper.isEqual(budget.date_meant_for, event['body-json'].dateMeantFor)) {
+      if (util.isEqual(budget.category, event['body-json'].category)
+              && util.isEqual(budget.date_meant_for, event['body-json'].dateMeantFor)) {
         console.log('Matching budget found with the same date and category %j', budget.sk);
         matchingBudget = budget;
       }

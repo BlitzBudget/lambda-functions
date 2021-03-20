@@ -86,7 +86,7 @@ async function fetchWalletItem(walletId, userId) {
     );
   }
 
-  if (helper.isEmpty(walletId) && helper.isNotEmpty(userId)) {
+  if (util.isEmpty(walletId) && util.isNotEmpty(userId)) {
     await handleWalletItem();
   }
   return walletPK;

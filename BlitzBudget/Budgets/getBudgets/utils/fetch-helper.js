@@ -10,7 +10,7 @@ const wallet = require('../fetch/wallet');
 async function fetchWalletsIfEmpty(walletId, userId, documentClient) {
   let response;
   let walletPK = walletId;
-  if (helper.isEmpty(walletId) && helper.isNotEmpty(userId)) {
+  if (util.isEmpty(walletId) && util.isNotEmpty(userId)) {
     await wallet.getWalletsData(userId, documentClient).then(
       (result) => {
         response = result.Wallet;

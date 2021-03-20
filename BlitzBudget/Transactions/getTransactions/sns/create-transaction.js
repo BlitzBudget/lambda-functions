@@ -1,18 +1,18 @@
 const CreateTransaction = () => {};
 
-const helper = require('../utils/helper');
+const util = require('../utils/util');
 const snsParameter = require('../create-parameter/sns');
 
 async function markTransactionForCreation(recurringTransaction, sns) {
   let { description } = recurringTransaction;
   function fetchTagValue() {
-    return helper.isEmpty(recurringTransaction.tags) ? [] : recurringTransaction.tags;
+    return util.isEmpty(recurringTransaction.tags) ? [] : recurringTransaction.tags;
   }
 
   const currentTag = fetchTagValue();
 
   function fetchDescription() {
-    if (helper.isEmpty(recurringTransaction.description)) {
+    if (util.isEmpty(recurringTransaction.description)) {
       description = 'No description';
     }
   }

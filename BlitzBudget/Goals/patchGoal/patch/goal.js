@@ -1,7 +1,7 @@
 const PatchGoal = () => {};
 
 const AWS = require('aws-sdk');
-const helper = require('../utils/helper');
+const util = require('../utils/util');
 const constants = require('../constants/constant');
 const goalParameter = require('../create-parameter/goal');
 
@@ -15,7 +15,7 @@ const documentClient = new AWS.DynamoDB.DocumentClient();
 async function updatingGoals(event) {
   const params = goalParameter.createParameter(event);
 
-  if (helper.isEmpty(params)) {
+  if (util.isEmpty(params)) {
     return undefined;
   }
 

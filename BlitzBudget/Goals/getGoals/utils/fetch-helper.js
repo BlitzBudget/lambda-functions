@@ -55,9 +55,9 @@ const fetchWalletInformation = async (
     );
   }
 
-  if (helper.isEmpty(walletId) && helper.isNotEmpty(userId)) {
+  if (util.isEmpty(walletId) && util.isNotEmpty(userId)) {
     walletPK = await fetchWalletsFromUser();
-  } else if (helper.isNotEmpty(walletId) && helper.isNotEmpty(userId)) {
+  } else if (util.isNotEmpty(walletId) && util.isNotEmpty(userId)) {
     events.push(wallet.getWalletData(userId, walletId, documentClient));
   }
   return walletPK;

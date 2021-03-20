@@ -1,15 +1,10 @@
-const util = require('../utils/util');
 const parameters = require('../utils/parameters');
-const constants = require('../constants/constant');
+const util = require('../utils/util');
 
 module.exports.createParameter = (event) => {
   let updateExp = 'set';
   const expAttrVal = {};
   const expAttrNames = {};
-
-  if (util.isEmpty(event['body-json'])) {
-    return undefined;
-  }
 
   for (let i = 0, len = parameters.length; i < len; i++) {
     const prm = parameters[i];
@@ -36,7 +31,10 @@ module.exports.createParameter = (event) => {
     JSON.stringify(expAttrVal),
     ' expression Attribute Names ',
     JSON.stringify(expAttrNames),
+    ' for the account id ',
+    event['body-json'].accountId,
   );
+
   if (util.isEmpty(expAttrVal)) {
     return undefined;
   }
@@ -46,10 +44,10 @@ module.exports.createParameter = (event) => {
   expAttrNames['#update'] = 'updated_date';
 
   return {
-    TableName: constants.TABLE_NAME,
+    TableName: 'blitzbudget',
     Key: {
       pk: event['body-json'].walletId,
-      sk: event['body-json'].goalId,
+      sk: event['body-json'].accountId,
     },
     UpdateExpression: updateExp,
     ExpressionAttributeNames: expAttrNames,

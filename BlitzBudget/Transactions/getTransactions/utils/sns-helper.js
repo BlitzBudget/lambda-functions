@@ -1,12 +1,12 @@
 const SnsHelper = () => {};
 
-const helper = require('./helper');
+const util = require('./util');
 
 /*
  * Send to SNS events
  */
 async function sendSNSToCreateNewTransactions(snsEvents) {
-  if (helper.isNotEmpty(snsEvents)) {
+  if (util.isNotEmpty(snsEvents)) {
     await Promise.all(snsEvents).then(
       () => {
         console.log(

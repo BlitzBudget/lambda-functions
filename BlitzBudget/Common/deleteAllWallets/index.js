@@ -24,7 +24,7 @@ exports.handler = async (event) => {
     events,
   );
 
-  if (helper.isEmpty(deleteParams)) {
+  if (util.isEmpty(deleteParams)) {
     return event;
   }
 

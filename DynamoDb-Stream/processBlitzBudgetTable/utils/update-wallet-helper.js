@@ -9,15 +9,15 @@ module.exports.updateWalletBalance = (record, events, documentClient) => {
 
   console.log('event is %j for updating the wallet balance', JSON.stringify(record.dynamodb));
 
-  if (helper.isEqual(record.eventName, 'INSERT')) {
+  if (util.isEqual(record.eventName, 'INSERT')) {
     balance = parseFloat(record.dynamodb.NewImage.account_balance.N);
     walletId = record.dynamodb.NewImage.primary_wallet.S;
     accountType = record.dynamodb.NewImage.account_type.S;
-  } else if (helper.isEqual(record.eventName, 'REMOVE')) {
+  } else if (util.isEqual(record.eventName, 'REMOVE')) {
     balance = parseFloat(record.dynamodb.OldImage.account_balance.N) * -1;
     walletId = record.dynamodb.OldImage.primary_wallet.S;
     accountType = record.dynamodb.OldImage.account_type.S;
-  } else if (helper.isEqual(record.eventName, 'MODIFY')) {
+  } else if (util.isEqual(record.eventName, 'MODIFY')) {
     balance = parseFloat(record.dynamodb.NewImage.account_balance.N)
       + (parseFloat(record.dynamodb.OldImage.account_balance.N) * -1);
     walletId = record.dynamodb.NewImage.primary_wallet.S;
@@ -31,9 +31,9 @@ module.exports.updateWalletBalance = (record, events, documentClient) => {
     return;
   }
 
-  if (helper.isEqual(accountType, 'ASSET')) {
+  if (util.isEqual(accountType, 'ASSET')) {
     assetBalance = balance;
-  } else if (helper.isEqual(accountType, 'DEBT')) {
+  } else if (util.isEqual(accountType, 'DEBT')) {
     debtBalance = balance;
   }
 

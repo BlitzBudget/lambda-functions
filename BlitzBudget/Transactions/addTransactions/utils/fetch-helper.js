@@ -1,6 +1,6 @@
 const FetchHelper = () => {};
 
-const helper = require('./helper');
+const util = require('./util');
 const createDate = require('../add/date');
 const fetchDate = require('../fetch/date');
 const fetchCategory = require('../fetch/category');
@@ -11,18 +11,15 @@ const createCategory = require('../add/category');
  */
 async function calculateAndFetchDate(event, walletId, events, documentClient) {
   let { dateMeantFor } = event['body-json'];
-  if (helper.notIncludesStr(dateMeantFor, 'Date#')) {
+  if (util.notIncludesStr(dateMeantFor, 'Date#')) {
     const today = new Date(event['body-json'].dateMeantFor);
     /*
      * Check if date is present before adding them
      */
     await fetchDate.getDateData(walletId, today, documentClient).then(
       (result) => {
-        if (helper.isNotEmpty(result.Date)) {
-          console.log(
-            'successfully assigned the exissting date %j',
-            result.Date[0].sk,
-          );
+        if (util.isNotEmpty(result.Date)) {
+          console.log('successfully assigned the exissting date %j', result.Date[0].sk);
           dateMeantFor = result.Date[0].sk;
         } else {
           dateMeantFor = `Date#${today.toISOString()}`;
@@ -45,8 +42,8 @@ async function calculateAndFetchDate(event, walletId, events, documentClient) {
 async function calculateAndFetchCategory(event, events, documentClient) {
   const categoryName = event['body-json'].category;
   if (
-    helper.isNotEmpty(categoryName)
-    && helper.notIncludesStr(categoryName, 'Category#')
+    util.isNotEmpty(categoryName)
+    && util.notIncludesStr(categoryName, 'Category#')
   ) {
     const today = new Date();
     today.setYear(event['body-json'].dateMeantFor.substring(5, 9));
@@ -62,11 +59,8 @@ async function calculateAndFetchCategory(event, events, documentClient) {
       .getCategoryData(categoryId, event, today, documentClient)
       .then(
         (result) => {
-          if (helper.isNotEmpty(result.Category)) {
-            console.log(
-              'successfully assigned the existing category %j',
-              result.Category.sk,
-            );
+          if (util.isNotEmpty(result.Category)) {
+            console.log('successfully assigned the existing category %j', result.Category.sk);
             // event['body-json'].category = result.Category.sk;
           } else {
             const categoryParam = event['body-json'];

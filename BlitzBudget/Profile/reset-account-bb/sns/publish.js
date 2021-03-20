@@ -1,6 +1,6 @@
 const Publish = () => {};
 
-const helper = require('../utils/helper');
+const util = require('../utils/util');
 const snsParameter = require('../create-parameter/sns');
 
 async function resetAccountSubscriberThroughSNS(event, sns) {
@@ -8,7 +8,7 @@ async function resetAccountSubscriberThroughSNS(event, sns) {
     `Publishing to ResetAccountListener SNS or wallet id - ${
       event['body-json'].walletId}`,
   );
-  const deleteOneWalletAttribute = helper.isNotEmpty(
+  const deleteOneWalletAttribute = util.isNotEmpty(
     event['body-json'].referenceNumber,
   )
     ? 'execute'

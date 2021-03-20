@@ -2,7 +2,7 @@ const UpdateHelper = () => {};
 
 const parameters = require('./parameters');
 const fetchHelper = require('./fetch-helper');
-const helper = require('./helper');
+const util = require('./util');
 const updateBudgets = require('../update/budget');
 
 function createParametersToUpdate(event) {
@@ -10,7 +10,7 @@ function createParametersToUpdate(event) {
   const expAttrVal = {};
   const expAttrNames = {};
 
-  if (helper.isEmpty(event['body-json'])) {
+  if (util.isEmpty(event['body-json'])) {
     return undefined;
   }
 
@@ -18,9 +18,9 @@ function createParametersToUpdate(event) {
     const prm = parameters[i];
 
     // If the parameter is not found then do not save
-    if (helper.isNotEmpty(event['body-json'][prm.prmName])) {
+    if (util.isNotEmpty(event['body-json'][prm.prmName])) {
       // Add a comma to update expression
-      if (helper.includesStr(updateExp, '#variable')) {
+      if (util.includesStr(updateExp, '#variable')) {
         updateExp += ',';
       }
 
@@ -41,7 +41,7 @@ function createParametersToUpdate(event) {
     JSON.stringify(expAttrNames),
   );
 
-  if (helper.isEmpty(expAttrVal)) {
+  if (util.isEmpty(expAttrVal)) {
     return undefined;
   }
 

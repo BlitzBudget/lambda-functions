@@ -39,17 +39,17 @@ async function updateRelevantItems(event) {
       console.log('The event name is %j', record.eventName);
 
       // If the entries are not transactions / bank accounts then do not process
-      if (helper.includesStr(sortKey, 'Transaction#')) {
+      if (util.includesStr(sortKey, 'Transaction#')) {
         console.log('Updating the category total and account balance');
         updateCategoryHelper.updateCategoryTotal(record, events, documentClient);
         updateAccountHelper.updateAccountBalance(record, events, documentClient);
-      } else if (helper.includesStr(sortKey, 'BankAccount#')) {
+      } else if (util.includesStr(sortKey, 'BankAccount#')) {
         console.log('Updating the wallet account balance');
         updateWalletHelper.updateWalletBalance(record, events, documentClient);
-      } else if (helper.includesStr(sortKey, 'Wallet#') && helper.isEqual(record.eventName, 'INSERT')) {
+      } else if (util.includesStr(sortKey, 'Wallet#') && util.isEqual(record.eventName, 'INSERT')) {
         console.log('Adding a new bank account for the newly created wallet');
         events.push(addBankAccount.addNewBankAccount(record, documentClient));
-      } else if (helper.includesStr(sortKey, 'Category#')) {
+      } else if (util.includesStr(sortKey, 'Category#')) {
         console.log('Updating the date wrapper with the total');
         updateDateHelper.updateDateTotal(record, events, documentClient);
       }

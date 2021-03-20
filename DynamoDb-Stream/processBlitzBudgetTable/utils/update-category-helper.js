@@ -6,19 +6,19 @@ module.exports.updateCategoryTotal = (record, events, documentClient) => {
   let balance = 0;
   let category;
   console.log('event is %j', record.eventName);
-  if (helper.isEqual(record.eventName, 'INSERT')) {
+  if (util.isEqual(record.eventName, 'INSERT')) {
     balance = parseFloat(record.dynamodb.NewImage.amount.N);
     category = record.dynamodb.NewImage.category.S;
-  } else if (helper.isEqual(record.eventName, 'REMOVE')) {
+  } else if (util.isEqual(record.eventName, 'REMOVE')) {
     balance = parseFloat(record.dynamodb.OldImage.amount.N) * -1;
     category = record.dynamodb.OldImage.category.S;
-  } else if (helper.isEqual(record.eventName, 'MODIFY')) {
+  } else if (util.isEqual(record.eventName, 'MODIFY')) {
     // If the balance has changed
     balance = parseFloat(record.dynamodb.NewImage.amount.N)
       + (parseFloat(record.dynamodb.OldImage.amount.N) * -1);
     category = record.dynamodb.NewImage.category.S;
     // If the category has changed
-    if (helper.isNotEqual(category, record.dynamodb.OldImage.category.S)) {
+    if (util.isNotEqual(category, record.dynamodb.OldImage.category.S)) {
       // The old balance is deducted from the old category
       balance = (parseFloat(record.dynamodb.OldImage.amount.N) * -1);
       category = record.dynamodb.OldImage.category.S;
