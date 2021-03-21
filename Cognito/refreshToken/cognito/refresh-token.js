@@ -1,4 +1,4 @@
-const RefreshHelper = () => {};
+function RefreshHelper() {}
 
 const AWS = require('aws-sdk');
 const constants = require('../constants/constant');
