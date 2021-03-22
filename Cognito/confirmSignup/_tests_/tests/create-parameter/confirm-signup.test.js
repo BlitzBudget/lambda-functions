@@ -7,10 +7,10 @@ describe('createConfirmSignupParameters', () => {
   event['body-json'].username = 'notempty';
 
   test('With Data: Success', () => {
-    const parameters = confirmSignupParameter.createConfirmSignupParameters(event);
-    expect(parameters).not.toBeNull();
-    expect(parameters.ClientId).not.toBeNull();
-    expect(parameters.ConfirmationCode).not.toBeNull();
-    expect(parameters.Username).not.toBeNull();
+    const parameters = confirmSignupParameter.createParameter(event);
+    expect(parameters).not.toBeUndefined();
+    expect(parameters.ClientId).not.toBeUndefined();
+    expect(parameters.ConfirmationCode).not.toBeUndefined();
+    expect(parameters.Username).not.toBeUndefined();
   });
 });

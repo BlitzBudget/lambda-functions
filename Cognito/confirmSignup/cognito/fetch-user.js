@@ -1,4 +1,4 @@
-const FetchUser = () => {};
+function FetchUser() {}
 
 FetchUser.prototype.getUser = async (response, cognitoidentityserviceprovider) => {
   const params = {
