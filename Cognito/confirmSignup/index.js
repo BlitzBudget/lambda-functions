@@ -10,7 +10,8 @@ AWS.config.update({ region: constants.EU_WEST_ONE });
 const cognitoidentityserviceprovider = new AWS.CognitoIdentityServiceProvider();
 
 // Create the DynamoDB service object
-const DB = new AWS.DynamoDB.DocumentClient();
+const dynamoDB = new AWS.DynamoDB();
+const documentClient = new dynamoDB.DocumentClient();
 
 exports.handler = async (event) => {
   const doNotCreateANewWallet = event['body-json'].doNotCreateWallet;
@@ -26,7 +27,7 @@ exports.handler = async (event) => {
     response,
     doNotCreateANewWallet,
     countryLocale,
-    DB,
+    documentClient,
   );
 
   return response;

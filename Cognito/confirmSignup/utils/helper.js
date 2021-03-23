@@ -16,6 +16,7 @@ Helper.prototype.fetchCurrencyInformation = (countryLocale) => {
 
 Helper.prototype.fetchUserId = (userAttributes) => {
   let userId;
+
   for (let i = 0, len = userAttributes.length; i < len; i++) {
     const attribute = userAttributes[i];
 
