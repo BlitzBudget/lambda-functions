@@ -1,9 +1,7 @@
-const wallet = () => {};
-
 const walletParameter = require('../create-parameter/wallet');
 const helper = require('../utils/helper');
 
-wallet.prototype.addNewWallet = async (userAttributes, currency, DB) => {
+module.exports.addNewWallet = async (userAttributes, currency, DB) => {
   const userId = helper.fetchUserId(userAttributes);
   const today = new Date();
   const randomValue = `Wallet#${today.toISOString()}`;

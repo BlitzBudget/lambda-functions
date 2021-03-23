@@ -11,6 +11,7 @@ async function fetchUserInformation(response, cognitoidentityserviceprovider) {
       throw new Error(`Unable to signin from cognito  ${err}`);
     },
   );
+  return response;
 }
 
 module.exports.fetchUserInformation = fetchUserInformation;

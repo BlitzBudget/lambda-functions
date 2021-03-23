@@ -2,7 +2,7 @@ const fetchWallet = require('../../../fetch/wallet');
 const mockUser = require('../../fixtures/response/get-user');
 const mockWalletResponse = require('../../fixtures/response/wallet');
 
-const cognitoidentityserviceprovider = {
+const dynamoDB = {
   query: jest.fn(() => ({
     promise: jest.fn().mockResolvedValueOnce(mockWalletResponse),
   })),
@@ -11,7 +11,7 @@ const cognitoidentityserviceprovider = {
 describe('fetch Wallet', () => {
   const event = mockUser.UserAttributes[2].Value;
   test('With Data: Success', async () => {
-    const response = await fetchWallet.getWallet(event, cognitoidentityserviceprovider);
+    const response = await fetchWallet.getWallet(event, dynamoDB);
     expect(response).not.toBeNull();
     expect(response).not.toBeUndefined();
     expect(response[0].currency).not.toBeUndefined();

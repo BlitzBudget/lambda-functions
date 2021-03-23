@@ -9,7 +9,7 @@ async function addNewWallet(
   countryLocale,
   DB,
 ) {
-  let walletResponse = response;
+  const walletResponse = response;
 
   /*
      * Do not create wallet
@@ -25,7 +25,7 @@ async function addNewWallet(
 
   await wallet.addNewWallet(response.UserAttributes, currency, DB).then(
     (addResponse) => {
-      walletResponse = addResponse.Wallet;
+      walletResponse.Wallet = addResponse;
     },
     (err) => {
       throw new Error(`Unable to add new wallet${err}`);

@@ -1,4 +1,4 @@
-const wallet = () => {};
+const Wallet = () => {};
 
 // Load the AWS SDK for Node.js
 const AWS = require('aws-sdk');
@@ -10,7 +10,7 @@ AWS.config.update({
   region: constants.EU_WEST_ONE,
 });
 
-const Helper = require('../utils/helper');
+const helper = require('../utils/helper');
 
 // Create the DynamoDB service object
 const DB = new AWS.DynamoDB.DocumentClient();
@@ -23,7 +23,7 @@ async function addNewWallet(event, userId, chosenCurrency, walletName) {
 
   function addInfoToResponse() {
     const response = event['body-json'];
-    if (Helper.isNotEmpty()) {
+    if (helper.isNotEmpty(response)) {
       response.walletId = randomValue;
       response.wallet_balance = 0;
       response.total_debt_balance = 0;
@@ -41,6 +41,6 @@ async function addNewWallet(event, userId, chosenCurrency, walletName) {
   });
 }
 
-wallet.prototype.addNewWallet = addNewWallet;
+Wallet.prototype.addNewWallet = addNewWallet;
 // Export object
-module.exports = new Helper();
+module.exports = new Wallet();

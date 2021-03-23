@@ -13,13 +13,12 @@ const cognitoidentityserviceprovider = new AWS.CognitoIdentityServiceProvider();
 const DB = new AWS.DynamoDB.DocumentClient();
 
 exports.handler = async (event) => {
-  let response = {};
   const doNotCreateANewWallet = event['body-json'].doNotCreateWallet;
   const countryLocale = event.params.header['CloudFront-Viewer-Country'];
 
   await confirmSignupHelper.confirmSignup(event, cognitoidentityserviceprovider);
 
-  response = await loginHelper.login(event, response, cognitoidentityserviceprovider);
+  const response = await loginHelper.login(event, cognitoidentityserviceprovider);
 
   await fetchUserHelper.fetchUserInformation(response, cognitoidentityserviceprovider);
 
