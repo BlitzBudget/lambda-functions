@@ -12,4 +12,5 @@ module.exports.login = async (event, response, cognitoidentityserviceprovider) =
       throw new Error(`Unable to login from cognito  ${err}`);
     },
   );
+  return response;
 };

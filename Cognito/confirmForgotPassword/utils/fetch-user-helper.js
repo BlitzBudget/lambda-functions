@@ -11,4 +11,5 @@ module.exports.fetchUser = async (response, cognitoidentityserviceprovider) => {
       throw new Error(`Unable to get user attributes from cognito  ${err}`);
     },
   );
+  return response;
 };

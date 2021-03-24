@@ -21,6 +21,7 @@ describe('handleDeleteUser: ERROR', () => {
       expect(response).not.toBeNull();
       expect(response.errorType).not.toBeUndefined();
       expect(response.errorMessage).not.toBeUndefined();
+      expect(response.errorMessage).toMatch(/UserNotFoundException/);
     });
   });
 });
