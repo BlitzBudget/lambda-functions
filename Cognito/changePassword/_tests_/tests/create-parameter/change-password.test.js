@@ -2,7 +2,7 @@ const helper = require('../../../create-parameter/change-password');
 
 describe('changePasswordParameters', () => {
   test('With Data: Success', () => {
-    const parameters = helper.changePasswordParameters('accessToken', 'password', 'newPassword');
+    const parameters = helper.createParameter('accessToken', 'password', 'newPassword');
     expect(parameters).not.toBeNull();
     expect(parameters.AccessToken).not.toBeNull();
     expect(parameters.PreviousPassword).not.toBeNull();

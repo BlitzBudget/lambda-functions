@@ -8,7 +8,7 @@ jest.mock('aws-sdk', () => ({
   CognitoIdentityServiceProvider: jest.fn(() => ({
     initiateAuth: jest.fn(() => ({
       promise: jest.fn()
-        .mockResolvedValueOnce(Promise.resolve(mockLoginError)),
+        .mockResolvedValueOnce(Promise.reject(mockLoginError)),
     })),
     getUser: jest.fn(() => ({
       promise: jest.fn()
@@ -30,7 +30,7 @@ describe('index: Handler', () => {
     cognitoLogin.handler(event).catch((error) => {
       expect(error).not.toBeUndefined();
       expect(error.message).not.toBeUndefined();
-      expect(error.message).toMatch(/Unable to get user attributes from cognito/);
+      expect(error.message).toMatch(/Unable to login from cognito/);
     });
   });
 });

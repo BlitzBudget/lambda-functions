@@ -1,6 +1,6 @@
 function ChangePassword() {}
 
-ChangePassword.prototype.changePasswordParameters = (
+ChangePassword.prototype.createParameter = (
   accessToken,
   previousPassword,
   newPassword,
