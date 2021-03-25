@@ -32,7 +32,7 @@ jest.mock('../../fetch/wallet', () => ({
 describe('signupUser', () => {
   const event = mockRequest;
   test('With Data: Success', () => handle.handler(event).then((response) => {
-    expect(response).not.toBeNull();
+    expect(response).not.toBeUndefined();
     expect(response.Username).not.toBeUndefined();
     expect(response.UserAttributes).not.toBeUndefined();
     expect(response.Wallet).not.toBeUndefined();

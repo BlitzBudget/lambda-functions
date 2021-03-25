@@ -5,13 +5,14 @@ describe('confirmForgotPasswordParameters', () => {
   event['body-json'] = {};
   event['body-json'].username = 'notempty';
   event['body-json'].password = 'notempty';
+  event['body-json'].confirmationCode = 'notempty';
 
   test('With Data: Success', () => {
     const parameters = confirmForgotPasswordParameter.createParameter(event);
-    expect(parameters).not.toBeNull();
-    expect(parameters.ClientId).not.toBeNull();
-    expect(parameters.ConfirmationCode).not.toBeNull();
-    expect(parameters.Password).not.toBeNull();
-    expect(parameters.Username).not.toBeNull();
+    expect(parameters).not.toBeUndefined();
+    expect(parameters.ClientId).not.toBeUndefined();
+    expect(parameters.ConfirmationCode).not.toBeUndefined();
+    expect(parameters.Password).not.toBeUndefined();
+    expect(parameters.Username).not.toBeUndefined();
   });
 });

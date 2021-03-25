@@ -10,8 +10,8 @@ jest.mock('../../cognito/signup', () => ({
 describe('signupUser', () => {
   const event = mockRequest;
   test('With Data: Success', () => handle.handler(event).then((response) => {
-    expect(response).not.toBeNull();
-    expect(response.UserConfirmed).not.toBeNull();
+    expect(response).not.toBeUndefined();
+    expect(response.UserConfirmed).not.toBeUndefined();
     expect(response.UserConfirmed).toBe(false);
   }));
 });
@@ -19,8 +19,8 @@ describe('signupUser', () => {
 describe('signupUser without name', () => {
   const event = mockRequestWithoutNames;
   test('With Data: Success', () => handle.handler(event).then((response) => {
-    expect(response).not.toBeNull();
-    expect(response.UserConfirmed).not.toBeNull();
+    expect(response).not.toBeUndefined();
+    expect(response.UserConfirmed).not.toBeUndefined();
     expect(response.UserConfirmed).toBe(false);
   }));
 });
@@ -32,8 +32,8 @@ describe('signupUser without name: ERROR', () => {
 
   const event = mockRequestWithoutNames;
   test('With Data: Success', () => handle.handler(event).catch((response) => {
-    expect(response).not.toBeNull();
-    expect(response.message).not.toBeNull();
+    expect(response).not.toBeUndefined();
+    expect(response.message).not.toBeUndefined();
     expect(response.message).stringContaining('Unable to signin from cognito');
   }));
 });

@@ -18,7 +18,7 @@ describe('handleRefreshToken', () => {
   const event = mockRequest;
   test('With Data: Success', async () => {
     const response = await cognitoForgotPassword.handleForgotPassword(event);
-    expect(response).not.toBeNull();
+    expect(response).not.toBeUndefined();
     expect(response.CodeDeliveryDetails).not.toBeUndefined();
     expect(response.CodeDeliveryDetails.DeliveryMedium)
       .toBe(mockSuccess.CodeDeliveryDetails.DeliveryMedium);

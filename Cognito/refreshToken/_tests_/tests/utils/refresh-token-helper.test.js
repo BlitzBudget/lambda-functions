@@ -18,7 +18,7 @@ describe('handleRefreshToken', () => {
   const event = mockRequest;
   test('With Data: Success', async () => {
     const response = await cognitoRefreshToken.refreshToken(event);
-    expect(response).not.toBeNull();
+    expect(response).not.toBeUndefined();
     expect(response.AuthenticationResult).not.toBeUndefined();
     expect(response.AuthenticationResult.AccessToken)
       .toBe(mockSuccess.AuthenticationResult.AccessToken);

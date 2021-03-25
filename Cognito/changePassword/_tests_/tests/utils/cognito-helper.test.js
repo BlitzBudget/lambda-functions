@@ -19,7 +19,7 @@ describe('changePassword', () => {
   test('With Data: Success', async () => {
     const response = await cognitoHelper
       .changePassword(event);
-    expect(response).not.toBeNull();
+    expect(response).not.toBeUndefined();
     expect(response).not.toBeUndefined();
   });
 });

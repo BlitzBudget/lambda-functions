@@ -18,7 +18,7 @@ describe('handleDeleteUser', () => {
   const event = mockRequest;
   test('With Data: Success', async () => {
     const response = await cognitoDeleteUser.handleDeleteUser(event);
-    expect(response).not.toBeNull();
+    expect(response).not.toBeUndefined();
     expect(response).not.toBeUndefined();
   });
 });

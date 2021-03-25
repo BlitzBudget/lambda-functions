@@ -14,7 +14,7 @@ describe('confirmForgotPassword', () => {
   test('With Data: Success', async () => {
     const response = await confirmForgotPassword
       .confirmForgotPassword(event, cognitoidentityserviceprovider);
-    expect(response).not.toBeNull();
+    expect(response).not.toBeUndefined();
     expect(response).not.toBeUndefined();
   });
 });

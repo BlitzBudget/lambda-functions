@@ -13,7 +13,7 @@ describe('confirmSignUp', () => {
   const event = mockRequest;
   test('With Data: Success', async () => {
     const response = await cognitoSignup.confirmSignUp(event, cognitoidentityserviceprovider);
-    expect(response).not.toBeNull();
+    expect(response).not.toBeUndefined();
     expect(response).not.toBeUndefined();
   });
 });

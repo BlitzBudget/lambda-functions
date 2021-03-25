@@ -26,6 +26,6 @@ describe('addNewBankAccounts', () => {
   event['body-json'].primaryWallet = '';
   test('With Data: Success', async () => {
     const response = await addAccount.addNewBankAccounts(event);
-    expect(response).not.toBeNull();
+    expect(response).not.toBeUndefined();
   });
 });

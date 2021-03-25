@@ -14,7 +14,7 @@ describe('getUser', () => {
   test('With Data: Success', async () => {
     const response = await cognitoFetchUserHelper
       .fetchUserInformation(event, cognitoidentityserviceprovider);
-    expect(response).not.toBeNull();
+    expect(response).not.toBeUndefined();
     expect(response.Username).not.toBeUndefined();
     expect(response.UserAttributes[0].Value).not.toBeUndefined();
     expect(response.UserAttributes[1].Value).not.toBeUndefined();

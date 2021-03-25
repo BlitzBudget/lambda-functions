@@ -9,7 +9,7 @@ describe('createParameter', () => {
     const parameters = resendConfirmationCode.createParameter(event);
     const clientId = parameters.ClientId;
     const username = parameters.Username;
-    expect(clientId).not.toBeNull();
-    expect(username).not.toBeNull();
+    expect(clientId).not.toBeUndefined();
+    expect(username).not.toBeUndefined();
   });
 });

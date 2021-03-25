@@ -18,7 +18,7 @@ describe('handleDeleteUser: ERROR', () => {
   const event = mockRequest;
   test('With Data: ERROR', () => {
     cognitoDeleteUser.handleDeleteUser(event).catch((response) => {
-      expect(response).not.toBeNull();
+      expect(response).not.toBeUndefined();
       expect(response.errorType).not.toBeUndefined();
       expect(response.errorMessage).not.toBeUndefined();
       expect(response.errorMessage).toMatch(/UserNotFoundException/);

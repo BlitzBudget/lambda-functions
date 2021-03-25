@@ -26,5 +26,6 @@ describe('getUser', () => {
     expect(response.UserAttributes[5].Value).toBe(mockUser.UserAttributes[5].Value);
     expect(response.UserAttributes[6].Value).toBe(mockUser.UserAttributes[6].Value);
     expect(response.UserAttributes[7].Value).toBe(mockUser.UserAttributes[7].Value);
+    expect(response.UserCreateDate).toBe(mockUser.UserCreateDate);
   });
 });

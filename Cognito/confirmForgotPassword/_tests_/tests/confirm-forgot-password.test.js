@@ -28,7 +28,7 @@ describe('index: Handler', () => {
   const event = mockRequest;
   test('With Data: Success', async () => {
     const response = await cognitoLogin.handler(event);
-    expect(response).not.toBeNull();
+    expect(response).not.toBeUndefined();
     expect(response.AuthenticationResult).not.toBeUndefined();
     expect(response.AuthenticationResult.AccessToken).not.toBeUndefined();
     expect(response.AuthenticationResult.RefreshToken).not.toBeUndefined();

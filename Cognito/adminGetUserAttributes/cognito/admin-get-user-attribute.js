@@ -1,4 +1,4 @@
-const AdminGetUser = () => {};
+function AdminGetUser() {}
 
 const AWS = require('aws-sdk');
 

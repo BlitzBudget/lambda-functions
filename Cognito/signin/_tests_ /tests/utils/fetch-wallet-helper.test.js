@@ -19,7 +19,7 @@ describe('fetch Wallet', () => {
 
   test('With Data: Success', async () => {
     const response = await walletHelper.fetchWalletFromUser(event, cognitoidentityserviceprovider);
-    expect(response).not.toBeNull();
+    expect(response).not.toBeUndefined();
     expect(response.Wallet).not.toBeUndefined();
     expect(response.Wallet[0].currency).not.toBeUndefined();
     expect(response.Wallet[0].currency).toBe(mockWalletResponse.Items[0].currency);
