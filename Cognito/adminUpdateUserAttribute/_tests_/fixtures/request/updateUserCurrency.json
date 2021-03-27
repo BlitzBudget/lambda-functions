@@ -1,7 +1,7 @@
 {
   "body-json": {
-    "locale": "en-IN",
-    "userName": "nagarjun_nagesh@outlook.com"
+    "currency": "$",
+    "username": "nagarjun_nagesh@outlook.com"
   },
   "params": {
     "path": {},
