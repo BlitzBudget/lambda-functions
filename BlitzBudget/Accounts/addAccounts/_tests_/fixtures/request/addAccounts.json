@@ -6,6 +6,7 @@
     "accountBalance": 23,
     "selectedAccount": true,
     "accountType": "ASSET",
+    "accountSubType": "Savings Account",
     "linked": false
   },
   "params": {

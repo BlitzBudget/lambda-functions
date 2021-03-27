@@ -1,7 +1,7 @@
 // Load the AWS SDK for Node.js
 const AWS = require('aws-sdk');
 
-const helper = require('./utils/helper');
+const fetchHelper = require('./utils/fetch-helper');
 const constants = require('./constants/constant');
 const deleteHelper = require('./utils/delete-helper');
 
@@ -11,24 +11,25 @@ AWS.config.update({
 });
 
 // Create the DynamoDB service object
-const DB = new AWS.DynamoDB.DocumentClient();
+// Create the DynamoDB service object
+const dynamoDB = new AWS.DynamoDB();
+const documentClient = new dynamoDB.DocumentClient();
 
 exports.handler = async (event) => {
-  console.log(`event ${JSON.stringify(event)}`);
   const { walletId } = event['body-json'];
-  const accountToDelete = event['body-json'].account;
+  const accountId = event['body-json'].account;
 
   // Recurring Transactions and Transactions
-  const result = await helper.fetchAccountsTransactionData(
+  const result = await fetchHelper.fetchTransactionDataForAccount(
     walletId,
-    DB,
+    documentClient,
   );
 
   await deleteHelper.buildRequestAndDeleteAccount(
     result,
     walletId,
-    accountToDelete,
-    DB,
+    accountId,
+    documentClient,
   );
 
   return event;

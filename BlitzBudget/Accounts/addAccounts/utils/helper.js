@@ -1,4 +1,4 @@
-const Helper = () => {};
+function Helper() {}
 
 const util = require('./util');
 

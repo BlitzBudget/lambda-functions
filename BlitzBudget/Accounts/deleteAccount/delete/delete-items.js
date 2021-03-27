@@ -1,6 +1,6 @@
-const DeleteItems = () => {};
+function DeleteItems() {}
 
-DeleteItems.prototype.DeleteItems = async (params, DB) => {
+DeleteItems.prototype.deleteItems = async (params, DB) => {
   const response = DB.batchWrite(params).promise();
   return response;
 };

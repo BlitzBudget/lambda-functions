@@ -1,10 +1,12 @@
 const addAccount = require('../../../data/add-account');
+const mockRequest = require('../../fixtures/request/addAccounts');
+const mockResponse = require('../../fixtures/response/dynamodb-response');
 
 jest.mock('aws-sdk', () => ({
   DynamoDB: jest.fn(() => ({
     DocumentClient: jest.fn(() => ({
       put: jest.fn(() => ({
-        promise: jest.fn().mockResolvedValueOnce({}),
+        promise: jest.fn().mockResolvedValueOnce(mockResponse),
       })),
     })),
   })),
@@ -14,16 +16,8 @@ jest.mock('aws-sdk', () => ({
 }));
 
 describe('addNewBankAccounts', () => {
-  const event = {};
-  event['body-json'] = {};
-  event['body-json'].walletId = '';
-  event['body-json'].accountType = '';
-  event['body-json'].bankAccountName = '';
-  event['body-json'].linked = '';
-  event['body-json'].accountBalance = '';
-  event['body-json'].accountSubType = '';
-  event['body-json'].selectedAccount = '';
-  event['body-json'].primaryWallet = '';
+  const event = mockRequest;
+
   test('With Data: Success', async () => {
     const response = await addAccount.addNewBankAccounts(event);
     expect(response).not.toBeUndefined();

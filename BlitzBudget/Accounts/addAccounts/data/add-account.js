@@ -21,11 +21,8 @@ AddAccount.prototype.addNewBankAccounts = async (event) => {
 
   console.log('Adding a new item...');
 
-  const response = await documentClient.put(params).promise();
-  return {
-    success: response,
-    accountId: randomValue,
-  };
+  await documentClient.put(params).promise();
+  return randomValue;
 };
 
 module.exports = new AddAccount();

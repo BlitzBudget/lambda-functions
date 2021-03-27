@@ -1,4 +1,4 @@
-const RecurringTransaction = () => {};
+function RecurringTransaction() {}
 
 const recurringTransaction = require('../create-parameter/recurring-transaction');
 
