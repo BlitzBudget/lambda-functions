@@ -1,4 +1,4 @@
-const Util = () => {};
+function Util() {}
 
 const isEmpty = (obj) => {
   // Check if objext is a number or a boolean
@@ -27,6 +27,11 @@ const isEqual = (obj1, obj2) => {
 
 const isNotEqual = (obj1, obj2) => !isEqual(obj1, obj2);
 
+function includesStr(arr, val) {
+  return isEmpty(arr) ? null : arr.includes(val);
+}
+
+Util.prototype.notIncludesStr = (array, value) => !includesStr(array, value);
 Util.prototype.isEmpty = isEmpty;
 Util.prototype.isNotEmpty = isNotEmpty;
 Util.prototype.isEqual = isEqual;

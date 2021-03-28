@@ -1,8 +1,8 @@
 // Load the AWS SDK for Node.js
 const AWS = require('aws-sdk');
-
 const helper = require('./utils/helper');
-const fetchHelper = require('./utils/fetch-helper');
+const fetchCategoryHelper = require('./utils/fetch-category-helper');
+const fetchDateHelper = require('./utils/fetch-date-helper');
 const addHelper = require('./utils/add-helper');
 const constants = require('./constants/constant');
 
@@ -12,29 +12,19 @@ AWS.config.update({
 });
 
 // Create the DynamoDB service object
-const documentClient = new AWS.DynamoDB.DocumentClient();
+const dynamoDB = new AWS.DynamoDB();
+const documentClient = new dynamoDB.DocumentClient();
 
 exports.handler = async (event) => {
   console.log('adding Budget for ', JSON.stringify(event['body-json']));
-
   const today = helper.convertToDate(event);
-  const {
-    walletId,
-    dateMeantFor,
-  } = helper.extractVariablesFromRequest(event);
-
+  const { walletId, dateMeantFor } = helper.extractVariablesFromRequest(event);
   helper.throwErrorIfEmpty(event, walletId);
 
-  const { dateId, events } = await fetchHelper.calculateAndFetchDate(
-    dateMeantFor,
-    event,
-    walletId,
-  );
+  const { dateId, events } = await fetchDateHelper
+    .calculateAndFetchDate(dateMeantFor, event, walletId);
 
-  const {
-    categoryName,
-    isBudgetPresent,
-  } = await fetchHelper.calculateAndFetchCategory(
+  const { categoryName, isBudgetPresent } = await fetchCategoryHelper.calculateAndFetchCategory(
     today,
     event,
     events,

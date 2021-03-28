@@ -2,7 +2,7 @@ const Helper = () => {};
 
 const util = require('./util');
 
-const extractVariablesFromRequest = (event) => {
+Helper.prototype.extractVariablesFromRequest = (event) => {
   const { walletId } = event['body-json'];
   const { dateMeantFor } = event['body-json'];
   return {
@@ -14,7 +14,7 @@ const extractVariablesFromRequest = (event) => {
 /*
  * If dateMeantFor, category, planned is empty
  */
-const throwErrorIfEmpty = (event, walletId) => {
+Helper.prototype.throwErrorIfEmpty = (event, walletId) => {
   if (util.isEmpty(event['body-json'].dateMeantFor)) {
     console.log('The date is mandatory for adding an account %j', walletId);
     throw new Error('Unable to add the transaction as date is mandatory');
@@ -31,18 +31,6 @@ const throwErrorIfEmpty = (event, walletId) => {
     );
   }
 };
-
-function includesStr(arr, val) {
-  return util.isEmpty(arr) ? null : arr.includes(val);
-}
-
-function notIncludesStr(arr, val) {
-  return !includesStr(arr, val);
-}
-
-Helper.prototype.notIncludesStr = notIncludesStr;
-Helper.prototype.throwErrorIfEmpty = throwErrorIfEmpty;
-Helper.prototype.extractVariablesFromRequest = extractVariablesFromRequest;
 
 Helper.prototype.convertToDate = (event) => {
   const today = new Date();

@@ -1,21 +1,16 @@
 const AddHelper = () => {};
+
 const addCategory = require('../add/category.js');
 const addDate = require('../add/date.js');
 const budget = require('../add/budget.js');
-const fetchHelper = require('./fetch-helper.js');
+const fetchHelper = require('./fetch-budget-helper.js');
 
-async function addBudget(addNewBudgetBl, event, documentClient) {
-  if (!addNewBudgetBl) {
+async function addBudget(addANewBudget, event, documentClient) {
+  if (!addANewBudget) {
     return;
   }
 
-  const events = [];
-  events.push(budget.addNewBudget(event, documentClient));
-
-  /*
-   * Only if there are items to be added
-   */
-  await Promise.all(events).then(
+  await budget.addNewBudget(event, documentClient).then(
     () => {
       console.log('successfully saved the new Budget');
     },
@@ -36,7 +31,7 @@ async function addBudgetIfNotAlreadyPresent(
   event,
   documentClient,
 ) {
-  const addNewBudgetBl = await fetchHelper.checkIfBudgetAlreadyPresent(
+  const addNewBudget = await fetchHelper.checkIfBudgetAlreadyPresent(
     categoryName,
     checkIfBudgetIsPresent,
     today,
@@ -46,17 +41,17 @@ async function addBudgetIfNotAlreadyPresent(
   /*
    * Only if the new budget has to be created
    */
-  const response = await addBudget(addNewBudgetBl, event, documentClient);
+  const response = await addBudget(addNewBudget, event, documentClient);
   return response.budgetId;
 }
 
 AddHelper.prototype.createANewCategoryItem = (event, categoryId, categoryName, events) => {
-  const createParam = event;
-  createParam['body-json'].category = categoryId;
-  createParam['body-json'].categoryName = categoryName;
+  const request = event;
+  request['body-json'].category = categoryId;
+  request['body-json'].categoryName = categoryName;
   // If it is a newly created category then the category total is 0
-  createParam['body-json'].used = 0;
-  events.push(addCategory.createCategoryItem(event, categoryId, categoryName));
+  request['body-json'].used = 0;
+  events.push(addCategory.createCategoryItem(request, categoryId, categoryName));
   // Do not check the budget for a newly created category
   return false;
 };
@@ -65,8 +60,8 @@ AddHelper.prototype.createANewDate = (dateMeantFor, today, event) => {
   const events = [];
   const newDateId = `Date#${today.toISOString()}`;
   console.log('Date entry is empty so creating the date object');
-  events.push(addDate.createDateData(event, newDateId));
-  return dateMeantFor;
+  events.push(addDate.createDateItem(event, newDateId));
+  return { dateMeantFor, events };
 };
 
 AddHelper.prototype.addBudgetIfNotAlreadyPresent = addBudgetIfNotAlreadyPresent;
