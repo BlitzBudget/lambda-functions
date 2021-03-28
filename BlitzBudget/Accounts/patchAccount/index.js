@@ -1,12 +1,11 @@
 const helper = require('./utils/helper');
 
 exports.handler = async (event) => {
-  const events = [];
   console.log('updating BankAccounts for ', JSON.stringify(event['body-json']));
   /*
    * Change all the selected account to false
    */
-  await helper.unselectSelectedBankAccount(event, events);
+  const events = await helper.unselectSelectedBankAccount(event);
 
   await helper.handleUpdateBankAccounts(events, event);
 

@@ -1,4 +1,4 @@
-module.exports.parameters = [
+module.exports = [
   {
     prmName: 'bankAccountName',
     prmValue: 'bank_account_name',

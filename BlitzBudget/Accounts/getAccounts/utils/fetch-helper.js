@@ -2,7 +2,7 @@ function FetchHelper() {}
 
 const fetchAccount = require('../create-parameter/fetch-account');
 const fetchAccounts = require('../fetch/fetch-accounts');
-const convertAccountKeys = require('../convert/convert-account-keys');
+const convertAccountKeys = require('../convert/account-keys');
 
 async function handleFetchBankAccount(event) {
   let BankAccountData;

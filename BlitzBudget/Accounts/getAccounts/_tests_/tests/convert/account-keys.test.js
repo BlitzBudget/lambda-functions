@@ -1,4 +1,4 @@
-const fetchBankParameter = require('../../../convert/convert-account-keys');
+const fetchBankParameter = require('../../../convert/account-keys');
 const mockRequest = require('../../fixtures/response/fetchAccount');
 
 describe('fetchBankParameter: createParameter', () => {

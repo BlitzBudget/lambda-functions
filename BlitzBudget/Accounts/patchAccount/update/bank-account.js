@@ -1,4 +1,4 @@
-const UpdateBudget = () => {};
+function UpdateBudget() {}
 
 UpdateBudget.prototype.updatingBankAccounts = async (params, documentClient) => {
   console.log('Updating an item...');
