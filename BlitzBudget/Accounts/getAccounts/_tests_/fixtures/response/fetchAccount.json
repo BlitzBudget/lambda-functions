@@ -1,0 +1,14 @@
+{
+    "Items": [
+    {
+      "account_balance": -9,
+      "linked": false,
+      "selected_account": true,
+      "account_type": "ASSET",
+      "bank_account_name": "Cash",
+      "sk": "BankAccount#2020-12-21T20:35:50.775Z",
+      "pk": "Wallet#2020-12-21T20:35:49.295Z"
+    }
+  ],
+  "Count": 1
+}

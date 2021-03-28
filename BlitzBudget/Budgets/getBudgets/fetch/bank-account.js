@@ -5,7 +5,7 @@ BankAccount.prototype.getBankAccountData = async (pk, documentClient) => {
   function organizeAccountData(data) {
     console.log('data retrieved - Bank Account %j', data.Count);
     if (data.Items) {
-      Object.keys(data.Items).forEach((accountObj) => {
+      data.Items.forEach((accountObj) => {
         const account = accountObj;
         account.accountId = accountObj.sk;
         account.walletId = accountObj.pk;

@@ -11,7 +11,6 @@ AWS.config.update({
 });
 
 // Create the DynamoDB service object
-// Create the DynamoDB service object
 const dynamoDB = new AWS.DynamoDB();
 const documentClient = new dynamoDB.DocumentClient();
 

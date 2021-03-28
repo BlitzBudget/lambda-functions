@@ -5,7 +5,7 @@ const transactionParameter = require('../create-parameter/transaction');
 Wallet.prototype.getWalletsData = async (userId, documentClient) => {
   function organizeWalletData(data) {
     if (data.Items) {
-      Object.keys(data.Items).forEach((walletObj) => {
+      data.Items.forEach((walletObj) => {
         const wallet = walletObj;
         wallet.walletId = walletObj.sk;
         wallet.userId = walletObj.pk;

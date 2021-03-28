@@ -1,3 +1,5 @@
+function FetchAccounts() {}
+
 // Load the AWS SDK for Node.js
 const AWS = require('aws-sdk');
 const constants = require('../constants/constant');
@@ -7,10 +9,8 @@ AWS.config.update({
 });
 
 // Create the DynamoDB service object
-const documentClient = new AWS.DynamoDB.DocumentClient({
-  region: constants.EU_WEST_ONE,
-});
-const FetchAccounts = () => {};
+const dynamoDB = new AWS.DynamoDB();
+const documentClient = new dynamoDB.DocumentClient();
 
 async function getBankAccountItem(params) {
   // Call DynamoDB to read the item from the table

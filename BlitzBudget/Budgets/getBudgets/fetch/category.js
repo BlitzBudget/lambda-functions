@@ -6,7 +6,7 @@ Category.prototype.getCategoryData = async (pk, startsWithDate, endsWithDate, do
   function organizeCategoryData(data) {
     console.log('data retrieved - Category %j', data.Count);
     if (data.Items) {
-      Object.keys(data.Items).forEach((categoryObj) => {
+      data.Items.forEach((categoryObj) => {
         const category = categoryObj;
         category.categoryId = categoryObj.sk;
         category.walletId = categoryObj.pk;

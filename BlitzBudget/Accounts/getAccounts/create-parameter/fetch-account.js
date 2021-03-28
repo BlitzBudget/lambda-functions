@@ -1,8 +1,8 @@
-const FetchAccount = () => {};
+function FetchAccount() {}
 
 const constants = require('../constants/constant');
 
-FetchAccount.prototype.createParameters = (walletId) => ({
+FetchAccount.prototype.createParameter = (walletId) => ({
   TableName: constants.EU_WEST_ONE,
   KeyConditionExpression: 'pk = :walletId and begins_with(sk, :items)',
   ExpressionAttributeValues: {
