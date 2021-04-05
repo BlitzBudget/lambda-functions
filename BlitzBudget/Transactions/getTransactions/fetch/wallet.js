@@ -14,7 +14,7 @@ async function getWalletsData(userId, documentClient) {
     });
   }
 
-  const params = walletParameter.createParameters(userId);
+  const params = walletParameter.createParameter(userId);
 
   // Call DynamoDB to read the item from the table
   const response = await documentClient.query(params).promise();

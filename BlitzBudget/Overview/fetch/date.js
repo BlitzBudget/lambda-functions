@@ -16,7 +16,7 @@ async function getDateData(pk, startsWithDate, endsWithDate, documentClient) {
     }
   }
 
-  const params = dateParameter.createParameters(pk, startsWithDate, endsWithDate);
+  const params = dateParameter.createParameter(pk, startsWithDate, endsWithDate);
 
   // Call DynamoDB to read the item from the table
   const response = await documentClient.query(params).promise();

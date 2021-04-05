@@ -20,7 +20,7 @@ async function getWalletData(userId, walletId, documentClient) {
     ' with the wallet ',
     walletId,
   );
-  const params = walletParameter.createParameters(userId, walletId);
+  const params = walletParameter.createParameter(userId, walletId);
 
   // Call DynamoDB to read the item from the table
 
@@ -46,7 +46,7 @@ function getWalletsData(userId, documentClient) {
     }
   }
 
-  function createParameters() {
+  function createParameter() {
     return {
       TableName: 'blitzbudget',
       KeyConditionExpression: 'pk = :pk and begins_with(sk, :items)',
@@ -59,7 +59,7 @@ function getWalletsData(userId, documentClient) {
     };
   }
 
-  const params = createParameters();
+  const params = createParameter();
 
   // Call DynamoDB to read the item from the table
   return new Promise((resolve, reject) => {

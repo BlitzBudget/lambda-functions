@@ -6,7 +6,7 @@ const AddVoiceCode = () => {};
 function addNewVoiceCode(event, userId, alexaId, documentClient) {
   const today = new Date().toISOString();
 
-  function createParameters() {
+  function createParameter() {
     return {
       TableName: 'blitzbudget',
       Item: {
@@ -20,7 +20,7 @@ function addNewVoiceCode(event, userId, alexaId, documentClient) {
     };
   }
 
-  const params = createParameters();
+  const params = createParameter();
 
   console.log('Adding a new item...');
   return new Promise((resolve, reject) => {

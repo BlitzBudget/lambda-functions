@@ -22,7 +22,7 @@ async function getRecurringTransactions(walletId, documentClient, snsEvents, sns
     });
   }
 
-  const params = recurringTransactionParameter.createParameters(walletId);
+  const params = recurringTransactionParameter.createParameter(walletId);
 
   // Call DynamoDB to read the item from the table
   const response = await documentClient.query(params).promise();

@@ -6,7 +6,7 @@ const DeleteVoiceCode = () => {};
 function deleteOldVoiceCode(pk, sk, documentClient) {
   console.log(`Delete old voice code for the primary key ${pk}`);
 
-  function createParameters() {
+  function createParameter() {
     return {
       TableName: 'blitzbudget',
       Key: {
@@ -16,7 +16,7 @@ function deleteOldVoiceCode(pk, sk, documentClient) {
     };
   }
 
-  const params = createParameters();
+  const params = createParameter();
 
   return new Promise((resolve, reject) => {
     documentClient.delete(params, (err, data) => {

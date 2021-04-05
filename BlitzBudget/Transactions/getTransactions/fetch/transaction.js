@@ -4,7 +4,7 @@ const transactionParameter = require('../create-parameter/transaction');
 
 // Get Transaction Item
 async function getTransactionItem(pk, startsWithDate, endsWithDate, documentClient) {
-  const params = transactionParameter.createParameters(pk, startsWithDate, endsWithDate);
+  const params = transactionParameter.createParameter(pk, startsWithDate, endsWithDate);
 
   // Call DynamoDB to read the item from the table
   const response = await documentClient.query(params).promise();

@@ -3,7 +3,7 @@ const PatchRecurringTransaction = () => {};
 const recurringTransactionParameter = require('../create-parameter/recurring-transaction');
 
 async function updatingRecurringTransactions(event, documentClient) {
-  const params = recurringTransactionParameter.createParameters(event);
+  const params = recurringTransactionParameter.createParameter(event);
 
   console.log('Updating an item...');
   const response = await documentClient.update(params).promise();

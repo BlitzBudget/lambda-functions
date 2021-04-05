@@ -3,7 +3,7 @@ const UpdateTransaction = () => {};
 const transactionParameter = require('../create-parameter/transaction');
 
 async function updatingTransactions(event, documentClient) {
-  const params = transactionParameter.createParameters(event);
+  const params = transactionParameter.createParameter(event);
 
   console.log('Updating an item...');
   const response = await documentClient.update(params).promise();

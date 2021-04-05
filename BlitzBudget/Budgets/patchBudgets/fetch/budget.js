@@ -5,7 +5,7 @@ const budgetParameter = require('../create-parameter/budget');
 
 // Get Budget Item
 FetchBudget.prototype.getBudgetsItem = async (today, event, documentClient) => {
-  const params = budgetParameter.createParameters(today, event);
+  const params = budgetParameter.createParameter(today, event);
 
   // Call DynamoDB to read the item from the table
   const response = await documentClient.query(params).promise();

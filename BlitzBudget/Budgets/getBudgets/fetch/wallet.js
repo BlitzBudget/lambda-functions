@@ -1,26 +1,15 @@
-const Wallet = () => {};
+function Wallet() {}
 
 const transactionParameter = require('../create-parameter/transaction');
+const organizeWallet = require('../organize/wallet');
 
 Wallet.prototype.getWalletsData = async (userId, documentClient) => {
-  function organizeWalletData(data) {
-    if (data.Items) {
-      data.Items.forEach((walletObj) => {
-        const wallet = walletObj;
-        wallet.walletId = walletObj.sk;
-        wallet.userId = walletObj.pk;
-        delete wallet.sk;
-        delete wallet.pk;
-      });
-    }
-  }
-
-  const params = transactionParameter.createParameters(userId);
+  const params = transactionParameter.createParameter(userId);
 
   // Call DynamoDB to read the item from the table
-  const response = documentClient.query(params).promise();
+  const response = await documentClient.query(params).promise();
 
-  organizeWalletData(response);
+  organizeWallet.organize(response);
   return {
     Wallet: response.Items,
   };

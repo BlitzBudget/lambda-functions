@@ -14,7 +14,7 @@ AWS.config.update({
 const documentClient = new AWS.DynamoDB.DocumentClient();
 
 async function updatingItem(event) {
-  const params = walletParameter.createParameters(event);
+  const params = walletParameter.createParameter(event);
 
   console.log('Updating an item...');
   const response = await documentClient.update(params).promise();

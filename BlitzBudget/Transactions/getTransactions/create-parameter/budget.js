@@ -1,6 +1,6 @@
 const constants = require('../constants/constant');
 
-module.exports.createParameters = (walletId, startsWithDate, endsWithDate) => ({
+module.exports.createParameter = (walletId, startsWithDate, endsWithDate) => ({
   TableName: constants.TABLE_NAME,
   KeyConditionExpression: 'pk = :walletId AND sk BETWEEN :bt1 AND :bt2',
   ExpressionAttributeValues: {

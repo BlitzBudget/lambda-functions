@@ -2,7 +2,7 @@ const parameters = require('../utils/parameter');
 const constants = require('../constants/constant');
 const util = require('../utils/util');
 
-module.exports.createParameters = (event) => {
+module.exports.createParameter = (event) => {
   let updateExp = 'set';
   const expAttrVal = {};
   const expAttrNames = {};

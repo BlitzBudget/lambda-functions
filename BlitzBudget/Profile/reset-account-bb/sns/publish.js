@@ -14,7 +14,7 @@ async function resetAccountSubscriberThroughSNS(event, sns) {
     ? 'execute'
     : 'donotexecute';
 
-  const params = snsParameter.createParameters(deleteOneWalletAttribute, event);
+  const params = snsParameter.createParameter(deleteOneWalletAttribute, event);
 
   const response = await sns.publish(params).promise();
   return response;

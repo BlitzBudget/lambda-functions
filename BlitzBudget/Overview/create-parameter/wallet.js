@@ -1,6 +1,6 @@
 const constants = require('../constants/constant');
 
-module.exports.createParameters = (userId, walletId) => ({
+module.exports.createParameter = (userId, walletId) => ({
   AttributesToGet: [
     'currency',
     'total_asset_balance',

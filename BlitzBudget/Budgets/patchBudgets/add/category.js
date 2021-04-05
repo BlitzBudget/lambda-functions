@@ -6,7 +6,7 @@ AddCategory.prototype.createCategoryItem = async (
   categoryName,
   documentClient,
 ) => {
-  function createParameters() {
+  function createParameter() {
     return {
       TableName: 'blitzbudget',
       Key: {
@@ -27,7 +27,7 @@ AddCategory.prototype.createCategoryItem = async (
     };
   }
 
-  const params = createParameters();
+  const params = createParameter();
 
   console.log('Adding a new item...');
   const response = await documentClient.update(params).promise();

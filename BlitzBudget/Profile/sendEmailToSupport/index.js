@@ -8,7 +8,7 @@ exports.handler = async (event) => {
     ' The subject is ',
     event['body-json'].subject,
   );
-  const params = helper.createParameters(event);
+  const params = helper.createParameter(event);
 
   await ses.sendEmail(params);
 };

@@ -1,6 +1,6 @@
 const Helper = () => {};
 
-function createParameters(event) {
+function createParameter(event) {
   return {
     Destination: {
       ToAddresses: ['admin@blitzbudget.com'],
@@ -24,6 +24,6 @@ function createParameters(event) {
   };
 }
 
-Helper.prototype.createParameters = createParameters;
+Helper.prototype.createParameter = createParameter;
 // Export object
 module.exports = new Helper();

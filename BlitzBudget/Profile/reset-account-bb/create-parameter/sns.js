@@ -1,4 +1,4 @@
-module.exports.createParameters = (deleteOneWalletAttribute, event) => ({
+module.exports.createParameter = (deleteOneWalletAttribute, event) => ({
   Message: event['body-json'].walletId,
   Subject: event['body-json'].referenceNumber,
   MessageAttributes: {

@@ -6,7 +6,7 @@ describe('createParameter', () => {
   event['body-json'].accessToken = 'notempty';
 
   test('With Data: Success', () => {
-    const parameters = deleteUserParameter.createParameters(event);
+    const parameters = deleteUserParameter.createParameter(event);
     const accessToken = parameters.AccessToken;
     expect(accessToken).not.toBeNull();
   });

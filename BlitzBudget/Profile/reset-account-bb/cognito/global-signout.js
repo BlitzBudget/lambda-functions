@@ -2,13 +2,13 @@ const GlobalSignout = () => {};
 
 // Global Signout Before Deleting the User
 async function globalSignoutFromAllDevices(event, cognitoIdServiceProvider) {
-  function createParameters() {
+  function createParameter() {
     return {
       AccessToken: event['body-json'].accessToken,
     };
   }
 
-  const params = createParameters();
+  const params = createParameter();
 
   const response = await cognitoIdServiceProvider.globalSignOut(params).promise();
   return response;

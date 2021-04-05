@@ -1,3 +1,3 @@
-module.exports.createParameters = (event) => ({
+module.exports.createParameter = (event) => ({
   AccessToken: event['body-json'].accessToken,
 });

@@ -1,6 +1,6 @@
 const constants = require('../constants/constant');
 
-module.exports.createParameters = (event, today) => ({
+module.exports.createParameter = (event, today) => ({
   TableName: constants.TABLE_NAME,
   KeyConditionExpression: 'pk = :pk AND begins_with(sk, :items)',
   ExpressionAttributeValues: {

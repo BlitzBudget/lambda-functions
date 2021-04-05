@@ -1,4 +1,4 @@
-const Util = () => {};
+function Util() {}
 
 function isEmpty(obj) {
   // Check if objext is a number or a boolean
@@ -34,8 +34,8 @@ function isNotEqual(obj1, obj2) {
 
 Util.prototype.isEmpty = isEmpty;
 Util.prototype.isNotEmpty = isNotEmpty;
-Util.prototype.isNotEmpty = isEqual;
-Util.prototype.isNotEmpty = isNotEqual;
+Util.prototype.isEqual = isEqual;
+Util.prototype.isNotEqual = isNotEqual;
 
 // Export object
 module.exports = new Util();

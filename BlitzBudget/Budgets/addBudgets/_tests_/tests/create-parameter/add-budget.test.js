@@ -1,10 +1,10 @@
-const addBankParameter = require('../../../create-parameter/add-budget');
+const addBudgetkParameter = require('../../../create-parameter/add-budget');
 const mockRequest = require('../../fixtures/request/addBudget');
 
-describe('addBankParameter: createParameter', () => {
+describe('addBudgetkParameter: createParameter', () => {
   const event = mockRequest;
   test('With Data: Success', () => {
-    const parameters = addBankParameter.createParameter(event, 'randomValue');
+    const parameters = addBudgetkParameter.createParameter(event, 'randomValue');
     expect(parameters).not.toBeUndefined();
     expect(parameters.TableName).not.toBeUndefined();
     expect(parameters.Item).not.toBeUndefined();

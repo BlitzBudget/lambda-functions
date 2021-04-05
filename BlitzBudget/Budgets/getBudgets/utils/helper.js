@@ -1,4 +1,4 @@
-const Helper = () => {};
+function Helper() {}
 
 const util = require('./util');
 
@@ -8,8 +8,7 @@ const util = require('./util');
 Helper.prototype.isFullMonth = (startDate, endDate) => {
   const startsWithDate = new Date(startDate);
   const endsWithDate = new Date(endDate);
-  const isNotAFullMonth = false;
-  const isAFullMonth = true;
+  let isAFullMonth = true;
   let percentage = 1;
 
   if (
@@ -17,7 +16,8 @@ Helper.prototype.isFullMonth = (startDate, endDate) => {
     || util.isNotEqual(startsWithDate.getFullYear(), endsWithDate.getFullYear())
   ) {
     console.log('The month and the year do not coincide');
-    return { isNotAFullMonth, percentage };
+    isAFullMonth = false;
+    return { isAFullMonth, percentage };
   }
 
   const firstDay = new Date(
@@ -38,8 +38,8 @@ Helper.prototype.isFullMonth = (startDate, endDate) => {
   percentage = (endsWithDate.getDate() - startsWithDate.getDate())
     / (lastDay.getDate() - firstDay.getDate());
   console.log('Percentage of budget total to be calculated is %j', percentage);
-
-  return { isNotAFullMonth, percentage };
+  isAFullMonth = false;
+  return { isAFullMonth, percentage };
 };
 
 Helper.prototype.modifyTotalOfBudget = (percentage, fullMonth, budgetData) => {
@@ -48,7 +48,7 @@ Helper.prototype.modifyTotalOfBudget = (percentage, fullMonth, budgetData) => {
   const responseData = budgetData;
 
   if (!fullMonth) {
-    Object.keys(responseData.Transaction).forEach((transObj) => {
+    responseData.Transaction.forEach((transObj) => {
       if (util.isEmpty(categoryList[transObj.category])) {
         categoryList[transObj.category] = transObj.amount;
       } else {
@@ -57,7 +57,7 @@ Helper.prototype.modifyTotalOfBudget = (percentage, fullMonth, budgetData) => {
     });
   }
 
-  Object.keys(responseData.Category).forEach((categoryObj) => {
+  responseData.Category.forEach((categoryObj) => {
     if (util.isEmpty(categoryNameList[categoryObj.sk])) {
       categoryNameList[categoryObj.sk] = categoryObj.category_name;
     } else {
@@ -73,7 +73,7 @@ Helper.prototype.modifyTotalOfBudget = (percentage, fullMonth, budgetData) => {
     }
   });
 
-  Object.keys(responseData.Budget).forEach((budgetObj) => {
+  responseData.Budget.forEach((budgetObj) => {
     const budget = budgetObj;
     budget.planned *= percentage;
     if (util.isNotEmpty(categoryList[budgetObj.category])) {
@@ -92,7 +92,7 @@ Helper.prototype.modifyTotalOfBudget = (percentage, fullMonth, budgetData) => {
     delete budget.pk;
   });
 
-  Object.keys(responseData.Date).forEach((dateObj) => {
+  responseData.Date.forEach((dateObj) => {
     const date = dateObj;
     date.dateId = dateObj.sk;
     date.walletId = dateObj.pk;

@@ -8,7 +8,7 @@ async function addNewTransaction(event, documentClient) {
   );
   const randomValue = `Transaction#${today.toISOString()}`;
 
-  function createParameters() {
+  function createParameter() {
     return {
       TableName: 'blitzbudget',
       Item: {
@@ -27,7 +27,7 @@ async function addNewTransaction(event, documentClient) {
     };
   }
 
-  const params = createParameters();
+  const params = createParameter();
 
   console.log('Adding a new item...');
 

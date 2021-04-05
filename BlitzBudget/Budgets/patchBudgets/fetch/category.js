@@ -23,7 +23,7 @@ FetchCategory.prototype.getCategoryData = async (event, today, documentClient) =
     return obj;
   }
 
-  const params = categoryParameter.createParameters(event, today);
+  const params = categoryParameter.createParameter(event, today);
 
   // Call DynamoDB to read the item from the table
   const response = await documentClient.query(params).promise();

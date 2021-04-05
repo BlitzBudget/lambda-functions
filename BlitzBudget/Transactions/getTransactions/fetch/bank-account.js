@@ -14,7 +14,7 @@ async function getBankAccountData(pk, documentClient) {
     });
   }
 
-  const params = bankAccountParameter.createParameters(pk);
+  const params = bankAccountParameter.createParameter(pk);
 
   // Call DynamoDB to read the item from the table
   const response = await documentClient.query(params).promise();

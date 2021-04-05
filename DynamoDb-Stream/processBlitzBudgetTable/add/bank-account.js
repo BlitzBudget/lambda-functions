@@ -4,7 +4,7 @@ async function addNewBankAccount(record, documentClient) {
   const today = new Date();
   const randomValue = `BankAccount#${today.toISOString()}`;
 
-  function createParameters() {
+  function createParameter() {
     return {
       TableName: 'blitzbudget',
       Item: {
@@ -23,7 +23,7 @@ async function addNewBankAccount(record, documentClient) {
     };
   }
 
-  const params = createParameters();
+  const params = createParameter();
 
   console.log('Adding a new item...');
 

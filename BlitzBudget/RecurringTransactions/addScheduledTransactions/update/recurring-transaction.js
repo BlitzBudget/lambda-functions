@@ -11,7 +11,7 @@ async function updateRecurringTransactionsData(
   futureTransactionCreationDate,
   DB,
 ) {
-  function createParameters() {
+  function createParameter() {
     return {
       TableName: constants.TABLE_NAME,
       Key: {
@@ -27,7 +27,7 @@ async function updateRecurringTransactionsData(
     };
   }
 
-  const params = createParameters();
+  const params = createParameter();
 
   console.log('Adding a new item...');
   const response = await DB.update(params).promise();

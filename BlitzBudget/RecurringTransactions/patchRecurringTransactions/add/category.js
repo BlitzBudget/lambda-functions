@@ -1,7 +1,7 @@
 const AddCategory = () => {};
 
 async function createCategoryItem(event, skForCategory, categoryName, documentClient) {
-  function createParameters() {
+  function createParameter() {
     return {
       TableName: 'blitzbudget',
       Key: {
@@ -22,7 +22,7 @@ async function createCategoryItem(event, skForCategory, categoryName, documentCl
     };
   }
 
-  const params = createParameters();
+  const params = createParameter();
 
   console.log('Adding a new item...');
   const response = await documentClient.update(params).promise();
