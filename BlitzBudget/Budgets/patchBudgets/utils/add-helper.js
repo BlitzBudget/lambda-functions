@@ -1,4 +1,4 @@
-const AddHelper = () => {};
+function AddHelper() {}
 
 const util = require('./util');
 const helper = require('./helper');
@@ -10,10 +10,9 @@ async function addNewCategoryIfNotPresent(
   event,
   today,
   categoryName,
-  events,
   documentClient,
 ) {
-  let isBudgetPresent = true;
+  const events = [];
   await category.getCategoryData(event, today, documentClient).then(
     (result) => {
       if (util.isNotEmpty(result.Category)) {
@@ -34,15 +33,13 @@ async function addNewCategoryIfNotPresent(
             documentClient,
           ),
         );
-        // Do not check the budget for a newly created category
-        isBudgetPresent = false;
       }
     },
     (err) => {
       throw new Error(`Unable to get the category ${err}`);
     },
   );
-  return isBudgetPresent;
+  return { events };
 }
 
 /*
@@ -50,11 +47,11 @@ async function addNewCategoryIfNotPresent(
  */
 async function addANewCategoryIfNotPresent(
   event,
-  events,
   documentClient,
 ) {
   const categoryName = event['body-json'].category;
   let isBudgetPresent = true;
+  let events = [];
   if (
     util.isNotEmpty(categoryName)
     && util.notIncludesStr(categoryName, 'Category#')
@@ -65,16 +62,20 @@ async function addANewCategoryIfNotPresent(
     /*
      * Check if category is present before adding them
      */
-    isBudgetPresent = await addNewCategoryIfNotPresent(
+    events = await addNewCategoryIfNotPresent(
       categoryId,
       event,
       today,
       categoryName,
-      events,
       documentClient,
     );
+
+    if (events.length !== 0) {
+      // Do not check the budget for a newly created category
+      isBudgetPresent = false;
+    }
   }
-  return { categoryName, isBudgetPresent };
+  return { categoryName, isBudgetPresent, events };
 }
 
 AddHelper.prototype.addANewCategoryIfNotPresent = addANewCategoryIfNotPresent;

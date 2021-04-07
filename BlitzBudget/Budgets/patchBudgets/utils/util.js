@@ -1,5 +1,3 @@
-const Util = () => {};
-
 function isEmpty(obj) {
   // Check if objext is a number or a boolean
   if (typeof obj === 'number' || typeof obj === 'boolean') return false;
@@ -21,7 +19,7 @@ function isNotEmpty(obj) {
 }
 
 function includesStr(arr, val) {
-  return isEmpty(arr) ? null : arr.includes(val);
+  return isEmpty(arr) ? false : arr.includes(val);
 }
 
 function notIncludesStr(arr, val) {
@@ -35,8 +33,8 @@ function isEqual(obj1, obj2) {
   return false;
 }
 
-Util.prototype.isEmpty = isEmpty;
-Util.prototype.isNotEmpty = isNotEmpty;
-Util.prototype.isEqual = isEqual;
-Util.prototype.includesStr = includesStr;
-Util.prototype.notIncludesStr = notIncludesStr;
+module.exports.isEmpty = isEmpty;
+module.exports.isNotEmpty = isNotEmpty;
+module.exports.isEqual = isEqual;
+module.exports.includesStr = includesStr;
+module.exports.notIncludesStr = notIncludesStr;

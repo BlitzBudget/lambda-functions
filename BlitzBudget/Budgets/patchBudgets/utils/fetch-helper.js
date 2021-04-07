@@ -1,4 +1,4 @@
-const FetchHelper = () => {};
+function FetchHelper() {}
 
 const util = require('./util');
 const budget = require('../fetch/budget');

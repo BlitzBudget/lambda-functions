@@ -12,14 +12,13 @@ const documentClient = new AWS.DynamoDB.DocumentClient();
 
 exports.handler = async (event) => {
   console.log('updating Budgets for ', JSON.stringify(event['body-json']));
-  const events = [];
 
   const {
     categoryName,
     isBudgetPresent,
+    events,
   } = await addHelper.addANewCategoryIfNotPresent(
     event,
-    events,
     documentClient,
   );
 

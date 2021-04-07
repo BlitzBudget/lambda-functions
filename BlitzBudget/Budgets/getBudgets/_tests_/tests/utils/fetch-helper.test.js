@@ -1,6 +1,5 @@
 const fetchHelper = require('../../../utils/fetch-helper');
 const mockRequest = require('../../fixtures/request/getBudgets.json');
-// const mockUserRequest = require('../../fixtures/request/byUserId.json');
 const mockResponse = require('../../fixtures/response/fetch-budget.json');
 
 const documentClient = {
@@ -24,16 +23,6 @@ describe('fetchAllInformationForBudget', () => {
     expect(response[3].BankAccount).not.toBeUndefined();
   });
 });
-
-/* describe('fetchWalletsIfEmpty : User', () => {
-  test('With WalletId Data: Success', async () => {
-    mockResponse.Items[0].walletId = mockResponse.Items[0].pk;
-    const { walletPK, response } = await
-    fetchHelper.fetchWalletsIfEmpty('', mockUserRequest['body-json'].userId, documentClient);
-    expect(response).not.toBeUndefined();
-    expect(walletPK).not.toBeUndefined();
-  });n
-}); */
 
 describe('fetchWalletsIfEmpty : Wallet', () => {
   const events = mockRequest;
