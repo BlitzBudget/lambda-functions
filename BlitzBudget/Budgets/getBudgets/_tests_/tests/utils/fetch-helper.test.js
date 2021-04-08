@@ -11,16 +11,12 @@ const documentClient = {
 describe('fetchAllInformationForBudget', () => {
   const events = mockRequest;
   test('With Data: Success', async () => {
-    const response = await fetchHelper.fetchAllInformationForBudget([], events['body-json'].walletId, '2021-02', '2021-03', true, documentClient);
+    const response = await fetchHelper.fetchAllInformationForBudget(events['body-json'].walletId, '2021-02', '2021-03', true, documentClient);
     expect(response).not.toBeUndefined();
-    expect(response[0]).not.toBeUndefined();
-    expect(response[1]).not.toBeUndefined();
-    expect(response[2]).not.toBeUndefined();
-    expect(response[3]).not.toBeUndefined();
-    expect(response[0].Budget).not.toBeUndefined();
-    expect(response[1].Category).not.toBeUndefined();
-    expect(response[2].Date).not.toBeUndefined();
-    expect(response[3].BankAccount).not.toBeUndefined();
+    expect(response.Budget).not.toBeUndefined();
+    expect(response.Category).not.toBeUndefined();
+    expect(response.Date).not.toBeUndefined();
+    expect(response.BankAccount).not.toBeUndefined();
   });
 });
 

@@ -92,14 +92,6 @@ Helper.prototype.modifyTotalOfBudget = (percentage, fullMonth, budgetData) => {
     delete budget.pk;
   });
 
-  responseData.Date.forEach((dateObj) => {
-    const date = dateObj;
-    date.dateId = dateObj.sk;
-    date.walletId = dateObj.pk;
-    delete date.sk;
-    delete date.pk;
-  });
-
   delete responseData.Transaction;
 };
 

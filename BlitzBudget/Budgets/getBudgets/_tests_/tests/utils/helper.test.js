@@ -48,8 +48,6 @@ describe('modifyTotalOfBudget', () => {
     expect(mockResponse).not.toBeUndefined();
     expect(mockResponse.Budget[0].budgetId).not.toBeUndefined();
     expect(mockResponse.Budget[0].walletId).not.toBeUndefined();
-    expect(mockResponse.Date[0].dateId).not.toBeUndefined();
-    expect(mockResponse.Date[0].walletId).not.toBeUndefined();
-    expect(mockResponse.Transaction).toBeUndefined();
+    expect(mockResponse.Budget[0].used).not.toBeUndefined();
   });
 });

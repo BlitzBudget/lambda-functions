@@ -28,14 +28,15 @@ async function fetchWalletsIfEmpty(walletId, userId, documentClient) {
 }
 
 async function fetchAllInformationForBudget(
-  events,
   walletId,
   startsWithDate,
   endsWithDate,
   fullMonth,
   documentClient,
 ) {
-  let allResponse = {};
+  const events = [];
+  const allResponse = {};
+
   events.push(
     budget.getBudgetData(
       walletId,
@@ -60,6 +61,7 @@ async function fetchAllInformationForBudget(
     ),
   );
   events.push(bankAccount.getBankAccountData(walletId, documentClient));
+
   if (!fullMonth) {
     events.push(
       transaction.getTransactionsData(
@@ -73,7 +75,11 @@ async function fetchAllInformationForBudget(
 
   await Promise.all(events).then(
     (response) => {
-      allResponse = response;
+      allResponse.Budget = response[0].Budget;
+      allResponse.Category = response[1].Category;
+      allResponse.Date = response[2].Date;
+      allResponse.BankAccount = response[3].BankAccount;
+      allResponse.Transaction = response[4] != null ? response[4].Transaction : {};
       console.log('Successfully retrieved all relevant information');
     },
     (err) => {
