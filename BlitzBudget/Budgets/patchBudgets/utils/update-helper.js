@@ -1,68 +1,11 @@
-const UpdateHelper = () => {};
+function UpdateHelper() {}
 
-const parameters = require('./parameters');
 const fetchHelper = require('./fetch-helper');
-const util = require('./util');
 const updateBudgets = require('../update/budget');
-
-function createParametersToUpdate(event) {
-  let updateExp = 'set';
-  const expAttrVal = {};
-  const expAttrNames = {};
-
-  if (util.isEmpty(event['body-json'])) {
-    return undefined;
-  }
-
-  for (let i = 0, len = parameters.length; i < len; i++) {
-    const prm = parameters[i];
-
-    // If the parameter is not found then do not save
-    if (util.isNotEmpty(event['body-json'][prm.prmName])) {
-      // Add a comma to update expression
-      if (util.includesStr(updateExp, '#variable')) {
-        updateExp += ',';
-      }
-
-      console.log(`param name - ${event['body-json'][prm.prmName]}`);
-
-      updateExp += ` #variable${i} = :v${i}`;
-      expAttrVal[`:v${i}`] = event['body-json'][prm.prmName];
-      expAttrNames[`#variable${i}`] = prm.prmValue;
-    }
-  }
-
-  console.log(
-    ' update expression ',
-    JSON.stringify(updateExp),
-    ' expression attribute value ',
-    JSON.stringify(expAttrVal),
-    ' expression Attribute Names ',
-    JSON.stringify(expAttrNames),
-  );
-
-  if (util.isEmpty(expAttrVal)) {
-    return undefined;
-  }
-
-  updateExp += ', #update = :u';
-  expAttrVal[':u'] = new Date().toISOString();
-  expAttrNames['#update'] = 'updated_date';
-
-  return {
-    TableName: 'blitzbudget',
-    Key: {
-      pk: event['body-json'].walletId,
-      sk: event['body-json'].budgetId,
-    },
-    UpdateExpression: updateExp,
-    ExpressionAttributeNames: expAttrNames,
-    ExpressionAttributeValues: expAttrVal,
-  };
-}
+const createBudgetExpression = require('../create-expression/update-budget');
 
 async function updateBudget(events, event, documentClient) {
-  const params = createParametersToUpdate(event);
+  const params = createBudgetExpression.createExpression(event);
   events.push(updateBudgets.updatingBudgets(params, documentClient));
 
   await Promise.all(events).then(
@@ -80,15 +23,11 @@ async function updateBudget(events, event, documentClient) {
  * For Simultaneous cross device creation compatability
  */
 async function updateBudgetIfNotPresent(
-  categoryName,
-  checkIfBudgetIsPresent,
   event,
   events,
   documentClient,
 ) {
-  await fetchHelper.checkIfBudgetAlreadyPresent(
-    categoryName,
-    checkIfBudgetIsPresent,
+  await fetchHelper.fetchBudget(
     event,
     documentClient,
   );

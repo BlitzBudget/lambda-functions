@@ -1,8 +1,11 @@
-const updateBudget = require('../../../update/budget');
+const updateHelper = require('../../../utils/update-helper');
 const mockRequest = require('../../fixtures/request/patchBudgets.json');
 const mockResponse = require('../../fixtures/response/fetchBudget.json');
 
 const documentClient = {
+  query: jest.fn(() => ({
+    promise: jest.fn().mockResolvedValueOnce(mockResponse),
+  })),
   update: jest.fn(() => ({
     promise: jest.fn().mockResolvedValueOnce(mockResponse),
   })),
@@ -10,8 +13,8 @@ const documentClient = {
 
 describe('Update Budget item', () => {
   test('Without Matching Budget: Success', async () => {
-    const response = await updateBudget
-      .updatingBudgets(mockRequest, documentClient);
-    expect(response).not.toBeUndefined();
+    const response = await updateHelper
+      .updateBudgetIfNotPresent(mockRequest, [], documentClient);
+    expect(response).toBeUndefined();
   });
 });

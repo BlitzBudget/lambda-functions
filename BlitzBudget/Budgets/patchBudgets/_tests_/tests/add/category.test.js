@@ -12,8 +12,6 @@ describe('Fetch Category item', () => {
   test('Without Matching Category: Success', async () => {
     const response = await addCategory
       .createCategoryItem(mockRequest,
-        'Category#2020-05-18T06:36:42.747Z',
-        'Bills & Fees',
         documentClient);
     expect(response).not.toBeUndefined();
     expect(response.Category).not.toBeUndefined();
