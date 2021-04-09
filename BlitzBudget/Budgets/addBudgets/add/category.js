@@ -4,11 +4,9 @@ const categoryParameter = require('../create-parameter/add-category');
 
 AddCategory.prototype.createCategoryItem = async (
   event,
-  categoryId,
-  categoryName,
   documentClient,
 ) => {
-  const parameter = categoryParameter.createParameter(event, categoryId, categoryName);
+  const parameter = categoryParameter.createParameter(event);
 
   console.log('Adding a new item...');
 

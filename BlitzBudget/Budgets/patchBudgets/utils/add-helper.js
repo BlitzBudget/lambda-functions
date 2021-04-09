@@ -9,27 +9,27 @@ async function addANewCategoryIfNotPresent(
   event,
   documentClient,
 ) {
-  const createCategory = event['body-json'];
-  createCategory.categoryName = event['body-json'].category;
+  const createCategoryRequest = event;
+  createCategoryRequest['body-json'].categoryName = event['body-json'].category;
   const events = [];
 
-  if (util.isNotEmpty(createCategory.categoryName) && util.notIncludesStr(createCategory.categoryName, 'Category#')) {
+  if (util.isNotEmpty(createCategoryRequest['body-json'].categoryName) && util.notIncludesStr(createCategoryRequest['body-json'].categoryName, 'Category#')) {
     const today = helper.formulateDateFromRequest(event);
     let categoryId = await fetchHelper.fetchCategory(event, today, documentClient);
 
     if (util.isEmpty(categoryId)) {
       categoryId = `Category#${today.toISOString()}`;
-      createCategory.category = categoryId;
-      createCategory.used = 0;
+      createCategoryRequest['body-json'].category = categoryId;
+      createCategoryRequest['body-json'].used = 0;
       events.push(
         addCategory.createCategoryItem(
-          createCategory,
+          createCategoryRequest,
           documentClient,
         ),
       );
     }
   }
-  return { createCategory, events };
+  return { createCategoryRequest, events };
 }
 
 AddHelper.prototype.addANewCategoryIfNotPresent = addANewCategoryIfNotPresent;

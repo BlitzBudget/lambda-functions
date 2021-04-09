@@ -2,8 +2,8 @@ function AddDate() {}
 
 const dateParameter = require('../create-parameter/add-date');
 
-AddDate.prototype.createDateItem = async (event, skForDate, documentClient) => {
-  const parameter = dateParameter.createParameter(event, skForDate);
+AddDate.prototype.createDateItem = async (walletId, skForDate, documentClient) => {
+  const parameter = dateParameter.createParameter(walletId, skForDate);
 
   console.log('Adding a new item...');
 

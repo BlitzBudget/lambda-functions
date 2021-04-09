@@ -1,4 +1,4 @@
-const addCategory = require('../../../add/category');
+const addCategory = require('../../../utils/add-category-helper');
 const mockRequest = require('../../fixtures/request/withDateAndCategory.json');
 
 const documentClient = {
@@ -8,10 +8,11 @@ const documentClient = {
 };
 
 describe('Add Category item', () => {
+  const events = [];
   test('With Data: Success', async () => {
-    const response = await addCategory
-      .createCategoryItem(mockRequest, documentClient);
-    expect(response).not.toBeUndefined();
-    expect(response.Category).not.toBeUndefined();
+    await addCategory
+      .createANewCategoryItem(mockRequest, events, documentClient);
+    expect(events.length).not.toBe(0);
+    expect(events.length).toBe(1);
   });
 });

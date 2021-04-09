@@ -2,6 +2,7 @@
   "body-json": {
     "walletId": "Wallet#93202082911265",
     "category": "Save More",
+    "categoryType": "Income",
     "planned": 42,
     "dateMeantFor": "2015-03-25T00:00:00.000Z"
   },

@@ -25,5 +25,5 @@ exports.handler = async (event) => {
     documentClient,
   );
 
-  return response.createCategory;
+  return response.createCategoryRequest;
 };

@@ -1,9 +1,9 @@
 const constants = require('../constants/constant');
 
-module.exports.createParameter = (event, dateId) => ({
+module.exports.createParameter = (walletId, dateId) => ({
   TableName: constants.TABLE_NAME,
   Key: {
-    pk: event['body-json'].walletId,
+    pk: walletId,
     sk: dateId,
   },
   UpdateExpression: 'set income_total = :r, expense_total=:p, balance=:a, creation_date = :c, updated_date = :u',

@@ -10,7 +10,7 @@ const documentClient = {
 describe('Add Budget item', () => {
   test('With Data: Success', async () => {
     const response = await addBudget
-      .addNewBudget(mockRequest, documentClient);
+      .addNewBudget(mockRequest, new Date('2021-05'), documentClient);
     expect(response).not.toBeUndefined();
     expect(response.success).not.toBeUndefined();
     expect(response.budgetId).not.toBeUndefined();

@@ -1,15 +1,15 @@
 const constants = require('../constants/constant');
 
-module.exports.createParameter = (event, categoryId, categoryName) => ({
+module.exports.createParameter = (event) => ({
   TableName: constants.TABLE_NAME,
   Key: {
     pk: event['body-json'].walletId,
-    sk: categoryId,
+    sk: event['body-json'].categoryId,
   },
   UpdateExpression: 'set category_total = :r, category_name = :p, category_type = :q, date_meant_for = :s, creation_date = :c, updated_date = :u',
   ExpressionAttributeValues: {
     ':r': 0,
-    ':p': categoryName,
+    ':p': event['body-json'].categoryName,
     ':q': event['body-json'].categoryType,
     ':s': event['body-json'].dateMeantFor,
     ':c': new Date().toISOString(),

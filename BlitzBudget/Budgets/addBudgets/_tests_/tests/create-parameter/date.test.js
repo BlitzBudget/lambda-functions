@@ -4,7 +4,7 @@ const mockRequest = require('../../fixtures/request/addBudget');
 describe('bankParameter: createParameter', () => {
   const event = mockRequest;
   test('With Data: Success', () => {
-    const parameters = dateParameter.createParameter(event, new Date('2021-02'));
+    const parameters = dateParameter.createParameter(event['body-json'].walletId, new Date('2021-02'));
     expect(parameters).not.toBeUndefined();
     expect(parameters.TableName).not.toBeUndefined();
     expect(parameters.KeyConditionExpression).not.toBeUndefined();

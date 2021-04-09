@@ -1,13 +1,13 @@
-const FetchCategory = () => {};
+function FetchCategory() {}
 
 const util = require('../utils/util');
 const categoryParameter = require('../create-parameter/category');
 
-FetchCategory.prototype.getCategoryData = (event, today, documentClient) => {
+FetchCategory.prototype.getCategoryData = async (event, today, documentClient) => {
   const params = categoryParameter.createParameter(event, today);
 
   // Call DynamoDB to read the item from the table
-  const response = documentClient.query(params).promise();
+  const response = await documentClient.query(params).promise();
 
   let categories;
   if (util.isNotEmpty(response.Items)) {

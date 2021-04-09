@@ -3,9 +3,11 @@ const mockRequest = require('../../fixtures/request/addBudget');
 
 describe('addCategoryParameter: createParameter', () => {
   mockRequest['body-json'].categoryType = 'random';
+  mockRequest['body-json'].categoryId = 'ramdomId';
+  mockRequest['body-json'].categoryName = 'randomName';
   const event = mockRequest;
   test('With Data: Success', () => {
-    const parameters = addCategoryParameter.createParameter(event, 'randomValue', 'name');
+    const parameters = addCategoryParameter.createParameter(event);
     expect(parameters).not.toBeUndefined();
     expect(parameters.TableName).not.toBeUndefined();
     expect(parameters.Key).not.toBeUndefined();

@@ -19,7 +19,7 @@ describe('With Fetch Category Data', () => {
     const response = await addHelper
       .addANewCategoryIfNotPresent(mockRequest,
         documentClient);
-    expect(response.createCategory).not.toBeUndefined();
+    expect(response.createCategoryRequest).not.toBeUndefined();
     expect(response.events).not.toBeUndefined();
     expect(response.events.length).toBe(0);
   });
@@ -39,8 +39,28 @@ describe('With Exiting Category Information', () => {
     const response = await addHelper
       .addANewCategoryIfNotPresent(mockRequestWithCategory,
         documentClientWithCategory);
-    expect(response.createCategory).not.toBeUndefined();
+    expect(response.createCategoryRequest).not.toBeUndefined();
     expect(response.events).not.toBeUndefined();
     expect(response.events.length).toBe(0);
+  });
+});
+
+describe('With Non Exiting Category Information And Without Category ID', () => {
+  const documentClientWithCategory = {
+    update: jest.fn(() => ({
+      promise: jest.fn().mockResolvedValueOnce(mockResponse),
+    })),
+    query: jest.fn(() => ({
+      promise: jest.fn().mockResolvedValueOnce({}),
+    })),
+  };
+
+  test('Success', async () => {
+    const response = await addHelper
+      .addANewCategoryIfNotPresent(mockRequest,
+        documentClientWithCategory);
+    expect(response.createCategoryRequest).not.toBeUndefined();
+    expect(response.events).not.toBeUndefined();
+    expect(response.events.length).toBe(1);
   });
 });

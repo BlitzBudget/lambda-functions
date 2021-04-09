@@ -29,10 +29,11 @@ describe('Patch Budget item', () => {
     const response = await patchBudget
       .handler(event);
     expect(response).not.toBeUndefined();
-    expect(response.budgetId).not.toBeUndefined();
-    expect(response.category).not.toBeUndefined();
-    expect(response.categoryName).not.toBeUndefined();
-    expect(response.dateMeantFor).not.toBeUndefined();
-    expect(response.walletId).not.toBeUndefined();
+    expect(response['body-json']).not.toBeUndefined();
+    expect(response['body-json'].budgetId).not.toBeUndefined();
+    expect(response['body-json'].category).not.toBeUndefined();
+    expect(response['body-json'].categoryName).not.toBeUndefined();
+    expect(response['body-json'].dateMeantFor).not.toBeUndefined();
+    expect(response['body-json'].walletId).not.toBeUndefined();
   });
 });
