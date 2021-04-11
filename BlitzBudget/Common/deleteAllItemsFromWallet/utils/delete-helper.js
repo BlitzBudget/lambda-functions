@@ -1,8 +1,9 @@
-const DeleteHelper = () => {};
+function DeleteHelper() {}
 
-const helper = require('./helper');
+const util = require('./util');
 const deleteItems = require('../delete/items.js');
-const deleteParameter = require('../create-parameter/delete.js');
+const deleteParameter = require('../create-parameter/delete');
+const deleteRequestParameter = require('../create-parameter/delete-request');
 
 function buildDeleteRequest(result, walletId, DB) {
   console.log(
@@ -14,18 +15,11 @@ function buildDeleteRequest(result, walletId, DB) {
 
   result.Items.forEach((item) => {
     console.log('Building the delete params for the item %j', item.sk);
-    requestArr.push({
-      DeleteRequest: {
-        Key: {
-          pk: walletId,
-          sk: item.sk,
-        },
-      },
-    });
+    requestArr.push(deleteRequestParameter.createParameter(walletId, item.sk));
   });
 
   // Split array into sizes of 25
-  const deleteRequests = helper.chunkArrayInGroups(requestArr, 25);
+  const deleteRequests = util.chunkArrayInGroups(requestArr, 25);
 
   // Push Events  to be executed in bulk
   deleteRequests.forEach((deleteRequest) => {
@@ -37,6 +31,8 @@ function buildDeleteRequest(result, walletId, DB) {
     // Delete Items in batch
     events.push(deleteItems.deleteItems(params, DB));
   });
+
+  return events;
 }
 
 async function bulkDeleteItems(result, walletId, DB) {

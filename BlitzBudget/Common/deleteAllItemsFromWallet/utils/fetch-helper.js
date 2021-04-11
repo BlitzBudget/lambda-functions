@@ -1,22 +1,13 @@
-const FetchHelper = () => {};
+function FetchHelper() {}
 
-const fetchParameter = require('../create-parameter/fetch');
-
-// Get all Items
-async function getAllItems(walletId, DB) {
-  const params = fetchParameter.createParameter(walletId);
-
-  // Call DynamoDB to read the item from the table
-  const response = await DB.query(params).promise();
-  return response;
-}
+const fetchItems = require('../fetch/items');
 
 async function fetchAllItemsForWallet(walletId, DB) {
   let result;
-  await getAllItems(walletId, DB).then(
-    (res) => {
-      console.log('successfully fetched all the items ', res);
-      result = res;
+  await fetchItems.getAllItems(walletId, DB).then(
+    (response) => {
+      console.log('successfully fetched all the items ', response);
+      result = response;
     },
     (err) => {
       throw new Error(`Unable to delete the goals ${err}`);
