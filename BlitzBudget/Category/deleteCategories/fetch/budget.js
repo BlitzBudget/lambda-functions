@@ -1,4 +1,4 @@
-const FetchBudget = () => {};
+function FetchBudget() {}
 
 const budget = require('../create-parameter/budget');
 

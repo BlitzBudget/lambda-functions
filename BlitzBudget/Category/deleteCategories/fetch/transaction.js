@@ -1,4 +1,4 @@
-const FetchTransaction = () => {};
+function FetchTransaction() {}
 
 const transaction = require('../create-parameter/transaction');
 

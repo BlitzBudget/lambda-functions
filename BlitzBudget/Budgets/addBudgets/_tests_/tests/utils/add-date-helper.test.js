@@ -14,5 +14,6 @@ describe('Add Date item', () => {
     expect(response).not.toBeUndefined();
     expect(response.dateId).not.toBeUndefined();
     expect(response.events.length).toBe(1);
+    expect(documentClient.update).toHaveBeenCalledTimes(1);
   });
 });

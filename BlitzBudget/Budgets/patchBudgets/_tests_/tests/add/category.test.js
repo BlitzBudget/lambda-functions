@@ -17,5 +17,6 @@ describe('Fetch Category item', () => {
     expect(response.Category).not.toBeUndefined();
     expect(response.Category.sk).not.toBeUndefined();
     expect(response.Category.pk).not.toBeUndefined();
+    expect(documentClient.update).toHaveBeenCalledTimes(1);
   });
 });

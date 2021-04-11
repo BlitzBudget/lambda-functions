@@ -15,5 +15,6 @@ describe('fetchWalletsIfEmpty : User', () => {
     fetchHelper.fetchWalletsIfEmpty('', mockUserRequest['body-json'].userId, documentClient);
     expect(response).not.toBeUndefined();
     expect(walletPK).not.toBeUndefined();
+    expect(documentClient.query).toHaveBeenCalledTimes(1);
   });
 });

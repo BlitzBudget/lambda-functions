@@ -14,5 +14,6 @@ describe('Fetch Date item', () => {
       .getDateData(mockRequest['body-json'].walletId, '2021', documentClient);
     expect(response).not.toBeUndefined();
     expect(response.Date).not.toBeUndefined();
+    expect(documentClient.query).toHaveBeenCalledTimes(1);
   });
 });

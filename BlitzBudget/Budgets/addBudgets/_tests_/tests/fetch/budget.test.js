@@ -14,6 +14,7 @@ describe('Fetch Budget item', () => {
       .getBudgetsItem(new Date(), mockRequest, documentClient);
     expect(response).not.toBeUndefined();
     expect(response.Budget).toBeUndefined();
+    expect(documentClient.query).toHaveBeenCalledTimes(1);
   });
 
   test('With Matching Category', async () => {

@@ -14,6 +14,7 @@ describe('Fetch Category item', () => {
       .fetchCategoryItem(mockRequest, new Date(), documentClient);
     expect(response).not.toBeUndefined();
     expect(response.Category).toBeUndefined();
+    expect(documentClient.query).toHaveBeenCalledTimes(1);
   });
 
   test('With Matching Category', async () => {

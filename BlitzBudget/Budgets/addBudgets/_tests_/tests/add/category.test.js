@@ -13,5 +13,6 @@ describe('Add Category item', () => {
       .createCategoryItem(mockRequest, documentClient);
     expect(response).not.toBeUndefined();
     expect(response.Category).not.toBeUndefined();
+    expect(documentClient.update).toHaveBeenCalledTimes(1);
   });
 });

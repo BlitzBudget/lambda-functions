@@ -14,5 +14,6 @@ describe('Fetch Bank Account item', () => {
       .getBankAccountData(mockRequest['body-json'].walletId, documentClient);
     expect(response).not.toBeUndefined();
     expect(response.BankAccount).not.toBeUndefined();
+    expect(documentClient.query).toHaveBeenCalledTimes(1);
   });
 });

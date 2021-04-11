@@ -1,5 +1,5 @@
 const fetchBudget = require('../../../fetch/budget');
-const mockRequest = require('../../fixtures/request/existingCategory.json');
+const mockRequest = require('../../fixtures/request/deleteCategories.json');
 const mockResponse = require('../../fixtures/response/fetchBudget.json');
 
 const documentClient = {
@@ -9,13 +9,12 @@ const documentClient = {
 };
 
 describe('Fetch Budget item', () => {
-  test('Without Matching Budget: Success', async () => {
+  test('Success', async () => {
     const response = await fetchBudget
-      .getBudgetsItem(new Date('2021-02'), mockRequest, documentClient);
+      .getBudgetItems('walletID', '2020-03', documentClient);
     expect(response).not.toBeUndefined();
-    expect(response.Budget).not.toBeUndefined();
-    expect(response.Budget.category).not.toBeUndefined();
-    expect(response.Budget.category).toBe(mockRequest['body-json'].category);
+    expect(response.Items).not.toBeUndefined();
+    expect(response.Items[0].pk).toBe(mockRequest['body-json'].walletId);
     expect(documentClient.query).toHaveBeenCalledTimes(1);
   });
 });

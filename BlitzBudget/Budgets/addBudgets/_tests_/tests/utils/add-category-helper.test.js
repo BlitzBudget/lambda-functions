@@ -14,5 +14,6 @@ describe('Add Category item', () => {
       .createANewCategoryItem(mockRequest, events, documentClient);
     expect(events.length).not.toBe(0);
     expect(events.length).toBe(1);
+    expect(documentClient.update).toHaveBeenCalledTimes(1);
   });
 });

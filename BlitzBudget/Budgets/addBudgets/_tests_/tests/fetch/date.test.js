@@ -16,5 +16,6 @@ describe('Fetch Date item', () => {
     expect(response.Date).not.toBeUndefined();
     expect(response.Date[0].sk).not.toBeUndefined();
     expect(response.Date[0].sk).toMatch(/2021-04/);
+    expect(documentClient.query).toHaveBeenCalledTimes(1);
   });
 });

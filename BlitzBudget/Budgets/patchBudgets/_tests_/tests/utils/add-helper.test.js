@@ -22,6 +22,8 @@ describe('With Fetch Category Data', () => {
     expect(response.createCategoryRequest).not.toBeUndefined();
     expect(response.events).not.toBeUndefined();
     expect(response.events.length).toBe(0);
+    expect(documentClient.update).toHaveBeenCalledTimes(0);
+    expect(documentClient.query).toHaveBeenCalledTimes(1);
   });
 });
 
@@ -42,6 +44,8 @@ describe('With Exiting Category Information', () => {
     expect(response.createCategoryRequest).not.toBeUndefined();
     expect(response.events).not.toBeUndefined();
     expect(response.events.length).toBe(0);
+    expect(documentClientWithCategory.update).toHaveBeenCalledTimes(0);
+    expect(documentClientWithCategory.query).toHaveBeenCalledTimes(0);
   });
 });
 
@@ -62,5 +66,7 @@ describe('With Non Exiting Category Information And Without Category ID', () => 
     expect(response.createCategoryRequest).not.toBeUndefined();
     expect(response.events).not.toBeUndefined();
     expect(response.events.length).toBe(1);
+    expect(documentClientWithCategory.update).toHaveBeenCalledTimes(1);
+    expect(documentClientWithCategory.query).toHaveBeenCalledTimes(1);
   });
 });

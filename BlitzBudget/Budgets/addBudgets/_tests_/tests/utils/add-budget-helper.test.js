@@ -12,5 +12,6 @@ describe('Add Budget Helper', () => {
     const budgetId = await addBudget
       .addBudget(mockRequest, new Date('2021-05'), documentClient);
     expect(budgetId).not.toBeUndefined();
+    expect(documentClient.put).toHaveBeenCalledTimes(1);
   });
 });

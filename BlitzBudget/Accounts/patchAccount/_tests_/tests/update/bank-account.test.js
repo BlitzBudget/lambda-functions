@@ -12,5 +12,6 @@ describe('Update Account item', () => {
     const response = await updateAccounts
       .updatingBankAccounts(mockAccountResponse.Items[0].pk, documentClient);
     expect(response).not.toBeUndefined();
+    expect(documentClient.update).toHaveBeenCalledTimes(1);
   });
 });

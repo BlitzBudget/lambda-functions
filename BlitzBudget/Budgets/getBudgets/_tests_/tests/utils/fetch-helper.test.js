@@ -17,6 +17,7 @@ describe('fetchAllInformationForBudget', () => {
     expect(response.Category).not.toBeUndefined();
     expect(response.Date).not.toBeUndefined();
     expect(response.BankAccount).not.toBeUndefined();
+    expect(documentClient.query).toHaveBeenCalledTimes(4);
   });
 });
 

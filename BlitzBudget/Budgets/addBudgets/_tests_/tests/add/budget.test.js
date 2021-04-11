@@ -14,5 +14,6 @@ describe('Add Budget item', () => {
     expect(response).not.toBeUndefined();
     expect(response.success).not.toBeUndefined();
     expect(response.budgetId).not.toBeUndefined();
+    expect(documentClient.put).toHaveBeenCalledTimes(1);
   });
 });

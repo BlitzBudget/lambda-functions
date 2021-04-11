@@ -21,5 +21,6 @@ describe('Fetch Account item', () => {
     expect(response.Account[0].pk).not.toBeUndefined();
     expect(response.Account[0].sk).not.toBeUndefined();
     expect(response.Account[0].selected_account).not.toBeUndefined();
+    expect(documentClient.query).toHaveBeenCalledTimes(1);
   });
 });

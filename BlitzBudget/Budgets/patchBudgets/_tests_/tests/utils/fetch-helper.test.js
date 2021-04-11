@@ -16,6 +16,7 @@ describe('Fetch Budget item', () => {
         expect(error).not.toBeUndefined();
         expect(error.message).not.toBeUndefined();
         expect(error.message).toBe('Unable to create a new budget for an existing category');
+        expect(documentClient.query).toHaveBeenCalledTimes(1);
       });
   });
 });
@@ -30,6 +31,7 @@ describe('Fetch Budget item without data', () => {
     const response = await fetchHelper
       .fetchBudget(mockRequest, documentClientWithoutData);
     expect(response).toBeUndefined();
+    expect(documentClientWithoutData.query).toHaveBeenCalledTimes(1);
   });
 });
 

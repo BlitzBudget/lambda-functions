@@ -16,5 +16,7 @@ describe('Update Budget item', () => {
     const response = await updateHelper
       .updateBudgetIfNotPresent(mockRequest, [], documentClient);
     expect(response).toBeUndefined();
+    expect(documentClient.update).toHaveBeenCalledTimes(1);
+    expect(documentClient.query).toHaveBeenCalledTimes(1);
   });
 });

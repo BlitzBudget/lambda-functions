@@ -1,4 +1,4 @@
-const FetchHelper = () => {};
+function FetchHelper() {}
 
 const budget = require('../fetch/budget');
 const transaction = require('../fetch/transaction');
@@ -9,24 +9,24 @@ async function fetchAllItemsToDelete(
   DB,
 ) {
   const events = [];
-  let result;
+  let response;
+
   events.push(transaction.getTransactionItems(walletId, curentPeriod, DB));
   events.push(budget.getBudgetItems(walletId, curentPeriod, DB));
-
   await Promise.all(events).then(
-    (res) => {
+    (result) => {
       console.log('successfully fetched all the items ');
-      result = res;
+      response = result;
     },
     (err) => {
       throw new Error(`Unable to delete the categories ${err}`);
     },
   );
 
-  if (result[0].Count === 0 && result[1].Count === 0) {
+  if (response[0].Count === 0 && response[1].Count === 0) {
     console.log('There are no items to delete for the wallet %j', walletId);
   }
-  return { result, events };
+  return response;
 }
 
 FetchHelper.prototype.fetchAllItemsToDelete = fetchAllItemsToDelete;

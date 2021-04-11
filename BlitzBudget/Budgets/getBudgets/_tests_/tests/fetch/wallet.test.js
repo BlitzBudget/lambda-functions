@@ -14,5 +14,6 @@ describe('Fetch Wallet item', () => {
       .getWalletsData(mockRequest['body-json'].walletId, documentClient);
     expect(response).not.toBeUndefined();
     expect(response.Wallet).not.toBeUndefined();
+    expect(documentClient.query).toHaveBeenCalledTimes(1);
   });
 });

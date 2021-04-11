@@ -13,5 +13,6 @@ describe('Add Date item', () => {
       .createDateItem(mockRequest, 'dateId', documentClient);
     expect(response).not.toBeUndefined();
     expect(response.Date).not.toBeUndefined();
+    expect(documentClient.update).toHaveBeenCalledTimes(1);
   });
 });

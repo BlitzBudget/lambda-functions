@@ -13,5 +13,6 @@ describe('Update Budget item', () => {
     const response = await updateBudget
       .updatingBudgets(mockRequest, documentClient);
     expect(response).not.toBeUndefined();
+    expect(documentClient.update).toHaveBeenCalledTimes(1);
   });
 });

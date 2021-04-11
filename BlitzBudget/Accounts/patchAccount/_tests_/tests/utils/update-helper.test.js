@@ -16,6 +16,7 @@ describe('updateBankAccountToUnselected', () => {
     expect(events).not.toBeUndefined();
     expect(events.length).not.toBeUndefined();
     expect(events.length).toBe(0);
+    expect(documentClient.update).toHaveBeenCalledTimes(0);
   });
 
   test('With Data: Success', async () => {
@@ -25,5 +26,6 @@ describe('updateBankAccountToUnselected', () => {
     expect(events).not.toBeUndefined();
     expect(events.length).not.toBeUndefined();
     expect(events.length).toBe(1);
+    expect(documentClient.update).toHaveBeenCalledTimes(1);
   });
 });
