@@ -44,7 +44,7 @@ async function handleUpdateBankAccounts(events, event) {
     event,
   );
 
-  events.push(updateBankAccount.updatingBankAccounts(params));
+  events.push(updateBankAccount.updatingBankAccounts(params, documentClient));
   await Promise.all(events).then(
     () => {
       console.log('successfully patched the BankAccounts');
