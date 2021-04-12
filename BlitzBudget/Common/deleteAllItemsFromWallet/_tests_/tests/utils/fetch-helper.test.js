@@ -8,7 +8,7 @@ const documentClient = {
   })),
 };
 
-describe('Delete items', () => {
+describe('Fetch Helper', () => {
   test('Success', async () => {
     const response = await fetchItems
       .fetchAllItemsForWallet(mockRequest.Records[0].Sns.Message, documentClient);

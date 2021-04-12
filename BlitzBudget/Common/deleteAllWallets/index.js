@@ -9,7 +9,8 @@ AWS.config.update({ region: 'eu-west-1' });
 const sns = new AWS.SNS();
 
 // Create the DynamoDB service object
-const DB = new AWS.DynamoDB.DocumentClient();
+const dynamoDB = new AWS.DynamoDB();
+const documentClient = new dynamoDB.DocumentClient();
 // Concurrently call multiple APIs and wait for the response
 const events = [];
 
@@ -20,7 +21,7 @@ exports.handler = async (event) => {
   const deleteParams = await fetchHelper.fetchAllItemsToDelete(
     userId,
     sns,
-    DB,
+    documentClient,
     events,
   );
 
@@ -29,7 +30,7 @@ exports.handler = async (event) => {
   }
 
   // Publish to SNS and delete all financial portfolio entries
-  await deleteHelper.deleteAllWallets(deleteParams, DB, events);
+  await deleteHelper.deleteAllWallets(deleteParams, documentClient, events);
 
   return event;
 };

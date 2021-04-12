@@ -1,4 +1,4 @@
-const Publish = () => {};
+function Publish() {}
 
 const snsParameter = require('../create-parameter/sns');
 
