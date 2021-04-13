@@ -1,4 +1,4 @@
-const DeleteItems = () => {};
+function DeleteItems() {}
 
 DeleteItems.prototype.deleteItems = async (params, DB) => {
   const response = await DB.batchWrite(params).promise();

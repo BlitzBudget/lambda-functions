@@ -1,4 +1,4 @@
-const Helper = () => {};
+function Helper() {}
 
 // Splits array into chunks
 Helper.prototype.chunkArrayInGroups = (arr, size) => {
@@ -12,8 +12,8 @@ Helper.prototype.chunkArrayInGroups = (arr, size) => {
 Helper.prototype.noItemsInRequest = (result) => result.length === 0;
 
 Helper.prototype.extractVariablesFromRequest = (event) => {
-  const { walletId } = event['body-json'];
-  const result = event['body-json'].itemIdArray;
+  const { walletId } = event.params.querystring;
+  const result = event.params.querystring.itemIdArray;
   return { result, walletId };
 };
 
