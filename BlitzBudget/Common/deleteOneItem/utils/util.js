@@ -1,4 +1,4 @@
-const Helper = () => {};
+function Util() {}
 
 const isEmpty = (obj) => {
   // Check if objext is a number or a boolean
@@ -27,7 +27,7 @@ const extractVariablesFromRequest = (event) => {
   return { pk, sk, fromSns };
 };
 
-Helper.prototype.extractVariablesFromRequest = extractVariablesFromRequest;
+Util.prototype.extractVariablesFromRequest = extractVariablesFromRequest;
 
 // Export object
-module.exports = new Helper();
+module.exports = new Util();

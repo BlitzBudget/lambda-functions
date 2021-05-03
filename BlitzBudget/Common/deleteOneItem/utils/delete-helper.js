@@ -1,4 +1,4 @@
-const DeleteHelper = () => {};
+function DeleteHelper() {}
 
 const deleteItem = require('../delete/item');
 

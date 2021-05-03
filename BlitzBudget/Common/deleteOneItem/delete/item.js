@@ -1,4 +1,4 @@
-const DeleteItems = () => {};
+function DeleteItems() {}
 
 const deleteParameter = require('../create-parameter/delete');
 

@@ -1,5 +1,5 @@
 const AWS = require('aws-sdk');
-const helper = require('./utils/helper');
+const util = require('./utils/util');
 const resetHelper = require('./utils/reset-helper');
 const deleteHelper = require('./utils/delete-helper');
 const constants = require('./constants/constant');
@@ -10,11 +10,12 @@ AWS.config.update({ region: constants.TABLE_NAME });
 const sns = new AWS.SNS();
 
 // Create the DynamoDB service object
-const DB = new AWS.DynamoDB.DocumentClient();
+const dynamoDB = new AWS.DynamoDB();
+const documentClient = new dynamoDB.DocumentClient();
 
 exports.handler = async (event) => {
-  const { pk, sk, fromSns } = helper.extractVariablesFromRequest(event);
-  await deleteHelper.deleteAnItem(pk, sk, DB);
+  const { pk, sk, fromSns } = util.extractVariablesFromRequest(event);
+  await deleteHelper.deleteAnItem(pk, sk, documentClient);
 
   await resetHelper.resetAccount(fromSns, sk, sns);
 

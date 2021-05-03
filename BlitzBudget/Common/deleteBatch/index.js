@@ -9,7 +9,8 @@ const deleteHelper = require('./utils/delete-helper');
 AWS.config.update({ region: constants.EU_WEST_ONE });
 
 // Create the DynamoDB service object
-const DB = new AWS.DynamoDB.DocumentClient();
+const dynamoDB = new AWS.DynamoDB();
+const documentClient = new dynamoDB.DocumentClient();
 
 exports.handler = async (event) => {
   console.log(`event %j${JSON.stringify(event['body-json'])}`);
@@ -21,7 +22,7 @@ exports.handler = async (event) => {
     return event;
   }
 
-  await deleteHelper.deleteAllItemsInBulk(result, walletId, events, DB);
+  await deleteHelper.deleteAllItemsInBulk(result, walletId, events, documentClient);
 
   return event;
 };
