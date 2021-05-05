@@ -1,27 +1,15 @@
-const FetchDate = () => {};
+function FetchDate() {}
 
 const dateParameter = require('../create-parameter/date');
+const organizeDate = require('../organize/date');
 
 async function getDateData(pk, startsWithDate, endsWithDate, documentClient) {
-  function organizeRetrievedItems(data) {
-    console.log('data retrieved - Date ', data.Count);
-    if (data.Items) {
-      Object.keys(data.Items).forEach((dateObj) => {
-        const date = dateObj;
-        date.dateId = dateObj.sk;
-        date.walletId = dateObj.pk;
-        delete date.sk;
-        delete date.pk;
-      });
-    }
-  }
-
   const params = dateParameter.createParameter(pk, startsWithDate, endsWithDate);
 
   // Call DynamoDB to read the item from the table
   const response = await documentClient.query(params).promise();
 
-  organizeRetrievedItems(response);
+  organizeDate.organize(response);
   return ({
     Date: response.Items,
   });

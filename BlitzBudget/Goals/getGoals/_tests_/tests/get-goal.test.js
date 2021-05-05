@@ -1,5 +1,5 @@
 const getGoal = require('../../index');
-const mockRequest = require('../fixtures/request/byUserId.json');
+const mockWithWalletIdAndUserId = require('../fixtures/request/withWalletIdAndUserId.json');
 const mockResponse = require('../fixtures/response/fetch-goal.json');
 
 jest.mock('aws-sdk', () => ({
@@ -19,12 +19,12 @@ jest.mock('aws-sdk', () => ({
 }));
 
 describe('Get Goal item', () => {
-  const event = mockRequest;
   test('With Data: Success', async () => {
     const response = await getGoal
-      .handler(event);
+      .handler(mockWithWalletIdAndUserId);
     expect(response).not.toBeUndefined();
     expect(response.BankAccount).not.toBeUndefined();
+    expect(response.Wallet).not.toBeUndefined();
     expect(response.Goal).not.toBeUndefined();
     expect(response.Date).not.toBeUndefined();
   });

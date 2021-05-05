@@ -13,26 +13,26 @@ const documentClient = {
 };
 
 describe('fetchWalletInformation', () => {
-  const events = [];
   test('Without User ID Data: Success', async () => {
-    const walletID = await fetchHelper
-      .fetchWalletInformation(mockRequestByUser['body-json'].walletId, mockRequestByUser['body-json'].userId, events, documentClient);
+    const response = await fetchHelper
+      .fetchWalletInformation(mockRequestByUser['body-json'].walletId, mockRequestByUser['body-json'].userId, documentClient);
 
-    expect(walletID).not.toBeUndefined();
-    expect(walletID).toBe('Wallet#2020-12-21T20:35:49.295Z');
+    expect(response).not.toBeUndefined();
+    expect(response.walletPK).toBe('Wallet#2020-12-21T20:35:49.295Z');
+    expect(response.response).toStrictEqual({});
     expect(documentClient.query).toHaveBeenCalledTimes(1);
   });
 
   test('With User ID Data: Success', async () => {
-    const walletID = await fetchHelper
+    const response = await fetchHelper
       .fetchWalletInformation(
         mockRequest['body-json'].walletId,
         mockRequestByUser['body-json'].userId,
-        events,
         documentClient,
       );
 
-    expect(walletID).not.toBeUndefined();
-    expect(events.length).toBe(1);
+    expect(response).not.toBeUndefined();
+    expect(response.response).not.toBeUndefined();
+    expect(documentClient.query).toHaveBeenCalledTimes(1);
   });
 });

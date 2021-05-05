@@ -1,9 +1,9 @@
-const FetchTransaction = () => {};
+function FetchTransaction() {}
 
 const transactionParameter = require('../create-parameter/transaction');
 
 // Get Transaction Item
-async function getTransactionItems(pk, startsWithDate, endsWithDate, documentClient) {
+async function getTransactionsData(pk, startsWithDate, endsWithDate, documentClient) {
   const params = transactionParameter.createParameter(pk, startsWithDate, endsWithDate);
 
   // Call DynamoDB to read the item from the table
@@ -14,6 +14,6 @@ async function getTransactionItems(pk, startsWithDate, endsWithDate, documentCli
   };
 }
 
-FetchTransaction.prototype.getTransactionItems = getTransactionItems;
+FetchTransaction.prototype.getTransactionsData = getTransactionsData;
 // Export object
 module.exports = new FetchTransaction();

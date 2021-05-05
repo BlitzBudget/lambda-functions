@@ -23,20 +23,21 @@ exports.handler = async (event) => {
   } = helper.extractVariablesFromRequest(event);
 
   // Cognito does not store wallet information nor curreny. All are stored in wallet.
-  const walletId = await fetchHelper.fetchWalletInformation(
+  const walletResponse = await fetchHelper.fetchWalletInformation(
     event['body-json'].walletId,
     userId,
-    events,
     documentClient,
   );
 
   const allResponses = await fetchHelper.fetchOtherRelevantInformation(
     events,
-    walletId,
+    walletResponse.walletPK,
     oneYearAgo,
     today,
     documentClient,
   );
+
+  allResponses.Wallet = walletResponse.response.Wallet;
 
   return allResponses;
 };

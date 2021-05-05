@@ -59,17 +59,17 @@ async function fetchWalletsFromUser(walletId,
 const fetchWalletInformation = async (
   walletId,
   userId,
-  events,
   documentClient,
 ) => {
   let walletPK = walletId;
+  let response = {};
 
   if (util.isEmpty(walletId) && util.isNotEmpty(userId)) {
     walletPK = await fetchWalletsFromUser(walletId, userId, documentClient);
   } else if (util.isNotEmpty(walletId) && util.isNotEmpty(userId)) {
-    events.push(wallet.getWalletData(userId, walletId, documentClient));
+    response = await wallet.getWalletData(userId, walletId, documentClient);
   }
-  return walletPK;
+  return { walletPK, response };
 };
 
 FetchHelper.prototype.fetchWalletInformation = fetchWalletInformation;
