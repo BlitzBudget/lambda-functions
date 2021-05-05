@@ -1,4 +1,4 @@
-const Helper = () => {};
+function Util() {}
 
 function isEmpty(obj) {
   // Check if objext is a number or a boolean
@@ -18,11 +18,14 @@ function isEmpty(obj) {
 }
 
 function includesStr(arr, val) {
-  return isEmpty(arr) ? null : arr.includes(val);
+  return isEmpty(arr) ? false : arr.includes(val);
 }
 
-Helper.prototype.isEmpty = isEmpty;
-Helper.prototype.includesStr = includesStr;
+const isNotEmpty = (obj) => !isEmpty(obj);
+
+Util.prototype.isEmpty = isEmpty;
+Util.prototype.isNotEmpty = isNotEmpty;
+Util.prototype.includesStr = includesStr;
 
 // Export object
-module.exports = new Helper();
+module.exports = new Util();

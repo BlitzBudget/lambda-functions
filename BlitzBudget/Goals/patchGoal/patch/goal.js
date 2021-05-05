@@ -1,19 +1,20 @@
-const PatchGoal = () => {};
+function PatchGoal() {}
 
 const AWS = require('aws-sdk');
 const util = require('../utils/util');
 const constants = require('../constants/constant');
-const goalParameter = require('../create-parameter/goal');
+const goalParameter = require('../create-expression/goal');
 
 // Load the AWS SDK for Node.js
 // Set the region
 AWS.config.update({ region: constants.EU_WEST_ONE });
 
 // Create the DynamoDB service object
-const documentClient = new AWS.DynamoDB.DocumentClient();
+const dynamoDB = new AWS.DynamoDB();
+const documentClient = dynamoDB.DocumentClient();
 
 async function updatingGoals(event) {
-  const params = goalParameter.createParameter(event);
+  const params = goalParameter.createExpression(event);
 
   if (util.isEmpty(params)) {
     return undefined;
