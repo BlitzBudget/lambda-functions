@@ -10,9 +10,8 @@ AWS.config.update({
 });
 
 // Create the DynamoDB service object
-const documentClient = new AWS.DynamoDB.DocumentClient({
-  region: constants.EU_WEST_ONE,
-});
+const dynamoDB = new AWS.DynamoDB();
+const documentClient = dynamoDB.DocumentClient();
 
 exports.handler = async (event) => {
   console.log('fetching item for the walletId ', event['body-json'].walletId);

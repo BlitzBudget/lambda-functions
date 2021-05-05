@@ -1,9 +1,10 @@
 {
-  "body-json": {},
+  "body-json": {
+    "walletId": "Wallets#93202082911265"
+  },
   "params": {
     "path": {},
     "querystring": {
-      "walletId": "Wallets#93202082911265"
     },
     "header": {
       "Accept": "*/*",

@@ -1,4 +1,4 @@
-const Helper = () => {};
+function Helper() {}
 
 Helper.prototype.extractVariablesFromRequest = (event) => {
   const { userId } = event['body-json'];

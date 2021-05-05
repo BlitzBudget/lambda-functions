@@ -13,3 +13,14 @@ module.exports.createParameter = (userId, walletId) => ({
     sk: walletId,
   },
 });
+
+module.exports.createParameterForUserID = (userID) => ({
+  TableName: 'blitzbudget',
+  KeyConditionExpression: 'pk = :pk and begins_with(sk, :items)',
+  ExpressionAttributeValues: {
+    ':pk': userID,
+    ':items': 'Wallet#',
+  },
+  ProjectionExpression:
+      'currency, pk, sk, total_asset_balance, total_debt_balance, wallet_balance',
+});

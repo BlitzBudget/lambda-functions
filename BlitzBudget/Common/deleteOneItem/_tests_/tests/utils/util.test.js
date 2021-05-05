@@ -13,7 +13,7 @@ describe('extractVariablesFromRequest', () => {
     expect(response.fromSns).not.toBeUndefined();
   });
 
-  test('With Data: Success', async () => {
+  test('With Data Delete from SNS: Success', async () => {
     const response = await util
       .extractVariablesFromRequest(mockRequestSNS);
 

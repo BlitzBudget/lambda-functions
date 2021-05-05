@@ -1,4 +1,4 @@
-const FetchHelper = () => {};
+function FetchHelper() {}
 
 const util = require('./util');
 const wallet = require('../fetch/wallet');
@@ -13,17 +13,19 @@ const fetchOtherRelevantInformation = async (
   today,
   documentClient,
 ) => {
-  let response;
+  const response = {};
   events.push(bankAccount.getBankAccountData(walletId, documentClient));
-  events.push(goal.getGoalItem(walletId, documentClient));
+  events.push(goal.getGoalData(walletId, documentClient));
   // Get Dates information to calculate the monthly Income / expense per month
   events.push(
     date.getDateData(walletId, oneYearAgo, today, documentClient),
   );
 
   await Promise.all(events).then(
-    (allResonses) => {
-      response = allResonses;
+    (allResponses) => {
+      response.BankAccount = allResponses[0].BankAccount;
+      response.Goal = allResponses[1].Goal;
+      response.Date = allResponses[2].Date;
       console.log('successfully retrieved all information');
     },
     (err) => {
@@ -34,6 +36,26 @@ const fetchOtherRelevantInformation = async (
   return response;
 };
 
+async function fetchWalletsFromUser(walletId,
+  userId,
+  documentClient) {
+  let walletPK = walletId;
+
+  await wallet.getWalletsData(userId, documentClient).then(
+    (result) => {
+      walletPK = result.Wallet[0].walletId;
+      console.log('retrieved the wallet for the item ', walletId);
+    },
+    (err) => {
+      throw new Error(
+        `Unable error occured while fetching the transaction ${err}`,
+      );
+    },
+  );
+
+  return walletPK;
+}
+
 const fetchWalletInformation = async (
   walletId,
   userId,
@@ -41,22 +63,9 @@ const fetchWalletInformation = async (
   documentClient,
 ) => {
   let walletPK = walletId;
-  async function fetchWalletsFromUser() {
-    await wallet.getWalletsData(userId, documentClient).then(
-      (result) => {
-        walletPK = result.Wallet[0].walletId;
-        console.log('retrieved the wallet for the item ', walletId);
-      },
-      (err) => {
-        throw new Error(
-          `Unable error occured while fetching the transaction ${err}`,
-        );
-      },
-    );
-  }
 
   if (util.isEmpty(walletId) && util.isNotEmpty(userId)) {
-    walletPK = await fetchWalletsFromUser();
+    walletPK = await fetchWalletsFromUser(walletId, userId, documentClient);
   } else if (util.isNotEmpty(walletId) && util.isNotEmpty(userId)) {
     events.push(wallet.getWalletData(userId, walletId, documentClient));
   }

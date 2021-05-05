@@ -1,5 +1,5 @@
 const organizeDate = require('../../../organize/date');
-const mockResponse = require('../../fixtures/response/fetch-budget.json');
+const mockResponse = require('../../fixtures/response/fetch-category.json');
 
 describe('organizeDate: createParameter', () => {
   test('With Data: Success', () => {
