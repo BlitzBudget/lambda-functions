@@ -1,4 +1,4 @@
-const DeleteHelper = () => {};
+function DeleteHelper() {}
 
 const deleteUser = require('../cognito/delete-user');
 const constants = require('../constants/constant');
@@ -9,15 +9,15 @@ const paramsDelete = {
   /* required */
 };
 
+function isDeleteAccount(event) {
+  return event['body-json'].deleteAccount;
+}
+
 function handleDeleteAccount(event, cognitoIdServiceProvider) {
   const events = [];
   paramsDelete.Username = event['body-json'].userName;
 
-  function isDeleteAccount() {
-    return event['body-json'].deleteAccount;
-  }
-
-  if (isDeleteAccount()) {
+  if (isDeleteAccount(event)) {
     events.push(globalSignout.globalSignoutFromAllDevices(event, cognitoIdServiceProvider));
     events.push(deleteUser.deleteCognitoAccount(paramsDelete, cognitoIdServiceProvider));
   }

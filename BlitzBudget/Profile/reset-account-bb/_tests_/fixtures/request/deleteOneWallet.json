@@ -1,11 +1,12 @@
 {
-  "body-json": {},
+  "body-json": {
+    "deleteAccount": "false",
+    "walletId": "15320201042369",
+    "referenceNumber": "93202082911265"
+  },
   "params": {
     "path": {},
     "querystring": {
-      "deleteAccount": "false",
-      "walletId": "15320201042369",
-      "referenceNumber": "93202082911265"
     },
     "header": {
       "Accept": "*/*",

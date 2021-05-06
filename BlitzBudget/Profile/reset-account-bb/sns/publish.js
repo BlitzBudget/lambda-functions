@@ -1,4 +1,4 @@
-const Publish = () => {};
+function Publish() {}
 
 const util = require('../utils/util');
 const snsParameter = require('../create-parameter/sns');

@@ -1,4 +1,4 @@
-const Helper = () => {};
+function Helper() {}
 
 function isEmpty(obj) {
   // Check if objext is a number or a boolean
