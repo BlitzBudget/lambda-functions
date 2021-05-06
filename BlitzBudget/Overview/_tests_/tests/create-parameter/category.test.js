@@ -1,5 +1,5 @@
 const categoryParameter = require('../../../create-parameter/category');
-const mockRequest = require('../../fixtures/request/overview');
+const mockRequest = require('../../fixtures/request/overview.json');
 
 describe('categoryParameter: createParameter', () => {
   const event = mockRequest;

@@ -7,7 +7,7 @@ async function addNewWallet(
   response,
   doNotCreateANewWallet,
   countryLocale,
-  DB,
+  documentClient,
 ) {
   const walletResponse = response;
 
@@ -23,7 +23,7 @@ async function addNewWallet(
      */
   const currency = helper.fetchCurrencyInformation(countryLocale);
 
-  await wallet.addNewWallet(response.UserAttributes, currency, DB).then(
+  await wallet.addNewWallet(response.UserAttributes, currency, documentClient).then(
     (addResponse) => {
       walletResponse.Wallet = addResponse;
     },

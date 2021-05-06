@@ -1,23 +1,12 @@
-const FetchDate = () => {};
+function FetchDate() {}
 
-const constants = require('../constants/constant');
+const fetchDate = require('../create-parameter/fetch-date');
 
-/*
- * Get Date Data
- */
-async function getDateData(pk, today, DB) {
-  const params = {
-    TableName: constants.TABLE_NAME,
-    KeyConditionExpression: 'pk = :pk AND begins_with(sk, :items)',
-    ExpressionAttributeValues: {
-      ':pk': pk,
-      ':items': `Date#${today.substring(0, 4)}-${today.substring(5, 7)}`,
-    },
-    ProjectionExpression: 'pk, sk',
-  };
+async function getDateData(pk, today, documentClient) {
+  const params = fetchDate.createParameter(pk, today);
 
   // Call DynamoDB to read the item from the table
-  const data = await DB.query(params).promise();
+  const data = await documentClient.query(params).promise();
 
   if (data.Count !== 0) {
     return {

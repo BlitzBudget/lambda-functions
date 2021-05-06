@@ -2,9 +2,9 @@ function FetchHelper() {}
 
 const fetchItems = require('../fetch/items');
 
-async function fetchAllItemsForWallet(walletId, DB) {
+async function fetchAllItemsForWallet(walletId, documentClient) {
   let result;
-  await fetchItems.getAllItems(walletId, DB).then(
+  await fetchItems.getAllItems(walletId, documentClient).then(
     (response) => {
       console.log('successfully fetched all the items ', response);
       result = response;

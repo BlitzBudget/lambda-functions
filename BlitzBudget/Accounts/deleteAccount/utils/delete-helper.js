@@ -4,7 +4,7 @@ const deleteItems = require('../delete/delete-items');
 const deleteRequestHelper = require('./delete-request-helper');
 const deleteItemParameter = require('../create-parameter/delete-item');
 
-async function deleteAccountsAndItsData(deleteRequests, DB) {
+async function deleteAccountsAndItsData(deleteRequests, documentClient) {
   const events = [];
   deleteRequests.forEach((deleteRequest) => {
     const parameter = deleteItemParameter.createParameter(deleteRequest);
@@ -13,7 +13,7 @@ async function deleteAccountsAndItsData(deleteRequests, DB) {
       parameter.RequestItems.blitzbudget.length,
     );
     // Delete Items in batch
-    events.push(deleteItems.deleteItems(parameter, DB));
+    events.push(deleteItems.deleteItems(parameter, documentClient));
   });
 
   await Promise.all(events).then(

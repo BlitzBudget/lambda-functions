@@ -5,7 +5,7 @@ const deleteItems = require('../delete/items.js');
 const deleteParameter = require('../create-parameter/delete');
 const deleteRequestParameter = require('../create-parameter/delete-request');
 
-function buildDeleteRequest(result, walletId, DB) {
+function buildDeleteRequest(result, walletId, documentClient) {
   console.log(
     'Starting to process the batch delete request for the item for the wallet %j',
     result.Count,
@@ -29,14 +29,14 @@ function buildDeleteRequest(result, walletId, DB) {
       params.RequestItems.blitzbudget.length,
     );
     // Delete Items in batch
-    events.push(deleteItems.deleteItems(params, DB));
+    events.push(deleteItems.deleteItems(params, documentClient));
   });
 
   return events;
 }
 
-async function bulkDeleteItems(result, walletId, DB) {
-  const events = buildDeleteRequest(result, walletId, DB);
+async function bulkDeleteItems(result, walletId, documentClient) {
+  const events = buildDeleteRequest(result, walletId, documentClient);
 
   await Promise.all(events).then(
     () => {

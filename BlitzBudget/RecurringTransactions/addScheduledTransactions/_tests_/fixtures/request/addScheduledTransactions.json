@@ -47,6 +47,14 @@
                     "tags": {
                         "Type": "String.Array",
                         "Value": "[\"2\",\"WEEKLY\",\"GIFTS\"]"
+                    },
+                    "categoryType": {
+                        "Type": "String",
+                        "Value": "Expense"
+                    },
+                    "categoryName": {
+                        "Type": "String",
+                        "Value": "Shopping"
                     }
                 }
             }

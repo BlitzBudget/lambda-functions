@@ -16,7 +16,7 @@ function isEmpty(obj) {
 }
 
 function includesStr(arr, val) {
-  return isEmpty(arr) ? null : arr.includes(val);
+  return isEmpty(arr) ? false : arr.includes(val);
 }
 
 function notIncludesStr(arr, val) {
@@ -37,6 +37,15 @@ function isEqual(obj1, obj2) {
 function isNotEqual(obj1, obj2) {
   return !isEqual(obj1, obj2);
 }
+
+// Splits array into chunks
+module.exports.chunkArrayInGroups = (arr, size) => {
+  const myArray = [];
+  for (let i = 0; i < arr.length; i += size) {
+    myArray.push(arr.slice(i, i + size));
+  }
+  return myArray;
+};
 
 module.exports.isNotEqual = isNotEqual;
 module.exports.isEmpty = isEmpty;

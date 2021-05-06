@@ -1,15 +1,10 @@
-const CreateParameterCategory = () => {};
-
-/*
- * Build Parameters for category
- */
-function buildParamsForCategory(
+module.exports.createParameter = (
   pk,
   sk,
   categoryType,
   categoryName,
   dateMeantFor,
-) {
+) => {
   console.log(
     'Creating the category with an sk %j',
     sk,
@@ -32,8 +27,4 @@ function buildParamsForCategory(
       },
     },
   };
-}
-
-CreateParameterCategory.prototype.buildParamsForCategory = buildParamsForCategory;
-// Export object
-module.exports = new CreateParameterCategory();
+};

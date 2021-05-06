@@ -1,36 +1,19 @@
-const RecurringTransaction = () => {};
+function RecurringTransaction() {}
 
-const constants = require('../constants/constant');
+const recurringTransactionParameter = require('../create-parameter/recurring-transaction');
 
-/*
- * Update the recurring transaction
- */
 async function updateRecurringTransactionsData(
   walletId,
   sk,
   futureTransactionCreationDate,
-  DB,
+  documentClient,
 ) {
-  function createParameter() {
-    return {
-      TableName: constants.TABLE_NAME,
-      Key: {
-        pk: walletId,
-        sk,
-      },
-      UpdateExpression: 'set next_scheduled = :ns, updated_date = :u',
-      ExpressionAttributeValues: {
-        ':ns': futureTransactionCreationDate,
-        ':u': new Date().toISOString(),
-      },
-      ReturnValues: 'ALL_NEW',
-    };
-  }
-
-  const params = createParameter();
+  const params = recurringTransactionParameter.createParameter(
+    walletId, sk, futureTransactionCreationDate,
+  );
 
   console.log('Adding a new item...');
-  const response = await DB.update(params).promise();
+  const response = await documentClient.update(params).promise();
   return response.Attributes;
 }
 

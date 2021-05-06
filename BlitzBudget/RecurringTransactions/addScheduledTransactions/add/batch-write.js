@@ -1,10 +1,10 @@
-const BatchWrite = () => {};
+function BatchWrite() {}
 
 /*
  * Batch write all the transactions and dates created
  */
-async function batchWriteItems(paramsPartial, DB) {
-  const response = await DB.batchWrite(paramsPartial).promise();
+async function batchWriteItems(paramsPartial, documentClient) {
+  const response = await documentClient.batchWrite(paramsPartial).promise();
   return response;
 }
 

@@ -1,9 +1,9 @@
-const AddHelper = () => {};
+function AddHelper() {}
 
 const fetchHelper = require('./fetch-helper');
-const helper = require('./helper');
-const addTransaction = require('../create-parameters/transaction');
-const addCategoryParam = require('../create-parameters/category');
+const util = require('./util');
+const addTransaction = require('../tools/transaction-helper');
+const categoryParameter = require('../create-parameter/category');
 const batchWriteItems = require('../add/batch-write');
 
 async function calculateCategoriesToAdd(
@@ -12,11 +12,11 @@ async function calculateCategoriesToAdd(
   categoryType,
   categoryName,
   categoryMap,
-  addItemArray,
+  createItemsArray,
   datesMap,
   events,
-  DB,
-  nextSchArray,
+  documentClient,
+  futureTransactionsToCreate,
 ) {
   const categoriesMap = categoryMap;
   fetchHelper.pushAllCategoriesToFetch(
@@ -24,8 +24,8 @@ async function calculateCategoriesToAdd(
     walletId,
     categoryType,
     categoryName,
-    DB,
-    nextSchArray,
+    documentClient,
+    futureTransactionsToCreate,
     events,
   );
 
@@ -35,10 +35,10 @@ async function calculateCategoriesToAdd(
   await Promise.all(events).then(
     (result) => {
       console.log('Processing Categories to create');
-      Object.keys(result).forEach((categoryItem) => {
+      result.forEach((categoryItem) => {
         categoriesMap[categoryItem.dateMeantFor] = categoryItem.sortKey;
-        addItemArray.push(
-          addCategoryParam.buildParamsForCategory(
+        createItemsArray.push(
+          categoryParameter.createParameter(
             walletId,
             categoryItem.sortKey,
             categoryType,
@@ -58,8 +58,8 @@ async function calculateCategoriesToAdd(
   return [];
 }
 
-function createAllItemsInBatch(putRequests, DB, events) {
-  Object.keys(putRequests).forEach((putRequest) => {
+function createAllItemsInBatch(putRequests, documentClient, events) {
+  putRequests.forEach((putRequest) => {
     const params = {};
     params.RequestItems = {};
     params.RequestItems.blitzbudget = putRequest;
@@ -68,7 +68,7 @@ function createAllItemsInBatch(putRequests, DB, events) {
       params.RequestItems.blitzbudget.length,
     );
     // Delete Items in batch
-    events.push(batchWriteItems.batchWriteItems(params, DB));
+    events.push(batchWriteItems.batchWriteItems(params, documentClient));
   });
 }
 
@@ -86,34 +86,34 @@ async function addAllCategories(events) {
 }
 
 function constructRequestAndCreateItems(
-  addItemArray,
+  createItemsArray,
   datesMap,
   categoryMap,
   event,
-  DB,
+  documentClient,
   events,
 ) {
   console.log(
     ' The number of dates and categories to create are %j',
-    addItemArray.length,
+    createItemsArray.length,
   );
   // Add all transactions
   addTransaction.constructTransactions(
     datesMap,
     categoryMap,
     event,
-    addItemArray,
+    createItemsArray,
   );
   console.log(
     ' The number of transactions to create are %j',
-    addItemArray.length,
+    createItemsArray.length,
   );
 
   // Split array into sizes of 25
-  const putRequests = helper.chunkArrayInGroups(addItemArray, 25);
+  const putRequests = util.chunkArrayInGroups(createItemsArray, 25);
 
   // Push Events  to be executed in bulk
-  createAllItemsInBatch(putRequests, DB, events);
+  createAllItemsInBatch(putRequests, documentClient, events);
 }
 
 /*
@@ -125,11 +125,11 @@ async function calculateAndAddAllCategories(
   categoryType,
   categoryName,
   categoryMap,
-  addItemArray,
+  createItemsArray,
   datesMap,
   events,
-  DB,
-  nextSchArray,
+  documentClient,
+  futureTransactionsToCreate,
 ) {
   await calculateCategoriesToAdd(
     category,
@@ -137,11 +137,11 @@ async function calculateAndAddAllCategories(
     categoryType,
     categoryName,
     categoryMap,
-    addItemArray,
+    createItemsArray,
     datesMap,
     events,
-    DB,
-    nextSchArray,
+    documentClient,
+    futureTransactionsToCreate,
   );
 
   /*

@@ -3,12 +3,12 @@ function FetchBudget() {}
 const budget = require('../create-parameter/budget');
 
 // Get all budget Items
-FetchBudget.prototype.getBudgetItems = async (walletId, currentPeriod, DB) => {
+FetchBudget.prototype.getBudgetItems = async (walletId, currentPeriod, documentClient) => {
   const params = budget.createParameter(walletId, currentPeriod);
 
   // Call DynamoDB to read the item from the table
 
-  const response = await DB.query(params).promise();
+  const response = await documentClient.query(params).promise();
   return response;
 };
 

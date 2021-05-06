@@ -13,7 +13,7 @@ AWS.config.update({
 const helper = require('../utils/helper');
 
 // Create the DynamoDB service object
-const DB = new AWS.DynamoDB.DocumentClient();
+const documentClient = new AWS.DynamoDB.DocumentClient();
 
 async function addNewWallet(event, userId, chosenCurrency, walletName) {
   const today = new Date();
@@ -33,7 +33,7 @@ async function addNewWallet(event, userId, chosenCurrency, walletName) {
 
   console.log('Adding a new item...');
 
-  const response = await DB.put(params).promise();
+  const response = await documentClient.put(params).promise();
 
   addInfoToResponse();
   return ({

@@ -1,4 +1,4 @@
-const UpdateHelper = () => {};
+function UpdateHelper() {}
 
 const recurringTransaction = require('../update/recurring-transaction');
 
@@ -9,7 +9,7 @@ async function updateRecurringTransaction(
   walletId,
   recurringTransactionsId,
   futureTransactionCreationDate,
-  DB,
+  documentClient,
   events,
 ) {
   events.push(
@@ -17,7 +17,7 @@ async function updateRecurringTransaction(
       walletId,
       recurringTransactionsId,
       futureTransactionCreationDate,
-      DB,
+      documentClient,
     ),
   );
 

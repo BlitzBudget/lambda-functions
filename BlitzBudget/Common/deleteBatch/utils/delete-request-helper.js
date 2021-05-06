@@ -1,6 +1,6 @@
 const deleteItems = require('../delete/items');
 
-module.exports.bulkDeleteRequest = (deleteRequests, events, DB) => {
+module.exports.bulkDeleteRequest = (deleteRequests, events, documentClient) => {
   deleteRequests.forEach((deleteRequest) => {
     const params = {};
     params.RequestItems = {};
@@ -10,6 +10,6 @@ module.exports.bulkDeleteRequest = (deleteRequests, events, DB) => {
       params.RequestItems.blitzbudget.length,
     );
     // Delete Items in batch
-    events.push(deleteItems.deleteItems(params, DB));
+    events.push(deleteItems.deleteItems(params, documentClient));
   });
 };

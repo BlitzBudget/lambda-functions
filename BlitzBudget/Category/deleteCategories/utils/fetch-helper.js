@@ -6,13 +6,13 @@ const transaction = require('../fetch/transaction');
 async function fetchAllItemsToDelete(
   walletId,
   curentPeriod,
-  DB,
+  documentClient,
 ) {
   const events = [];
   let response;
 
-  events.push(transaction.getTransactionItems(walletId, curentPeriod, DB));
-  events.push(budget.getBudgetItems(walletId, curentPeriod, DB));
+  events.push(transaction.getTransactionItems(walletId, curentPeriod, documentClient));
+  events.push(budget.getBudgetItems(walletId, curentPeriod, documentClient));
   await Promise.all(events).then(
     (result) => {
       console.log('successfully fetched all the items ');

@@ -21,8 +21,8 @@ DeleteHelper.prototype.buildParamsForDelete = (result, userId) => {
   return params;
 };
 
-async function deleteAllWallets(deleteParams, DB, events) {
-  events.push(deleteItems.deleteItems(deleteParams, DB));
+async function deleteAllWallets(deleteParams, documentClient, events) {
+  events.push(deleteItems.deleteItems(deleteParams, documentClient));
   await Promise.all(events).then(
     () => {
       console.log('successfully deleted the goals');

@@ -6,13 +6,13 @@ const transaction = require('../create-parameter/transaction');
 FetchTransaction.prototype.getTransactionItems = async (
   walletId,
   currentPeriod,
-  DB,
+  documentClient,
 ) => {
   const params = transaction.createParameter(walletId, currentPeriod);
 
   // Call DynamoDB to read the item from the table
 
-  const response = await DB.query(params).promise();
+  const response = await documentClient.query(params).promise();
   return response;
 };
 
