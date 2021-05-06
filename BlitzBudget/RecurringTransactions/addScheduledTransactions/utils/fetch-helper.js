@@ -11,10 +11,10 @@ function pushAllCategoriesToFetch(
   categoryType,
   categoryName,
   documentClient,
-  futureTransactionsToCreate,
+  createItemsArray,
   events,
 ) {
-  futureTransactionsToCreate.forEach((dateMeantFor) => {
+  createItemsArray.forEach((dateMeantFor) => {
     /*
      * Check if 2020-03 ===  2020-02
      */

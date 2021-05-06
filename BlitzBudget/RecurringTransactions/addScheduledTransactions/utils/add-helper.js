@@ -16,7 +16,6 @@ async function calculateCategoriesToAdd(
   datesMap,
   events,
   documentClient,
-  futureTransactionsToCreate,
 ) {
   const categoriesMap = categoryMap;
   fetchHelper.pushAllCategoriesToFetch(
@@ -25,7 +24,7 @@ async function calculateCategoriesToAdd(
     categoryType,
     categoryName,
     documentClient,
-    futureTransactionsToCreate,
+    createItemsArray,
     events,
   );
 
@@ -129,7 +128,6 @@ async function calculateAndAddAllCategories(
   datesMap,
   events,
   documentClient,
-  futureTransactionsToCreate,
 ) {
   await calculateCategoriesToAdd(
     category,
@@ -141,7 +139,6 @@ async function calculateAndAddAllCategories(
     datesMap,
     events,
     documentClient,
-    futureTransactionsToCreate,
   );
 
   /*

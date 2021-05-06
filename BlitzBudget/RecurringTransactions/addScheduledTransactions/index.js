@@ -13,10 +13,11 @@ AWS.config.update({
 });
 
 // Create the DynamoDB service object
-const documentClient = new AWS.DynamoDB.DocumentClient();
+const dynamoDB = new AWS.DynamoDB();
+const documentClient = dynamoDB.DocumentClient();
 
 exports.handler = async (event) => {
-  const addItemArray = [];
+  const createItemsArray = [];
   const datesToCreateTransactions = [];
   let events = [];
   const datesMap = {};
@@ -34,7 +35,7 @@ exports.handler = async (event) => {
   );
 
   events = await fetchHelper.calculateAndAddAllDates(
-    addItemArray,
+    createItemsArray,
     walletId,
     datesMap,
     events,
@@ -47,15 +48,14 @@ exports.handler = async (event) => {
     categoryType,
     categoryName,
     categoryMap,
-    addItemArray,
+    createItemsArray,
     datesMap,
     events,
     documentClient,
-    futureTransactionCreationDate,
   );
 
   addHelper.constructRequestAndCreateItems(
-    addItemArray,
+    createItemsArray,
     datesMap,
     categoryMap,
     event,
