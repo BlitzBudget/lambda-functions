@@ -1,10 +1,9 @@
 {
     "body-json": {
-        "walletId": "Wallet#2020-05-02T17:19:13.022Z",
-        "amount": 95,
-        "recurrence": "MONTHLY",
-        "account": "RecurringTransaction#2020-05-02T17:19:13.430Z",
-        "description": "Transaction Description"
+      "walletId": "Wallet#2020-12-21T20:35:49.295Z",
+      "recurringTransactionId": "RecurringTransactions#2020-12-27T20:22:53.828Z",
+      "amount": -7,
+      "category": "Category#2020-12-27T20:22:53.798Z"
     },
     "params": {
         "path": {},

@@ -1,15 +1,15 @@
-const PatchRecurringTransaction = () => {};
+function PatchRecurringTransaction() {}
 
-const recurringTransactionParameter = require('../create-parameter/recurring-transaction');
+const recurringTransactionExpression = require('../create-expression/recurring-transaction');
 
 async function updatingRecurringTransactions(event, documentClient) {
-  const params = recurringTransactionParameter.createParameter(event);
+  const params = recurringTransactionExpression.createExpression(event);
 
   console.log('Updating an item...');
   const response = await documentClient.update(params).promise();
 
   return {
-    Transaction: response,
+    Transaction: response.Attributes,
   };
 }
 

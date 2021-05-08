@@ -1,6 +1,6 @@
 // Load the AWS SDK for Node.js
 const AWS = require('aws-sdk');
-const fetchHelper = require('./utils/fetch-helper');
+const addHelper = require('./utils/add-helper');
 const constants = require('./constants/constant');
 const updateHelper = require('./utils/update-helper');
 
@@ -10,20 +10,19 @@ AWS.config.update({
 });
 
 // Create the DynamoDB service object
-const documentClient = new AWS.DynamoDB.DocumentClient();
+const dynamoDB = new AWS.DynamoDB();
+const documentClient = dynamoDB.DocumentClient();
 
 exports.handler = async (event) => {
-  const events = [];
   console.log('updating transactions for ', JSON.stringify(event['body-json']));
 
-  await fetchHelper.calculateAndFetchCategory(event, events, documentClient);
+  const events = await addHelper.addANewCategoryIfNotPresent(event, documentClient);
 
   const response = await updateHelper.updateRecurringTransaction(events, event, documentClient);
 
-  const patchResponse = event['body-json'];
-  // patchResponse.category = response.Category.Attributes.sk;
-  patchResponse.category = response.Transaction.Attributes.category;
-  patchResponse.amount = response.Transaction.Attributes.amount;
+  const patchResponse = event;
+  patchResponse['body-json'].category = response.Transaction.category;
+  patchResponse['body-json'].amount = response.Transaction.amount;
 
   return patchResponse;
 };

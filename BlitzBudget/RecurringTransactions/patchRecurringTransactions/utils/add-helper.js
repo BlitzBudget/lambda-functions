@@ -1,24 +1,37 @@
-const AddHelper = () => {};
+function AddHelper() {}
 
+const util = require('./util');
+const helper = require('./helper');
+const fetchHelper = require('./fetch-helper');
 const addCategory = require('../add/category');
 
-function createANewCategory(
+async function addANewCategoryIfNotPresent(
   event,
-  categoryId,
-  categoryName,
-  events,
   documentClient,
 ) {
-  const createCategoryParam = event['body-json'];
-  createCategoryParam.category = categoryId;
-  createCategoryParam.categoryName = categoryName;
-  // If it is a newly created category then the category total is 0
-  createCategoryParam.used = 0;
-  events.push(
-    addCategory.createCategoryItem(createCategoryParam, categoryId, categoryName, documentClient),
-  );
+  const createCategoryRequest = event;
+  createCategoryRequest['body-json'].categoryName = event['body-json'].category;
+  const events = [];
+
+  if (util.isNotEmpty(createCategoryRequest['body-json'].categoryName) && util.notIncludesStr(createCategoryRequest['body-json'].categoryName, 'Category#')) {
+    const today = helper.formulateDateFromRequest(event);
+    let categoryId = await fetchHelper.fetchCategory(event, today, documentClient);
+
+    if (util.isEmpty(categoryId)) {
+      categoryId = `Category#${today.toISOString()}`;
+      createCategoryRequest['body-json'].category = categoryId;
+      createCategoryRequest['body-json'].used = 0;
+      events.push(
+        addCategory.createCategoryItem(
+          createCategoryRequest,
+          documentClient,
+        ),
+      );
+    }
+  }
+  return events;
 }
 
-AddHelper.prototype.createANewCategory = createANewCategory;
+AddHelper.prototype.addANewCategoryIfNotPresent = addANewCategoryIfNotPresent;
 // Export object
 module.exports = new AddHelper();

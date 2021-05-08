@@ -1,4 +1,4 @@
-const FetchCategory = () => {};
+function FetchCategory() {}
 
 const util = require('../utils/util');
 const categoryParameter = require('../create-parameter/category');
@@ -12,12 +12,11 @@ async function getCategoryData(documentClient, event, today) {
   let obj;
   if (util.isNotEmpty(response.Items)) {
     response.Items.forEach((categoryObj) => {
-      if (
-        util.isEqual(
-          categoryObj.category_type,
-          event['body-json'].categoryType,
-        )
-              && util.isEqual(categoryObj.category_name, event['body-json'].category)
+      if (util.isEqual(
+        categoryObj.category_type,
+        event['body-json'].categoryType,
+      )
+      && util.isEqual(categoryObj.category_name, event['body-json'].category)
       ) {
         console.log(
           'Found a match for the mentioned category %j',

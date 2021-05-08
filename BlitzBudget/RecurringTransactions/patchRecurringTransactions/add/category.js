@@ -1,9 +1,9 @@
-const AddCategory = () => {};
+function AddCategory() {}
 
 const addCategoryParameter = require('../create-parameter/add-category');
 
-async function createCategoryItem(event, skForCategory, categoryName, documentClient) {
-  const params = addCategoryParameter.createParameter(event, skForCategory, categoryName);
+async function createCategoryItem(event, documentClient) {
+  const params = addCategoryParameter.createParameter(event);
 
   console.log('Adding a new item...');
   const response = await documentClient.update(params).promise();

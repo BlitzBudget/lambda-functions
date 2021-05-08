@@ -1,4 +1,4 @@
-const Helper = () => {};
+function Util() {}
 
 function isEmpty(obj) {
   // Check if objext is a number or a boolean
@@ -21,7 +21,7 @@ function isNotEmpty(obj) {
 }
 
 function includesStr(arr, val) {
-  return isEmpty(arr) ? null : arr.includes(val);
+  return isEmpty(arr) ? false : arr.includes(val);
 }
 
 function notIncludesStr(arr, val) {
@@ -35,9 +35,10 @@ function isEqual(obj1, obj2) {
   return false;
 }
 
-Helper.prototype.isNotEmpty = isNotEmpty;
-Helper.prototype.isEmpty = isEmpty;
-Helper.prototype.notIncludesStr = notIncludesStr;
-Helper.prototype.isEqual = isEqual;
+Util.prototype.isNotEmpty = isNotEmpty;
+Util.prototype.isEmpty = isEmpty;
+Util.prototype.includesStr = includesStr;
+Util.prototype.notIncludesStr = notIncludesStr;
+Util.prototype.isEqual = isEqual;
 // Export object
-module.exports = new Helper();
+module.exports = new Util();

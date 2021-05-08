@@ -2,7 +2,7 @@ const util = require('../utils/util');
 const parameters = require('../utils/parameters');
 const recurringParameter = require('../create-parameter/recurring-transaction');
 
-module.exports.createParameter = (event) => {
+module.exports.createExpression = (event) => {
   let updateExp = 'set';
   const expAttrVal = {};
   const expAttrNames = {};
