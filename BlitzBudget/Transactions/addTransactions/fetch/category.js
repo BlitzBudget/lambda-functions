@@ -1,4 +1,4 @@
-const FetchCategory = () => {};
+function FetchCategory() {}
 
 const util = require('../utils/util');
 const categoryParameter = require('../create-parameter/category');

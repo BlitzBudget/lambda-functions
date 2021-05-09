@@ -1,6 +1,6 @@
 const addHelper = require('../../../utils/add-helper');
-const mockRequest = require('../../fixtures/request/patchRecurringTransactionNewCategory.json');
-const mockRequestWithCategory = require('../../fixtures/request/patchRecurringTransactions.json');
+const mockRequest = require('../../fixtures/request/addTransactionsWithMatchingCategory.json');
+const mockRequestWithCategory = require('../../fixtures/request/withDateAndCategory.json');
 const mockResponse = require('../../fixtures/response/addCategory.json');
 const mockFetchResponse = require('../../fixtures/response/fetchCategory.json');
 
@@ -17,7 +17,7 @@ describe('With Add Category Data', () => {
 
   test('Success', async () => {
     const events = await addHelper
-      .addANewCategoryIfNotPresent(mockRequest,
+      .addANewCategoryIfNotPresent(mockRequest, [],
         documentClient);
     expect(events).not.toBeUndefined();
     expect(events.length).toBe(0);
@@ -38,7 +38,7 @@ describe('With Exiting Category Information', () => {
 
   test('Success', async () => {
     const events = await addHelper
-      .addANewCategoryIfNotPresent(mockRequestWithCategory,
+      .addANewCategoryIfNotPresent(mockRequestWithCategory, [],
         documentClientWithCategory);
     expect(events).not.toBeUndefined();
     expect(events.length).toBe(0);
@@ -59,11 +59,42 @@ describe('With Non Exiting Category Information And Without Category ID', () => 
 
   test('Success', async () => {
     const events = await addHelper
-      .addANewCategoryIfNotPresent(mockRequest,
+      .addANewCategoryIfNotPresent(mockRequest, [],
         documentClientWithCategory);
     expect(events).not.toBeUndefined();
     expect(events.length).toBe(1);
     expect(documentClientWithCategory.update).toHaveBeenCalledTimes(1);
     expect(documentClientWithCategory.query).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('With Add Category Data', () => {
+  documentClient.query = jest.fn(() => ({
+    promise: jest.fn().mockResolvedValueOnce(mockFetchResponse),
+  }));
+
+  test('Success', async () => {
+    const events = await addHelper
+      .addANewCategoryIfNotPresent(mockRequest, [],
+        documentClient);
+    expect(events).not.toBeUndefined();
+    expect(events.length).toBe(0);
+    expect(documentClient.update).toHaveBeenCalledTimes(0);
+  });
+});
+
+describe('With Add All Items Data', () => {
+  documentClient.put = jest.fn(() => ({
+    promise: jest.fn().mockResolvedValueOnce(mockFetchResponse),
+  }));
+
+  test('Success', async () => {
+    const response = await addHelper
+      .addAllItems([], mockRequest,
+        documentClient);
+    expect(response).not.toBeUndefined();
+    expect(response.transactionId).not.toBeUndefined();
+    expect(response.nextRecurrence).not.toBeUndefined();
+    expect(documentClient.put).toHaveBeenCalledTimes(2);
   });
 });

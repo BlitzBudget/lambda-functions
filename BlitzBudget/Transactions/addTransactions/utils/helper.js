@@ -1,38 +1,15 @@
-const Helper = () => {};
+function Helper() {}
 
-const util = require('./util');
-
-/*
- * If Account, Category, Amount or Date is empty
- */
-function throwErrorIfEmpty(event, walletId) {
-  if (util.isEmpty(event['body-json'].account)) {
-    console.log(
-      'The bank account is mandatory for adding a transaction %j',
-      walletId,
-    );
-    throw new Error(
-      'Unable to add the transaction as bank account is mandatory',
-    );
-  } else if (util.isEmpty(event['body-json'].category)) {
-    console.log(
-      'The category is mandatory for adding a transaction %j',
-      walletId,
-    );
-    throw new Error('Unable to add the transaction as category is mandatory');
-  } else if (util.isEmpty(event['body-json'].amount)) {
-    console.log(
-      'The amount is mandatory for adding a transaction %j',
-      walletId,
-    );
-    throw new Error('Unable to add the transaction as amount is mandatory');
-  } else if (util.isEmpty(event['body-json'].dateMeantFor)) {
-    console.log('The date is mandatory for adding a transaction %j', walletId);
-    throw new Error('Unable to add the transaction as date is mandatory');
-  }
+function formulateDateFromRequest(event) {
+  const today = new Date();
+  today.setYear(event['body-json'].dateMeantFor.substring(5, 9));
+  today.setMonth(
+    parseInt(event['body-json'].dateMeantFor.substring(10, 12), 10) - 1,
+  );
+  return today;
 }
 
-Helper.prototype.throwErrorIfEmpty = throwErrorIfEmpty;
+Helper.prototype.formulateDateFromRequest = formulateDateFromRequest;
 
 // Export object
 module.exports = new Helper();
