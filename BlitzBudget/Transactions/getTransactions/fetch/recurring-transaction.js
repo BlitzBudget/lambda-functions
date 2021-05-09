@@ -1,4 +1,4 @@
-const RecurringTransaction = () => {};
+function RecurringTransaction() {}
 
 const recurringTransactionParameter = require('../create-parameter/recurring-transaction');
 
@@ -9,7 +9,7 @@ async function getRecurringTransactions(walletId, documentClient, snsEvents, sns
   function organizeRecurringTransactionItem(data) {
     console.log('data retrieved - RecurringTransactions ', data.Count);
     const today = new Date();
-    Object.keys(data.Items).forEach((recurringTransaction) => {
+    data.Items.forEach((recurringTransaction) => {
       const scheduled = new Date(recurringTransaction.next_scheduled);
       if (scheduled < today) {
         snsEvents.push(createTransactionSNS.markTransactionForCreation(recurringTransaction, sns));

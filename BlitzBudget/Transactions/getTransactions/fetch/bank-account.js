@@ -1,4 +1,4 @@
-const FetchBankAccount = () => {};
+function FetchBankAccount() {}
 
 const bankAccountParameter = require('../create-parameter/bank-account');
 

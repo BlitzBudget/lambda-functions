@@ -1,4 +1,4 @@
-const FetchHelper = () => {};
+function FetchHelper() {}
 
 // Load the AWS SDK for Node.js
 const AWS = require('aws-sdk');
@@ -18,11 +18,31 @@ AWS.config.update({
 });
 
 // Create the DynamoDB service object
-const documentClient = new AWS.DynamoDB.DocumentClient({
-  region: constants.EU_WEST_ONE,
-});
+const dynamoDB = new AWS.DynamoDB();
+const documentClient = dynamoDB.DocumentClient();
 
 const sns = new AWS.SNS();
+
+function organizeResponse(response) {
+  const allResponses = {};
+  response.forEach((aResponse) => {
+    if (util.isNotEmpty(aResponse.Transaction)) {
+      allResponses.Transaction = aResponse.Transaction;
+    } else if (util.isNotEmpty(aResponse.Budget)) {
+      allResponses.Budget = aResponse.Budget;
+    } else if (util.isNotEmpty(aResponse.Category)) {
+      allResponses.Category = aResponse.Category;
+    } else if (util.isNotEmpty(aResponse.BankAccount)) {
+      allResponses.BankAccount = aResponse.BankAccount;
+    } else if (util.isNotEmpty(aResponse.Date)) {
+      allResponses.Date = aResponse.Date;
+    } else if (util.isNotEmpty(aResponse.RecurringTransactions)) {
+      allResponses.RecurringTransactions = aResponse.RecurringTransactions;
+    }
+  });
+
+  return allResponses;
+}
 
 async function fetchAllRelevantItems(
   events,
@@ -33,7 +53,7 @@ async function fetchAllRelevantItems(
   let allResponses;
   const snsEvents = [];
   events.push(
-    transaction.getTransactionItem(
+    transaction.getTransactionData(
       walletId,
       startsWithDate,
       endsWithDate,
@@ -41,7 +61,7 @@ async function fetchAllRelevantItems(
     ),
   );
   events.push(
-    budget.getBudgetsItem(walletId, startsWithDate, endsWithDate, documentClient),
+    budget.getBudgetsData(walletId, startsWithDate, endsWithDate, documentClient),
   );
   events.push(
     category.getCategoryData(walletId, startsWithDate, endsWithDate, documentClient),
@@ -60,7 +80,7 @@ async function fetchAllRelevantItems(
   );
   await Promise.all(events).then(
     (response) => {
-      allResponses = response;
+      allResponses = organizeResponse(response, allResponses);
       console.log('Successfully fetched all the relevant information');
     },
     (err) => {
@@ -70,24 +90,28 @@ async function fetchAllRelevantItems(
   return { allResponses, snsEvents };
 }
 
+async function handleWalletItem(userId, walletId) {
+  let walletPK = walletId;
+  await wallet.getWalletsData(userId, documentClient).then(
+    (result) => {
+      walletPK = result.Wallet[0].walletId;
+      console.log('retrieved the wallet for the item ', walletPK);
+    },
+    (err) => {
+      throw new Error(
+        `Unable error occured while fetching the transaction ${err}`,
+      );
+    },
+  );
+
+  return walletPK;
+}
+
 async function fetchWalletItem(walletId, userId) {
   let walletPK = walletId;
-  async function handleWalletItem() {
-    await wallet.getWalletsData(userId, documentClient).then(
-      (result) => {
-        walletPK = result.Wallet[0].walletId;
-        console.log('retrieved the wallet for the item ', walletId);
-      },
-      (err) => {
-        throw new Error(
-          `Unable error occured while fetching the transaction ${err}`,
-        );
-      },
-    );
-  }
 
   if (util.isEmpty(walletId) && util.isNotEmpty(userId)) {
-    await handleWalletItem();
+    walletPK = await handleWalletItem();
   }
   return walletPK;
 }

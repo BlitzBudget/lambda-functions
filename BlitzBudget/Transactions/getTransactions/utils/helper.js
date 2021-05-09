@@ -1,6 +1,10 @@
-const Helper = () => {};
+function Helper() {}
 
 const util = require('./util');
+const organizeBudget = require('../organize/budget');
+const organizeDate = require('../organize/date');
+const organizeCategory = require('../organize/category');
+const organizeTransaction = require('../organize/transaction');
 
 function extractVariablesFromRequest(event) {
   const { userId } = event['body-json'];
@@ -12,87 +16,24 @@ function extractVariablesFromRequest(event) {
 }
 
 function calculateDateAndCategoryTotal(fullMonth, response, percentage) {
-  const categoryList = {};
   const responseData = response;
-  let incomeTotal = 0;
-  let expenseTotal = 0;
-  let periodBalance = 0;
 
-  function organizeBudgetItems() {
-    Object.keys(responseData.Budget).forEach((budgetObj) => {
-      const budget = budgetObj;
-      budget.planned *= percentage;
-      if (util.isNotEmpty(categoryList[budgetObj.category])) {
-        budget.used = categoryList[budgetObj.category];
-      } else {
-        budget.used = 0;
-      }
-      budget.budgetId = budgetObj.sk;
-      budget.walletId = budgetObj.pk;
-      delete budget.sk;
-      delete budget.pk;
-    });
-  }
+  const categoryList = organizeTransaction.organize(responseData);
 
-  function organizeDateItems() {
-    Object.keys(responseData.Date).forEach((dateObj) => {
-      const date = dateObj;
-      date.dateId = dateObj.sk;
-      date.walletId = dateObj.pk;
-      delete date.sk;
-      delete date.pk;
-    });
-  }
+  const totals = organizeCategory.organize(responseData, categoryList, fullMonth);
 
-  function organizeCategoryItems() {
-    Object.keys(responseData.Category).forEach((categoryObj) => {
-      const category = categoryObj;
-      if (util.isNotEmpty(categoryList[categoryObj.sk]) && !fullMonth) {
-        category.category_total = categoryList[categoryObj.sk];
-      }
-
-      if (util.isEqual(categoryObj.category_type, 'Income')) {
-        incomeTotal += categoryObj.category_total;
-      } else if (util.isEqual(categoryObj.category_type, 'Expense')) {
-        expenseTotal += categoryObj.category_total;
-      }
-      periodBalance = incomeTotal + expenseTotal;
-      category.categoryId = categoryObj.sk;
-      category.walletId = categoryObj.pk;
-      delete category.sk;
-      delete category.pk;
-    });
-  }
-
-  function organizeTransactionItems() {
-    Object.keys(responseData.Transaction).forEach((transObj) => {
-      const transaction = transObj;
-      if (util.isEmpty(categoryList[transObj.category])) {
-        categoryList[transObj.category] = transObj.amount;
-      } else {
-        categoryList[transObj.category] += transObj.amount;
-      }
-      transaction.transactionId = transObj.sk;
-      transaction.walletId = transObj.pk;
-      delete transaction.sk;
-      delete transaction.pk;
-    });
-  }
-
-  organizeTransactionItems();
-
-  organizeCategoryItems();
-
-  organizeDateItems();
+  organizeDate.organize(responseData);
 
   /*
    * Assuming the category total will be equal to the transactions added
    */
-  organizeBudgetItems();
+  organizeBudget.organize(responseData, percentage, categoryList);
 
-  responseData.incomeTotal = incomeTotal;
-  responseData.expenseTotal = expenseTotal;
-  responseData.balance = periodBalance;
+  responseData.incomeTotal = totals.incomeTotal;
+  responseData.expenseTotal = totals.expenseTotal;
+  responseData.balance = totals.periodBalance;
+
+  return responseData;
 }
 
 /*

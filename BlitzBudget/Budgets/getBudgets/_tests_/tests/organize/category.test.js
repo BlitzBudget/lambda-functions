@@ -1,12 +1,12 @@
-const organizeDate = require('../../../organize/date');
+const organizeCategory = require('../../../organize/category');
 const mockResponse = require('../../fixtures/response/fetch-category.json');
 
-describe('organizeDate: createParameter', () => {
+describe('organizeCategory: createParameter', () => {
   test('With Data: Success', () => {
-    organizeDate.organize(mockResponse);
+    organizeCategory.organize(mockResponse);
     expect(mockResponse).not.toBeUndefined();
     expect(mockResponse.Items).not.toBeUndefined();
-    expect(mockResponse.Items[0].dateId).not.toBeUndefined();
+    expect(mockResponse.Items[0].categoryId).not.toBeUndefined();
     expect(mockResponse.Items[0].walletId).not.toBeUndefined();
   });
 });

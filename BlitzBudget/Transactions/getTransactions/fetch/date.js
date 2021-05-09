@@ -1,4 +1,4 @@
-const FetchDate = () => {};
+function FetchDate() {}
 
 const dateParameter = require('../create-parameter/date');
 

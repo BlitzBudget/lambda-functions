@@ -1,9 +1,9 @@
-const FetchBudget = () => {};
+function FetchBudget() {}
 
 const budgetParameter = require('../create-parameter/budget');
 
 // Get Budget Item
-async function getBudgetsItem(walletId, startsWithDate, endsWithDate, documentClient) {
+async function getBudgetsData(walletId, startsWithDate, endsWithDate, documentClient) {
   const params = budgetParameter.createParameter(walletId, startsWithDate, endsWithDate);
 
   // Call DynamoDB to read the item from the table
@@ -14,6 +14,6 @@ async function getBudgetsItem(walletId, startsWithDate, endsWithDate, documentCl
   };
 }
 
-FetchBudget.prototype.getBudgetsItem = getBudgetsItem;
+FetchBudget.prototype.getBudgetsData = getBudgetsData;
 // Export object
 module.exports = new FetchBudget();

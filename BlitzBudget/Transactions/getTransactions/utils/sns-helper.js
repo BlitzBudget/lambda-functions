@@ -1,4 +1,4 @@
-const SnsHelper = () => {};
+function SnsHelper() {}
 
 const util = require('./util');
 

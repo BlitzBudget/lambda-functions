@@ -1,4 +1,4 @@
-const Util = () => {};
+function Util() {}
 
 function isEmpty(obj) {
   // Check if objext is a number or a boolean

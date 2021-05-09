@@ -1,4 +1,4 @@
-const FetchWallet = () => {};
+function FetchWallet() {}
 
 const walletParameter = require('../create-parameter/wallet');
 

@@ -1,4 +1,4 @@
-const FetchCategory = () => {};
+function FetchCategory() {}
 
 const categoryParameter = require('../create-parameter/category');
 
