@@ -1,6 +1,6 @@
 // Load the AWS SDK for Node.js
 const AWS = require('aws-sdk');
-const helper = require('./utils/helper');
+const util = require('./utils/util');
 const constants = require('./constants/constant');
 const updateHelper = require('./utils/update-helper');
 
@@ -19,7 +19,7 @@ exports.handler = async (event) => {
   /*
    * If category Id is not present
    */
-  await helper.calculateAndFetchCategory(event, events, documentClient);
+  await util.calculateAndFetchCategory(event, events, documentClient);
 
   const response = await updateHelper.updateAllItems(events, event, documentClient);
 
