@@ -1,8 +1,8 @@
-const UpdateBudget = () => {};
+function UpdateBudget() {}
 
-UpdateBudget.prototype.updatingBudgets = async (params, docClient) => {
+UpdateBudget.prototype.updatingBudgets = async (params, documentClient) => {
   console.log('Updating an item...');
-  const response = await docClient.update(params).promise();
+  const response = await documentClient.update(params).promise();
   return response;
 };
 

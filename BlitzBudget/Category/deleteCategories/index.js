@@ -11,25 +11,25 @@ AWS.config.update({
 });
 
 // Create the DynamoDB service object
-const DB = new AWS.DynamoDB.DocumentClient();
+const dynamoDB = new AWS.DynamoDB();
+const documentClient = new dynamoDB.DocumentClient();
 
 exports.handler = async (event) => {
   console.log(`event ${JSON.stringify(event)}`);
   const { walletId, curentPeriod } = helper.extractVariablesFromRequest(event);
 
   // Get Transactions and Budget Items
-  const { result, events } = await fetchHelper.fetchAllItemsToDelete(
+  const response = await fetchHelper.fetchAllItemsToDelete(
     walletId,
     curentPeriod,
-    DB,
+    documentClient,
   );
 
   await deleteHelper.bulkDeleteItems(
-    events,
-    result,
+    response,
     walletId,
-    event,
-    DB,
+    event['body-json'].category,
+    documentClient,
   );
 
   return event;

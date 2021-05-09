@@ -1,22 +1,13 @@
-const Transaction = () => {};
+function Transaction() {}
 
-const constants = require('../constants/constant');
+const transaction = require('../create-parameter/recurring-transaction');
 
 // Get all Transaction Items
-Transaction.prototype.getTransactionItems = async (walletId, DB) => {
-  const params = {
-    TableName: constants.TABLE_NAME,
-    KeyConditionExpression: 'pk = :pk and begins_with(sk, :items)',
-    ExpressionAttributeValues: {
-      ':pk': walletId,
-      ':items': 'Transaction#',
-    },
-    ProjectionExpression:
-      'amount, description, category, recurrence, account, date_meant_for, sk, pk, creation_date, tags',
-  };
+Transaction.prototype.getTransactionItems = async (walletId, documentClient) => {
+  const params = transaction.createParameter(walletId);
 
   // Call DynamoDB to read the item from the table
-  const response = await DB.query(params).promise();
+  const response = await documentClient.query(params).promise();
   return response;
 };
 

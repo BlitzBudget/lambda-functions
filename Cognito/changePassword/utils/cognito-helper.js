@@ -9,7 +9,7 @@ async function changePassword(
   newPassword,
 ) {
   let changePasswordResponse;
-  const params = changePasswordParameter.changePasswordParameters(
+  const params = changePasswordParameter.createParameter(
     accessToken,
     previousPassword,
     newPassword,

@@ -7,15 +7,15 @@ AWS.config.update({ region: 'eu-west-1' });
 const constants = require('../constants/constant.js');
 
 const DBHelper = () => {};
-let docClient; let patchDocClient; let
-  addDocClient;
+let documentClient; let patchdocumentClient; let
+  adddocumentClient;
 
 // Functions ================================================================================
 
 /*
  * PATCH: Initialize Roles and Doc Clients
  */
-async function patchInitializeRolesAndDocClient() {
+async function patchInitializeRolesAnddocumentClient() {
   // 1. Assume the AWS resource role using STS AssumeRole Action
   const STS = new AWS.STS({ apiVersion: '2011-06-15' });
   const credentials = await STS.assumeRole(
@@ -34,7 +34,7 @@ async function patchInitializeRolesAndDocClient() {
 
   // 2. Make a new DynamoDB instance with the assumed role credentials
   //    and scan the DynamoDB table
-  patchDocClient = new AWS.DynamoDB({
+  patchdocumentClient = new AWS.DynamoDB({
     apiVersion: '2012-08-10',
     accessKeyId: credentials.Credentials.AccessKeyId,
     secretAccessKey: credentials.Credentials.SecretAccessKey,
@@ -45,7 +45,7 @@ async function patchInitializeRolesAndDocClient() {
 /*
  * Initialize Roles and Doc Clients
  */
-async function initializeRolesAndDocClient() {
+async function initializeRolesAnddocumentClient() {
   // 1. Assume the AWS resource role using STS AssumeRole Action
   const STS = new AWS.STS({ apiVersion: '2011-06-15' });
   const credentials = await STS.assumeRole(
@@ -64,7 +64,7 @@ async function initializeRolesAndDocClient() {
 
   // 2. Make a new DynamoDB instance with the assumed role credentials
   //    and scan the DynamoDB table
-  docClient = new AWS.DynamoDB({
+  documentClient = new AWS.DynamoDB({
     apiVersion: '2012-08-10',
     accessKeyId: credentials.Credentials.AccessKeyId,
     secretAccessKey: credentials.Credentials.SecretAccessKey,
@@ -75,7 +75,7 @@ async function initializeRolesAndDocClient() {
 /*
  * ADD: Initialize Roles and Doc Clients
  */
-async function addInitializeRolesAndDocClient() {
+async function addInitializeRolesAnddocumentClient() {
   // 1. Assume the AWS resource role using STS AssumeRole Action
   const STS = new AWS.STS({ apiVersion: '2011-06-15' });
   const credentials = await STS.assumeRole(
@@ -94,7 +94,7 @@ async function addInitializeRolesAndDocClient() {
 
   // 2. Make a new DynamoDB instance with the assumed role credentials
   //    and scan the DynamoDB table
-  addDocClient = new AWS.DynamoDB({
+  adddocumentClient = new AWS.DynamoDB({
     apiVersion: '2012-08-10',
     accessKeyId: credentials.Credentials.AccessKeyId,
     secretAccessKey: credentials.Credentials.SecretAccessKey,
@@ -102,17 +102,17 @@ async function addInitializeRolesAndDocClient() {
   });
 }
 
-// Initialize Roles and Doc docClient
-initializeRolesAndDocClient();
+// Initialize Roles and Doc documentClient
+initializeRolesAnddocumentClient();
 
-// Initialize Roles and Doc docClient
-patchInitializeRolesAndDocClient();
+// Initialize Roles and Doc documentClient
+patchInitializeRolesAnddocumentClient();
 
-// Initialize Roles and Doc docClient
-addInitializeRolesAndDocClient();
+// Initialize Roles and Doc documentClient
+addInitializeRolesAnddocumentClient();
 
 DBHelper.prototype.getFromBlitzBudgetTable = (params) => new Promise((resolve, reject) => {
-  docClient.query(params, (err, data) => {
+  documentClient.query(params, (err, data) => {
     if (err) {
       console.error(
         'Unable to read item. Error JSON:',
@@ -135,7 +135,7 @@ DBHelper.prototype.removeFromBlitzBudgetTable = function removeFromBlitzBudgetTa
       },
       ConditionExpression: 'attribute_exists(movieTitle)',
     };
-    docClient.delete(params, (err, data) => {
+    documentClient.delete(params, (err, data) => {
       if (err) {
         console.error(
           'Unable to delete item. Error JSON:',
@@ -153,7 +153,7 @@ DBHelper.prototype.removeFromBlitzBudgetTable = function removeFromBlitzBudgetTa
 DBHelper.prototype.patchFromBlitzBudgetTable = (params) => {
   console.log('Updating an item...');
   return new Promise((resolve, reject) => {
-    patchDocClient.updateItem(params, (err, data) => {
+    patchdocumentClient.updateItem(params, (err, data) => {
       if (err) {
         console.log('Error ', err);
         reject(err);
@@ -170,7 +170,7 @@ DBHelper.prototype.patchFromBlitzBudgetTable = (params) => {
 DBHelper.prototype.addToBlitzBudgetTable = (params) => {
   console.log('Adding an item...');
   return new Promise((resolve, reject) => {
-    addDocClient.putItem(params, (err, data) => {
+    adddocumentClient.putItem(params, (err, data) => {
       if (err) {
         console.log('Error ', err);
         reject(err);

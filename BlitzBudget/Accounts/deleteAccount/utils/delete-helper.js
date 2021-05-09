@@ -1,24 +1,50 @@
-const DeleteHelper = () => {};
+function DeleteHelper() {}
 
-const helper = require('./helper');
+const deleteItems = require('../delete/delete-items');
+const deleteRequestHelper = require('./delete-request-helper');
+const deleteItemParameter = require('../create-parameter/delete-item');
+
+async function deleteAccountsAndItsData(deleteRequests, documentClient) {
+  const events = [];
+  deleteRequests.forEach((deleteRequest) => {
+    const parameter = deleteItemParameter.createParameter(deleteRequest);
+    console.log(
+      'The delete request is in batch  with length %j',
+      parameter.RequestItems.blitzbudget.length,
+    );
+    // Delete Items in batch
+    events.push(deleteItems.deleteItems(parameter, documentClient));
+  });
+
+  await Promise.all(events).then(
+    () => {
+      console.log('successfully deleted all the items');
+    },
+    (err) => {
+      throw new Error(`Unable to delete all the items ${err}`);
+    },
+  );
+}
 
 async function buildRequestAndDeleteAccount(
   result,
   walletId,
-  accountToDelete,
-  DB,
+  accountId,
+  documentClient,
 ) {
-  helper.logResultIfEmpty(result, walletId);
+  if (result[0].Count === 0 && result[1].Count === 0) {
+    console.log('There are no items to delete for the wallet %j', walletId);
+    return;
+  }
 
-  const deleteRequests = helper.buildDeleteRequest(
+  const deleteRequests = deleteRequestHelper.buildDeleteRequest(
     result,
     walletId,
-    accountToDelete,
+    accountId,
   );
 
   // Push Events  to be executed in bulk
-  const events = await helper.deleteAccountsAndItsData(deleteRequests, DB);
-  return events;
+  await deleteAccountsAndItsData(deleteRequests, documentClient);
 }
 
 DeleteHelper.prototype.buildRequestAndDeleteAccount = buildRequestAndDeleteAccount;

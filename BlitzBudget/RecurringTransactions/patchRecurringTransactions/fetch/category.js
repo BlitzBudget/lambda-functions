@@ -1,39 +1,22 @@
-const FetchCategory = () => {};
+function FetchCategory() {}
 
-const helper = require('../utils/helper');
-const constants = require('../constants/constant');
+const util = require('../utils/util');
+const categoryParameter = require('../create-parameter/category');
 
-async function getCategoryData(docClient, event, today) {
-  function createParameter() {
-    return {
-      TableName: constants.TABLE_NAME,
-      KeyConditionExpression: 'pk = :pk AND begins_with(sk, :items)',
-      ExpressionAttributeValues: {
-        ':pk': event['body-json'].walletId,
-        ':items':
-          `Category#${
-            today.getFullYear()
-          }-${
-            (`0${today.getMonth() + 1}`).slice(-2)}`,
-      },
-      ProjectionExpression: 'pk, sk, category_name, category_type',
-    };
-  }
-
-  const params = createParameter();
+async function getCategoryData(documentClient, event, today) {
+  const params = categoryParameter.createParameter(event, today);
 
   // Call DynamoDB to read the item from the table
-  const response = await docClient.query(params).promise();
+  const response = await documentClient.query(params).promise();
 
   let obj;
-  if (helper.isNotEmpty(response.Items)) {
+  if (util.isNotEmpty(response.Items)) {
     response.Items.forEach((categoryObj) => {
-      if (
-        helper.isEqual(
-          categoryObj.category_type,
-          event['body-json'].categoryType,
-        )
-              && helper.isEqual(categoryObj.category_name, event['body-json'].category)
+      if (util.isEqual(
+        categoryObj.category_type,
+        event['body-json'].categoryType,
+      )
+      && util.isEqual(categoryObj.category_name, event['body-json'].category)
       ) {
         console.log(
           'Found a match for the mentioned category %j',
@@ -44,7 +27,7 @@ async function getCategoryData(docClient, event, today) {
     });
   }
 
-  if (helper.isEmpty(obj)) {
+  if (util.isEmpty(obj)) {
     console.log('No matching categories found');
   }
 

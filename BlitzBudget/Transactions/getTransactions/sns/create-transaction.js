@@ -1,79 +1,32 @@
-const CreateTransaction = () => {};
+function CreateTransaction() {}
 
-const helper = require('../utils/helper');
+const util = require('../utils/util');
+const snsParameter = require('../create-parameter/sns');
+
+function fetchTagValue(recurringTransaction) {
+  return util.isEmpty(recurringTransaction.tags) ? [] : recurringTransaction.tags;
+}
+
+function fetchDescription(recurringTransaction, description) {
+  let desc = description;
+  if (util.isEmpty(recurringTransaction.description)) {
+    desc = 'No description';
+  }
+
+  return desc;
+}
 
 async function markTransactionForCreation(recurringTransaction, sns) {
-  let { description } = recurringTransaction;
-  function fetchTagValue() {
-    return helper.isEmpty(recurringTransaction.tags) ? [] : recurringTransaction.tags;
-  }
-
-  const currentTag = fetchTagValue();
-
-  function fetchDescription() {
-    if (helper.isEmpty(recurringTransaction.description)) {
-      description = 'No description';
-    }
-  }
-
-  function createParameterForSns() {
-    return {
-      Message: recurringTransaction.sk,
-      MessageAttributes: {
-        category: {
-          DataType: 'String',
-          StringValue: recurringTransaction.category,
-        },
-        next_scheduled: {
-          DataType: 'String',
-          StringValue: recurringTransaction.next_scheduled,
-        },
-        amount: {
-          DataType: 'String',
-          StringValue: recurringTransaction.amount.toString(),
-        },
-        recurrence: {
-          DataType: 'String',
-          StringValue: recurringTransaction.recurrence,
-        },
-        description: {
-          DataType: 'String',
-          StringValue: description,
-        },
-        account: {
-          DataType: 'String',
-          StringValue: recurringTransaction.account,
-        },
-        categoryType: {
-          DataType: 'String',
-          StringValue: recurringTransaction.category_type,
-        },
-        categoryName: {
-          DataType: 'String',
-          StringValue: recurringTransaction.category_name,
-        },
-        walletId: {
-          DataType: 'String',
-          StringValue: recurringTransaction.pk,
-        },
-        tags: {
-          DataType: 'String.Array',
-          StringValue: JSON.stringify(currentTag),
-        },
-      },
-      TopicArn: 'arn:aws:sns:eu-west-1:064559090307:addRecurringTransactions',
-    };
-  }
+  const { description } = recurringTransaction;
+  const currentTag = fetchTagValue(recurringTransaction);
 
   console.log(
     'Marking the recurring transaction for creation %j',
     recurringTransaction.sk,
   );
 
-  fetchDescription();
-
-  const params = createParameterForSns();
-
+  const desc = fetchDescription(recurringTransaction, description);
+  const params = snsParameter.createParameter(recurringTransaction, desc, currentTag);
   const response = await sns.publish(params).promise();
   return response;
 }

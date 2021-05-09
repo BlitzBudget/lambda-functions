@@ -1,56 +1,29 @@
-// Load the AWS SDK for Node.js
-const AWS = require('aws-sdk');
-
 const helper = require('./utils/helper');
-const fetchHelper = require('./utils/fetch-helper');
 const addHelper = require('./utils/add-helper');
-const constants = require('./constants/constant');
-
-// Set the region
-AWS.config.update({
-  region: constants.EU_WEST_ONE,
-});
-
-// Create the DynamoDB service object
-const docClient = new AWS.DynamoDB.DocumentClient();
 
 exports.handler = async (event) => {
   console.log('adding Budget for ', JSON.stringify(event['body-json']));
-
   const today = helper.convertToDate(event);
-  const {
-    walletId,
-    dateMeantFor,
-  } = helper.extractVariablesFromRequest(event);
-
+  const { walletId, dateMeantFor } = helper.extractVariablesFromRequest(event);
   helper.throwErrorIfEmpty(event, walletId);
 
-  const { dateId, events } = await fetchHelper.calculateAndFetchDate(
-    dateMeantFor,
+  const { dateId, events } = await addHelper
+    .creatDateIfNecessary(dateMeantFor, event, walletId);
+  const categoryResponse = await addHelper.createCategoryIfNecessary(
     event,
-    walletId,
+    today,
+    events,
   );
-
-  const {
-    categoryName,
-    isBudgetPresent,
-  } = await fetchHelper.calculateAndFetchCategory(
+  const newBudgetId = await addHelper.addBudgetIfNotAlreadyPresent(
+    categoryResponse.hasNewCategoryBeenCreated,
     today,
     event,
     events,
   );
 
-  const newBudgetId = await addHelper.addBudgetIfNotAlreadyPresent(
-    categoryName,
-    isBudgetPresent,
-    today,
-    event,
-    docClient,
-  );
-
-  const response = event['body-json'];
-  response.budgetId = newBudgetId;
-  response.dateMeantFor = dateId;
-
+  const response = event;
+  response['body-json'].budgetId = newBudgetId;
+  response['body-json'].dateMeantFor = dateId;
+  response['body-json'].category = categoryResponse.categoryId;
   return response;
 };

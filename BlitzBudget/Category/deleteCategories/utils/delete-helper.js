@@ -1,74 +1,60 @@
-const DeleteHelper = () => {};
+function DeleteHelper() {}
 
-const helper = require('./helper');
+const util = require('./util');
 const deleteItems = require('../delete/items');
+const deleteRequestParameter = require('../create-parameter/delete-request');
 
-async function bulkDeleteItems(eventsArray, result, walletId, event, DB) {
-  let events = eventsArray;
-  let deleteRequests;
-  function pushToBuildDelete() {
-    events = [];
-    Object.keys(deleteRequests).forEach((deleteRequest) => {
-      const params = {};
-      params.RequestItems = {};
-      params.RequestItems.blitzbudget = deleteRequest;
-      console.log(
-        'The delete request is in batch  with length %j',
-        params.RequestItems.blitzbudget.length,
-      );
-      // Delete Items in batch
-      events.push(deleteItems.deleteItems(params, DB));
-    });
-    return events;
-  }
+function addChunksToDeleteArray(deleteRequests, documentClient) {
+  const events = [];
 
-  function buildBulkDeleteItemsRequest() {
+  deleteRequests.forEach((deleteRequest) => {
+    const params = {};
+    params.RequestItems = {};
+    params.RequestItems.blitzbudget = deleteRequest;
     console.log(
-      'Starting to process the batch delete request for the transactions %j',
-      result[0].Count,
-      ' and for the budgets ',
-      result[1].Count,
+      'The delete request is in batch  with length %j',
+      params.RequestItems.blitzbudget.length,
     );
-    const requestArr = [];
+    // Delete Items in batch
+    events.push(deleteItems.deleteItems(params, documentClient));
+  });
 
-    // Remove Category
-    requestArr.push({
-      DeleteRequest: {
-        Key: {
-          pk: walletId,
-          sk: event['body-json'].category,
-        },
-      },
-    });
+  return events;
+}
 
-    // Result contains both Transaction and Budget items
-    Object.keys(result).forEach((items) => {
+function bulkBuildDeleteItemsRequest(response, walletId, categoryId) {
+  console.log(
+    'Starting to process the batch delete request for the transactions %j',
+    response[0].Count,
+    ' and for the budgets ',
+    response[1].Count,
+  );
+  const requestArray = [];
+
+  // Remove Category
+  requestArray.push(deleteRequestParameter.createParameter(walletId, categoryId));
+
+  // Result contains both Transaction and Budget items
+  response.forEach((items) => {
     // Iterate through Transaction Item first and then Budget Item
-      Object.keys(items.Items).forEach((item) => {
+    items.Items.forEach((item) => {
       // If transactions and budgets contain the category.
-        if (helper.isEqual(item.category, event['body-json'].category)) {
-          console.log('Building the delete params for the item %j', item.sk);
-          requestArr.push({
-            DeleteRequest: {
-              Key: {
-                pk: walletId,
-                sk: item.sk,
-              },
-            },
-          });
-        }
-      });
+      if (util.isEqual(item.category, categoryId)) {
+        console.log('Building the delete params for the item %j', item.sk);
+        requestArray.push(deleteRequestParameter.createParameter(walletId, item.sk));
+      }
     });
+  });
 
-    // Split array into sizes of 25
-    deleteRequests = helper.chunkArrayInGroups(requestArr, 25);
+  return requestArray;
+}
 
-    // Push Events  to be executed in bulk
-    events = pushToBuildDelete(events, deleteRequests, DB);
-    return events;
-  }
-
-  events = buildBulkDeleteItemsRequest(result, walletId, event, events, DB);
+async function bulkDeleteItems(response, walletId, categoryId, documentClient) {
+  const requestArray = bulkBuildDeleteItemsRequest(response, walletId, categoryId);
+  // Split array into sizes of 25
+  const deleteRequests = util.chunkArrayInGroups(requestArray, 25);
+  // Push Events to be executed in bulk
+  const events = addChunksToDeleteArray(deleteRequests, documentClient);
 
   await Promise.all(events).then(
     () => {
@@ -78,7 +64,6 @@ async function bulkDeleteItems(eventsArray, result, walletId, event, DB) {
       throw new Error(`Unable to delete all the items ${err}`);
     },
   );
-  return events;
 }
 
 DeleteHelper.prototype.bulkDeleteItems = bulkDeleteItems;

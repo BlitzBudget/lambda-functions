@@ -7,8 +7,8 @@ describe('createParameter', () => {
 
   test('With Data: Success', () => {
     const parameters = refreshTokenParameter.createParameter(event);
-    expect(parameters).not.toBeNull();
-    expect(parameters.ClientId).not.toBeNull();
-    expect(parameters.AuthParameters.REFRESH_TOKEN).not.toBeNull();
+    expect(parameters).not.toBeUndefined();
+    expect(parameters.ClientId).not.toBeUndefined();
+    expect(parameters.AuthParameters.REFRESH_TOKEN).not.toBeUndefined();
   });
 });

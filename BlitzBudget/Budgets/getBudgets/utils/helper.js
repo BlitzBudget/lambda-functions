@@ -1,36 +1,6 @@
-const Helper = () => {};
+function Helper() {}
 
-function isEmpty(obj) {
-  // Check if objext is a number or a boolean
-  if (typeof obj === 'number' || typeof obj === 'boolean') return false;
-
-  // Check if obj is null or undefined
-  if (obj === null || obj === undefined) return true;
-
-  // Check if the length of the obj is defined
-  if (typeof obj.length !== 'undefined') return obj.length === 0;
-
-  // check if obj is a custom obj
-  if (obj
-&& Object.keys(obj).length !== 0) { return false; }
-
-  return true;
-}
-
-function isNotEmpty(obj) {
-  return !isEmpty(obj);
-}
-
-function isEqual(obj1, obj2) {
-  if (JSON.stringify(obj1) === JSON.stringify(obj2)) {
-    return true;
-  }
-  return false;
-}
-
-function isNotEqual(obj1, obj2) {
-  return !isEqual(obj1, obj2);
-}
+const util = require('./util');
 
 /*
  * Calculate difference between startdate and end date
@@ -38,16 +8,16 @@ function isNotEqual(obj1, obj2) {
 Helper.prototype.isFullMonth = (startDate, endDate) => {
   const startsWithDate = new Date(startDate);
   const endsWithDate = new Date(endDate);
-  const isNotAFullMonth = false;
-  const isAFullMonth = true;
+  let isAFullMonth = true;
   let percentage = 1;
 
   if (
-    isNotEqual(startsWithDate.getMonth(), endsWithDate.getMonth())
-    || isNotEqual(startsWithDate.getFullYear(), endsWithDate.getFullYear())
+    util.isNotEqual(startsWithDate.getMonth(), endsWithDate.getMonth())
+    || util.isNotEqual(startsWithDate.getFullYear(), endsWithDate.getFullYear())
   ) {
     console.log('The month and the year do not coincide');
-    return { isNotAFullMonth, percentage };
+    isAFullMonth = false;
+    return { isAFullMonth, percentage };
   }
 
   const firstDay = new Date(
@@ -57,8 +27,8 @@ Helper.prototype.isFullMonth = (startDate, endDate) => {
   const lastDay = new Date(firstDay.getFullYear(), firstDay.getMonth() + 1, 0);
 
   if (
-    isEqual(firstDay.getDate(), startsWithDate.getDate())
-    && isEqual(lastDay.getDate(), endsWithDate.getDate())
+    util.isEqual(firstDay.getDate(), startsWithDate.getDate())
+    && util.isEqual(lastDay.getDate(), endsWithDate.getDate())
   ) {
     return { isAFullMonth, percentage };
   }
@@ -68,8 +38,8 @@ Helper.prototype.isFullMonth = (startDate, endDate) => {
   percentage = (endsWithDate.getDate() - startsWithDate.getDate())
     / (lastDay.getDate() - firstDay.getDate());
   console.log('Percentage of budget total to be calculated is %j', percentage);
-
-  return { isNotAFullMonth, percentage };
+  isAFullMonth = false;
+  return { isAFullMonth, percentage };
 };
 
 Helper.prototype.modifyTotalOfBudget = (percentage, fullMonth, budgetData) => {
@@ -78,8 +48,8 @@ Helper.prototype.modifyTotalOfBudget = (percentage, fullMonth, budgetData) => {
   const responseData = budgetData;
 
   if (!fullMonth) {
-    Object.keys(responseData.Transaction).forEach((transObj) => {
-      if (isEmpty(categoryList[transObj.category])) {
+    responseData.Transaction.forEach((transObj) => {
+      if (util.isEmpty(categoryList[transObj.category])) {
         categoryList[transObj.category] = transObj.amount;
       } else {
         categoryList[transObj.category] += transObj.amount;
@@ -87,15 +57,15 @@ Helper.prototype.modifyTotalOfBudget = (percentage, fullMonth, budgetData) => {
     });
   }
 
-  Object.keys(responseData.Category).forEach((categoryObj) => {
-    if (isEmpty(categoryNameList[categoryObj.sk])) {
+  responseData.Category.forEach((categoryObj) => {
+    if (util.isEmpty(categoryNameList[categoryObj.sk])) {
       categoryNameList[categoryObj.sk] = categoryObj.category_name;
     } else {
       categoryNameList[categoryObj.sk] += categoryObj.category_name;
     }
 
     if (fullMonth) {
-      if (isEmpty(categoryList[categoryObj.sk])) {
+      if (util.isEmpty(categoryList[categoryObj.sk])) {
         categoryList[categoryObj.sk] = categoryObj.category_total;
       } else {
         categoryList[categoryObj.sk] += categoryObj.category_total;
@@ -103,16 +73,16 @@ Helper.prototype.modifyTotalOfBudget = (percentage, fullMonth, budgetData) => {
     }
   });
 
-  Object.keys(responseData.Budget).forEach((budgetObj) => {
+  responseData.Budget.forEach((budgetObj) => {
     const budget = budgetObj;
     budget.planned *= percentage;
-    if (isNotEmpty(categoryList[budgetObj.category])) {
+    if (util.isNotEmpty(categoryList[budgetObj.category])) {
       budget.used = categoryList[budgetObj.category];
     } else {
       budget.used = 0;
     }
 
-    if (isNotEmpty(categoryNameList[budgetObj.category])) {
+    if (util.isNotEmpty(categoryNameList[budgetObj.category])) {
       budget.categoryName = categoryNameList[budgetObj.category];
     }
 
@@ -120,14 +90,6 @@ Helper.prototype.modifyTotalOfBudget = (percentage, fullMonth, budgetData) => {
     budget.walletId = budgetObj.pk;
     delete budget.sk;
     delete budget.pk;
-  });
-
-  Object.keys(responseData.Date).forEach((dateObj) => {
-    const date = dateObj;
-    date.dateId = dateObj.sk;
-    date.walletId = dateObj.pk;
-    delete date.sk;
-    delete date.pk;
   });
 
   delete responseData.Transaction;
@@ -147,9 +109,6 @@ Helper.prototype.extractVariablesFromRequest = (event) => {
     startsWithDate, endsWithDate, userId,
   };
 };
-
-Helper.prototype.isEmpty = isEmpty;
-Helper.prototype.isNotEmpty = isNotEmpty;
 
 // Export object
 module.exports = new Helper();

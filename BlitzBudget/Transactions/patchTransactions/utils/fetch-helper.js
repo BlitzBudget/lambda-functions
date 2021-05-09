@@ -1,14 +1,14 @@
 const FetchHelper = () => {};
 
-const helper = require('./helper');
+const util = require('./util');
 const fetchCategory = require('../fetch/category');
 const createCategory = require('../add/category');
 
-async function calculateAndFetchCategory(event, events, docClient) {
+async function calculateAndFetchCategory(event, events, documentClient) {
   const categoryName = event['body-json'].category;
   if (
-    helper.isNotEmpty(categoryName)
-    && helper.notIncludesStr(categoryName, 'Category#')
+    util.isNotEmpty(categoryName)
+    && util.notIncludesStr(categoryName, 'Category#')
   ) {
     const today = new Date();
     today.setYear(event['body-json'].dateMeantFor.substring(5, 9));
@@ -20,9 +20,9 @@ async function calculateAndFetchCategory(event, events, docClient) {
     /*
      * Check if category is present before adding them
      */
-    await fetchCategory.getCategoryData(event, today, docClient).then(
+    await fetchCategory.getCategoryData(event, today, documentClient).then(
       (result) => {
-        if (helper.isNotEmpty(result.Category)) {
+        if (util.isNotEmpty(result.Category)) {
           console.log(
             'successfully assigned the existing category %j',
             result.Category.sk,
@@ -35,7 +35,7 @@ async function calculateAndFetchCategory(event, events, docClient) {
             categoryId,
             categoryName,
             events,
-            docClient,
+            documentClient,
           );
         }
       },

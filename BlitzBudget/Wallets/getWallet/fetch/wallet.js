@@ -3,28 +3,20 @@ const Wallet = () => {};
 // Load the AWS SDK for Node.js
 const AWS = require('aws-sdk');
 const constants = require('../constants/constant');
+const walletParameter = require('../constants/constant');
 // Set the region
-AWS.config.update({ region: 'eu-west-1' });
+AWS.config.update({ region: constants.EU_WEST_ONE });
 
 // Create the DynamoDB service object
-const docClient = new AWS.DynamoDB.DocumentClient({ region: 'eu-west-1' });
+const documentClient = new AWS.DynamoDB.DocumentClient({ region: 'eu-west-1' });
 
 // Get Wallet Item
 async function getWalletItem(userId, walletData) {
   const walletResponse = walletData;
-  const params = {
-    TableName: constants.TABLE_NAME,
-    KeyConditionExpression: 'pk = :userId and begins_with(sk, :items)',
-    ExpressionAttributeValues: {
-      ':userId': userId,
-      ':items': 'Wallet#',
-    },
-    ProjectionExpression:
-      'currency, pk, sk, total_asset_balance, total_debt_balance, wallet_balance, wallet_name',
-  };
+  const params = walletParameter.createParameter(userId);
 
   // Call DynamoDB to read the item from the table
-  const response = await docClient.query(params).promise();
+  const response = await documentClient.query(params).promise();
 
   if (response.Items) {
     Object.keys(response.Items).forEach((walletObj) => {

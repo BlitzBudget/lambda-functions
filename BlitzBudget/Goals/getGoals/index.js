@@ -10,9 +10,8 @@ AWS.config.update({
 });
 
 // Create the DynamoDB service object
-const docClient = new AWS.DynamoDB.DocumentClient({
-  region: constants.EU_WEST_ONE,
-});
+const dynamoDB = new AWS.DynamoDB();
+const documentClient = dynamoDB.DocumentClient();
 
 exports.handler = async (event) => {
   console.log('fetching item for the walletId ', event['body-json'].walletId);
@@ -24,20 +23,21 @@ exports.handler = async (event) => {
   } = helper.extractVariablesFromRequest(event);
 
   // Cognito does not store wallet information nor curreny. All are stored in wallet.
-  const walletId = await fetchHelper.fetchWalletInformation(
+  const walletResponse = await fetchHelper.fetchWalletInformation(
     event['body-json'].walletId,
     userId,
-    events,
-    docClient,
+    documentClient,
   );
 
   const allResponses = await fetchHelper.fetchOtherRelevantInformation(
     events,
-    walletId,
+    walletResponse.walletPK,
     oneYearAgo,
     today,
-    docClient,
+    documentClient,
   );
+
+  allResponses.Wallet = walletResponse.response.Wallet;
 
   return allResponses;
 };

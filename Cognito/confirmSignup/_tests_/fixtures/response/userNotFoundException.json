@@ -1,0 +1,10 @@
+{
+    "errorType": "Error",
+    "errorMessage": "Unable to delete user from cognito  UserNotFoundException: User does not exist.",
+    "trace": [
+      "Error: Unable to delete user from cognito  UserNotFoundException: User does not exist.",
+      "    at /var/task/index.js:14:14",
+      "    at processTicksAndRejections (internal/process/task_queues.js:97:5)",
+      "    at async Runtime.exports.handler (/var/task/index.js:11:5)"
+    ]
+  }

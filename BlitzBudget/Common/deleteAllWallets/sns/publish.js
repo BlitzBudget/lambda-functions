@@ -1,16 +1,9 @@
-const Publish = () => {};
+function Publish() {}
+
+const snsParameter = require('../create-parameter/sns');
 
 Publish.prototype.publishToResetAccountsSNS = async (item, sns) => {
-  const params = {
-    Message: item,
-    MessageAttributes: {
-      delete_all_items_in_wallet: {
-        DataType: 'String',
-        StringValue: 'execute',
-      },
-    },
-    TopicArn: 'arn:aws:sns:eu-west-1:064559090307:ResetAccountSubscriber',
-  };
+  const params = snsParameter.createParameter(item);
 
   const response = await sns.publish(params).promise();
   return response;

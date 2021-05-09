@@ -1,5 +1,5 @@
-const FetchHelper = () => {};
-const helper = require('./helper');
+function FetchHelper() {}
+const util = require('./util');
 const bankAccount = require('../fetch/bank-account');
 const budget = require('../fetch/budget');
 const category = require('../fetch/category');
@@ -7,11 +7,11 @@ const date = require('../fetch/date');
 const transaction = require('../fetch/transaction');
 const wallet = require('../fetch/wallet');
 
-async function fetchWalletsIfEmpty(walletId, userId, docClient) {
+async function fetchWalletsIfEmpty(walletId, userId, documentClient) {
   let response;
   let walletPK = walletId;
-  if (helper.isEmpty(walletId) && helper.isNotEmpty(userId)) {
-    await wallet.getWalletsData(userId, docClient).then(
+  if (util.isEmpty(walletId) && util.isNotEmpty(userId)) {
+    await wallet.getWalletsData(userId, documentClient).then(
       (result) => {
         response = result.Wallet;
         walletPK = result.Wallet[0].walletId;
@@ -28,20 +28,21 @@ async function fetchWalletsIfEmpty(walletId, userId, docClient) {
 }
 
 async function fetchAllInformationForBudget(
-  events,
   walletId,
   startsWithDate,
   endsWithDate,
   fullMonth,
-  docClient,
+  documentClient,
 ) {
-  let allResponse = {};
+  const events = [];
+  const allResponse = {};
+
   events.push(
     budget.getBudgetData(
       walletId,
       startsWithDate,
       endsWithDate,
-      docClient,
+      documentClient,
     ),
   );
   events.push(
@@ -49,31 +50,36 @@ async function fetchAllInformationForBudget(
       walletId,
       startsWithDate,
       endsWithDate,
-      docClient,
+      documentClient,
     ),
   );
   events.push(
     date.getDateData(
       walletId,
       startsWithDate.substring(0, 4),
-      docClient,
+      documentClient,
     ),
   );
-  events.push(bankAccount.getBankAccountData(walletId, docClient));
+  events.push(bankAccount.getBankAccountData(walletId, documentClient));
+
   if (!fullMonth) {
     events.push(
       transaction.getTransactionsData(
         walletId,
         startsWithDate,
         endsWithDate,
-        docClient,
+        documentClient,
       ),
     );
   }
 
   await Promise.all(events).then(
     (response) => {
-      allResponse = response;
+      allResponse.Budget = response[0].Budget;
+      allResponse.Category = response[1].Category;
+      allResponse.Date = response[2].Date;
+      allResponse.BankAccount = response[3].BankAccount;
+      allResponse.Transaction = response[4] != null ? response[4].Transaction : {};
       console.log('Successfully retrieved all relevant information');
     },
     (err) => {

@@ -1,4 +1,4 @@
-const helper = require('./utils/helper');
+const sesParameter = require('./create-parameter/ses');
 const ses = require('./ses/send');
 
 exports.handler = async (event) => {
@@ -8,7 +8,7 @@ exports.handler = async (event) => {
     ' The subject is ',
     event['body-json'].subject,
   );
-  const params = helper.createParameters(event);
+  const params = sesParameter.createParameter(event);
 
   await ses.sendEmail(params);
 };

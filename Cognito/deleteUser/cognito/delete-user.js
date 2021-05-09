@@ -1,4 +1,4 @@
-const DeleteUser = () => {};
+function DeleteUser() {}
 
 const AWS = require('aws-sdk');
 const constants = require('../constants/constant');

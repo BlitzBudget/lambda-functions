@@ -1,46 +1,5 @@
 const helper = require('../../../utils/helper');
-
-describe('isEmpty', () => {
-  test('With Data: Success', () => {
-    expect(helper.isEmpty('en')).toBe(false);
-  });
-
-  test('Without Data: Success', () => {
-    expect(helper.isEmpty('')).toBe(true);
-    expect(helper.isEmpty(null)).toBe(true);
-  });
-});
-
-describe('isNotEmpty', () => {
-  test('With Data: Success', () => {
-    expect(helper.isNotEmpty('en')).toBe(true);
-  });
-
-  test('Without Data: Success', () => {
-    expect(helper.isNotEmpty('')).toBe(false);
-    expect(helper.isNotEmpty(null)).toBe(false);
-  });
-});
-
-describe('isEqual', () => {
-  test('With Data: Success', () => {
-    expect(helper.isEqual('en', 'en')).toBe(true);
-  });
-
-  test('Without Data: Success', () => {
-    expect(helper.isEqual('')).toBe(false);
-    expect(helper.isEqual(null)).toBe(false);
-    expect(helper.isEqual('', '')).toBe(true);
-    expect(helper.isEqual(null, '')).toBe(false);
-    expect(helper.isEqual('', null)).toBe(false);
-  });
-
-  test('False Data: Success', () => {
-    expect(helper.isEqual('en', 'e')).toBe(false);
-    expect(helper.isEqual(null, 'e')).toBe(false);
-    expect(helper.isEqual('en', null)).toBe(false);
-  });
-});
+const mockFetchUser = require('../../fixtures/response/fetchUser');
 
 describe('fetchCurrencyInformation', () => {
   const event = {};
@@ -50,28 +9,48 @@ describe('fetchCurrencyInformation', () => {
 
   test('With Data: Success', () => {
     const currencyChosen = helper.fetchCurrencyInformation('ES');
-    expect(currencyChosen).not.toBeNull();
+    expect(currencyChosen).not.toBeUndefined();
     expect(currencyChosen).toBe('Euro');
   });
 
   test('With Lowercase Data: Success', () => {
     const currencyChosen = helper.fetchCurrencyInformation('es');
-    expect(currencyChosen).not.toBeNull();
+    expect(currencyChosen).not.toBeUndefined();
     expect(currencyChosen).toBe('Euro');
   });
 
   test('With Empty Data: Success', () => {
     const currencyChosen = helper.fetchCurrencyInformation('');
-    expect(currencyChosen).not.toBeNull();
+    expect(currencyChosen).not.toBeUndefined();
     expect(currencyChosen).toBe('US Dollar');
   });
 
   test('With Null Data: Success', () => {
     const currencyChosen = helper.fetchCurrencyInformation();
-    expect(currencyChosen).not.toBeNull();
+    expect(currencyChosen).not.toBeUndefined();
     expect(currencyChosen).toBe('US Dollar');
     const nullCheck = helper.fetchCurrencyInformation(null);
-    expect(nullCheck).not.toBeNull();
+    expect(nullCheck).not.toBeUndefined();
     expect(nullCheck).toBe('US Dollar');
+  });
+});
+
+describe('fetchUserId', () => {
+  const event = mockFetchUser.UserAttributes;
+
+  test('With Data: Success', () => {
+    const userId = helper.fetchUserId(event);
+    expect(userId).not.toBeUndefined();
+    expect(userId).toBe(mockFetchUser.UserAttributes[2].Value);
+  });
+
+  test('With Empty Array: Success', () => {
+    const userId = helper.fetchUserId({});
+    expect(userId).toBeUndefined();
+  });
+
+  test('With Empty Data: Success', () => {
+    const userId = helper.fetchUserId(mockFetchUser.Username);
+    expect(userId).toBeUndefined();
   });
 });

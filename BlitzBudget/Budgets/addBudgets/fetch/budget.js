@@ -1,28 +1,20 @@
-const FetchBudget = () => {};
+function FetchBudget() {}
 
-const helper = require('../utils/helper');
-const constants = require('../constants/constant');
+const util = require('../utils/util');
+const budgetParameter = require('../create-parameter/budget');
 
 // Get Budget Item
-FetchBudget.prototype.getBudgetsItem = async (today, event, docClient) => {
-  const params = {
-    TableName: constants.TABLE_NAME,
-    KeyConditionExpression: 'pk = :pk AND begins_with(sk, :items)',
-    ExpressionAttributeValues: {
-      ':pk': event['body-json'].walletId,
-      ':items': `Budget#${today.getFullYear()}-${(`0${today.getMonth() + 1}`).slice(-2)}`,
-    },
-    ProjectionExpression: 'category, date_meant_for, sk, pk',
-  };
+FetchBudget.prototype.getBudgetsItem = async (todayAsDate, event, documentClient) => {
+  const params = budgetParameter.createParameter(event, todayAsDate);
 
   // Call DynamoDB to read the item from the table
-  const response = await docClient.query(params).promise();
+  const response = await documentClient.query(params).promise();
 
   let matchingBudget;
-  if (helper.isNotEmpty(response.Items)) {
-    Object.keys(response.Items).forEach((budget) => {
-      if (helper.isEqual(budget.category, event['body-json'].category)
-              && helper.isEqual(budget.date_meant_for, event['body-json'].dateMeantFor)) {
+  if (util.isNotEmpty(response.Items)) {
+    response.Items.forEach((budget) => {
+      if (util.isEqual(budget.category, event['body-json'].category)
+              && util.isEqual(budget.date_meant_for, event['body-json'].dateMeantFor)) {
         console.log('Matching budget found with the same date and category %j', budget.sk);
         matchingBudget = budget;
       }

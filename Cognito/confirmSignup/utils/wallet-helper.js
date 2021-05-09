@@ -7,9 +7,9 @@ async function addNewWallet(
   response,
   doNotCreateANewWallet,
   countryLocale,
-  DB,
+  documentClient,
 ) {
-  let walletResponse = response;
+  const walletResponse = response;
 
   /*
      * Do not create wallet
@@ -23,9 +23,9 @@ async function addNewWallet(
      */
   const currency = helper.fetchCurrencyInformation(countryLocale);
 
-  await wallet.addNewWallet(response.UserAttributes, currency, DB).then(
+  await wallet.addNewWallet(response.UserAttributes, currency, documentClient).then(
     (addResponse) => {
-      walletResponse = addResponse.Wallet;
+      walletResponse.Wallet = addResponse;
     },
     (err) => {
       throw new Error(`Unable to add new wallet${err}`);

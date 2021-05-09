@@ -5,9 +5,9 @@ const addVoiceCode = require('../voice-code/add');
 /*
  * Add a new voice code
  */
-async function handleAddNewVoiceCode(event, userId, alexaId, docClient) {
+async function handleAddNewVoiceCode(event, userId, alexaId, documentClient) {
   let alexaVoiceCodeId;
-  await addVoiceCode.addNewVoiceCode(event, userId, alexaId, docClient).then(
+  await addVoiceCode.addNewVoiceCode(event, userId, alexaId, documentClient).then(
     (response) => {
       alexaVoiceCodeId = response.alexaVoiceCodeId;
       console.log('successfully added a new voice code');

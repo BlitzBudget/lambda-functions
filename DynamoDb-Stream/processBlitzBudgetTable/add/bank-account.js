@@ -1,10 +1,10 @@
 const BankAccount = () => {};
 
-async function addNewBankAccount(record, docClient) {
+async function addNewBankAccount(record, documentClient) {
   const today = new Date();
   const randomValue = `BankAccount#${today.toISOString()}`;
 
-  function createParameters() {
+  function createParameter() {
     return {
       TableName: 'blitzbudget',
       Item: {
@@ -23,11 +23,11 @@ async function addNewBankAccount(record, docClient) {
     };
   }
 
-  const params = createParameters();
+  const params = createParameter();
 
   console.log('Adding a new item...');
 
-  const response = await docClient.put(params).promise();
+  const response = await documentClient.put(params).promise();
   return response;
 }
 

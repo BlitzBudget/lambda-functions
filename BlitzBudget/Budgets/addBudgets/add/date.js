@@ -1,27 +1,13 @@
-const AddDate = () => {};
+function AddDate() {}
 
-AddDate.prototype.createDateData = async (event, skForDate, docClient) => {
-  const params = {
-    TableName: 'blitzbudget',
-    Key: {
-      pk: event['body-json'].walletId,
-      sk: skForDate,
-    },
-    UpdateExpression:
-      'set income_total = :r, expense_total=:p, balance=:a, creation_date = :c, updated_date = :u',
-    ExpressionAttributeValues: {
-      ':r': 0,
-      ':p': 0,
-      ':a': 0,
-      ':c': new Date().toISOString(),
-      ':u': new Date().toISOString(),
-    },
-    ReturnValues: 'ALL_NEW',
-  };
+const dateParameter = require('../create-parameter/add-date');
+
+AddDate.prototype.createDateItem = async (walletId, skForDate, documentClient) => {
+  const parameter = dateParameter.createParameter(walletId, skForDate);
 
   console.log('Adding a new item...');
 
-  const response = await docClient.update(params).promise();
+  const response = await documentClient.update(parameter).promise();
   return {
     Date: response.Attributes,
   };

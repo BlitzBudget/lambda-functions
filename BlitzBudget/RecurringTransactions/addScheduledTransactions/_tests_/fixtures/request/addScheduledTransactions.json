@@ -1,0 +1,63 @@
+{
+    "Records": [
+        {
+            "EventSource": "aws:sns",
+            "EventVersion": "1.0",
+            "EventSubscriptionArn": "arn:aws:sns:eu-west-1:064559090307:addRecurringTransactions:c253f306-3131-4854-b10a-298077af5b00",
+            "Sns": {
+                "Type": "Notification",
+                "MessageId": "a5d4b4df-98ae-5599-8d21-e3f4c2d089db",
+                "TopicArn": "arn:aws:sns:eu-west-1:064559090307:addRecurringTransactions",
+                "Subject": null,
+                "Message": "RecurringTransactions#2020-04-05T11:03:10.272Z",
+                "Timestamp": "2020-05-05T12:12:46.968Z",
+                "SignatureVersion": "1",
+                "Signature": "HiDMcGQ6j6VmoYy/yfxmMfmpjBJ7NEgST92F//njLdHFcyO3YJbS5RpdV1sD6sOmPNUc9kh2QxCZS0f3JbnVAWg+N/3qj8wT4XuUTqvbSe40SvyjKj7Sg2RHx9nCJIGlyHqmAFmbAw2DaW9ok9z8UyAVIRA7LhnU+SHHOo7suxehV1XMjNZ4yqOgkqnvuomxm9jvxmaH4zCtzCU6YAxu+AaSW7b2P6utEKDrr0+unc4v+nQCk4K4SlvCktDpIAOW9zUluFDRGesELPKYmTPJ+Ub5whXUgKnqidTZ1Pxb/M8YcEdyKK7fT8tO8CByyIUV9DvXo3DUmVt3cFIV4Tj3yg==",
+                "SigningCertUrl": "https://sns.eu-west-1.amazonaws.com/SimpleNotificationService-a86cb10b4e1f29c941702d737128f7b6.pem",
+                "UnsubscribeUrl": "https://sns.eu-west-1.amazonaws.com/?Action=Unsubscribe&SubscriptionArn=arn:aws:sns:eu-west-1:064559090307:addRecurringTransactions:c253f306-3131-4854-b10a-298077af5b00",
+                "MessageAttributes": {
+                    "next_scheduled": {
+                        "Type": "String",
+                        "Value": "2018-02-20T11:03:10.272Z"
+                    },
+                    "recurrence": {
+                        "Type": "String",
+                        "Value": "BI-MONTHLY"
+                    },
+                    "walletId": {
+                        "Type": "String",
+                        "Value": "Wallet#2020-05-05T19:25:36.831Z"
+                    },
+                    "amount": {
+                        "Type": "String",
+                        "Value": "95"
+                    },
+                    "description": {
+                        "Type": "String",
+                        "Value": "No description"
+                    },
+                    "category": {
+                        "Type": "String",
+                        "Value": "Category#2020-02-05T19:26:11.030Z"
+                    },
+                    "account": {
+                        "Type": "String",
+                        "Value": "BankAccount#2020-05-05T19:25:37.048Z"
+                    },
+                    "tags": {
+                        "Type": "String.Array",
+                        "Value": "[\"2\",\"WEEKLY\",\"GIFTS\"]"
+                    },
+                    "categoryType": {
+                        "Type": "String",
+                        "Value": "Expense"
+                    },
+                    "categoryName": {
+                        "Type": "String",
+                        "Value": "Shopping"
+                    }
+                }
+            }
+    }
+  ]
+}

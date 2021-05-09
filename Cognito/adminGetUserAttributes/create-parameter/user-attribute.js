@@ -1,4 +1,4 @@
-const UserAttribute = () => {};
+function UserAttribute() {}
 
 const constants = require('../constants/constant');
 
@@ -8,7 +8,7 @@ const params = {
   /* PaginationToken: 'STRING_VALUE' */
 };
 
-UserAttribute.prototype.createParameters = (event) => {
+UserAttribute.prototype.createParameter = (event) => {
   params.Username = event.params.querystring.userName;
   return params;
 };

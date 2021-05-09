@@ -1,41 +1,28 @@
-const DeleteHelper = () => {};
+function DeleteHelper() {}
 
-const helper = require('./helper');
+const util = require('./util');
 const deleteItems = require('../delete/items');
-const publish = require('../sns/publish');
+const deleteParameter = require('../create-parameter/delete');
+const deleteRequestParameter = require('../create-parameter/delete-request');
 
-DeleteHelper.prototype.buildParamsForDelete = (result, userId, sns, events) => {
-  if (helper.isEmpty(result.Items)) {
+DeleteHelper.prototype.buildParamsForDelete = (result, userId) => {
+  if (util.isEmpty(result.Items)) {
     return undefined;
   }
 
-  const params = {};
-  params.RequestItems = {};
-  params.RequestItems.blitzbudget = [];
+  const params = deleteParameter.createParameter();
 
   for (let i = 0, len = result.Items.length; i < len; i++) {
     const item = result.Items[i];
     const { sk } = item;
-    params.RequestItems.blitzbudget[i] = {
-      DeleteRequest: {
-        Key: {
-          pk: userId,
-          sk,
-        },
-      },
-    };
-
-    // If wallet item  then push to SNS
-    if (helper.includesStr(sk, 'Wallet#')) {
-      events.push(publish.publishToResetAccountsSNS(sk, sns));
-    }
+    params.RequestItems.blitzbudget[i] = deleteRequestParameter.createParameter(userId, sk);
   }
 
   return params;
 };
 
-async function deleteAllWallets(deleteParams, DB, events) {
-  events.push(deleteItems.deleteItems(deleteParams, DB));
+async function deleteAllWallets(deleteParams, documentClient, events) {
+  events.push(deleteItems.deleteItems(deleteParams, documentClient));
   await Promise.all(events).then(
     () => {
       console.log('successfully deleted the goals');

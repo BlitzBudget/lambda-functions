@@ -19,7 +19,7 @@ describe('initiateAuth', () => {
 
   test('With Data: Success', async () => {
     const response = await cognitoLogin.initiateAuth(event, cognitoidentityserviceprovider);
-    expect(response).not.toBeNull();
+    expect(response).not.toBeUndefined();
     expect(response.AuthenticationResult).not.toBeUndefined();
     expect(response.AuthenticationResult.RefreshToken).not.toBeUndefined();
   });

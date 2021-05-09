@@ -1,4 +1,4 @@
-const ChangePassword = () => {};
+function ChangePassword() {}
 
 const AWS = require('aws-sdk');
 const constants = require('../constants/constant');

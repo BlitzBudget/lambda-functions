@@ -6,6 +6,7 @@ async function fetchUserFromCognito(response, cognitoidentityserviceprovider) {
     (result) => {
       response.Username = result.Username;
       response.UserAttributes = result.UserAttributes;
+      response.UserCreateDate = result.UserCreateDate;
       console.log(`logged in the user ${JSON.stringify(result.Username)}`);
     },
     (err) => {

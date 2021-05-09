@@ -22,8 +22,8 @@ exports.handler = async (event) => {
   );
 
   await addAccount.addNewBankAccounts(event).then(
-    (addResponse) => {
-      response.accountId = addResponse.accountId;
+    (accountId) => {
+      response.accountId = accountId;
       console.log('successfully saved the new BankAccounts');
     },
     (err) => {
@@ -31,5 +31,5 @@ exports.handler = async (event) => {
     },
   );
 
-  return event;
+  return response;
 };

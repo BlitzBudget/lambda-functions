@@ -10,16 +10,16 @@ AWS.config.update({ region: constants.EU_WEST_ONE });
 const cognitoidentityserviceprovider = new AWS.CognitoIdentityServiceProvider();
 
 // Create the DynamoDB service object
-const DB = new AWS.DynamoDB.DocumentClient();
+const dynamoDB = new AWS.DynamoDB();
+const documentClient = new dynamoDB.DocumentClient();
 
 exports.handler = async (event) => {
-  let response = {};
   const doNotCreateANewWallet = event['body-json'].doNotCreateWallet;
   const countryLocale = event.params.header['CloudFront-Viewer-Country'];
 
   await confirmSignupHelper.confirmSignup(event, cognitoidentityserviceprovider);
 
-  response = await loginHelper.login(event, response, cognitoidentityserviceprovider);
+  const response = await loginHelper.login(event, cognitoidentityserviceprovider);
 
   await fetchUserHelper.fetchUserInformation(response, cognitoidentityserviceprovider);
 
@@ -27,7 +27,7 @@ exports.handler = async (event) => {
     response,
     doNotCreateANewWallet,
     countryLocale,
-    DB,
+    documentClient,
   );
 
   return response;

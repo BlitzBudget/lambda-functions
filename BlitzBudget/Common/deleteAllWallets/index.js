@@ -1,6 +1,6 @@
 // Load the AWS SDK for Node.js
 const AWS = require('aws-sdk');
-const helper = require('./utils/helper');
+const util = require('./utils/util');
 const fetchHelper = require('./utils/fetch-helper');
 const deleteHelper = require('./utils/delete-helper');
 
@@ -9,7 +9,8 @@ AWS.config.update({ region: 'eu-west-1' });
 const sns = new AWS.SNS();
 
 // Create the DynamoDB service object
-const DB = new AWS.DynamoDB.DocumentClient();
+const dynamoDB = new AWS.DynamoDB();
+const documentClient = new dynamoDB.DocumentClient();
 // Concurrently call multiple APIs and wait for the response
 const events = [];
 
@@ -20,16 +21,16 @@ exports.handler = async (event) => {
   const deleteParams = await fetchHelper.fetchAllItemsToDelete(
     userId,
     sns,
-    DB,
+    documentClient,
     events,
   );
 
-  if (helper.isEmpty(deleteParams)) {
+  if (util.isEmpty(deleteParams)) {
     return event;
   }
 
   // Publish to SNS and delete all financial portfolio entries
-  await deleteHelper.deleteAllWallets(deleteParams, DB, events);
+  await deleteHelper.deleteAllWallets(deleteParams, documentClient, events);
 
   return event;
 };

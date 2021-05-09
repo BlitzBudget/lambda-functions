@@ -1,4 +1,4 @@
-module.exports.parameters = [
+module.exports = [
   {
     prmName: 'goalType',
     prmValue: 'goal_type',

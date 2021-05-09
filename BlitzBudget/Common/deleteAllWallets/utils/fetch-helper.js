@@ -1,49 +1,40 @@
-const FetchHelper = () => {};
+function FetchHelper() {}
 
 const deleteHelper = require('./delete-helper');
-const constants = require('../constants/constant');
+const snsHelper = require('./sns-helper');
+const fetchParameter = require('../create-parameter/fetch');
 
 // Get goal Item
-function getAllItems(userId, DB) {
-  const params = {
-    TableName: constants.TABLE_NAME,
-    KeyConditionExpression: 'pk = :userId',
-    ExpressionAttributeValues: {
-      ':userId': userId,
-    },
-    ProjectionExpression: 'sk',
-  };
+async function getAllItems(userId, documentClient) {
+  const params = fetchParameter.createParameter(userId);
 
   // Call DynamoDB to read the item from the table
-  return new Promise((resolve, reject) => {
-    DB.query(params, (err, data) => {
-      if (err) {
-        console.log('Error ', err);
-        reject(err);
-      } else {
-        console.log('data retrieved ', JSON.stringify(data.Items));
-        resolve(data);
-      }
-    });
-  });
+  const response = await documentClient.query(params).promise();
+  return response;
 }
 
-async function fetchAllItemsToDelete(userId, sns, DB, events) {
-  let paramsForDelete;
-  await getAllItems(userId, DB).then(
+async function fetchAllItemsToDelete(userId, sns, documentClient, events) {
+  let response;
+
+  await getAllItems(userId, documentClient).then(
     (result) => {
       console.log('successfully fetched all the wallets ', result);
-      paramsForDelete = deleteHelper.buildParamsForDelete(
-        result,
-        userId,
-        sns,
-        events,
-      );
+      response = result;
     },
     (err) => {
       throw new Error(`Unable to delete the goals ${err}`);
     },
   );
+
+  const paramsForDelete = deleteHelper.buildParamsForDelete(
+    response,
+    userId,
+    sns,
+    events,
+  );
+
+  snsHelper.publishToSNS(response, sns, events);
+
   return paramsForDelete;
 }
 

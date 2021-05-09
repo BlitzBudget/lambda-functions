@@ -1,9 +1,11 @@
-const DeleteHelper = () => {};
+function DeleteHelper() {}
 
-const helper = require('./helper');
+const util = require('./util');
 const deleteItems = require('../delete/items.js');
+const deleteParameter = require('../create-parameter/delete');
+const deleteRequestParameter = require('../create-parameter/delete-request');
 
-function buildDeleteRequest(result, walletId, DB) {
+function buildDeleteRequest(result, walletId, documentClient) {
   console.log(
     'Starting to process the batch delete request for the item for the wallet %j',
     result.Count,
@@ -11,37 +13,30 @@ function buildDeleteRequest(result, walletId, DB) {
   const requestArr = [];
   const events = [];
 
-  Object.keys(result.Items).forEach((item) => {
+  result.Items.forEach((item) => {
     console.log('Building the delete params for the item %j', item.sk);
-    requestArr.push({
-      DeleteRequest: {
-        Key: {
-          pk: walletId,
-          sk: item.sk,
-        },
-      },
-    });
+    requestArr.push(deleteRequestParameter.createParameter(walletId, item.sk));
   });
 
   // Split array into sizes of 25
-  const deleteRequests = helper.chunkArrayInGroups(requestArr, 25);
+  const deleteRequests = util.chunkArrayInGroups(requestArr, 25);
 
   // Push Events  to be executed in bulk
-  Object.keys(deleteRequests).forEach((deleteRequest) => {
-    const params = {};
-    params.RequestItems = {};
-    params.RequestItems.blitzbudget = deleteRequest;
+  deleteRequests.forEach((deleteRequest) => {
+    const params = deleteParameter.createParameter(deleteRequest);
     console.log(
       'The delete request is in batch  with length %j',
       params.RequestItems.blitzbudget.length,
     );
     // Delete Items in batch
-    events.push(deleteItems.deleteItems(params, DB));
+    events.push(deleteItems.deleteItems(params, documentClient));
   });
+
+  return events;
 }
 
-async function bulkDeleteItems(result, walletId, DB) {
-  const events = buildDeleteRequest(result, walletId, DB);
+async function bulkDeleteItems(result, walletId, documentClient) {
+  const events = buildDeleteRequest(result, walletId, documentClient);
 
   await Promise.all(events).then(
     () => {

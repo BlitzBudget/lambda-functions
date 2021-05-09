@@ -12,7 +12,7 @@ describe('extractVariablesFromRequest', () => {
   event.params.header['Accept-Language'] = 'en';
   test('With Data: Success', () => {
     const parameters = util.extractVariablesFromRequest(event);
-    expect(parameters).not.toBeNull();
+    expect(parameters).not.toBeUndefined();
     expect(parameters.email).toBe(event['body-json'].username);
     expect(parameters.username).toBe(event['body-json'].firstname);
     expect(parameters.surname).toBe(event['body-json'].lastname);
@@ -30,7 +30,7 @@ describe('extractVariablesFromRequest', () => {
         },
       },
     });
-    expect(parameters).not.toBeNull();
+    expect(parameters).not.toBeUndefined();
     expect(parameters.acceptLanguage).toBe(EN_IN);
   });
 });

@@ -1,9 +1,8 @@
 // Load the AWS SDK for Node.js
 const AWS = require('aws-sdk');
 
-const helper = require('./utils/helper');
-const fetchHelper = require('./utils/fetch-helper');
 const addHelper = require('./utils/add-helper');
+const util = require('./utils/util');
 
 // Set the region
 AWS.config.update({
@@ -11,23 +10,24 @@ AWS.config.update({
 });
 
 // Create the DynamoDB service object
-const docClient = new AWS.DynamoDB.DocumentClient();
+const dynamoDB = new AWS.DynamoDB();
+const documentClient = dynamoDB.DocumentClient();
 
 exports.handler = async (event) => {
   console.log('adding transactions for ', JSON.stringify(event['body-json']));
   const events = [];
   const { walletId } = event['body-json'];
 
-  helper.throwErrorIfEmpty(event, walletId);
+  await addHelper.addANewDateIfNotPresent(event, walletId, events, documentClient);
 
-  await fetchHelper.calculateAndFetchDate(event, walletId, events, docClient);
+  await addHelper.addANewCategoryIfNotPresent(event, events, documentClient);
 
-  await fetchHelper.calculateAndFetchCategory(event, events, docClient);
+  const response = await addHelper.addAllItems(events, event, documentClient);
 
-  const transactionId = await addHelper.addAllItems(events, event, docClient);
-
-  const response = event['body-json'];
-  response.transactionId = transactionId;
-
-  return event;
+  const allResponses = event;
+  allResponses['body-json'].transactionId = response.transactionId;
+  allResponses['body-json'].recurrence = response.nextRecurrence;
+  allResponses['body-json'].dateMeanfor = util.isNotEmpty(response.dateId) ? response.dateId : allResponses['body-json'].dateMeantFor;
+  allResponses['body-json'].category = util.isNotEmpty(response.categoryId) ? response.categoryId : allResponses['body-json'].category;
+  return allResponses;
 };

@@ -5,7 +5,7 @@ const constants = require('./constants/constant');
 const fetchHelper = require('./utils/fetch-helper');
 const addHelper = require('./utils/add-helper');
 const updateHelper = require('./utils/update-helper');
-const scheduledDates = require('./utils/scheduled-dates');
+const scheduledDates = require('./tools/scheduled-dates');
 
 // Set the region
 AWS.config.update({
@@ -13,10 +13,11 @@ AWS.config.update({
 });
 
 // Create the DynamoDB service object
-const DB = new AWS.DynamoDB.DocumentClient();
+const dynamoDB = new AWS.DynamoDB();
+const documentClient = dynamoDB.DocumentClient();
 
 exports.handler = async (event) => {
-  const addItemArray = [];
+  const createItemsArray = [];
   const datesToCreateTransactions = [];
   let events = [];
   const datesMap = {};
@@ -34,11 +35,11 @@ exports.handler = async (event) => {
   );
 
   events = await fetchHelper.calculateAndAddAllDates(
-    addItemArray,
+    createItemsArray,
     walletId,
     datesMap,
     events,
-    DB,
+    documentClient,
   );
 
   events = await addHelper.calculateAndAddAllCategories(
@@ -47,19 +48,18 @@ exports.handler = async (event) => {
     categoryType,
     categoryName,
     categoryMap,
-    addItemArray,
+    createItemsArray,
     datesMap,
     events,
-    DB,
-    futureTransactionCreationDate,
+    documentClient,
   );
 
   addHelper.constructRequestAndCreateItems(
-    addItemArray,
+    createItemsArray,
     datesMap,
     categoryMap,
     event,
-    DB,
+    documentClient,
     events,
   );
 
@@ -67,7 +67,7 @@ exports.handler = async (event) => {
     walletId,
     recurringTransactionsId,
     futureTransactionCreationDate,
-    DB,
+    documentClient,
     events,
   );
 };

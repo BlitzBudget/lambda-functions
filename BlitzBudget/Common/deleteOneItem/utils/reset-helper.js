@@ -1,4 +1,4 @@
-const ResetHelper = () => {};
+function ResetHelper() {}
 
 const publish = require('../sns/publish');
 

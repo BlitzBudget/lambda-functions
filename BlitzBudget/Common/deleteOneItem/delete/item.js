@@ -1,19 +1,13 @@
-const DeleteItems = () => {};
+function DeleteItems() {}
 
-const constants = require('../constants/constant');
+const deleteParameter = require('../create-parameter/delete');
 
-DeleteItems.prototype.deleteOneItem = async (pk, sk, DB) => {
+DeleteItems.prototype.deleteOneItem = async (pk, sk, documentClient) => {
   console.log(`user Id selected for deletion is ${pk}`);
 
-  const params = {
-    TableName: constants.TABLE_NAME,
-    Key: {
-      pk,
-      sk,
-    },
-  };
+  const params = deleteParameter.createParameter(pk, sk);
 
-  const response = await DB.delete(params).promise();
+  const response = await documentClient.delete(params).promise();
   return response;
 };
 

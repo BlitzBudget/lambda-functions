@@ -1,8 +1,8 @@
-const FetchWallet = () => {};
+function FetchWallet() {}
 
-const constants = require('../constants/constant');
+const walletParameter = require('../create-parameter/wallet');
 
-async function getWalletsData(userId, docClient) {
+async function getWalletsData(userId, documentClient) {
   function organizeTransactionData(data) {
     console.log('data retrieved - Wallet %j', data.Count);
     Object.keys(data.Items).forEach((walletObj) => {
@@ -14,23 +14,10 @@ async function getWalletsData(userId, docClient) {
     });
   }
 
-  function createParameters() {
-    return {
-      TableName: constants.TABLE_NAME,
-      KeyConditionExpression: 'pk = :pk and begins_with(sk, :items)',
-      ExpressionAttributeValues: {
-        ':pk': userId,
-        ':items': 'Wallet#',
-      },
-      ProjectionExpression:
-        'currency, pk, sk, total_asset_balance, total_debt_balance, wallet_balance',
-    };
-  }
-
-  const params = createParameters();
+  const params = walletParameter.createParameter(userId);
 
   // Call DynamoDB to read the item from the table
-  const response = await docClient.query(params).promise();
+  const response = await documentClient.query(params).promise();
   organizeTransactionData(response);
   return {
     Wallet: response.Items,

@@ -1,38 +1,13 @@
-const FetchHelper = () => {};
+function FetchHelper() {}
 
-const constants = require('../constants/constant');
+const fetchItems = require('../fetch/items');
 
-// Get all Items
-function getAllItems(walletId, DB) {
-  const params = {
-    TableName: constants.TABLE_NAME,
-    KeyConditionExpression: 'pk = :walletId',
-    ExpressionAttributeValues: {
-      ':walletId': walletId,
-    },
-    ProjectionExpression: 'sk',
-  };
-
-  // Call DynamoDB to read the item from the table
-  return new Promise((resolve, reject) => {
-    DB.query(params, (err, data) => {
-      if (err) {
-        console.log('Error ', err);
-        reject(err);
-      } else {
-        console.log('data retrieved ', JSON.stringify(data.Items));
-        resolve(data);
-      }
-    });
-  });
-}
-
-async function fetchAllItemsForWallet(walletId, DB) {
+async function fetchAllItemsForWallet(walletId, documentClient) {
   let result;
-  await getAllItems(walletId, DB).then(
-    (res) => {
-      console.log('successfully fetched all the items ', res);
-      result = res;
+  await fetchItems.getAllItems(walletId, documentClient).then(
+    (response) => {
+      console.log('successfully fetched all the items ', response);
+      result = response;
     },
     (err) => {
       throw new Error(`Unable to delete the goals ${err}`);

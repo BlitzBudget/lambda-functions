@@ -1,4 +1,4 @@
-module.exports.parameters = [
+module.exports = [
   {
     prmName: 'amount',
     prmValue: 'amount',

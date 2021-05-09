@@ -1,8 +1,8 @@
-const FetchBankAccount = () => {};
+function FetchBankAccount() {}
 
-const constants = require('../constants/constant');
+const bankAccountParameter = require('../create-parameter/bank-account');
 
-async function getBankAccountData(pk, docClient) {
+async function getBankAccountData(pk, documentClient) {
   function organizeAccountItems(data) {
     console.log('data retrieved - Bank Account %j', data.Count);
     Object.keys(data.Items).forEach((accountObj) => {
@@ -14,23 +14,10 @@ async function getBankAccountData(pk, docClient) {
     });
   }
 
-  function createParameters() {
-    return {
-      TableName: constants.TABLE_NAME,
-      KeyConditionExpression: 'pk = :pk and begins_with(sk, :items)',
-      ExpressionAttributeValues: {
-        ':pk': pk,
-        ':items': 'BankAccount#',
-      },
-      ProjectionExpression:
-        'bank_account_name, linked, bank_account_number, account_balance, sk, pk, selected_account, number_of_times_selected, account_type,  account_sub_type',
-    };
-  }
-
-  const params = createParameters();
+  const params = bankAccountParameter.createParameter(pk);
 
   // Call DynamoDB to read the item from the table
-  const response = await docClient.query(params).promise();
+  const response = await documentClient.query(params).promise();
   organizeAccountItems(response);
   return {
     BankAccount: response.Items,

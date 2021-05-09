@@ -3,10 +3,10 @@ const AddVoiceCode = () => {};
 /*
  * Voice Code
  */
-function addNewVoiceCode(event, userId, alexaId, docClient) {
+function addNewVoiceCode(event, userId, alexaId, documentClient) {
   const today = new Date().toISOString();
 
-  function createParameters() {
+  function createParameter() {
     return {
       TableName: 'blitzbudget',
       Item: {
@@ -20,11 +20,11 @@ function addNewVoiceCode(event, userId, alexaId, docClient) {
     };
   }
 
-  const params = createParameters();
+  const params = createParameter();
 
   console.log('Adding a new item...');
   return new Promise((resolve, reject) => {
-    docClient.put(params, (err, data) => {
+    documentClient.put(params, (err, data) => {
       if (err) {
         console.log('Error ', err);
         reject(err);

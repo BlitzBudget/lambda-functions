@@ -1,44 +1,19 @@
-const FetchGoal = () => {};
+function FetchGoal() {}
 
-const constants = require('../constants/constant');
+const goalParameter = require('../create-parameter/goal');
+const organizeGoal = require('../organize/goal');
 
 // Get goal Item
-FetchGoal.prototype.getGoalItem = async function getGoalItem(
+FetchGoal.prototype.getGoalData = async function getGoalItem(
   walletId,
-  docClient,
+  documentClient,
 ) {
-  function organizeRetrievedItems(data) {
-    console.log('data retrieved - Goal %j', data.Count);
-    if (data.Items) {
-      Object.keys(data.Items).forEach((goalObj) => {
-        const goal = goalObj;
-        goal.goalId = goalObj.sk;
-        goal.walletId = goalObj.pk;
-        delete goal.sk;
-        delete goal.pk;
-      });
-    }
-  }
-
-  function createParameter() {
-    return {
-      TableName: constants.TABLE_NAME,
-      KeyConditionExpression: 'pk = :walletId and begins_with(sk, :items)',
-      ExpressionAttributeValues: {
-        ':walletId': walletId,
-        ':items': 'Goal#',
-      },
-      ProjectionExpression:
-        'preferable_target_date, target_id, target_type, goal_type, monthly_contribution, sk, pk, final_amount',
-    };
-  }
-
-  const params = createParameter();
+  const params = goalParameter.createParameter(walletId);
 
   // Call DynamoDB to read the item from the table
-  const response = await docClient.query(params).promise();
+  const response = await documentClient.query(params).promise();
 
-  organizeRetrievedItems(response);
+  organizeGoal.organize(response);
   return {
     Goal: response.Items,
   };

@@ -1,6 +1,6 @@
 // Load the AWS SDK for Node.js
 const AWS = require('aws-sdk');
-const helper = require('./utils/helper');
+const util = require('./utils/util');
 const constants = require('./constants/constant');
 const updateHelper = require('./utils/update-helper');
 
@@ -10,7 +10,7 @@ AWS.config.update({
 });
 
 // Create the DynamoDB service object
-const docClient = new AWS.DynamoDB.DocumentClient();
+const documentClient = new AWS.DynamoDB.DocumentClient();
 
 exports.handler = async (event) => {
   const events = [];
@@ -19,9 +19,9 @@ exports.handler = async (event) => {
   /*
    * If category Id is not present
    */
-  await helper.calculateAndFetchCategory(event, events, docClient);
+  await util.calculateAndFetchCategory(event, events, documentClient);
 
-  const response = await updateHelper.updateAllItems(events, event, docClient);
+  const response = await updateHelper.updateAllItems(events, event, documentClient);
 
   const updateResponse = event['body-json'];
   // updateResponse.category = response.Category.Attributes.sk;

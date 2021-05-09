@@ -1,9 +1,9 @@
-const DeleteHelper = () => {};
+function DeleteHelper() {}
 
 const deleteItem = require('../delete/item');
 
-async function deleteAnItem(pk, sk, DB) {
-  await deleteItem.deleteOneItem(pk, sk, DB).then(
+async function deleteAnItem(pk, sk, documentClient) {
+  await deleteItem.deleteOneItem(pk, sk, documentClient).then(
     () => {
       console.log('successfully deleted the item');
     },

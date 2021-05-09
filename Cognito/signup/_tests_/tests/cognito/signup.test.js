@@ -25,7 +25,7 @@ describe('signup', () => {
   event.params.header['Accept-Language'] = 'en';
   test('With Data: Success', async () => {
     const response = await cognitoSignup.signup(event);
-    expect(response).not.toBeNull();
+    expect(response).not.toBeUndefined();
     expect(response.UserConfirmed).toBe(false);
     expect(response.CodeDeliveryDetails.Destination).toBe(event['body-json'].username);
   });

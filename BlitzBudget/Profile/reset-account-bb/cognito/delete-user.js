@@ -1,4 +1,4 @@
-const DeleteUser = () => {};
+function DeleteUser() {}
 
 // Delete Cognito Account
 async function deleteCognitoAccount(paramsDelete, cognitoIdServiceProvider) {

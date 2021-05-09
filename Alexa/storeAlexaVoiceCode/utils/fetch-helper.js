@@ -7,11 +7,11 @@ const fetchVoiceCode = require('../voice-code/fetch');
  */
 async function handleGetNewVoiceCode(
   userId,
-  docClient,
+  documentClient,
 ) {
   let alexaId;
   let voiceCodePresent;
-  await fetchVoiceCode.getNewVoiceCode(userId, docClient).then(
+  await fetchVoiceCode.getNewVoiceCode(userId, documentClient).then(
     (result) => {
       if (result.Count > 0) {
         Object.keys(result.Items).forEach((alexaVoiceCode) => {

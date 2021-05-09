@@ -1,26 +1,12 @@
-const FetchCategory = () => {};
+function FetchCategory() {}
 
-const constants = require('../constants/constant');
+const categoryParameter = require('../create-parameter/category');
 
-async function getCategoryData(pk, startsWithDate, endsWithDate, docClient) {
-  function createParameters() {
-    return {
-      TableName: constants.TABLE_NAME,
-      KeyConditionExpression: 'pk = :pk and sk BETWEEN :bt1 AND :bt2',
-      ExpressionAttributeValues: {
-        ':pk': pk,
-        ':bt1': `Category#${startsWithDate}`,
-        ':bt2': `Category#${endsWithDate}`,
-      },
-      ProjectionExpression:
-        'pk, sk, FetchCategory_name, FetchCategory_total, FetchCategory_type',
-    };
-  }
-
-  const params = createParameters();
+async function getCategoryData(pk, startsWithDate, endsWithDate, documentClient) {
+  const params = categoryParameter.createParameter(pk, startsWithDate, endsWithDate);
 
   // Call DynamoDB to read the item from the table
-  const response = await docClient.query(params).promise();
+  const response = await documentClient.query(params).promise();
   return {
     Category: response.Items,
   };

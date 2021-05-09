@@ -3,8 +3,8 @@ const FetchVoiceCode = () => {};
 /*
  * Get New Voice Code
  */
-function getNewVoiceCode(userId, docClient) {
-  function createParameters() {
+function getNewVoiceCode(userId, documentClient) {
+  function createParameter() {
     return {
       TableName: 'blitzbudget',
       KeyConditionExpression: 'pk = :userId and begins_with(sk, :items)',
@@ -16,11 +16,11 @@ function getNewVoiceCode(userId, docClient) {
     };
   }
 
-  const params = createParameters();
+  const params = createParameter();
 
   // Call DynamoDB to read the item from the table
   return new Promise((resolve, reject) => {
-    docClient.query(params, (err, data) => {
+    documentClient.query(params, (err, data) => {
       if (err) {
         console.log('Error ', err);
         reject(err);
