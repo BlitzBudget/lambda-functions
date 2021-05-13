@@ -1,4 +1,4 @@
-const FetchHelper = () => {};
+function FetchHelper() {}
 
 const fetchWallet = require('../fetch/wallet');
 
