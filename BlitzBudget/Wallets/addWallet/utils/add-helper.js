@@ -1,4 +1,4 @@
-const AddHelper = () => {};
+function AddHelper() {}
 
 const addWallet = require('../add/wallet');
 
