@@ -1,49 +1,54 @@
-const FetchHelper = () => {};
+function FetchHelper() {}
 
 const util = require('./util');
-const fetchCategory = require('../fetch/category');
+const category = require('../fetch/category');
 const createCategory = require('../add/category');
+const helper = require('./helper');
+
+async function fetchCategory(event, today, documentClient) {
+  let categoryResponse = {};
+  /*
+  * Check if category is present before adding them
+  */
+  await category.getCategoryData(event, today, documentClient).then(
+    (response) => {
+      console.log(
+        'successfully assigned the existing category %j',
+        JSON.stringify(response),
+      );
+      categoryResponse = response;
+    },
+    (err) => {
+      throw new Error(`Unable to add the Category ${err}`);
+    },
+  );
+
+  return categoryResponse;
+}
 
 async function calculateAndFetchCategory(event, events, documentClient) {
   const categoryName = event['body-json'].category;
-  if (
-    util.isNotEmpty(categoryName)
-    && util.notIncludesStr(categoryName, 'Category#')
-  ) {
-    const today = new Date();
-    today.setYear(event['body-json'].dateMeantFor.substring(5, 9));
-    today.setMonth(
-      parseInt(event['body-json'].dateMeantFor.substring(10, 12), 10) - 1,
-    );
-    const categoryId = `Category#${today.toISOString()}`;
+  let categoryResponse = {};
 
-    /*
-     * Check if category is present before adding them
-     */
-    await fetchCategory.getCategoryData(event, today, documentClient).then(
-      (result) => {
-        if (util.isNotEmpty(result.Category)) {
-          console.log(
-            'successfully assigned the existing category %j',
-            result.Category.sk,
-          );
-          // event['body-json'].category = result.Category.sk;
-        } else {
-          // Assign Category to create the transactions with the category ID
-          createCategory.addCategoryItem(
-            event,
-            categoryId,
-            categoryName,
-            events,
-            documentClient,
-          );
-        }
-      },
-      (err) => {
-        throw new Error(`Unable to add the Budget ${err}`);
-      },
-    );
+  if (util.isEmpty(categoryName) || util.includesStr(categoryName, 'Category#')) {
+    return categoryResponse;
   }
+
+  const today = helper.formulateDateFromRequest(event);
+  const categoryId = `Category#${today.toISOString()}`;
+  categoryResponse = await fetchCategory(event, today, documentClient);
+
+  if (util.isEmpty(categoryResponse) || util.isEmpty(categoryResponse.Category)) {
+    // Assign Category to create the transactions with the category ID
+    events.push(createCategory.createCategoryItem(
+      event,
+      categoryId,
+      categoryName,
+      documentClient,
+    ));
+  }
+
+  return categoryResponse;
 }
 
 FetchHelper.prototype.calculateAndFetchCategory = calculateAndFetchCategory;

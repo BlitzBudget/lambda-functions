@@ -1,9 +1,9 @@
-const UpdateTransaction = () => {};
+function UpdateTransaction() {}
 
-const transactionParameter = require('../create-parameter/transaction');
+const transactionExpression = require('../create-expression/transaction');
 
 async function updatingTransactions(event, documentClient) {
-  const params = transactionParameter.createParameter(event);
+  const params = transactionExpression.createExpression(event);
 
   console.log('Updating an item...');
   const response = await documentClient.update(params).promise();
