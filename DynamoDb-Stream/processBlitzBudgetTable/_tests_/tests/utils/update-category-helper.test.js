@@ -26,4 +26,13 @@ describe('Update Category item', () => {
       .updateCategoryTotal(mockRequest.Records[2], events, documentClient);
     expect(events.length).toBe(3);
   });
+
+  mockRequest.Records[2].dynamodb.OldImage.category = {
+    S: 'Debt',
+  };
+  test('MODIFY Category: Success', async () => {
+    await updateCategory
+      .updateCategoryTotal(mockRequest.Records[0], events, documentClient);
+    expect(events.length).toBe(4);
+  });
 });

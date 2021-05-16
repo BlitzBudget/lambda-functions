@@ -11,4 +11,12 @@ describe('organizeBudget: createParameter', () => {
     expect(mockResponse.Items[0].pk).toBeUndefined();
     expect(mockResponse.Items[0].sk).toBeUndefined();
   });
+
+  test('Without Data: Success', () => {
+    const events = mockResponse;
+    events.Items = undefined;
+    organizeBudget.organize(mockResponse);
+    expect(mockResponse).not.toBeUndefined();
+    expect(mockResponse.Items).toBeUndefined();
+  });
 });

@@ -45,4 +45,15 @@ describe('formulateResponse', () => {
     expect(response.AuthenticationResult).not.toBeUndefined();
     expect(response.ChallengeParameters).not.toBeUndefined();
   });
+
+  test('With Data CheckPassword True: Success', async () => {
+    event['body-json'].checkPassword = true;
+    const response = await helper.formulateResponse(event);
+    expect(response).not.toBeUndefined();
+    expect(response.Username).not.toBeUndefined();
+    expect(response.UserAttributes).not.toBeUndefined();
+    expect(response.Wallet).not.toBeUndefined();
+    expect(response.AuthenticationResult).not.toBeUndefined();
+    expect(response.ChallengeParameters).not.toBeUndefined();
+  });
 });

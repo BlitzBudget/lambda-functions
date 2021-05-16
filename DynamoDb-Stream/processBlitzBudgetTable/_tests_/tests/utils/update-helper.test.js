@@ -15,6 +15,12 @@ jest.mock('aws-sdk', () => ({
 }));
 
 describe('update Wallet item', () => {
+  test('MODIFY, Insert, Remove Item: Success', async () => {
+    const response = await updateHelper
+      .updateRelevantItems(mockRequest);
+    expect(response).toBeUndefined();
+  });
+
   mockRequest.Records[0].dynamodb.NewImage.account_balance = {
     N: 20,
   };
@@ -51,7 +57,43 @@ describe('update Wallet item', () => {
   mockRequest.Records[2].dynamodb.OldImage.account_type = {
     S: 'ASSET',
   };
-  test('MODIFY Wallet: Success', async () => {
+
+  test('MODIFY, INSERT, REMOVE Wallet: Success', async () => {
+    const response = await updateHelper
+      .updateRelevantItems(mockRequest);
+    expect(response).toBeUndefined();
+  });
+
+  mockRequest.Records[0].dynamodb.NewImage.category_total = {
+    N: 20,
+  };
+  mockRequest.Records[0].dynamodb.OldImage.category_total = {
+    N: 20,
+  };
+  mockRequest.Records[0].dynamodb.OldImage.category_type = {
+    S: 'Income',
+  };
+  mockRequest.Records[0].dynamodb.NewImage.category_type = {
+    S: 'Income',
+  };
+  mockRequest.Records[0].dynamodb.NewImage.date_meant_for = {
+    S: 'Date#123',
+  };
+  mockRequest.Records[0].dynamodb.OldImage.date_meant_for = {
+    S: 'Date#123',
+  };
+
+  mockRequest.Records[2].dynamodb.OldImage.category_total = {
+    N: 30,
+  };
+  mockRequest.Records[2].dynamodb.OldImage.category_type = {
+    S: 'Income',
+  };
+  mockRequest.Records[2].dynamodb.OldImage.date_meant_for = {
+    S: 'Date#123',
+  };
+
+  test('MODIFY, INSERT, REMOVE Category: Success', async () => {
     const response = await updateHelper
       .updateRelevantItems(mockRequest);
     expect(response).toBeUndefined();

@@ -26,4 +26,11 @@ describe('Update Account item', () => {
       .updateAccountBalance(mockRequest.Records[2], events, documentClient);
     expect(events.length).toBe(3);
   });
+
+  test('MODIFY Amount With Same Amount: Success', async () => {
+    const eventsModify = [];
+    await updateAccount
+      .updateAccountBalance(mockRequest.Records[4], eventsModify, documentClient);
+    expect(eventsModify.length).toBe(2);
+  });
 });

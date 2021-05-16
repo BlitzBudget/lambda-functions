@@ -15,4 +15,20 @@ describe('Add RecurringTransaction item', () => {
     expect(response).not.toBeUndefined();
     expect(documentClient.put).toHaveBeenCalledTimes(1);
   });
+
+  test('With Weekly Data: Success', async () => {
+    mockRequest['body-json'].recurrence = 'WEEKLY';
+    const response = await addRecurringTransaction
+      .addRecurringTransaction(mockRequest, documentClient);
+    expect(response).not.toBeUndefined();
+    expect(documentClient.put).toHaveBeenCalledTimes(2);
+  });
+
+  test('With Undefined Data: Success', async () => {
+    mockRequest['body-json'].recurrence = 'WEEKLYundefined';
+    const response = await addRecurringTransaction
+      .addRecurringTransaction(mockRequest, documentClient);
+    expect(response).not.toBeUndefined();
+    expect(documentClient.put).toHaveBeenCalledTimes(3);
+  });
 });
