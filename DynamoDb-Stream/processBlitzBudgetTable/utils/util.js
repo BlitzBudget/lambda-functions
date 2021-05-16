@@ -1,4 +1,4 @@
-const Util = () => {};
+function Util() {}
 
 function isEmpty(obj) {
   // Check if objext is a number or a boolean
@@ -18,7 +18,7 @@ function isEmpty(obj) {
 }
 
 function includesStr(arr, val) {
-  return isEmpty(arr) ? null : arr.includes(val);
+  return isEmpty(arr) ? false : arr.includes(val);
 }
 
 function isEqual(obj1, obj2) {

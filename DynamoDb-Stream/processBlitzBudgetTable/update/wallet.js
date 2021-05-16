@@ -1,4 +1,4 @@
-const Wallet = () => {};
+function Wallet() {}
 
 const walletParameter = require('../create-parameter/wallet');
 

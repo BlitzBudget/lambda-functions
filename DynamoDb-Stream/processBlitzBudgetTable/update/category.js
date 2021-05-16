@@ -1,4 +1,4 @@
-const UpdateCategory = () => {};
+function UpdateCategory() {}
 
 const categoryParameter = require('../create-parameter/category');
 

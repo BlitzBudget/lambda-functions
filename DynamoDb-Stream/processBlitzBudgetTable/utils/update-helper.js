@@ -1,4 +1,4 @@
-const UpdateHelper = () => { };
+function UpdateHelper() { }
 
 const AWS = require('aws-sdk');
 const util = require('./util');
@@ -17,7 +17,8 @@ AWS.config.update({
 });
 
 // Create the DynamoDB service object
-const documentClient = new AWS.DynamoDB.DocumentClient();
+const dynamoDB = new AWS.DynamoDB();
+const documentClient = dynamoDB.DocumentClient();
 
 async function fulfillPromise(events) {
   try {

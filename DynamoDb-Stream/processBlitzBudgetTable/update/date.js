@@ -1,4 +1,4 @@
-const UpdateDate = () => {};
+function UpdateDate() {}
 
 const dateParameter = require('../create-parameter/date');
 
