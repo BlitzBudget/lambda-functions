@@ -1,0 +1,28 @@
+# This workflow will do a Deployment to AWS LAMBDA
+name: Node.js CI
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [15.x]
+         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+
+    steps:
+    - name: processBlitzBudgetRecords zip
+      run: cd DynamoDb-Stream/processBlitzBudgetTable/; zip -qq -r ../../processBlitzBudgetTable.zip ./; cd ../..;
+    - name: processBlitzBudgetRecords deploy
+      uses: appleboy/lambda-action@master
+      with:
+        aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws_region: ${{ secrets.AWS_REGION }}
+        function_name: processBlitzBudgetRecords
+        zip_file: processBlitzBudgetTable.zip

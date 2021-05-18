@@ -2,3 +2,5 @@ node_modules/
 .eslintcache
 .vscode/**
 **/coverage/**
+.DS_Store
+*/*.DS_Store
