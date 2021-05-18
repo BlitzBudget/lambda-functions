@@ -21,7 +21,7 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    # processBlitzBudgetRecords
+    # processBlitzBudgetRecords (1)
     - name: processBlitzBudgetRecords zip
       run: cd DynamoDb-Stream/processBlitzBudgetTable/; zip -qq -r ../../processBlitzBudgetTable.zip ./; cd ../..;
     - name: processBlitzBudgetRecords deploy
@@ -32,7 +32,7 @@ jobs:
         aws_region: ${{ secrets.AWS_REGION }}
         function_name: processBlitzBudgetRecords
         zip_file: processBlitzBudgetTable.zip
-    # addAccounts
+    # addAccounts (2)
     - name: addAccounts zip
       run: cd BlitzBudget/Accounts/addAccounts/; zip -qq -r ../../../addAccounts.zip ./; cd ../../..;
     - name: addAccounts deploy
@@ -43,7 +43,7 @@ jobs:
         aws_region: ${{ secrets.AWS_REGION }}
         function_name: addAccounts
         zip_file: addAccounts.zip
-    # deleteAccounts
+    # deleteAccounts (3)
     - name: deleteAccounts zip
       run: cd BlitzBudget/Accounts/deleteAccount/; zip -qq -r ../../../deleteAccounts.zip ./; cd ../../..;
     - name: deleteAccounts deploy
@@ -54,7 +54,7 @@ jobs:
         aws_region: ${{ secrets.AWS_REGION }}
         function_name: deleteAccounts
         zip_file: deleteAccounts.zip
-    # getAccounts
+    # getAccounts (4)
     - name: getAccounts zip
       run: cd BlitzBudget/Accounts/getAccounts/; zip -qq -r ../../../getAccounts.zip ./; cd ../../..;
     - name: getAccounts deploy
@@ -65,7 +65,7 @@ jobs:
         aws_region: ${{ secrets.AWS_REGION }}
         function_name: getAccounts
         zip_file: getAccounts.zip
-    # patchAccounts
+    # patchAccounts (5)
     - name: getAccounts zip
       run: cd BlitzBudget/Accounts/patchAccount/; zip -qq -r ../../../patchAccount.zip ./; cd ../../..;
     - name: patchAccount deploy
@@ -76,7 +76,7 @@ jobs:
         aws_region: ${{ secrets.AWS_REGION }}
         function_name: patchAccounts
         zip_file: patchAccount.zip
-    # addBudget
+    # addBudget (6)
     - name: addBudget zip
       run: cd BlitzBudget/Budgets/addBudgets/; zip -qq -r ../../../addBudget.zip ./; cd ../../..;
     - name: addBudget deploy
@@ -87,7 +87,7 @@ jobs:
         aws_region: ${{ secrets.AWS_REGION }}
         function_name: addBudget
         zip_file: addBudget.zip
-    # getBudget
+    # getBudget (7)
     - name: getBudget zip
       run: cd BlitzBudget/Budgets/getBudgets/; zip -qq -r ../../../getBudget.zip ./; cd ../../..;
     - name: getBudget deploy
@@ -98,7 +98,7 @@ jobs:
         aws_region: ${{ secrets.AWS_REGION }}
         function_name: getBudget
         zip_file: getBudget.zip
-    # patchBudget
+    # patchBudget (8)
     - name: patchBudgets zip
       run: cd BlitzBudget/Budgets/patchBudgets/; zip -qq -r ../../../patchBudget.zip ./; cd ../../..;
     - name: patchBudget deploy
@@ -109,7 +109,7 @@ jobs:
         aws_region: ${{ secrets.AWS_REGION }}
         function_name: patchBudget
         zip_file: patchBudget.zip
-    # deleteCategory
+    # deleteCategory (9)
     - name: deleteCategory zip
       run: cd BlitzBudget/Category/deleteCategories/; zip -qq -r ../../../deleteCategory.zip ./; cd ../../..;
     - name: deleteCategory deploy
@@ -120,7 +120,7 @@ jobs:
         aws_region: ${{ secrets.AWS_REGION }}
         function_name: deleteCategory
         zip_file: deleteCategory.zip
-    # deleteAllItemsFromWallet
+    # deleteAllItemsFromWallet (10)
     - name: deleteAllItemsFromWallet zip
       run: cd BlitzBudget/Common/deleteAllItemsFromWallet/; zip -qq -r ../../../deleteAllItemsFromWallet.zip ./; cd ../../..;
     - name: deleteAllItemsFromWallet deploy
@@ -131,7 +131,7 @@ jobs:
         aws_region: ${{ secrets.AWS_REGION }}
         function_name: deleteAllItemsFromWallet
         zip_file: deleteAllItemsFromWallet.zip
-    # deleteAllWallets
+    # deleteAllWallets (11)
     - name: deleteAllWallets zip
       run: cd BlitzBudget/Common/deleteAllWallets/; zip -qq -r ../../../deleteAllWallets.zip ./; cd ../../..;
     - name: deleteAllWallets deploy
@@ -142,7 +142,7 @@ jobs:
         aws_region: ${{ secrets.AWS_REGION }}
         function_name: deleteAllWallets
         zip_file: deleteAllWallets.zip
-    # deleteMultipleItems
+    # deleteMultipleItems (12)
     - name: deleteMultipleItems zip
       run: cd BlitzBudget/Common/deleteBatch/; zip -qq -r ../../../deleteMultipleItems.zip ./; cd ../../..;
     - name: deleteMultipleItems deploy
@@ -153,7 +153,7 @@ jobs:
         aws_region: ${{ secrets.AWS_REGION }}
         function_name: deleteMultipleItems
         zip_file: deleteMultipleItems.zip
-    # deleteOneItem
+    # deleteOneItem (13)
     - name: deleteOneItem zip
       run: cd BlitzBudget/Common/deleteOneItem/; zip -qq -r ../../../deleteOneItem.zip ./; cd ../../..;
     - name: deleteOneItem deploy
@@ -164,7 +164,7 @@ jobs:
         aws_region: ${{ secrets.AWS_REGION }}
         function_name: deleteOneItem
         zip_file: deleteOneItem.zip
-    # addGoals
+    # addGoals (14)
     - name: addGoals zip
       run: cd BlitzBudget/Goals/addGoals/; zip -qq -r ../../../addGoals.zip ./; cd ../../..;
     - name: addGoals deploy
@@ -175,7 +175,7 @@ jobs:
         aws_region: ${{ secrets.AWS_REGION }}
         function_name: addGoals
         zip_file: addGoals.zip
-    # getGoals
+    # getGoals (15)
     - name: getGoals zip
       run: cd BlitzBudget/Goals/getGoals/; zip -qq -r ../../../getGoals.zip ./; cd ../../..;
     - name: getGoals deploy
@@ -186,7 +186,7 @@ jobs:
         aws_region: ${{ secrets.AWS_REGION }}
         function_name: getGoals
         zip_file: getGoals.zip
-    # patchGoal
+    # patchGoal (16)
     - name: patchGoal zip
       run: cd BlitzBudget/Goals/patchGoals/; zip -qq -r ../../../patchGoal.zip ./; cd ../../..;
     - name: patchGoal deploy
@@ -197,7 +197,7 @@ jobs:
         aws_region: ${{ secrets.AWS_REGION }}
         function_name: patchGoal
         zip_file: patchGoal.zip
-    # getOverview
+    # getOverview (17)
     - name: getOverview zip
       run: cd BlitzBudget/Overview/; zip -qq -r ../../../getOverview.zip ./; cd ../../..;
     - name: getOverview deploy
@@ -208,7 +208,7 @@ jobs:
         aws_region: ${{ secrets.AWS_REGION }}
         function_name: getOverview
         zip_file: getOverview.zip
-    # resetAccountBB
+    # resetAccountBB (18)
     - name: resetAccountBB zip
       run: cd BlitzBudget/Profile/reset-account-bb/; zip -qq -r ../../../resetAccountBB.zip ./; cd ../../..;
     - name: resetAccountBB deploy
@@ -219,7 +219,7 @@ jobs:
         aws_region: ${{ secrets.AWS_REGION }}
         function_name: resetAccountBB
         zip_file: resetAccountBB.zip
-    # sendEmailToSupport
+    # sendEmailToSupport (19)
     - name: sendEmailToSupport zip
       run: cd BlitzBudget/Profile/sendEmailToSupport/; zip -qq -r ../../../sendEmailToSupport.zip ./; cd ../../..;
     - name: sendEmailToSupport deploy
@@ -230,7 +230,7 @@ jobs:
         aws_region: ${{ secrets.AWS_REGION }}
         function_name: sendEmailToSupport
         zip_file: sendEmailToSupport.zip
-    # addScheduledTransactions
+    # addScheduledTransactions (20)
     - name: addScheduledTransactions zip
       run: cd BlitzBudget/RecurringTransactions/addScheduledTransactions/; zip -qq -r ../../../addScheduledTransactions.zip ./; cd ../../..;
     - name: addScheduledTransactions deploy
@@ -241,7 +241,7 @@ jobs:
         aws_region: ${{ secrets.AWS_REGION }}
         function_name: addScheduledTransactions
         zip_file: addScheduledTransactions.zip
-    # patchRecurringTransaction
+    # patchRecurringTransaction (21)
     - name: patchRecurringTransaction zip
       run: cd BlitzBudget/RecurringTransactions/patchRecurringTransaction/; zip -qq -r ../../../patchRecurringTransaction.zip ./; cd ../../..;
     - name: patchRecurringTransaction deploy
@@ -252,7 +252,7 @@ jobs:
         aws_region: ${{ secrets.AWS_REGION }}
         function_name: patchRecurringTransaction
         zip_file: patchRecurringTransaction.zip
-    # addTransactions
+    # addTransactions (22)
     - name: addTransactions zip
       run: cd BlitzBudget/RecurringTransactions/addTransactions/; zip -qq -r ../../../addTransactions.zip ./; cd ../../..;
     - name: addTransactions deploy
@@ -263,7 +263,7 @@ jobs:
         aws_region: ${{ secrets.AWS_REGION }}
         function_name: addTransactions
         zip_file: addTransactions.zip
-    # getTransactions
+    # getTransactions (23)
     - name: getTransactions zip
       run: cd BlitzBudget/Transactions/getTransactions/; zip -qq -r ../../../getTransactions.zip ./; cd ../../..;
     - name: getTransactions deploy
@@ -274,7 +274,7 @@ jobs:
         aws_region: ${{ secrets.AWS_REGION }}
         function_name: getTransactions
         zip_file: getTransactions.zip
-    # patchTransactions
+    # patchTransactions (24)
     - name: patchTransactions zip
       run: cd BlitzBudget/Transactions/patchTransactions/; zip -qq -r ../../../patchTransactions.zip ./; cd ../../..;
     - name: patchTransactions deploy
@@ -285,7 +285,7 @@ jobs:
         aws_region: ${{ secrets.AWS_REGION }}
         function_name: patchTransactions
         zip_file: patchTransactions.zip
-    # addWallet
+    # addWallet (25)
     - name: addWallet zip
       run: cd BlitzBudget/Transactions/addWallet/; zip -qq -r ../../../addWallet.zip ./; cd ../../..;
     - name: addWallet deploy
@@ -296,7 +296,7 @@ jobs:
         aws_region: ${{ secrets.AWS_REGION }}
         function_name: addWallet
         zip_file: addWallet.zip
-    # getWallet
+    # getWallet (26)
     - name: getWallet zip
       run: cd BlitzBudget/Wallets/getWallet/; zip -qq -r ../../../getWallet.zip ./; cd ../../..;
     - name: getWallet deploy
@@ -307,7 +307,7 @@ jobs:
         aws_region: ${{ secrets.AWS_REGION }}
         function_name: getWallet
         zip_file: getWallet.zip
-    # patchWallet
+    # patchWallet (27)
     - name: patchWallet zip
       run: cd BlitzBudget/Wallets/patchWallet/; zip -qq -r ../../../patchWallet.zip ./; cd ../../..;
     - name: patchWallet deploy
