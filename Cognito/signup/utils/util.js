@@ -15,9 +15,6 @@ function isEmpty(obj) {
   // check if obj is a custom obj
   if (obj && Object.keys(obj).length !== 0) { return false; }
 
-  // Check if obj is an element
-  if (obj instanceof Element) return false;
-
   return true;
 }
 

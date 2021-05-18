@@ -1,16 +1,11 @@
 {
   "body-json": {
-    "walletId": "Wallets#93202082911265",
-    "transactionId": "transactions#2020-04-27T12:30:53.088Z",
-    "amount": 54,
-    "description": "adding this transaction",
-    "category": "Save More",
-    "categoryType": "Income",
-    "recurrence" : "NEVER"
+    "userId": "User#2020-05-02T17:18:47.201Z"
   },
   "params": {
     "path": {},
-    "querystring": {},
+    "querystring": {
+    },
     "header": {
       "Accept": "*/*",
       "Accept-Encoding": "gzip, deflate, br",
@@ -46,7 +41,7 @@
     "cognito-authentication-type": "",
     "cognito-identity-id": "",
     "cognito-identity-pool-id": "",
-    "http-method": "PATCH",
+    "http-method": "POST",
     "stage": "prod",
     "source-ip": "81.40.21.245",
     "user": "",
@@ -54,6 +49,6 @@
     "user-arn": "",
     "request-id": "92231855-49fd-41da-87ed-dfa4fc0d0a01",
     "resource-id": "7ftbxq",
-    "resource-path": "/transactions"
+    "resource-path": "/wallet"
   }
 }

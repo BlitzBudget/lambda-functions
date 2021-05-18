@@ -1,8 +1,10 @@
 const addHelper = require('../../../utils/add-helper');
 const mockRequest = require('../../fixtures/request/addTransactionsWithMatchingCategory.json');
+const mockRequestWithoutDate = require('../../fixtures/request/withoutDate.json');
 const mockRequestWithCategory = require('../../fixtures/request/withDateAndCategory.json');
 const mockResponse = require('../../fixtures/response/addCategory.json');
 const mockFetchResponse = require('../../fixtures/response/fetchCategory.json');
+const mockResponseWithDate = require('../../fixtures/response/fetchDate.json');
 
 const documentClient = {
   update: jest.fn(() => ({
@@ -96,5 +98,30 @@ describe('With Add All Items Data', () => {
     expect(response.transactionId).not.toBeUndefined();
     expect(response.nextRecurrence).not.toBeUndefined();
     expect(documentClient.put).toHaveBeenCalledTimes(2);
+  });
+});
+
+describe('addANewDateIfNotPresent', () => {
+  const documentClientWithDate = {
+    update: jest.fn(() => ({
+      promise: jest.fn().mockResolvedValueOnce(mockRequestWithCategory),
+    })),
+    query: jest.fn(() => ({
+      promise: jest.fn().mockResolvedValueOnce(mockResponseWithDate),
+    })),
+  };
+
+  test('With Data: Success', async () => {
+    const events = await addHelper.addANewDateIfNotPresent(mockRequest, [],
+      documentClientWithDate);
+    expect(events.length).toBe(0);
+  });
+
+  test('Without Date Id: Success', async () => {
+    const events = await addHelper.addANewDateIfNotPresent(mockRequestWithoutDate, [],
+      documentClientWithDate);
+    expect(events.length).toBe(1);
+    expect(documentClientWithDate.query).toHaveBeenCalledTimes(1);
+    expect(documentClientWithDate.update).toHaveBeenCalledTimes(1);
   });
 });

@@ -1,4 +1,4 @@
-const UpdateHelper = () => {};
+function UpdateHelper() {}
 
 const updateWallet = require('../update/wallet');
 

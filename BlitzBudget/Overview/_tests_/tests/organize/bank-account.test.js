@@ -9,4 +9,11 @@ describe('organizeBankAccount: createParameter', () => {
     expect(mockResponse.Items[0].accountId).not.toBeUndefined();
     expect(mockResponse.Items[0].walletId).not.toBeUndefined();
   });
+
+  test('Without Data: Success', () => {
+    mockResponse.Items = undefined;
+    organizeBankAccount.organize(mockResponse);
+    expect(mockResponse).not.toBeUndefined();
+    expect(mockResponse.Items).toBeUndefined();
+  });
 });

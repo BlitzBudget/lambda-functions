@@ -1,4 +1,4 @@
-const Util = () => {};
+function Util() {}
 
 function isEmpty(obj) {
   // Check if objext is a number or a boolean
@@ -11,17 +11,21 @@ function isEmpty(obj) {
   if (typeof obj.length !== 'undefined') return obj.length === 0;
 
   // check if obj is a custom obj
-  if (obj
-&& Object.keys(obj).length !== 0) { return false; }
+  if (obj && Object.keys(obj).length !== 0) { return false; }
 
   return true;
 }
 
 function includesStr(arr, val) {
-  return isEmpty(arr) ? null : arr.includes(val);
+  return isEmpty(arr) ? false : arr.includes(val);
+}
+
+function isNotEmpty(obj) {
+  return !isEmpty(obj);
 }
 
 Util.prototype.includesStr = includesStr;
 Util.prototype.isEmpty = isEmpty;
+Util.prototype.isNotEmpty = isNotEmpty;
 // Export object
 module.exports = new Util();

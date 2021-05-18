@@ -29,3 +29,17 @@ describe('Fetch Category item', () => {
     expect(categoryId).toBeUndefined();
   });
 });
+
+describe('Fetch Category item: ERROR', () => {
+  const documentClientWithError = {
+    query: jest.fn(() => ({
+      promise: jest.fn().mockRejectedValueOnce(mockCategoryResponse),
+    })),
+  };
+  test('With Matching Category: Error', async () => {
+    await fetchHelper
+      .fetchCategory(mockRequest, new Date('2021-03'), documentClientWithError).catch((err) => {
+        expect(err).not.toBeUndefined();
+      });
+  });
+});

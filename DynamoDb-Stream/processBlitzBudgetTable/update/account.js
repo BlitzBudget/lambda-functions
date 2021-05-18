@@ -1,4 +1,4 @@
-const UpdateAccount = () => {};
+function UpdateAccount() {}
 
 const accountParameter = require('../create-parameter/account');
 

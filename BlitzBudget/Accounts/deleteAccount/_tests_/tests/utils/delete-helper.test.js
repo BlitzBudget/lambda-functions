@@ -17,4 +17,16 @@ describe('delete item', () => {
       .buildRequestAndDeleteAccount(event, walletId, accountId, dynamoDB);
     expect(deleteResponse).toBeUndefined();
   });
+
+  test('Without Data: Success', async () => {
+    const withoutDataEvent = [{
+      Count: 0,
+    },
+    {
+      Count: 0,
+    }];
+    const deleteResponse = await deleteItems
+      .buildRequestAndDeleteAccount(withoutDataEvent, walletId, accountId, dynamoDB);
+    expect(deleteResponse).toBeUndefined();
+  });
 });

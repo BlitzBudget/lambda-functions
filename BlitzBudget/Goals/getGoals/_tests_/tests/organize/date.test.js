@@ -9,4 +9,11 @@ describe('organizeDate: createParameter', () => {
     expect(mockResponse.Items[0].dateId).not.toBeUndefined();
     expect(mockResponse.Items[0].walletId).not.toBeUndefined();
   });
+
+  test('Without Data: Success', () => {
+    mockResponse.Items = undefined;
+    organizeDate.organize(mockResponse);
+    expect(mockResponse).not.toBeUndefined();
+    expect(mockResponse.Items).toBeUndefined();
+  });
 });

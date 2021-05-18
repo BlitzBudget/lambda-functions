@@ -1,18 +1,23 @@
 {
-    "collectCoverage": false,
+    "collectCoverage": true,
     "collectCoverageFrom": [
         "**/*.{js,jsx}",
         "!**/node_modules/**",
-        "!**/vendor/**"
+        "!**/vendor/**",
+        "!**/SES/**",
+        "!**/Cloudfront/**",
+        "!**/Alexa/**",
+        "!**/fixtures/**",
+        "!**/coverage/**"
       ],
     "coverageDirectory": "./coverage/",
     "coveragePathIgnorePatterns": ["/node_modules/"],
     "coverageThreshold": {
         "global": {
-          "branches": 1,
-          "functions": 1,
-          "lines": 1,
-          "statements": 1
+          "branches": 91,
+          "functions": 95,
+          "lines": 95,
+          "statements": 95
         }
       }
 }
