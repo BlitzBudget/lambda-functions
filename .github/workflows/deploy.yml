@@ -320,7 +320,7 @@ jobs:
         zip_file: patchWallet.zip
     # adminGetUserAttributes (28)
     - name: adminGetUserAttributes zip
-      run: cd Cognito/adminGetUserAttributes/; zip -qq -r ../../../adminGetUserAttributes.zip ./; cd ../../..;
+      run: cd Cognito/adminGetUserAttributes/; zip -qq -r ../../adminGetUserAttributes.zip ./; cd ../..;
     - name: adminGetUserAttributes deploy
       uses: appleboy/lambda-action@master
       with:
@@ -331,7 +331,7 @@ jobs:
         zip_file: adminGetUserAttributes.zip
     # adminUpdateAttributes (29)
     - name: adminUpdateAttributes zip
-      run: cd Cognito/adminUpdateUserAttributes/; zip -qq -r ../../../adminUpdateAttributes.zip ./; cd ../../..;
+      run: cd Cognito/adminUpdateUserAttributes/; zip -qq -r ../../adminUpdateAttributes.zip ./; cd ../..;
     - name: adminUpdateAttributes deploy
       uses: appleboy/lambda-action@master
       with:
@@ -342,7 +342,7 @@ jobs:
         zip_file: adminUpdateAttributes.zip
     # changePassword (30)
     - name: changePassword zip
-      run: cd Cognito/changePassword/; zip -qq -r ../../../changePassword.zip ./; cd ../../..;
+      run: cd Cognito/changePassword/; zip -qq -r ../../changePassword.zip ./; cd ../..;
     - name: changePassword deploy
       uses: appleboy/lambda-action@master
       with:
@@ -353,7 +353,7 @@ jobs:
         zip_file: changePassword.zip
     # confirmForgotPassword (31)
     - name: confirmForgotPassword zip
-      run: cd Cognito/confirmForgotPassword/; zip -qq -r ../../../confirmForgotPassword.zip ./; cd ../../..;
+      run: cd Cognito/confirmForgotPassword/; zip -qq -r ../../confirmForgotPassword.zip ./; cd ../..;
     - name: confirmForgotPassword deploy
       uses: appleboy/lambda-action@master
       with:
@@ -364,7 +364,7 @@ jobs:
         zip_file: confirmForgotPassword.zip
     # confirmSignup (32)
     - name: confirmSignup zip
-      run: cd Cognito/confirmSignup/; zip -qq -r ../../../confirmSignup.zip ./; cd ../../..;
+      run: cd Cognito/confirmSignup/; zip -qq -r ../../confirmSignup.zip ./; cd ../..;
     - name: confirmSignup deploy
       uses: appleboy/lambda-action@master
       with:
@@ -375,7 +375,7 @@ jobs:
         zip_file: confirmSignup.zip
     # deleteUser (33)
     - name: deleteUser zip
-      run: cd Cognito/deleteUser/; zip -qq -r ../../../deleteUser.zip ./; cd ../../..;
+      run: cd Cognito/deleteUser/; zip -qq -r ../../deleteUser.zip ./; cd ../..;
     - name: deleteUser deploy
       uses: appleboy/lambda-action@master
       with:
@@ -386,7 +386,7 @@ jobs:
         zip_file: deleteUser.zip
     # forgotPassword (34)
     - name: forgotPassword zip
-      run: cd Cognito/forgotPassword/; zip -qq -r ../../../forgotPassword.zip ./; cd ../../..;
+      run: cd Cognito/forgotPassword/; zip -qq -r ../../forgotPassword.zip ./; cd ../..;
     - name: forgotPassword deploy
       uses: appleboy/lambda-action@master
       with:
@@ -397,7 +397,7 @@ jobs:
         zip_file: forgotPassword.zip
     # refreshToken (35)
     - name: refreshToken zip
-      run: cd Cognito/refreshToken/; zip -qq -r ../../../refreshToken.zip ./; cd ../../..;
+      run: cd Cognito/refreshToken/; zip -qq -r ../../refreshToken.zip ./; cd ../..;
     - name: refreshToken deploy
       uses: appleboy/lambda-action@master
       with:
@@ -408,7 +408,7 @@ jobs:
         zip_file: refreshToken.zip
     # resendConfirmationCode (36)
     - name: resendConfirmationCode zip
-      run: cd Cognito/resendConfirmationCode/; zip -qq -r ../../../resendConfirmationCode.zip ./; cd ../../..;
+      run: cd Cognito/resendConfirmationCode/; zip -qq -r ../../resendConfirmationCode.zip ./; cd ../..;
     - name: resendConfirmationCode deploy
       uses: appleboy/lambda-action@master
       with:
@@ -419,7 +419,7 @@ jobs:
         zip_file: resendConfirmationCode.zip
     # signin (37)
     - name: signin zip
-      run: cd Cognito/signin/; zip -qq -r ../../../signin.zip ./; cd ../../..;
+      run: cd Cognito/signin/; zip -qq -r ../../signin.zip ./; cd ../..;
     - name: signin deploy
       uses: appleboy/lambda-action@master
       with:
@@ -430,7 +430,7 @@ jobs:
         zip_file: signin.zip
     # signup (38)
     - name: signup zip
-      run: cd Cognito/signup/; zip -qq -r ../../../signup.zip ./; cd ../../..;
+      run: cd Cognito/signup/; zip -qq -r ../../signup.zip ./; cd ../..;
     - name: signup deploy
       uses: appleboy/lambda-action@master
       with:
