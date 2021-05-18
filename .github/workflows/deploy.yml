@@ -199,7 +199,7 @@ jobs:
         zip_file: patchGoal.zip
     # getOverview (17)
     - name: getOverview zip
-      run: cd BlitzBudget/Overview/; zip -qq -r ../../../getOverview.zip ./; cd ../../..;
+      run: cd BlitzBudget/Overview/; zip -qq -r ../../getOverview.zip ./; cd ../../;
     - name: getOverview deploy
       uses: appleboy/lambda-action@master
       with:
