@@ -2,6 +2,12 @@ const dateParameter = require('../../../create-parameter/date');
 const mockRequest = require('../../fixtures/request/getTransactions');
 
 describe('dateParameter: createParameter', () => {
+  beforeEach(() => {
+    jest.resetModules();
+    process.env.AWS_LAMBDA_REGION = '1';
+    process.env.TABLE_NAME = '2';
+  });
+
   const event = mockRequest;
   test('With Data: Success', () => {
     const parameters = dateParameter.createParameter(event['body-json'].walletId, '2021-02');

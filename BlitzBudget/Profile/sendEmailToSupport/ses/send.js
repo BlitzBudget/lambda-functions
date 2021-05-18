@@ -7,7 +7,7 @@ const aws = require('aws-sdk');
 const constants = require('../constants/constant');
 
 const ses = new aws.SES({
-  region: constants.EU_WEST_ONE,
+  region: constants.AWS_LAMBDA_REGION,
 });
 
 async function sendEmail(params) {

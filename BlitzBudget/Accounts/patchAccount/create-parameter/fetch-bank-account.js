@@ -1,7 +1,5 @@
-const constants = require('../constants/constant');
-
 module.exports.createParameter = (walletId) => ({
-  TableName: constants.TABLE_NAME,
+  TableName: process.env.TABLE_NAME,
   KeyConditionExpression: 'pk = :walletId and begins_with(sk, :items)',
   ExpressionAttributeValues: {
     ':walletId': walletId,

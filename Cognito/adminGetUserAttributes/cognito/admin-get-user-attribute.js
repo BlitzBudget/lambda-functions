@@ -2,7 +2,7 @@ function AdminGetUser() {}
 
 const AWS = require('aws-sdk');
 
-AWS.config.update({ region: 'eu-west-1' });
+AWS.config.update({ region: process.env.AWS_LAMBDA_REGION });
 const cognitoIdServiceProvider = new AWS.CognitoIdentityServiceProvider();
 
 // Get User Attributes

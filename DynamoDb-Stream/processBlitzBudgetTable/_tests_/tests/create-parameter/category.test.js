@@ -2,6 +2,11 @@ const categoryParameter = require('../../../create-parameter/category');
 const mockRequest = require('../../fixtures/request/processBlitzBudgetTable');
 
 describe('categoryParameter: createParameter', () => {
+  beforeEach(() => {
+    jest.resetModules();
+    process.env.AWS_LAMBDA_REGION = '1';
+    process.env.TABLE_NAME = '2';
+  });
   const event = mockRequest;
   const walletId = event.Records[0].dynamodb.NewImage.pk.S;
   test('With Data: Success', () => {

@@ -6,7 +6,7 @@ const FetchVoiceCode = () => {};
 function getNewVoiceCode(userId, documentClient) {
   function createParameter() {
     return {
-      TableName: 'blitzbudget',
+      TableName: process.env.TABLE_NAME,
       KeyConditionExpression: 'pk = :userId and begins_with(sk, :items)',
       ExpressionAttributeValues: {
         ':userId': userId,

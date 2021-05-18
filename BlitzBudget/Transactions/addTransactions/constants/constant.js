@@ -1,2 +1,2 @@
-module.exports.EU_WEST_ONE = 'eu-west-1';
-module.exports.TABLE_NAME = 'blitzbudget';
+module.exports.AWS_LAMBDA_REGION = process.env.AWS_LAMBDA_REGION;
+module.exports.TABLE_NAME = process.env.TABLE_NAME;

@@ -1,11 +1,10 @@
 function DeleteHelper() {}
 
 const deleteUser = require('../cognito/delete-user');
-const constants = require('../constants/constant');
 const globalSignout = require('../cognito/global-signout');
 
 const paramsDelete = {
-  UserPoolId: constants.USER_POOL_ID,
+  UserPoolId: process.env.USER_POOL_ID,
   /* required */
 };
 

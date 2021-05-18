@@ -4,7 +4,7 @@ const constants = require('../constants/constant');
 
 LoginParameter.prototype.createParameter = (event) => ({
   AuthFlow: constants.USER_PASSWORD_AUTH,
-  ClientId: constants.CLIENT_ID,
+  ClientId: process.env.USER_POOL_ID,
   /* required */
   AuthParameters: {
     USERNAME: event['body-json'].username,

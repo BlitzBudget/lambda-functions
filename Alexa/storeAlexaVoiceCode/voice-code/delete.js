@@ -8,7 +8,7 @@ function deleteOldVoiceCode(pk, sk, documentClient) {
 
   function createParameter() {
     return {
-      TableName: 'blitzbudget',
+      TableName: process.env.TABLE_NAME,
       Key: {
         pk,
         sk,

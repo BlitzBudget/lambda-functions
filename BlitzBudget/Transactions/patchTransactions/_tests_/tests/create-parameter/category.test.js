@@ -2,6 +2,12 @@ const categoryParameter = require('../../../create-parameter/category');
 const mockRequest = require('../../fixtures/request/patchTransactions');
 
 describe('categoryParameter: createParameter', () => {
+  beforeEach(() => {
+    jest.resetModules();
+    process.env.AWS_LAMBDA_REGION = '1';
+    process.env.TABLE_NAME = '2';
+  });
+
   const event = mockRequest;
   test('With Data: Success', () => {
     const parameters = categoryParameter.createParameter(event, new Date('2021-02'));

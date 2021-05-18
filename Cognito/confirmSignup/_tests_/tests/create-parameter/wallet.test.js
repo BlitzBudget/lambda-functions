@@ -1,6 +1,11 @@
 const walletParameter = require('../../../create-parameter/wallet');
 
 describe('createWalletParameters', () => {
+  beforeEach(() => {
+    jest.resetModules();
+    process.env.AWS_LAMBDA_REGION = '1';
+    process.env.TABLE_NAME = '2';
+  });
   const event = {};
   event['body-json'] = {};
   event['body-json'].username = 'notempty';

@@ -2,9 +2,7 @@
 
 const AWS = require('aws-sdk');
 
-AWS.config.update({ region: 'eu-west-1' });
-
-const constants = require('../constants/constant.js');
+AWS.config.update({ region: process.env.AWS_LAMBDA_REGION });
 
 const DBHelper = () => {};
 let documentClient; let patchdocumentClient; let
@@ -128,7 +126,7 @@ DBHelper.prototype.getFromBlitzBudgetTable = (params) => new Promise((resolve, r
 DBHelper.prototype.removeFromBlitzBudgetTable = function removeFromBlitzBudgetTable(movie, userID) {
   return new Promise((resolve, reject) => {
     const params = {
-      TableName: constants.TABLE_NAME,
+      TableName: process.env.TABLE_NAME,
       Key: {
         userId: userID,
         movieTitle: movie,

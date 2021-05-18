@@ -2,10 +2,9 @@ function FetchAccounts() {}
 
 // Load the AWS SDK for Node.js
 const AWS = require('aws-sdk');
-const constants = require('../constants/constant');
 // Set the region
 AWS.config.update({
-  region: constants.EU_WEST_ONE,
+  region: process.env.AWS_LAMBDA_REGION,
 });
 
 // Create the DynamoDB service object

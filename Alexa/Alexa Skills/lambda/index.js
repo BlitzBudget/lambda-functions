@@ -142,7 +142,7 @@ const HelpHandler = {
 
 // TODO: clean up debugging code
 // const DEBUG = getEnvVar('DEBUG', false); // true = log to CloudWatch Logs ; false = no logging
-const COGNITO_REGION = getEnvVar('COGNITO_REGION', 'eu-west-1');
+const COGNITO_REGION = getEnvVar('COGNITO_REGION', process.env.AWS_LAMBDA_REGION);
 
 const maxHistorySize = 20; // remember only latest 20 intents
 

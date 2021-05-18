@@ -2,6 +2,12 @@ const budgetParameter = require('../../../create-parameter/budget');
 const mockRequest = require('../../fixtures/request/getBudgets');
 
 describe('budgetParameter: createParameter', () => {
+  beforeEach(() => {
+    jest.resetModules();
+    process.env.AWS_LAMBDA_REGION = '1';
+    process.env.TABLE_NAME = '2';
+  });
+
   const event = mockRequest;
   test('With Data: Success', () => {
     const parameters = budgetParameter.createParameter(event['body-json'].walletId, '2021-02', '2021-03');

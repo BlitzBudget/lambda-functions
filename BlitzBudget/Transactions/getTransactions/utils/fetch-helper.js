@@ -14,7 +14,7 @@ const recurringTransaction = require('../fetch/recurring-transaction');
 
 // Set the region
 AWS.config.update({
-  region: constants.EU_WEST_ONE,
+  region: constants.AWS_LAMBDA_REGION,
 });
 
 // Create the DynamoDB service object

@@ -1,7 +1,5 @@
-const constants = require('../constants/constant');
-
 module.exports.createParameter = (pk, startsWithDate, endsWithDate) => ({
-  TableName: constants.TABLE_NAME,
+  TableName: process.env.TABLE_NAME,
   KeyConditionExpression: 'pk = :pk and sk BETWEEN :bt1 AND :bt2',
   ExpressionAttributeValues: {
     ':pk': pk,

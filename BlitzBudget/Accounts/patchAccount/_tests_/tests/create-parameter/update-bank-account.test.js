@@ -2,6 +2,12 @@ const updateBankParameter = require('../../../create-parameter/update-bank-accou
 const mockRequest = require('../../fixtures/request/patchAccount');
 
 describe('updateBankParameter: createParameter', () => {
+  beforeEach(() => {
+    jest.resetModules();
+    process.env.AWS_LAMBDA_REGION = '1';
+    process.env.TABLE_NAME = '2';
+  });
+
   const event = mockRequest;
   test('With Data: Success', () => {
     const parameters = updateBankParameter.createParameter(event);

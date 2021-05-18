@@ -2,6 +2,12 @@ const walletExpression = require('../../../create-expression/wallet');
 const mockRequest = require('../../fixtures/request/patchWallet');
 
 describe('walletExpression: createExpression', () => {
+  beforeEach(() => {
+    jest.resetModules();
+    process.env.AWS_LAMBDA_REGION = '1';
+    process.env.TABLE_NAME = '2';
+  });
+
   const event = mockRequest;
 
   test('With Data: Success', () => {

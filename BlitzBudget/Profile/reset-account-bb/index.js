@@ -4,7 +4,7 @@ const publish = require('./sns/publish');
 const constants = require('./constants/constant');
 
 AWS.config.update({
-  region: constants.EU_WEST_ONE,
+  region: constants.AWS_LAMBDA_REGION,
 });
 // Delete User
 const cognitoIdServiceProvider = new AWS.CognitoIdentityServiceProvider();

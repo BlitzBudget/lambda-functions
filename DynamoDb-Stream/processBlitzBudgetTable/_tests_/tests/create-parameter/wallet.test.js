@@ -2,6 +2,12 @@ const walletParameter = require('../../../create-parameter/wallet');
 const mockRequest = require('../../fixtures/request/processBlitzBudgetTable');
 
 describe('walletParameter: createParameter', () => {
+  beforeEach(() => {
+    jest.resetModules();
+    process.env.AWS_LAMBDA_REGION = '1';
+    process.env.TABLE_NAME = '2';
+  });
+
   const event = mockRequest;
   const walletId = event.Records[0].dynamodb.NewImage.pk.S;
   const sk = event.Records[0].dynamodb.NewImage.sk.S;

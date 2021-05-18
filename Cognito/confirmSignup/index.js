@@ -6,7 +6,7 @@ const confirmSignupHelper = require('./utils/confirm-signup-helper');
 const fetchUserHelper = require('./utils/fetch-user-helper');
 const constants = require('./constants/constant');
 
-AWS.config.update({ region: constants.EU_WEST_ONE });
+AWS.config.update({ region: constants.AWS_LAMBDA_REGION });
 const cognitoidentityserviceprovider = new AWS.CognitoIdentityServiceProvider();
 
 // Create the DynamoDB service object

@@ -8,7 +8,7 @@ function addNewVoiceCode(event, userId, alexaId, documentClient) {
 
   function createParameter() {
     return {
-      TableName: 'blitzbudget',
+      TableName: process.env.TABLE_NAME,
       Item: {
         pk: userId,
         sk: alexaId,

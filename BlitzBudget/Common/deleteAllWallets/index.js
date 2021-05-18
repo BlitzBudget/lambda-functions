@@ -5,7 +5,7 @@ const fetchHelper = require('./utils/fetch-helper');
 const deleteHelper = require('./utils/delete-helper');
 
 // Set the region
-AWS.config.update({ region: 'eu-west-1' });
+AWS.config.update({ region: process.env.AWS_LAMBDA_REGION });
 const sns = new AWS.SNS();
 
 // Create the DynamoDB service object

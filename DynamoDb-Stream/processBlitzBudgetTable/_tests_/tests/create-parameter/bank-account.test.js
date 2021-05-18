@@ -1,6 +1,11 @@
 const fetchBankParameter = require('../../../create-parameter/account');
 
 describe('fetchBankParameter: createParameter', () => {
+  beforeEach(() => {
+    jest.resetModules();
+    process.env.AWS_LAMBDA_REGION = '1';
+    process.env.TABLE_NAME = '2';
+  });
   test('With Data: Success', () => {
     const parameters = fetchBankParameter.createParameter('pk', 'sk', 'balance');
     expect(parameters).not.toBeUndefined();

@@ -44,7 +44,7 @@ module.exports.createParameter = (event) => {
   expAttrNames['#update'] = 'updated_date';
 
   return {
-    TableName: 'blitzbudget',
+    TableName: process.env.TABLE_NAME,
     Key: {
       pk: event['body-json'].walletId,
       sk: event['body-json'].accountId,

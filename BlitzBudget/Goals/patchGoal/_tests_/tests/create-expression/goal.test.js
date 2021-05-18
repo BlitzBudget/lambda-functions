@@ -2,6 +2,12 @@ const budgetExpression = require('../../../create-expression/goal');
 const mockRequest = require('../../fixtures/request/patchGoals');
 
 describe('budgetExpression: createExpression', () => {
+  beforeEach(() => {
+    jest.resetModules();
+    process.env.AWS_LAMBDA_REGION = '1';
+    process.env.TABLE_NAME = '2';
+  });
+
   mockRequest['body-json'].categoryName = 'random';
   const event = mockRequest;
 
