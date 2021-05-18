@@ -287,7 +287,7 @@ jobs:
         zip_file: patchTransactions.zip
     # addWallet (25)
     - name: addWallet zip
-      run: cd BlitzBudget/Transactions/addWallet/; zip -qq -r ../../../addWallet.zip ./; cd ../../..;
+      run: cd BlitzBudget/Wallets/addWallet/; zip -qq -r ../../../addWallet.zip ./; cd ../../..;
     - name: addWallet deploy
       uses: appleboy/lambda-action@master
       with:
