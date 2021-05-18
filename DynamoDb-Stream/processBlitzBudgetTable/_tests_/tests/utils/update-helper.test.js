@@ -21,6 +21,7 @@ describe('update Wallet item', () => {
     expect(response).toBeUndefined();
   });
 
+  mockRequest.Records[0].dynamodb.Keys.sk.S = 'Wallet#2020-04-27T12:30:53.088Z';
   mockRequest.Records[0].dynamodb.NewImage.account_balance = {
     N: 20,
   };
@@ -39,6 +40,7 @@ describe('update Wallet item', () => {
   mockRequest.Records[0].dynamodb.OldImage.account_type = {
     S: 'ASSET',
   };
+  mockRequest.Records[1].dynamodb.Keys.sk.S = 'Wallet#2020-04-27T12:30:53.188Z';
   mockRequest.Records[1].dynamodb.NewImage.account_balance = {
     N: 20,
   };
@@ -48,6 +50,7 @@ describe('update Wallet item', () => {
   mockRequest.Records[1].dynamodb.NewImage.account_type = {
     S: 'ASSET',
   };
+  mockRequest.Records[2].dynamodb.Keys.sk.S = 'Wallet#2020-04-27T12:30:53.288Z';
   mockRequest.Records[2].dynamodb.OldImage.account_balance = {
     N: 30,
   };
@@ -64,6 +67,7 @@ describe('update Wallet item', () => {
     expect(response).toBeUndefined();
   });
 
+  mockRequest.Records[0].dynamodb.Keys.sk.S = 'Category#2020-04-27T12:30:53.088Z';
   mockRequest.Records[0].dynamodb.NewImage.category_total = {
     N: 20,
   };
@@ -82,7 +86,7 @@ describe('update Wallet item', () => {
   mockRequest.Records[0].dynamodb.OldImage.date_meant_for = {
     S: 'Date#123',
   };
-
+  mockRequest.Records[2].dynamodb.Keys.sk.S = 'Category#2020-04-27T12:30:53.188Z';
   mockRequest.Records[2].dynamodb.OldImage.category_total = {
     N: 30,
   };

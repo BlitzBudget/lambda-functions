@@ -12,6 +12,9 @@ function isEmpty(obj) {
   // Check if the length of the obj is defined
   if (typeof obj.length !== 'undefined') return obj.length === 0;
 
+  // check if obj is a custom obj
+  if (obj && Object.keys(obj).length !== 0) { return false; }
+
   return true;
 }
 

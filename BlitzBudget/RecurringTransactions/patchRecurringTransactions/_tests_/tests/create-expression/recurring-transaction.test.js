@@ -17,4 +17,18 @@ describe('recurringTransactionExpression: createExpression', () => {
     expect(parameters.ExpressionAttributeNames).not.toBeUndefined();
     expect(parameters.ReturnValues).not.toBeUndefined();
   });
+
+  test('Without Data: Success', () => {
+    event['body-json'] = undefined;
+    const parameters = recurringTransactionExpression.createExpression(event);
+    expect(parameters).toBeUndefined();
+  });
+
+  test('Without proper Data: Success', () => {
+    event['body-json'] = {
+      walletId: 'Wallet#2020-04-13',
+    };
+    const parameters = recurringTransactionExpression.createExpression(event);
+    expect(parameters).toBeUndefined();
+  });
 });

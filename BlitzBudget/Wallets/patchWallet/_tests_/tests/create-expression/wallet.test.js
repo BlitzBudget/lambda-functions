@@ -20,4 +20,20 @@ describe('walletExpression: createExpression', () => {
     expect(parameters.ExpressionAttributeNames['#update']).not.toBeUndefined();
     expect(parameters.ExpressionAttributeNames['#variable0']).not.toBeUndefined();
   });
+
+  test('Without Wallet Data: Success', () => {
+    event['body-json'] = undefined;
+    const parameters = walletExpression.createExpression(event);
+    expect(parameters).toBeUndefined();
+  });
+
+  test('Without Proper Parameters: Success', () => {
+    const withoutParameter = {
+      'body-json': {
+        walletId: 'Wallet#123',
+      },
+    };
+    const parameters = walletExpression.createExpression(withoutParameter);
+    expect(parameters).toBeUndefined();
+  });
 });

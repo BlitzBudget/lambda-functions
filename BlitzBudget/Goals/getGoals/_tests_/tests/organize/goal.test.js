@@ -9,4 +9,11 @@ describe('organizeGoal: createParameter', () => {
     expect(mockResponse.Items[0].goalId).not.toBeUndefined();
     expect(mockResponse.Items[0].walletId).not.toBeUndefined();
   });
+
+  test('Without Data: Success', () => {
+    mockResponse.Items = undefined;
+    organizeGoal.organize(mockResponse);
+    expect(mockResponse).not.toBeUndefined();
+    expect(mockResponse.Items).toBeUndefined();
+  });
 });

@@ -31,7 +31,7 @@ describe('Update Date item', () => {
     N: 30,
   };
   mockRequest.Records[2].dynamodb.OldImage.category_type = {
-    S: 'Income',
+    S: 'Expense',
   };
   mockRequest.Records[2].dynamodb.OldImage.date_meant_for = {
     S: 'Date#123',

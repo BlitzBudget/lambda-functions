@@ -1,5 +1,5 @@
 const sesParameter = require('../../../create-parameter/ses');
-const mockRequest = require('../../fixtures/sendSampleEmail.json');
+const mockRequest = require('../../fixtures/request/sendSampleEmail.json');
 
 describe('snsParameter: createParameter', () => {
   test('With Data: Success', () => {

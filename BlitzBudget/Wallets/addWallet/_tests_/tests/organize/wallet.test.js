@@ -13,10 +13,8 @@ describe('organizeWallet: createParameter', () => {
   });
 
   test('Without Data: Success', () => {
-    const events = mockResponse;
-    events.Items = undefined;
-    organizeWallet.organize(mockResponse);
-    expect(mockResponse).not.toBeUndefined();
-    expect(mockResponse.Items).toBeUndefined();
+    const events = undefined;
+    organizeWallet.organize(events);
+    expect(events).toBeUndefined();
   });
 });

@@ -27,4 +27,16 @@ describe('transactionExpression: createExpression', () => {
     expect(parameters.ExpressionAttributeNames['#variable2']).not.toBeUndefined();
     expect(parameters.ExpressionAttributeNames['#variable3']).not.toBeUndefined();
   });
+
+  test('With Empty Data: Success', () => {
+    event['body-json'] = undefined;
+    const parameters = transactionExpression.createExpression(event);
+    expect(parameters).toBeUndefined();
+  });
+
+  test('With Empty Parameters: Success', () => {
+    event['body-json'] = { walletId: 'Wallet#1234' };
+    const parameters = transactionExpression.createExpression(event);
+    expect(parameters).toBeUndefined();
+  });
 });

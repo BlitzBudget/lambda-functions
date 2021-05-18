@@ -10,12 +10,14 @@ describe('setRecurrenceDates: createParameter', () => {
 
     const fortNightlyDate = new Date();
     const targetFortNightlyDate = new Date();
+    targetFortNightlyDate.setDate(targetFortNightlyDate.getDate() + 15);
     setRecurrenceDates.setRecurrenceDates(fortNightlyDate, constants.BIMONTHLY);
-    expect(fortNightlyDate.getDate()).toBe(targetFortNightlyDate.getDate() + 15);
+    expect(fortNightlyDate.getDate()).toBe(targetFortNightlyDate.getDate());
 
     const weeklyDate = new Date();
     const targetWeeklyDate = new Date();
+    targetWeeklyDate.setDate(targetWeeklyDate.getDate() + 7);
     setRecurrenceDates.setRecurrenceDates(weeklyDate, constants.WEEKLY);
-    expect(weeklyDate.getDate()).toBe(targetWeeklyDate.getDate() + 7);
+    expect(weeklyDate.getDate()).toBe(targetWeeklyDate.getDate());
   });
 });

@@ -28,3 +28,22 @@ describe('SNS publish with data', () => {
     expect(sns.publish).toHaveBeenCalledTimes(1);
   });
 });
+
+describe('SNS publish with data:  ERROR', () => {
+  const snsError = {
+    publish: jest.fn(() => ({
+      promise: jest.fn().mockRejectedValueOnce({}),
+    })),
+  };
+  const eventsWithData = [];
+  eventsWithData.push(snsCreateTransaction
+    .markTransactionForCreation(mockRequest.Transaction[0], snsError, []));
+  test('With Data: Success', async () => {
+    await snsHelper
+      .sendSNSToCreateNewTransactions(eventsWithData).catch((err) => {
+        expect(err).not.toBeUndefined();
+      });
+    expect(eventsWithData.length).toBe(1);
+    expect(sns.publish).toHaveBeenCalledTimes(1);
+  });
+});

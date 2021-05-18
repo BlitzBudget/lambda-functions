@@ -1,5 +1,5 @@
 const sesSend = require('../../../ses/send');
-const mockRequest = require('../../fixtures/sendSampleEmail.json');
+const mockRequest = require('../../fixtures/request/sendSampleEmail.json');
 
 jest.mock('aws-sdk', () => ({
   SES: jest.fn(() => ({

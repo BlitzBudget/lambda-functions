@@ -88,13 +88,13 @@ async function addANewDateIfNotPresent(
   const createDateRequest = event;
 
   if (util.isNotEmpty(createDateRequest['body-json'].dateMeantFor) && util.notIncludesStr(createDateRequest['body-json'].dateMeantFor, 'Date#')) {
-    const today = helper.formulateDateFromRequest(event);
+    const today = helper.formateDateWithoutID(event);
     let dateMeantFor = await fetchHelper.fetchDate(event, today, documentClient);
 
     if (util.isEmpty(dateMeantFor)) {
       dateMeantFor = `Date#${today.toISOString()}`;
       console.log('Date entry is empty so creating the date object');
-      events.push(addDate.createDateData(event, dateMeantFor));
+      events.push(addDate.createDateData(event, dateMeantFor, documentClient));
     }
   }
   return events;

@@ -27,10 +27,19 @@ describe('Update Account item', () => {
     expect(events.length).toBe(3);
   });
 
-  test('MODIFY Amount With Same Amount: Success', async () => {
+  test('MODIFY Account New Account ID: Success', async () => {
     const eventsModify = [];
     await updateAccount
       .updateAccountBalance(mockRequest.Records[4], eventsModify, documentClient);
     expect(eventsModify.length).toBe(2);
+  });
+
+  test('MODIFY Account With same Balance: Success', async () => {
+    const eventsModify = [];
+    mockRequest.Records[4].dynamodb.OldImage.account.S = mockRequest.Records[4]
+      .dynamodb.NewImage.account.S;
+    await updateAccount
+      .updateAccountBalance(mockRequest.Records[4], eventsModify, documentClient);
+    expect(eventsModify.length).toBe(0);
   });
 });

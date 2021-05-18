@@ -5,6 +5,9 @@ describe('isEmpty', () => {
     expect(util.isEmpty('en')).toBe(false);
     expect(util.isEmpty(1)).toBe(false);
     expect(util.isEmpty(true)).toBe(false);
+    expect(util.isEmpty({
+      notempty: true,
+    })).toBe(false);
   });
 
   test('Without Data: Success', () => {

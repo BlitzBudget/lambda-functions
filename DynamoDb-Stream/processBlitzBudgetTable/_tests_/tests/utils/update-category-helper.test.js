@@ -27,12 +27,12 @@ describe('Update Category item', () => {
     expect(events.length).toBe(3);
   });
 
-  mockRequest.Records[2].dynamodb.OldImage.category = {
-    S: 'Debt',
-  };
-  test('MODIFY Category: Success', async () => {
+  test('MODIFY With different Name Category: Success', async () => {
+    mockRequest.Records[0].dynamodb.OldImage.category = {
+      S: 'Debt',
+    };
     await updateCategory
       .updateCategoryTotal(mockRequest.Records[0], events, documentClient);
-    expect(events.length).toBe(4);
+    expect(events.length).toBe(5);
   });
 });
