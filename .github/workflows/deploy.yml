@@ -16,6 +16,12 @@ jobs:
          # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - run: npm ci
     - name: processBlitzBudgetRecords zip
       run: cd DynamoDb-Stream/processBlitzBudgetTable/; zip -qq -r ../../processBlitzBudgetTable.zip ./; cd ../..;
     - name: processBlitzBudgetRecords deploy
