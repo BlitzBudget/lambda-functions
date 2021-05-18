@@ -331,7 +331,7 @@ jobs:
         zip_file: adminGetUserAttributes.zip
     # adminUpdateAttributes (29)
     - name: adminUpdateAttributes zip
-      run: cd Cognito/adminUpdateUserAttributes/; zip -qq -r ../../adminUpdateAttributes.zip ./; cd ../..;
+      run: cd Cognito/adminUpdateUserAttribute/; zip -qq -r ../../adminUpdateAttributes.zip ./; cd ../..;
     - name: adminUpdateAttributes deploy
       uses: appleboy/lambda-action@master
       with:
