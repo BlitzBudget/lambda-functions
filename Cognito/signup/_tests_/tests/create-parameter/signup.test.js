@@ -13,7 +13,7 @@ describe('buildParamForSignup', () => {
   event.params.header['Accept-Language'] = '"en"';
   test('Build Param for signup', () => {
     const parameters = signupParameter.createParameter(event);
-    expect(parameters.ClientId).toBe(constants.CLIENT_ID);
+    expect(parameters.ClientId).toBe(process.env.USER_POOL_ID);
     expect(parameters.Username).toBe(event['body-json'].username);
     expect(parameters.UserAttributes[1].Value).toBe(event['body-json'].firstname);
     expect(parameters.UserAttributes[2].Value).toBe(event['body-json'].lastname);

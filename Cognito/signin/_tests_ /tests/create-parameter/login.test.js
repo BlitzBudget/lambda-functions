@@ -9,7 +9,7 @@ describe('Login Parameter', () => {
   test('Build Param for signup', () => {
     const parameters = loginParameter.createParameter(event);
     expect(parameters.AuthFlow).toBe(constants.AUTH_FLOW);
-    expect(parameters.ClientId).toBe(constants.CLIENT_ID);
+    expect(parameters.ClientId).toBe(process.env.USER_POOL_ID);
     expect(parameters.AuthParameters.USERNAME).toBe(event['body-json'].username);
     expect(parameters.AuthParameters.PASSWORD).toBe(event['body-json'].password);
   });

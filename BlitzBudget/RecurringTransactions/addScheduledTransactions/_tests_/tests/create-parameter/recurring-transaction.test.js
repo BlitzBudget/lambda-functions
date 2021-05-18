@@ -1,6 +1,5 @@
 const recurringTransactionParameter = require('../../../create-parameter/recurring-transaction');
 const mockRequest = require('../../fixtures/request/addScheduledTransactions');
-const constants = require('../../../constants/constant');
 
 describe('recurringTransactionParameter: createParameter', () => {
   const event = mockRequest;
@@ -13,7 +12,7 @@ describe('recurringTransactionParameter: createParameter', () => {
     expect(parameters.Key.pk).toBe(walletId);
     expect(parameters.Key.sk).toBe('sk');
     expect(parameters.ReturnValues).toBe('ALL_NEW');
-    expect(parameters.TableName).toBe(constants.TABLE_NAME);
+    expect(parameters.TableName).toBe(process.env.TABLE_NAME);
     expect(parameters.UpdateExpression).not.toBeUndefined();
     expect(parameters.ExpressionAttributeValues[':u']).not.toBeUndefined();
     expect(parameters.ExpressionAttributeValues[':ns']).toBe('2021-03-15');

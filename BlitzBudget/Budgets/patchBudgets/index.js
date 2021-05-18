@@ -5,7 +5,7 @@ const addHelper = require('./utils/add-helper');
 const updateHelper = require('./utils/update-helper');
 
 // Set the region
-AWS.config.update({ region: 'eu-west-1' });
+AWS.config.update({ region: process.env.AWS_LAMBDA_REGION });
 
 // Create the DynamoDB service object
 const dynamoDB = new AWS.DynamoDB();

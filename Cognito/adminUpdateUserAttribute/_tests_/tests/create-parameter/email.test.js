@@ -2,6 +2,12 @@ const emailParameter = require('../../../create-parameter/email');
 const mockUserCurrencyRequest = require('.../../../fixtures/request/updateUserCurrency');
 
 describe('mockEmail', () => {
+  beforeEach(() => {
+    jest.resetModules();
+    process.env.AWS_LAMBDA_REGION = '1';
+    process.env.TABLE_NAME = '2';
+    process.env.USER_POOL_ID = '3';
+  });
   const event = mockUserCurrencyRequest;
 
   test('With Data: Success', () => {

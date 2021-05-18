@@ -2,6 +2,12 @@ const addCategoryParameter = require('../../../create-parameter/add-category');
 const mockRequest = require('../../fixtures/request/patchTransactions');
 
 describe('addCategoryParameter: createParameter', () => {
+  beforeEach(() => {
+    jest.resetModules();
+    process.env.AWS_LAMBDA_REGION = '1';
+    process.env.TABLE_NAME = '2';
+  });
+
   mockRequest['body-json'].categoryType = 'random';
   mockRequest['body-json'].categoryId = 'ramdomId';
   mockRequest['body-json'].categoryName = 'randomName';

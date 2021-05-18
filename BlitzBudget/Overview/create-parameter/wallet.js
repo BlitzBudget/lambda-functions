@@ -1,5 +1,3 @@
-const constants = require('../constants/constant');
-
 module.exports.createParameter = (userId, walletId) => ({
   AttributesToGet: [
     'currency',
@@ -7,7 +5,7 @@ module.exports.createParameter = (userId, walletId) => ({
     'total_debt_balance',
     'wallet_balance',
   ],
-  TableName: constants.TABLE_NAME,
+  TableName: process.env.TABLE_NAME,
   Key: {
     pk: userId,
     sk: walletId,
@@ -15,7 +13,7 @@ module.exports.createParameter = (userId, walletId) => ({
 });
 
 module.exports.createParameterForUserID = (userId) => ({
-  TableName: 'blitzbudget',
+  TableName: process.env.TABLE_NAME,
   KeyConditionExpression: 'pk = :pk and begins_with(sk, :items)',
   ExpressionAttributeValues: {
     ':pk': userId,

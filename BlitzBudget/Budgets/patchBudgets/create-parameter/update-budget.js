@@ -4,7 +4,7 @@ module.exports.createParameter = (
   expressionAttributeNames,
   expAttributeValue,
 ) => ({
-  TableName: 'blitzbudget',
+  TableName: process.env.TABLE_NAME,
   Key: {
     pk: event['body-json'].walletId,
     sk: event['body-json'].budgetId,

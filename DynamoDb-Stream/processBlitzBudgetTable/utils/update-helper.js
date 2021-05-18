@@ -13,7 +13,7 @@ const updateWalletHelper = require('./update-wallet-helper');
 // Load the AWS SDK for Node.js
 // Set the region
 AWS.config.update({
-  region: constants.EU_WEST_ONE,
+  region: constants.AWS_LAMBDA_REGION,
 });
 
 // Create the DynamoDB service object

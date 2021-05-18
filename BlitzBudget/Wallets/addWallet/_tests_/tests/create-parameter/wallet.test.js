@@ -1,6 +1,12 @@
 const walletParameter = require('../../../create-parameter/wallet');
 
 describe('transactionParameter: createParameter', () => {
+  beforeEach(() => {
+    jest.resetModules();
+    process.env.AWS_LAMBDA_REGION = '1';
+    process.env.TABLE_NAME = '2';
+  });
+
   test('With Data: Success', () => {
     const parameters = walletParameter.createParameter('userId', 'randomValue', 'chosenCurrency', 'walletName');
     expect(parameters).not.toBeUndefined();

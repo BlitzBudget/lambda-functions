@@ -1,9 +1,7 @@
 function FetchAccount() {}
 
-const constants = require('../constants/constant');
-
 FetchAccount.prototype.createParameter = (walletId) => ({
-  TableName: constants.EU_WEST_ONE,
+  TableName: process.env.AWS_LAMBDA_REGION,
   KeyConditionExpression: 'pk = :walletId and begins_with(sk, :items)',
   ExpressionAttributeValues: {
     ':walletId': walletId,

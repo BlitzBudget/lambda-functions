@@ -1,7 +1,5 @@
-const constants = require('../constants/constant');
-
 module.exports.createParameter = (event, updateExp, expAttrNames, expAttrVal) => ({
-  TableName: constants.TABLE_NAME,
+  TableName: process.env.TABLE_NAME,
   Key: {
     pk: event['body-json'].walletId,
     sk: event['body-json'].goalId,

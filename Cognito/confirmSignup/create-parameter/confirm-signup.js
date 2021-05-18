@@ -1,7 +1,5 @@
-const constants = require('../constants/constant');
-
 module.exports.createParameter = (event) => ({
-  ClientId: constants.CLIENT_ID,
+  ClientId: process.env.USER_POOL_ID,
   ConfirmationCode: event['body-json'].confirmationCode,
   Username: event['body-json'].username,
 });

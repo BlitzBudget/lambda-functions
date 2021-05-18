@@ -1,7 +1,5 @@
-const constants = require('../constants/constant');
-
 module.exports.createParameter = (walletId, sk, futureTransactionCreationDate) => ({
-  TableName: constants.TABLE_NAME,
+  TableName: process.env.TABLE_NAME,
   Key: {
     pk: walletId,
     sk,

@@ -1,10 +1,9 @@
 function AdminUpdateUser() {}
 
 const AWS = require('aws-sdk');
-const constants = require('../constants/constant');
 
 AWS.config.update({
-  region: constants.EU_WEST_ONE,
+  region: process.env.AWS_LAMBDA_REGION,
 });
 const cognitoIdServiceProvider = new AWS.CognitoIdentityServiceProvider();
 

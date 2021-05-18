@@ -1,7 +1,5 @@
-const constants = require('../constants/constant');
-
 module.exports.createParameter = (randomValue, event) => ({
-  TableName: constants.TABLE_NAME,
+  TableName: process.env.TABLE_NAME,
   Item: {
     pk: event['body-json'].walletId,
     sk: randomValue,

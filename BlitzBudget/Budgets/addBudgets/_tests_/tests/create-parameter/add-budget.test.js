@@ -2,6 +2,12 @@ const addBudgetkParameter = require('../../../create-parameter/add-budget');
 const mockRequest = require('../../fixtures/request/addBudget');
 
 describe('addBudgetkParameter: createParameter', () => {
+  beforeEach(() => {
+    jest.resetModules();
+    process.env.AWS_LAMBDA_REGION = '1';
+    process.env.TABLE_NAME = '2';
+  });
+
   const event = mockRequest;
   test('With Data: Success', () => {
     const parameters = addBudgetkParameter.createParameter(event, 'randomValue');

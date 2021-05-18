@@ -3,7 +3,6 @@ const VoiceCodeVerifier = () => {};
 
 const utils = require('../helper/utils');
 const dbHelper = require('../helper/dbHelper');
-const constants = require('../constants/constant.js');
 
 // Constants ============================================================================
 
@@ -45,7 +44,7 @@ function maximumVoiceCodeRetiresExceeded(handlerInput) {
 function changeAlexaVoiceCode(userId, alexaVoiceCodeId, failureRate) {
   console.log('The alexa voice code to change is for ', userId);
   const params = {
-    TableName: constants.TABLE_NAME,
+    TableName: process.env.TABLE_NAME,
     Key: {
       pk: {
         S: userId,
@@ -229,7 +228,7 @@ VoiceCodeVerifier.prototype.lostVoiceCode_Handler = {
 VoiceCodeVerifier.prototype.getAlexaVoiceCode = async (userId) => {
   console.log('The alexa voice code to retrieve are for ', userId);
   const params = {
-    TableName: constants.TABLE_NAME,
+    TableName: process.env.TABLE_NAME,
     KeyConditionExpression: 'pk = :pk and begins_with(sk, :items)',
     ExpressionAttributeValues: {
       ':pk': {

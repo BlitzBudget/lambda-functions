@@ -4,7 +4,7 @@ const constants = require('../constants/constant');
 const fetchWalletHelper = require('./fetch-wallet-helper');
 const fetchUserHelper = require('./fetch-user-helper');
 
-AWS.config.update({ region: constants.EU_WEST_ONE });
+AWS.config.update({ region: constants.AWS_LAMBDA_REGION });
 // Create the DynamoDB service object
 const dynamoDB = new AWS.DynamoDB();
 const documentClient = new dynamoDB.DocumentClient();

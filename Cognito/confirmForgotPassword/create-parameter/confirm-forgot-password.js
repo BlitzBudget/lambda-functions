@@ -1,9 +1,7 @@
 function ConfirmForgotPassword() {}
 
-const constants = require('../constants/constant');
-
 ConfirmForgotPassword.prototype.createParameter = (event) => ({
-  ClientId: constants.CLIENT_ID,
+  ClientId: process.env.USER_POOL_ID,
   /* required */
   ConfirmationCode: event['body-json'].confirmationCode,
   /* required */

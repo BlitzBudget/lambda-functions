@@ -5,7 +5,7 @@ describe('Wallet Parameter', () => {
   const USER_ID = 'User#2020-12-21T20:32:06.003Z';
   test('Build Param for signup', () => {
     const parameters = walletParameter.createParameter(USER_ID);
-    expect(parameters.TableName).toBe(constants.TABLE_NAME);
+    expect(parameters.TableName).toBe(process.env.TABLE_NAME);
     expect(parameters.KeyConditionExpression).toBe(constants.KEY_CONDITION_EXPRESSION);
     expect(parameters.ExpressionAttributeValues[':userId']).toBe(USER_ID);
     expect(parameters.ExpressionAttributeValues[':items']).toBe(constants.WALLET_ID_PREFIX);

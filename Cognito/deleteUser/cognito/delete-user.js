@@ -3,7 +3,7 @@ function DeleteUser() {}
 const AWS = require('aws-sdk');
 const constants = require('../constants/constant');
 
-AWS.config.update({ region: constants.EU_WEST_ONE });
+AWS.config.update({ region: constants.AWS_LAMBDA_REGION });
 const cognitoidentityserviceprovider = new AWS.CognitoIdentityServiceProvider();
 
 DeleteUser.prototype.handleDeleteUser = async (params) => {

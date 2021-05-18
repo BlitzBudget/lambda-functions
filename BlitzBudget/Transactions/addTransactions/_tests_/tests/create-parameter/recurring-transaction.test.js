@@ -2,6 +2,12 @@ const recurringTransactionParameter = require('../../../create-parameter/recurri
 const mockRequest = require('../../fixtures/request/addTransactions');
 
 describe('recurringTransactionParameter: createParameter', () => {
+  beforeEach(() => {
+    jest.resetModules();
+    process.env.AWS_LAMBDA_REGION = '1';
+    process.env.TABLE_NAME = '2';
+  });
+
   const event = mockRequest;
   test('With Data: Success', () => {
     const parameters = recurringTransactionParameter.createParameter(event, 'sk', new Date());

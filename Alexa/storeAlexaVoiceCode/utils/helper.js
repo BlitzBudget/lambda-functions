@@ -49,7 +49,7 @@ function createParameter(username, event, signature) {
     AuthFlow: 'ADMIN_USER_PASSWORD_AUTH',
     ClientId: configuration.clientId,
     /* required */
-    UserPoolId: 'eu-west-1_cjfC8qNiB',
+    UserPoolId: process.env.USER_POOL_ID,
     /* required */
     AuthParameters: {
       USERNAME: username,

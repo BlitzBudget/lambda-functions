@@ -1,6 +1,12 @@
 const loginParameter = require('../../../create-parameter/login');
 
 describe('loginParameters', () => {
+  beforeEach(() => {
+    jest.resetModules();
+    process.env.AWS_LAMBDA_REGION = '1';
+    process.env.TABLE_NAME = '2';
+    process.env.USER_POOL_ID = '3';
+  });
   const event = {};
   event['body-json'] = {};
   event['body-json'].password = 'notempty';

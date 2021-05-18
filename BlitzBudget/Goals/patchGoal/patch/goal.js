@@ -7,7 +7,7 @@ const goalParameter = require('../create-expression/goal');
 
 // Load the AWS SDK for Node.js
 // Set the region
-AWS.config.update({ region: constants.EU_WEST_ONE });
+AWS.config.update({ region: constants.AWS_LAMBDA_REGION });
 
 // Create the DynamoDB service object
 const dynamoDB = new AWS.DynamoDB();

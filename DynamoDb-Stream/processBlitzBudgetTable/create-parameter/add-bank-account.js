@@ -1,7 +1,5 @@
-const constants = require('../constants/constant');
-
 module.exports.createParameter = (record, randomValue) => ({
-  TableName: constants.TABLE_NAME,
+  TableName: process.env.TABLE_NAME,
   Item: {
     pk: record.dynamodb.Keys.sk.S,
     sk: randomValue,

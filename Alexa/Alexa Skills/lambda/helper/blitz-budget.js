@@ -4,7 +4,6 @@ const BlitzbudgetDB = () => {};
 
 const utils = require('./utils');
 const dbHelper = require('./dbHelper');
-const constants = require('../constants/constant.js');
 const currencyInfo = require('../constants/currency');
 
 // Constants ============================================================================
@@ -49,7 +48,7 @@ const ERROR_TRANSACTION_TOTAL = "We couldn't calculate your transaction total at
 
 async function getDefaultAccount(walletId) {
   const params = {
-    TableName: constants.TABLE_NAME,
+    TableName: process.env.TABLE_NAME,
     KeyConditionExpression: 'pk = :pk and begins_with(sk, :items)',
     ExpressionAttributeValues: {
       ':pk': {
@@ -93,7 +92,7 @@ async function getDefaultAccount(walletId) {
 
 async function createDateData(walletId, skForDate) {
   const params = {
-    TableName: 'blitzbudget',
+    TableName: process.env.TABLE_NAME,
     Key: {
       pk: walletId,
       sk: skForDate,
@@ -126,7 +125,7 @@ async function createDateData(walletId, skForDate) {
 
 async function getDateData(walletId, currentDate) {
   const params = {
-    TableName: constants.TABLE_NAME,
+    TableName: process.env.TABLE_NAME,
     KeyConditionExpression: 'pk = :pk and begins_with(sk, :items)',
     ExpressionAttributeValues: {
       ':pk': {
@@ -154,7 +153,7 @@ async function getDateData(walletId, currentDate) {
 
 async function patchAccount(walletId, accountId, selectedAccount) {
   const params = {
-    TableName: constants.TABLE_NAME,
+    TableName: process.env.TABLE_NAME,
     Key: {
       pk: {
         S: walletId,
@@ -189,7 +188,7 @@ async function patchAccount(walletId, accountId, selectedAccount) {
 
 async function patchWallet(userId, walletId, defaultAlexa) {
   const params = {
-    TableName: constants.TABLE_NAME,
+    TableName: process.env.TABLE_NAME,
     Key: {
       pk: {
         S: userId,
@@ -227,7 +226,7 @@ async function patchWallet(userId, walletId, defaultAlexa) {
  */
 BlitzbudgetDB.prototype.getDefaultAlexaWallet = async (userId) => {
   const params = {
-    TableName: constants.TABLE_NAME,
+    TableName: process.env.TABLE_NAME,
     KeyConditionExpression: 'pk = :pk and begins_with(sk, :items)',
     ExpressionAttributeValues: {
       ':pk': {
@@ -301,7 +300,7 @@ BlitzbudgetDB.prototype.getCategoryAlexa = async (
   }
 
   const params = {
-    TableName: constants.TABLE_NAME,
+    TableName: process.env.TABLE_NAME,
     KeyConditionExpression: 'pk = :pk and begins_with(sk, :items)',
     ExpressionAttributeValues: {
       ':pk': {
@@ -371,7 +370,7 @@ BlitzbudgetDB.prototype.getBudgetAlexaAmount = async (
   );
 
   const params = {
-    TableName: constants.TABLE_NAME,
+    TableName: process.env.TABLE_NAME,
     KeyConditionExpression: 'pk = :pk and begins_with(sk, :items)',
     ExpressionAttributeValues: {
       ':pk': {
@@ -425,7 +424,7 @@ BlitzbudgetDB.prototype.getTagAlexaBalance = async (walletId,
   );
 
   const params = {
-    TableName: constants.TABLE_NAME,
+    TableName: process.env.TABLE_NAME,
     KeyConditionExpression: 'pk = :pk and begins_with(sk, :items)',
     ExpressionAttributeValues: {
       ':pk': {
@@ -473,7 +472,7 @@ BlitzbudgetDB.prototype.getTagAlexaBalance = async (walletId,
 
 BlitzbudgetDB.prototype.getWalletFromAlexa = async (userId) => {
   const params = {
-    TableName: constants.TABLE_NAME,
+    TableName: process.env.TABLE_NAME,
     KeyConditionExpression: 'pk = :pk and begins_with(sk, :items)',
     ExpressionAttributeValues: {
       ':pk': {
@@ -557,7 +556,7 @@ BlitzbudgetDB.prototype.changeDefaultWalletAlexa = async (userId,
 BlitzbudgetDB.prototype.getAccountFromAlexa = async (walletId) => {
   console.log('The account information to retrieve from wallet is', walletId);
   const params = {
-    TableName: constants.TABLE_NAME,
+    TableName: process.env.TABLE_NAME,
     KeyConditionExpression: 'pk = :pk and begins_with(sk, :items)',
     ExpressionAttributeValues: {
       ':pk': {
@@ -626,7 +625,7 @@ BlitzbudgetDB.prototype.changeBudgetAlexaAmount = async (walletId,
   amount,
   currencyName) => {
   const params = {
-    TableName: constants.TABLE_NAME,
+    TableName: process.env.TABLE_NAME,
     Key: {
       pk: {
         S: walletId,
@@ -704,7 +703,7 @@ BlitzbudgetDB.prototype.addWalletFromAlexa = async (userId, currency) => {
   const randomValue = `Wallet#${today.toISOString()}`;
 
   const params = {
-    TableName: 'blitzbudget',
+    TableName: process.env.TABLE_NAME,
     Item: {
       pk: {
         S: userId,
@@ -779,7 +778,7 @@ BlitzbudgetDB.prototype.addBudgetAlexaAmount = async (
   }
 
   const params = {
-    TableName: 'blitzbudget',
+    TableName: process.env.TABLE_NAME,
     Item: {
       pk: {
         S: walletId,
@@ -840,7 +839,7 @@ BlitzbudgetDB.prototype.addNewGoalFromAlexa = async (
   }
 
   const params = {
-    TableName: 'blitzbudget',
+    TableName: process.env.TABLE_NAME,
     Item: {
       pk: {
         S: walletId,
@@ -937,7 +936,7 @@ BlitzbudgetDB.prototype.addTransactionAlexaAmount = async (walletId,
   }
 
   const params = {
-    TableName: 'blitzbudget',
+    TableName: process.env.TABLE_NAME,
     Item: {
       pk: {
         S: walletId,
@@ -991,7 +990,7 @@ BlitzbudgetDB.prototype.getEarningsByDateFromAlexa = async (
   walletCurrency,
 ) => {
   const params = {
-    TableName: constants.TABLE_NAME,
+    TableName: process.env.TABLE_NAME,
     KeyConditionExpression: 'pk = :pk and begins_with(sk, :items)',
     ExpressionAttributeValues: {
       ':pk': {
@@ -1038,7 +1037,7 @@ BlitzbudgetDB.prototype.getExpenditureByDateFromAlexa = async (
   walletCurrency,
 ) => {
   const params = {
-    TableName: constants.TABLE_NAME,
+    TableName: process.env.TABLE_NAME,
     KeyConditionExpression: 'pk = :pk and begins_with(sk, :items)',
     ExpressionAttributeValues: {
       ':pk': {
@@ -1083,7 +1082,7 @@ BlitzbudgetDB.prototype.getTransactionTotalByDateFromAlexa = async (walletId,
   dateId,
   walletCurrency) => {
   const params = {
-    TableName: constants.TABLE_NAME,
+    TableName: process.env.TABLE_NAME,
     KeyConditionExpression: 'pk = :pk and begins_with(sk, :items)',
     ExpressionAttributeValues: {
       ':pk': {
@@ -1161,7 +1160,7 @@ BlitzbudgetDB.prototype.addCategoryByDateFromAlexa = async (
   }
 
   const params = {
-    TableName: 'blitzbudget',
+    TableName: process.env.TABLE_NAME,
     Item: {
       pk: {
         S: walletId,
@@ -1228,7 +1227,7 @@ BlitzbudgetDB.prototype.getRecentTransactions = async (
   walletCurrency,
 ) => {
   const params = {
-    TableName: constants.TABLE_NAME,
+    TableName: process.env.TABLE_NAME,
     KeyConditionExpression: 'pk = :pk and begins_with(sk, :items)',
     ExpressionAttributeValues: {
       ':pk': {

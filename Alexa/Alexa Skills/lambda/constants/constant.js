@@ -2,7 +2,7 @@ module.exports = {
   THE_MESSAGE: ' The ',
   YOUR_MESSAGE: ' Your ',
   HELLO_MESSAGE: 'Hello ',
-  TABLE_NAME: 'blitzbudget',
+  TABLE_NAME: process.env.TABLE_NAME,
   BUDGET_BALANCE_TWO: ' remaining',
   BUDGET_BALANCE_ONE: ' budget has ',
   TAG_MESSAGE: ' tag has a balance of ',
