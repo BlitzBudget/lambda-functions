@@ -254,7 +254,7 @@ jobs:
         zip_file: patchRecurringTransaction.zip
     # addTransactions (22)
     - name: addTransactions zip
-      run: cd BlitzBudget/RecurringTransactions/addTransactions/; zip -qq -r ../../../addTransactions.zip ./; cd ../../..;
+      run: cd BlitzBudget/Transactions/addTransactions/; zip -qq -r ../../../addTransactions.zip ./; cd ../../..;
     - name: addTransactions deploy
       uses: appleboy/lambda-action@master
       with:
