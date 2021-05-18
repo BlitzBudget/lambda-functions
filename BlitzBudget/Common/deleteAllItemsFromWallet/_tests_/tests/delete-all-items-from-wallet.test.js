@@ -3,7 +3,7 @@ const mockRequest = require('../fixtures/request/deleteAllItemsFromWallet.json')
 const mockFetchResponse = require('../fixtures/response/fetchResponse.json');
 
 jest.mock('aws-sdk', () => ({
-  DynamoDB: jest.fn(() => ({
+  DynamoDB: {
     DocumentClient: jest.fn(() => ({
       query: jest.fn(() => ({
         promise: jest.fn().mockResolvedValueOnce(mockFetchResponse),
@@ -12,7 +12,7 @@ jest.mock('aws-sdk', () => ({
         promise: jest.fn().mockResolvedValueOnce(mockFetchResponse),
       })),
     })),
-  })),
+  },
   config: {
     update: jest.fn(),
   },

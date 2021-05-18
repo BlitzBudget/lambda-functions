@@ -4,13 +4,13 @@ const mockResponse = require('../fixtures/response/fetchBudget.json');
 const mockError = require('../fixtures/response/error.json');
 
 jest.mock('aws-sdk', () => ({
-  DynamoDB: jest.fn(() => ({
+  DynamoDB: {
     DocumentClient: jest.fn(() => ({
       update: jest.fn(() => ({
         promise: jest.fn().mockRejectedValueOnce(mockResponse),
       })),
     })),
-  })),
+  },
   config: {
     update: jest.fn(),
   },

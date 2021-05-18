@@ -10,8 +10,7 @@ AWS.config.update({ region: constants.AWS_LAMBDA_REGION });
 const cognitoidentityserviceprovider = new AWS.CognitoIdentityServiceProvider();
 
 // Create the DynamoDB service object
-const dynamoDB = new AWS.DynamoDB();
-const documentClient = new dynamoDB.DocumentClient();
+const documentClient = new AWS.DynamoDB.DocumentClient();
 
 exports.handler = async (event) => {
   const doNotCreateANewWallet = event['body-json'].doNotCreateWallet;

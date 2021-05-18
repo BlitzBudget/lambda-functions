@@ -17,8 +17,7 @@ AWS.config.update({
 });
 
 // Create the DynamoDB service object
-const dynamoDB = new AWS.DynamoDB();
-const documentClient = new dynamoDB.DocumentClient();
+const documentClient = new AWS.DynamoDB.DocumentClient();
 
 /*
  * Check if the budget is present for a newly created category

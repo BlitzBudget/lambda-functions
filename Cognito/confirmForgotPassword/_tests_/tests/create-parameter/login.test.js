@@ -6,6 +6,7 @@ describe('loginParameters', () => {
     process.env.AWS_LAMBDA_REGION = '1';
     process.env.TABLE_NAME = '2';
     process.env.USER_POOL_ID = '3';
+    process.env.CLIENT_ID = '4';
   });
   const event = {};
   event['body-json'] = {};

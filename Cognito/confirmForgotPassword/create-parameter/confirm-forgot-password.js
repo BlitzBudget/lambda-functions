@@ -1,7 +1,7 @@
 function ConfirmForgotPassword() {}
 
 ConfirmForgotPassword.prototype.createParameter = (event) => ({
-  ClientId: process.env.USER_POOL_ID,
+  ClientId: process.env.CLIENT_ID,
   /* required */
   ConfirmationCode: event['body-json'].confirmationCode,
   /* required */

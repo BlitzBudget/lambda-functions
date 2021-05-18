@@ -3,13 +3,13 @@ const mockRequest = require('../fixtures/request/patchTransactionsWithMatchingCa
 const mockResponse = require('../fixtures/response/updateTransaction.json');
 
 jest.mock('aws-sdk', () => ({
-  DynamoDB: jest.fn(() => ({
+  DynamoDB: {
     DocumentClient: jest.fn(() => ({
       update: jest.fn(() => ({
         promise: jest.fn().mockResolvedValueOnce(mockResponse),
       })),
     })),
-  })),
+  },
   config: {
     update: jest.fn(),
   },

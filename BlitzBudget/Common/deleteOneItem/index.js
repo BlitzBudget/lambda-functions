@@ -9,8 +9,7 @@ AWS.config.update({ region: process.env.TABLE_NAME });
 const sns = new AWS.SNS();
 
 // Create the DynamoDB service object
-const dynamoDB = new AWS.DynamoDB();
-const documentClient = new dynamoDB.DocumentClient();
+const documentClient = new AWS.DynamoDB.DocumentClient();
 
 exports.handler = async (event) => {
   const { pk, sk, fromSns } = util.extractVariablesFromRequest(event);

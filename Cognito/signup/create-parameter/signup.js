@@ -11,7 +11,7 @@ Signup.prototype.createParameter = (
   } = requestHelper.extractVariablesFromRequest(event);
 
   return {
-    ClientId: process.env.USER_POOL_ID,
+    ClientId: process.env.CLIENT_ID,
     /* required */
     Password: password,
     /* required */

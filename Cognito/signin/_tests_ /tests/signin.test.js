@@ -5,11 +5,11 @@ const mockRequest = require('../fixtures/request/signin');
 const mockWalletResponse = require('../fixtures/response/wallet');
 
 jest.mock('aws-sdk', () => ({
-  DynamoDB: jest.fn(() => ({
+  DynamoDB: {
     DocumentClient: jest.fn(() => ({
       query: jest.fn().mockResolvedValueOnce({}),
     })),
-  })),
+  },
   config: {
     update: jest.fn(),
   },
