@@ -188,7 +188,7 @@ jobs:
         zip_file: getGoals.zip
     # patchGoal (16)
     - name: patchGoal zip
-      run: cd BlitzBudget/Goals/patchGoals/; zip -qq -r ../../../patchGoal.zip ./; cd ../../..;
+      run: cd BlitzBudget/Goals/patchGoal/; zip -qq -r ../../../patchGoal.zip ./; cd ../../..;
     - name: patchGoal deploy
       uses: appleboy/lambda-action@master
       with:
