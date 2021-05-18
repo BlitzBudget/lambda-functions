@@ -9,8 +9,7 @@ const deleteHelper = require('./utils/delete-helper');
 AWS.config.update({ region: constants.AWS_LAMBDA_REGION });
 
 // Create the DynamoDB service object
-const dynamoDB = new AWS.DynamoDB();
-const documentClient = new dynamoDB.DocumentClient();
+const documentClient = new AWS.DynamoDB.DocumentClient();
 
 exports.handler = async (event) => {
   console.log(`event ${JSON.stringify(event.Records[0])}`);

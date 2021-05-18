@@ -8,8 +8,7 @@ AWS.config.update({
 });
 
 // Create the DynamoDB service object
-const dynamoDB = new AWS.DynamoDB();
-const documentClient = new dynamoDB.DocumentClient();
+const documentClient = new AWS.DynamoDB.DocumentClient();
 
 async function getBankAccountItem(params) {
   // Call DynamoDB to read the item from the table

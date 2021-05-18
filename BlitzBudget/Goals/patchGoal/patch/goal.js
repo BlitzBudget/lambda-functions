@@ -10,8 +10,7 @@ const goalParameter = require('../create-expression/goal');
 AWS.config.update({ region: constants.AWS_LAMBDA_REGION });
 
 // Create the DynamoDB service object
-const dynamoDB = new AWS.DynamoDB();
-const documentClient = dynamoDB.DocumentClient();
+const documentClient = new AWS.DynamoDB.DocumentClient();
 
 async function updatingGoals(event) {
   const params = goalParameter.createExpression(event);

@@ -12,8 +12,7 @@ AWS.config.update({
 });
 
 // Create the DynamoDB service object
-const dynamoDB = new AWS.DynamoDB();
-const documentClient = dynamoDB.DocumentClient();
+const documentClient = new AWS.DynamoDB.DocumentClient();
 
 async function addNewWallet(event, userId, chosenCurrency, walletName) {
   const today = new Date();

@@ -10,8 +10,7 @@ AWS.config.update({
 });
 
 // Create the DynamoDB service object
-const dynamoDB = new AWS.DynamoDB();
-const documentClient = dynamoDB.DocumentClient();
+const documentClient = new AWS.DynamoDB.DocumentClient();
 
 exports.handler = async (event) => {
   const events = [];

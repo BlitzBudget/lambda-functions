@@ -2,13 +2,13 @@ const deleteBatch = require('../../index');
 const mockRequest = require('../fixtures/request/deleteBatch.json');
 
 jest.mock('aws-sdk', () => ({
-  DynamoDB: jest.fn(() => ({
+  DynamoDB: {
     DocumentClient: jest.fn(() => ({
       batchWrite: jest.fn(() => ({
         promise: jest.fn().mockResolvedValueOnce({}),
       })),
     })),
-  })),
+  },
   config: {
     update: jest.fn(),
   },

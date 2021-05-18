@@ -12,13 +12,13 @@ jest.mock('../../fetch/transactions', () => ({
 }));
 
 jest.mock('aws-sdk', () => ({
-  DynamoDB: jest.fn(() => ({
+  DynamoDB: {
     DocumentClient: jest.fn(() => ({
       batchWrite: jest.fn(() => ({
         promise: jest.fn().mockRejectedValueOnce({}),
       })),
     })),
-  })),
+  },
   config: {
     update: jest.fn(),
   },

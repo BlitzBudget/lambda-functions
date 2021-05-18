@@ -2,16 +2,14 @@ function AddAccount() {}
 
 // Load the AWS SDK for Node.js
 const AWS = require('aws-sdk');
-const constants = require('../constants/constant');
 const addBankAccount = require('../create-parameter/add-bank-account');
 // Set the region
 AWS.config.update({
-  region: constants.AWS_LAMBDA_REGION,
+  region: process.env.AWS_LAMBDA_REGION,
 });
 
 // Create the DynamoDB service object
-const dynamoDB = new AWS.DynamoDB();
-const documentClient = dynamoDB.DocumentClient();
+const documentClient = new AWS.DynamoDB.DocumentClient();
 
 AddAccount.prototype.addNewBankAccounts = async (event) => {
   const today = new Date();

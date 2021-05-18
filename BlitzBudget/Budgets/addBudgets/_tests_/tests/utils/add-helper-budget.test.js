@@ -3,7 +3,7 @@ const mockRequest = require('../../fixtures/request/withDateAndCategory.json');
 const mockResponse = require('../../fixtures/response/fetch-budget.json');
 
 jest.mock('aws-sdk', () => ({
-  DynamoDB: jest.fn(() => ({
+  DynamoDB: {
     DocumentClient: jest.fn(() => ({
       put: jest.fn(() => ({
         promise: jest.fn().mockResolvedValueOnce(mockResponse),
@@ -12,7 +12,7 @@ jest.mock('aws-sdk', () => ({
         promise: jest.fn().mockResolvedValueOnce(mockResponse),
       })),
     })),
-  })),
+  },
   config: {
     update: jest.fn(),
   },

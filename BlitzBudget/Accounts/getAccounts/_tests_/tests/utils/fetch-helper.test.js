@@ -3,13 +3,13 @@ const mockAccountResponse = require('../../fixtures/response/fetchAccount.json')
 const mockAccountRequest = require('../../fixtures/request/getAccounts.json');
 
 jest.mock('aws-sdk', () => ({
-  DynamoDB: jest.fn(() => ({
+  DynamoDB: {
     DocumentClient: jest.fn(() => ({
       query: jest.fn(() => ({
         promise: jest.fn().mockResolvedValueOnce(mockAccountResponse),
       })),
     })),
-  })),
+  },
   config: {
     update: jest.fn(),
   },

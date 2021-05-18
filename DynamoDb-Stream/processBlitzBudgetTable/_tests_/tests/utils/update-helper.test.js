@@ -2,13 +2,13 @@ const updateHelper = require('../../../utils/update-helper');
 const mockRequest = require('../../fixtures/request/processBlitzBudgetTable.json');
 
 jest.mock('aws-sdk', () => ({
-  DynamoDB: jest.fn(() => ({
+  DynamoDB: {
     DocumentClient: jest.fn(() => ({
       update: jest.fn(() => ({
         promise: jest.fn().mockResolvedValueOnce({}),
       })),
     })),
-  })),
+  },
   config: {
     update: jest.fn(),
   },

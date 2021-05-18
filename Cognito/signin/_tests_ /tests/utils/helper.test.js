@@ -8,12 +8,12 @@ jest.mock('../../../fetch/wallet', () => ({
 }));
 
 jest.mock('aws-sdk', () => ({
-  DynamoDB: jest.fn(() => ({
+  DynamoDB: {
     DocumentClient: jest.fn(() => ({
       query: jest.fn()
         .mockResolvedValueOnce({}),
     })),
-  })),
+  },
   config: {
     update: jest.fn(),
   },

@@ -8,8 +8,7 @@ const updateHelper = require('./utils/update-helper');
 AWS.config.update({ region: process.env.AWS_LAMBDA_REGION });
 
 // Create the DynamoDB service object
-const dynamoDB = new AWS.DynamoDB();
-const documentClient = dynamoDB.DocumentClient();
+const documentClient = new AWS.DynamoDB.DocumentClient();
 
 exports.handler = async (event) => {
   console.log('updating Budgets for ', JSON.stringify(event['body-json']));

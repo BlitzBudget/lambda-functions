@@ -4,7 +4,7 @@ const mockRequestWithWallet = require('../fixtures/request/overview.json');
 const mockResponse = require('../fixtures/response/fetch-transaction.json');
 
 jest.mock('aws-sdk', () => ({
-  DynamoDB: jest.fn(() => ({
+  DynamoDB: {
     DocumentClient: jest.fn(() => ({
       query: jest.fn(() => ({
         promise: jest.fn().mockResolvedValueOnce(mockResponse),
@@ -13,7 +13,7 @@ jest.mock('aws-sdk', () => ({
         promise: jest.fn().mockRejectedValueOnce(mockResponse),
       })),
     })),
-  })),
+  },
   config: {
     update: jest.fn(),
   },

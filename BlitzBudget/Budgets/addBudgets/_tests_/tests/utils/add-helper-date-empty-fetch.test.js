@@ -3,7 +3,7 @@ const mockRequestWithoutDateId = require('../../fixtures/request/withoutDate.jso
 const mockResponse = require('../../fixtures/response/fetch-date.json');
 
 jest.mock('aws-sdk', () => ({
-  DynamoDB: jest.fn(() => ({
+  DynamoDB: {
     DocumentClient: jest.fn(() => ({
       update: jest.fn(() => ({
         promise: jest.fn().mockResolvedValueOnce(mockResponse),
@@ -12,7 +12,7 @@ jest.mock('aws-sdk', () => ({
         promise: jest.fn().mockResolvedValueOnce({}),
       })),
     })),
-  })),
+  },
   config: {
     update: jest.fn(),
   },

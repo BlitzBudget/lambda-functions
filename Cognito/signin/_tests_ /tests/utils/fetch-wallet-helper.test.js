@@ -3,11 +3,11 @@ const mockUser = require('../../fixtures/response/get-user');
 const mockWalletResponse = require('../../fixtures/response/wallet');
 
 const cognitoidentityserviceprovider = {
-  DynamoDB: jest.fn(() => ({
+  DynamoDB: {
     DocumentClient: jest.fn(() => ({
       query: jest.fn().mockResolvedValueOnce(mockWalletResponse),
     })),
-  })),
+  },
 };
 
 jest.mock('../../../fetch/wallet', () => ({

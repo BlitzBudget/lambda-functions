@@ -3,13 +3,13 @@ const mockRequest = require('../../fixtures/request/getTransactions.json');
 const mockResponse = require('../../fixtures/response/fetchRecurringTransaction.json');
 
 jest.mock('aws-sdk', () => ({
-  DynamoDB: jest.fn(() => ({
+  DynamoDB: {
     DocumentClient: jest.fn(() => ({
       query: jest.fn(() => ({
         promise: jest.fn().mockResolvedValueOnce(mockResponse),
       })),
     })),
-  })),
+  },
   SNS: jest.fn(() => ({
     publish: jest.fn(() => ({
       promise: jest.fn().mockResolvedValueOnce({}),

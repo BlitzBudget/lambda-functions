@@ -9,8 +9,7 @@ AWS.config.update({ region: process.env.AWS_LAMBDA_REGION });
 const sns = new AWS.SNS();
 
 // Create the DynamoDB service object
-const dynamoDB = new AWS.DynamoDB();
-const documentClient = new dynamoDB.DocumentClient();
+const documentClient = new AWS.DynamoDB.DocumentClient();
 // Concurrently call multiple APIs and wait for the response
 const events = [];
 

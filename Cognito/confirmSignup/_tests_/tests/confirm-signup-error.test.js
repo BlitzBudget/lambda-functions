@@ -19,13 +19,13 @@ jest.mock('aws-sdk', () => ({
         .mockResolvedValueOnce(Promise.resolve(mockConfirmSignupSuccess)),
     })),
   })),
-  DynamoDB: jest.fn(() => ({
+  DynamoDB: {
     DocumentClient: jest.fn(() => ({
       put: jest.fn(() => ({
         promise: jest.fn().mockResolvedValueOnce(mockConfirmSignupSuccess),
       })),
     })),
-  })),
+  },
   config: {
     update: jest.fn(),
   },
