@@ -243,7 +243,7 @@ jobs:
         zip_file: addScheduledTransactions.zip
     # patchRecurringTransaction (21)
     - name: patchRecurringTransaction zip
-      run: cd BlitzBudget/RecurringTransactions/patchRecurringTransaction/; zip -qq -r ../../../patchRecurringTransaction.zip ./; cd ../../..;
+      run: cd BlitzBudget/RecurringTransactions/patchRecurringTransactions/; zip -qq -r ../../../patchRecurringTransaction.zip ./; cd ../../..;
     - name: patchRecurringTransaction deploy
       uses: appleboy/lambda-action@master
       with:
