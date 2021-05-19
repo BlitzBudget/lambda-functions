@@ -110,7 +110,7 @@ async function fetchWalletItem(walletId, userId) {
   let walletPK = walletId;
 
   if (util.isEmpty(walletId) && util.isNotEmpty(userId)) {
-    walletPK = await handleWalletItem();
+    walletPK = await handleWalletItem(userId, walletId);
   }
   return walletPK;
 }
