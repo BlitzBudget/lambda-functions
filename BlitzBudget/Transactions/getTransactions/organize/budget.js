@@ -1,6 +1,10 @@
 const util = require('../utils/util');
 
 module.exports.organize = (responseData, percentage, categoryList) => {
+  if (util.isEmpty(responseData.Budget)) {
+    return;
+  }
+
   responseData.Budget.forEach((budgetObj) => {
     const budget = budgetObj;
     budget.planned *= percentage;

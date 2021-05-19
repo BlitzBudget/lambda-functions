@@ -7,7 +7,7 @@ FetchBankAccount.prototype.getBankAccountData = async function getBankAccountDat
   pk,
   documentClient,
 ) {
-  const params = bankAccountParameter.createParameter();
+  const params = bankAccountParameter.createParameter(pk);
 
   // Call DynamoDB to read the item from the table
   const response = await documentClient.query(params).promise();

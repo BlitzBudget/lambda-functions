@@ -23,7 +23,7 @@ exports.handler = async (event) => {
 
   // Cognito does not store wallet information nor curreny. All are stored in wallet.
   const {
-    walletId,
+    walletPK,
     response,
   } = await fetchHelper.fetchWalletsIfEmpty(
     event['body-json'].walletId,
@@ -32,7 +32,7 @@ exports.handler = async (event) => {
   );
 
   const otherResponse = await fetchHelper.fetchAllInformationForBudget(
-    walletId,
+    walletPK,
     startsWithDate,
     endsWithDate,
     fullMonth,
