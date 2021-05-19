@@ -5,7 +5,7 @@ const deleteHelper = require('./utils/delete-helper');
 
 // Load the AWS SDK for Node.js
 // Set the region
-AWS.config.update({ region: process.env.TABLE_NAME });
+AWS.config.update({ region: process.env.AWS_LAMBDA_REGION });
 const sns = new AWS.SNS();
 
 // Create the DynamoDB service object
