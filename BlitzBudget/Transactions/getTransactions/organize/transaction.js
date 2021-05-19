@@ -2,6 +2,11 @@ const util = require('../utils/util');
 
 module.exports.organize = (responseData) => {
   const categories = {};
+
+  if (util.isEmpty(responseData.Transaction)) {
+    return categories;
+  }
+
   responseData.Transaction.forEach((transObj) => {
     const transaction = transObj;
     if (util.isEmpty(categories[transObj.category])) {

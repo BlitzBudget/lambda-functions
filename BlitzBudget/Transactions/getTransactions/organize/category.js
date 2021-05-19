@@ -5,6 +5,10 @@ module.exports.organize = (responseData, categoryList, fullMonth) => {
   let expenseTotal = 0;
   let periodBalance = 0;
 
+  if (util.isEmpty(responseData.Category)) {
+    return { incomeTotal, expenseTotal, periodBalance };
+  }
+
   responseData.Category.forEach((categoryObj) => {
     const category = categoryObj;
     if (util.isNotEmpty(categoryList[categoryObj.sk]) && !fullMonth) {
