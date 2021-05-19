@@ -8,7 +8,7 @@ exports.handler = async (event) => {
   helper.throwErrorIfEmpty(event, walletId);
 
   const { dateId, events } = await addHelper
-    .creatDateIfNecessary(dateMeantFor, event, walletId);
+    .creatDateIfNecessary(dateMeantFor, walletId);
   const categoryResponse = await addHelper.createCategoryIfNecessary(
     event,
     today,
