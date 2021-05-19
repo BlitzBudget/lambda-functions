@@ -1,6 +1,7 @@
 const getTransaction = require('../../index');
 const mockRequest = require('../fixtures/request/byUserId.json');
 const mockResponse = require('../fixtures/response/fetchTransaction.json');
+const mockWalletResponse = require('../fixtures/response/fetchWalletResponse.json');
 
 jest.mock('aws-sdk', () => ({
   DynamoDB: {
@@ -20,7 +21,11 @@ jest.mock('aws-sdk', () => ({
   },
 }));
 
-describe('Get Budget item', () => {
+jest.mock('../../fetch/wallet', () => ({
+  getWalletsData: () => Promise.resolve(mockWalletResponse),
+}));
+
+describe('Get Transaction item', () => {
   const event = mockRequest;
   test('With Data: Success', async () => {
     const response = await getTransaction
