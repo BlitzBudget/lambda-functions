@@ -14,4 +14,12 @@ describe('SNS publish', () => {
     expect(response).not.toBeUndefined();
     expect(sns.publish).toHaveBeenCalledTimes(1);
   });
+
+  test('Without Reference number: Success', async () => {
+    mockRequest['body-json'].referenceNumber = undefined;
+    const response = await snsPublish
+      .resetAccountSubscriberThroughSNS(mockRequest, sns);
+    expect(response).not.toBeUndefined();
+    expect(sns.publish).toHaveBeenCalledTimes(2);
+  });
 });

@@ -20,4 +20,14 @@ describe('Update Budget item', () => {
       .updatingGoals(mockRequest);
     expect(response).not.toBeUndefined();
   });
+
+  test('Without Event Body: Success', async () => {
+    const response = await updateBudget
+      .updatingGoals({
+        'body-json': {
+
+        },
+      });
+    expect(response).toBeUndefined();
+  });
 });

@@ -15,4 +15,12 @@ describe('Delete helper', () => {
     expect(response).toBeUndefined();
     expect(documentClient.batchWrite).toHaveBeenCalledTimes(1);
   });
+
+  test('With Data: Success', async () => {
+    const response = await deleteHelper
+      .bulkDeleteItems(mockResponse, '', 'Category#2021-01-04T15:39:23.658Z', documentClient);
+
+    expect(response).toBeUndefined();
+    expect(documentClient.batchWrite).toHaveBeenCalledTimes(2);
+  });
 });

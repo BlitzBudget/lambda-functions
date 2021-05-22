@@ -1,4 +1,4 @@
-function FetchCategory() {}
+function FetchCategory() { }
 
 const fetchDateParameter = require('../create-parameter/fetch-date');
 
@@ -33,7 +33,7 @@ async function getCategoryData(pk, today, categoryType, categoryName, category, 
 
   // Call DynamoDB to read the item from the table
   const response = await documentClient.query(params).promise();
-  const sortKey = calculateSortKey(response, today, categoryType, categoryName, category);
+  const sortKey = calculateSortKey(response, today, categoryName, categoryType, category);
 
   return ({
     sortKey,

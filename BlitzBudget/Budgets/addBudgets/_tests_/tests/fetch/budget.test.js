@@ -28,4 +28,21 @@ describe('Fetch Budget item', () => {
     expect(withDataResponse.Budget.category).toBe(mockRequest['body-json'].category);
     expect(withDataResponse.Budget.date_meant_for).toBe(mockRequest['body-json'].dateMeantFor);
   });
+
+  test('Without A Response: Success', async () => {
+    const documentClientWithoutAResponse = {
+      query: jest.fn(() => ({
+        promise: jest.fn().mockResolvedValueOnce({
+          Items: [],
+          Count: 0,
+        }),
+      })),
+    };
+
+    const response = await fetchBudget
+      .getBudgetsItem(new Date(), mockRequest, documentClientWithoutAResponse);
+    expect(response).not.toBeUndefined();
+    expect(response.Budget).toBeUndefined();
+    expect(documentClientWithoutAResponse.query).toHaveBeenCalledTimes(1);
+  });
 });

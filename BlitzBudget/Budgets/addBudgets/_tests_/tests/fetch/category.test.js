@@ -27,4 +27,21 @@ describe('Fetch Category item', () => {
     expect(withCategoryResponse.Category.category_name).toBe(mockRequest['body-json'].category);
     expect(withCategoryResponse.Category.category_type).toBe(mockRequest['body-json'].categoryType);
   });
+
+  test('Without A Response: Success', async () => {
+    const documentClientWithoutAResponse = {
+      query: jest.fn(() => ({
+        promise: jest.fn().mockResolvedValueOnce({
+          Items: [],
+          Count: 0,
+        }),
+      })),
+    };
+
+    const response = await fetchCategory
+      .getCategoryData(mockRequest, new Date(), documentClientWithoutAResponse);
+    expect(response).not.toBeUndefined();
+    expect(response.Category).toBeUndefined();
+    expect(documentClientWithoutAResponse.query).toHaveBeenCalledTimes(1);
+  });
 });

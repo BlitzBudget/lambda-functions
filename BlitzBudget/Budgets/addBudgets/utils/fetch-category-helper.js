@@ -5,7 +5,7 @@ module.exports.fetchCategoryItem = async (event, today, documentClient) => {
   let categoryResponse;
   await fetchCategory.getCategoryData(event, today, documentClient).then(
     (result) => {
-      if (util.isNotEmpty(result.Category) && util.isNotEmpty(result.Category[0])) {
+      if (util.isNotEmpty(result.Category)) {
         console.log('successfully assigned the existing category %j', result.Category.sk);
       }
       categoryResponse = result;
