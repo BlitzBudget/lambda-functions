@@ -13,7 +13,6 @@ module.exports.setRecurrenceDates = (futureDatesToCreate, recurrence) => {
       futureDatesToCreate.setDate(futureDatesToCreate.getDate() + 15);
       break;
     default:
-      futureDatesToCreate.setDate(new Date());
       break;
   }
 };

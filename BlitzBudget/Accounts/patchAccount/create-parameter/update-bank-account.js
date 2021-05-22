@@ -6,6 +6,11 @@ module.exports.createParameter = (event) => {
   const expAttrVal = {};
   const expAttrNames = {};
 
+  if (util.isEmpty(event['body-json'])) {
+    console.log('The event body is empty, Request invalid');
+    return undefined;
+  }
+
   for (let i = 0, len = parameters.length; i < len; i++) {
     const prm = parameters[i];
 
@@ -36,6 +41,7 @@ module.exports.createParameter = (event) => {
   );
 
   if (util.isEmpty(expAttrVal)) {
+    console.log('The event body is does not have a valid parameters to update, Request invalid');
     return undefined;
   }
 

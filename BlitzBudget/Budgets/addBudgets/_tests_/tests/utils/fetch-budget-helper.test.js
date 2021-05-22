@@ -28,4 +28,18 @@ describe('Fetch Budget item', () => {
     expect(withBudgetResponse.Budget.category).toBe(mockRequest['body-json'].category);
     expect(withBudgetResponse.Budget.date_meant_for).toBe(mockRequest['body-json'].dateMeantFor);
   });
+
+  test('Without Matching Category: Error', async () => {
+    const documentClientError = {
+      query: jest.fn(() => ({
+        promise: jest.fn().mockRejectedValueOnce(mockResponse),
+      })),
+    };
+
+    await fetchBudget
+      .fetchBudget(new Date(), mockRequest, documentClientError).catch((err) => {
+        expect(err.message).toMatch(/Unable to get the budget item to check if the budget/);
+      });
+    expect(documentClientError.query).toHaveBeenCalledTimes(1);
+  });
 });

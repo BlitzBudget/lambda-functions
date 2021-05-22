@@ -27,4 +27,18 @@ describe('Fetch Category item', () => {
     expect(withCategoryResponse.Category.category_name).toBe(mockRequest['body-json'].category);
     expect(withCategoryResponse.Category.category_type).toBe(mockRequest['body-json'].categoryType);
   });
+
+  test('Without Matching Category: Error', async () => {
+    const documentClientError = {
+      query: jest.fn(() => ({
+        promise: jest.fn().mockRejectedValueOnce(mockResponse),
+      })),
+    };
+
+    await fetchCategory
+      .fetchCategoryItem(mockRequest, new Date(), documentClientError).catch((err) => {
+        expect(err.message).toMatch(/Unable to get the category/);
+      });
+    expect(documentClientError.query).toHaveBeenCalledTimes(1);
+  });
 });

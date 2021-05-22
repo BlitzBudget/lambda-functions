@@ -10,7 +10,7 @@ const documentClient = {
 
 describe('updateBankAccountToUnselected', () => {
   const event = mockRequest;
-  test('With Data: Success', async () => {
+  test('Without Data: Success', async () => {
     const events = await updateHelper
       .updateBankAccountToUnselected(event, documentClient);
     expect(events).not.toBeUndefined();

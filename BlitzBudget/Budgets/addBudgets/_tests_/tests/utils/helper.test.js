@@ -13,15 +13,6 @@ describe('extractVariablesFromRequest', () => {
   });
 });
 
-describe('throwErrorIfEmpty', () => {
-  const events = mockRequest;
-  test('With Data: Success', async () => {
-    const response = await helper
-      .throwErrorIfEmpty(events);
-    expect(response).toBeUndefined();
-  });
-});
-
 describe('convertToDate', () => {
   const events = mockRequest;
   test('With Date: Success', async () => {

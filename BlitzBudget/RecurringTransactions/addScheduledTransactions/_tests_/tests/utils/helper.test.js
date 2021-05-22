@@ -31,3 +31,15 @@ describe('extractVariablesFromRequestForTransaction', () => {
     expect(response.today).not.toBeUndefined();
   });
 });
+
+describe('convertToDate', () => {
+  test('With Data: Success', async () => {
+    const date = await helper
+      .convertToDate({
+        dateToCreate: '2021-05',
+      });
+
+    expect(date.getFullYear()).toBe(2021);
+    expect(date.getMonth()).toBe(4);
+  });
+});
