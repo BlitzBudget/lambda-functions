@@ -48,5 +48,13 @@ Helper.prototype.extractVariablesFromRequestForTransaction = (event) => {
   };
 };
 
+Helper.prototype.convertToDate = (date) => {
+  const dateToCreate = new Date();
+  dateToCreate.setFullYear(date.dateToCreate.substring(0, 4));
+  const month = parseInt(date.dateToCreate.substring(5, 7), 10) - 1;
+  dateToCreate.setMonth(month);
+  return dateToCreate;
+};
+
 // Export object
 module.exports = new Helper();

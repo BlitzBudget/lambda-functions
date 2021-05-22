@@ -1,13 +1,12 @@
-function SesSend() {}
+function SesSend() { }
 
 // Copyright 2019 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 const aws = require('aws-sdk');
-const constants = require('../constants/constant');
 
 const ses = new aws.SES({
-  region: constants.AWS_LAMBDA_REGION,
+  region: process.env.AWS_LAMBDA_REGION,
 });
 
 async function sendEmail(params) {

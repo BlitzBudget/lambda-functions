@@ -42,8 +42,7 @@ describe('pushAllCategoriesToFetch', () => {
 });
 
 describe('calculateAndAddAllDates', () => {
-  const futureTransactionsToCreate = []; const
-    events = [];
+  const futureTransactionsToCreate = [];
   const datesMap = {};
   const event = mockRequest;
   const walletId = event.Records[0].Sns.MessageAttributes.walletId.Value;
@@ -56,12 +55,8 @@ describe('calculateAndAddAllDates', () => {
         futureTransactionsToCreate,
         walletId,
         datesMap,
-        events,
         documentClientForDate,
       );
-
-    expect(events).not.toBeUndefined();
-    expect(events.length).toBe(3);
     expect(documentClientForDate.query).toHaveBeenCalledTimes(3);
   });
 });

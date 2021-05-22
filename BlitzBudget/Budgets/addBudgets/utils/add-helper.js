@@ -9,11 +9,10 @@ const addCategoryHelper = require('./add-category-helper');
 const fetchHelper = require('./fetch-budget-helper');
 const fetchDateHelper = require('./fetch-date-helper');
 const fetchCategoryHelper = require('./fetch-category-helper');
-const constants = require('../constants/constant');
 
 // Set the region
 AWS.config.update({
-  region: constants.AWS_LAMBDA_REGION,
+  region: process.env.AWS_LAMBDA_REGION,
 });
 
 // Create the DynamoDB service object

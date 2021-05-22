@@ -1,12 +1,11 @@
-function Wallet() {}
+function Wallet() { }
 
 // Load the AWS SDK for Node.js
 const AWS = require('aws-sdk');
-const constants = require('../constants/constant');
 const walletParameter = require('../create-parameter/wallet');
 const organizeWallet = require('../organize/wallet');
 // Set the region
-AWS.config.update({ region: constants.AWS_LAMBDA_REGION });
+AWS.config.update({ region: process.env.AWS_LAMBDA_REGION });
 
 // Create the DynamoDB service object
 const documentClient = new AWS.DynamoDB.DocumentClient();

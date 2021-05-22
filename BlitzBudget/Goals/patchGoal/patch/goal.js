@@ -1,13 +1,12 @@
-function PatchGoal() {}
+function PatchGoal() { }
 
 const AWS = require('aws-sdk');
 const util = require('../utils/util');
-const constants = require('../constants/constant');
 const goalParameter = require('../create-expression/goal');
 
 // Load the AWS SDK for Node.js
 // Set the region
-AWS.config.update({ region: constants.AWS_LAMBDA_REGION });
+AWS.config.update({ region: process.env.AWS_LAMBDA_REGION });
 
 // Create the DynamoDB service object
 const documentClient = new AWS.DynamoDB.DocumentClient();

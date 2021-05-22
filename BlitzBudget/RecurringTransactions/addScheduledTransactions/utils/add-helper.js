@@ -12,19 +12,19 @@ async function calculateCategoriesToAdd(
   categoryType,
   categoryName,
   categoryMap,
-  createItemsArray,
+  datesToCreateTransactions,
   datesMap,
-  events,
   documentClient,
 ) {
   const categoriesMap = categoryMap;
+  const events = [];
   fetchHelper.pushAllCategoriesToFetch(
     category,
     walletId,
     categoryType,
     categoryName,
     documentClient,
-    createItemsArray,
+    datesToCreateTransactions,
     events,
   );
 
@@ -36,7 +36,7 @@ async function calculateCategoriesToAdd(
       console.log('Processing Categories to create');
       result.forEach((categoryItem) => {
         categoriesMap[categoryItem.dateMeantFor] = categoryItem.sortKey;
-        createItemsArray.push(
+        datesToCreateTransactions.push(
           categoryParameter.createParameter(
             walletId,
             categoryItem.sortKey,
@@ -53,11 +53,9 @@ async function calculateCategoriesToAdd(
       );
     },
   );
-
-  return [];
 }
 
-function createAllItemsInBatch(putRequests, documentClient, events) {
+function createAllItemsInBatch(putRequests, documentClient, datesToCreateTransactions) {
   putRequests.forEach((putRequest) => {
     const params = {};
     params.RequestItems = {};
@@ -67,52 +65,38 @@ function createAllItemsInBatch(putRequests, documentClient, events) {
       params.RequestItems.blitzbudget.length,
     );
     // Delete Items in batch
-    events.push(batchWriteItems.batchWriteItems(params, documentClient));
+    datesToCreateTransactions.push(batchWriteItems.batchWriteItems(params, documentClient));
   });
 }
 
-async function addAllCategories(events) {
-  await Promise.all(events).then(
-    () => {},
-    (err) => {
-      throw new Error(
-        `Unable to update the recurring transactions field ${err}`,
-      );
-    },
-  );
-
-  return [];
-}
-
 function constructRequestAndCreateItems(
-  createItemsArray,
+  datesToCreateTransactions,
   datesMap,
   categoryMap,
   event,
   documentClient,
-  events,
 ) {
   console.log(
     ' The number of dates and categories to create are %j',
-    createItemsArray.length,
+    datesToCreateTransactions.length,
   );
   // Add all transactions
   addTransaction.constructTransactions(
     datesMap,
     categoryMap,
     event,
-    createItemsArray,
+    datesToCreateTransactions,
   );
   console.log(
     ' The number of transactions to create are %j',
-    createItemsArray.length,
+    datesToCreateTransactions.length,
   );
 
   // Split array into sizes of 25
-  const putRequests = util.chunkArrayInGroups(createItemsArray, 25);
+  const putRequests = util.chunkArrayInGroups(datesToCreateTransactions, 25);
 
   // Push Events  to be executed in bulk
-  createAllItemsInBatch(putRequests, documentClient, events);
+  createAllItemsInBatch(putRequests, documentClient, datesToCreateTransactions);
 }
 
 /*
@@ -124,9 +108,8 @@ async function calculateAndAddAllCategories(
   categoryType,
   categoryName,
   categoryMap,
-  createItemsArray,
+  datesToCreateTransactions,
   datesMap,
-  events,
   documentClient,
 ) {
   await calculateCategoriesToAdd(
@@ -135,17 +118,10 @@ async function calculateAndAddAllCategories(
     categoryType,
     categoryName,
     categoryMap,
-    createItemsArray,
+    datesToCreateTransactions,
     datesMap,
-    events,
     documentClient,
   );
-
-  /*
-   * Add all categories first
-   */
-  await addAllCategories(events);
-  return [];
 }
 
 AddHelper.prototype.constructRequestAndCreateItems = constructRequestAndCreateItems;

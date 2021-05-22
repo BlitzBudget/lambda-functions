@@ -1,11 +1,10 @@
 const AWS = require('aws-sdk');
-const constants = require('./constants/constant');
 const confirmForgotPasswordHelper = require('./utils/confirm-forgot-password-helper');
 const fetchUserHelper = require('./utils/fetch-user-helper');
 const loginHelper = require('./utils/login-helper');
 
 AWS.config.update({
-  region: constants.AWS_LAMBDA_REGION,
+  region: process.env.AWS_LAMBDA_REGION,
 });
 const cognitoidentityserviceprovider = new AWS.CognitoIdentityServiceProvider();
 

@@ -2,11 +2,10 @@
 const AWS = require('aws-sdk');
 
 const helper = require('./utils/helper');
-const constants = require('./constants/constant');
 const deleteHelper = require('./utils/delete-helper');
 
 // Set the region
-AWS.config.update({ region: constants.AWS_LAMBDA_REGION });
+AWS.config.update({ region: process.env.AWS_LAMBDA_REGION });
 
 // Create the DynamoDB service object
 const documentClient = new AWS.DynamoDB.DocumentClient();
