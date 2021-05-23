@@ -5,7 +5,7 @@ jest.mock('aws-sdk', () => ({
   CognitoIdentityServiceProvider: jest.fn(() => ({
     signUp: jest.fn((params) => ({
       promise: jest.fn()
-        .mockResolvedValueOnce(Promise.resolve(mockSuccess(params))),
+        .mockResolvedValueOnce(mockSuccess(params)),
     })),
   })),
   config: {
@@ -27,6 +27,5 @@ describe('signup', () => {
     const response = await cognitoSignup.signup(event);
     expect(response).not.toBeUndefined();
     expect(response.UserConfirmed).toBe(false);
-    expect(response.CodeDeliveryDetails.Destination).toBe(event['body-json'].username);
   });
 });
