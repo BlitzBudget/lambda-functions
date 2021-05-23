@@ -15,9 +15,8 @@ const documentClient = new AWS.DynamoDB.DocumentClient();
 exports.handler = async (event) => {
   console.log('adding transactions for ', JSON.stringify(event['body-json']));
   const events = [];
-  const { walletId } = event['body-json'];
 
-  await addHelper.addANewDateIfNotPresent(event, walletId, events, documentClient);
+  await addHelper.addANewDateIfNotPresent(event, events, documentClient);
 
   await addHelper.addANewCategoryIfNotPresent(event, events, documentClient);
 

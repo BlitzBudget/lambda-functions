@@ -1,13 +1,10 @@
 function AddTransaction() {}
 
 const transactionParameter = require('../create-parameter/transaction');
+const helper = require('../utils/helper');
 
 async function addNewTransaction(event, documentClient) {
-  const today = new Date();
-  today.setYear(event['body-json'].dateMeantFor.substring(5, 9));
-  today.setMonth(
-    parseInt(event['body-json'].dateMeantFor.substring(10, 12), 10) - 1,
-  );
+  const today = helper.formulateDateFromRequest(event);
   const randomValue = `Transaction#${today.toISOString()}`;
   const params = transactionParameter.createParameter(event, randomValue, today);
 
