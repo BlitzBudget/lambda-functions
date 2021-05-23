@@ -93,6 +93,7 @@ async function addANewDateIfNotPresent(
 
     if (util.isEmpty(dateMeantFor)) {
       dateMeantFor = `Date#${today.toISOString()}`;
+      createDateRequest['body-json'].dateMeantFor = dateMeantFor;
       console.log('Date entry is empty so creating the date object');
       events.push(addDate.createDateData(event, dateMeantFor, documentClient));
     }

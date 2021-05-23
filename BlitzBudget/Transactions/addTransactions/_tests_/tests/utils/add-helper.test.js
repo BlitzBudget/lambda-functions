@@ -115,6 +115,7 @@ describe('addANewDateIfNotPresent', () => {
     const events = await addHelper.addANewDateIfNotPresent(mockRequest, [],
       documentClientWithDate);
     expect(events.length).toBe(0);
+    expect(mockRequest['body-json'].dateMeantFor).toMatch(/Date#/);
   });
 
   test('Without Date Id: Success', async () => {

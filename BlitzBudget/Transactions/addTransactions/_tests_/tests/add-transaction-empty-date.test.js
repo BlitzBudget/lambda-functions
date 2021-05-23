@@ -1,5 +1,5 @@
 const patchBudget = require('../../index');
-const mockRequest = require('../fixtures/request/addTransactions.json');
+const mockRequest = require('../fixtures/request/withoutDate.json');
 const mockUpdateResponse = require('../fixtures/response/addCategory.json');
 const mockDateResponse = require('../fixtures/response/fetchDate.json');
 const mockCategoryResponse = require('../fixtures/response/fetchCategory.json');
@@ -29,7 +29,7 @@ jest.mock('../../fetch/category', () => ({
 }));
 
 jest.mock('../../fetch/date', () => ({
-  getCategoryData: () => Promise.resolve(mockDateResponse),
+  getDateData: () => Promise.resolve(mockDateResponse),
 }));
 
 describe('Add Transaction item', () => {
@@ -42,9 +42,10 @@ describe('Add Transaction item', () => {
     expect(response['body-json'].amount).not.toBeUndefined();
     expect(response['body-json'].walletId).not.toBeUndefined();
     expect(response['body-json'].transactionId).not.toBeUndefined();
-    expect(response['body-json'].category).toBe('Category#2021-01-04T15:20:13.109Z');
+    expect(response['body-json'].category).toBe('Category#2020-04-03T11:16:16.852Z');
     expect(response['body-json'].category).not.toBeUndefined();
     expect(response['body-json'].dateMeantFor).not.toBeUndefined();
+    expect(response['body-json'].dateMeantFor).toMatch(/Date#/);
     expect(response['body-json'].recurrence).not.toBeUndefined();
   });
 });
