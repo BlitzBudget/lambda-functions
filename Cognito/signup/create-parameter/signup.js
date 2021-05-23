@@ -36,9 +36,7 @@ Signup.prototype.createParameter = (
       {
         Name: constants.LOCALE,
         /* required */
-        Value: acceptLanguage.length <= 4
-          ? acceptLanguage.substring(1, 3)
-          : acceptLanguage.substring(1, 6) /* take en or en-US if available */,
+        Value: acceptLanguage,
       },
       {
         Name: constants.FINANCIAL_PORTFOLIO_ID,
