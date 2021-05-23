@@ -8,6 +8,12 @@ const dynamoDB = {
   })),
 };
 
+const dynamoDBError = {
+  put: jest.fn(() => ({
+    promise: jest.fn().mockRejectedValueOnce(mockSuccess),
+  })),
+};
+
 describe('addNewWallet', () => {
   const event = mockRequest;
 
@@ -21,5 +27,13 @@ describe('addNewWallet', () => {
     const response = await walletHelper.addNewWallet(event, false, 'ES', dynamoDB);
     expect(response).not.toBeUndefined();
     expect(response.Wallet).not.toBeUndefined();
+  });
+
+  test('With Data: Error', async () => {
+    await walletHelper.addNewWallet(event, false, 'ES', dynamoDBError)
+      .catch((err) => {
+        expect(err).not.toBeUndefined();
+        expect(err.message).toMatch(/Unable to add new wallet/);
+      });
   });
 });

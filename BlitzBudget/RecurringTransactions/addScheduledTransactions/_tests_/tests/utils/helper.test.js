@@ -30,6 +30,21 @@ describe('extractVariablesFromRequestForTransaction', () => {
     expect(response.recurrence).not.toBeUndefined();
     expect(response.today).not.toBeUndefined();
   });
+
+  test('With Data: Success', async () => {
+    events.Records[0].Sns.MessageAttributes.tags.Value = undefined;
+    const response = await helper
+      .extractVariablesFromRequestForTransaction(events);
+
+    expect(response.futureDateToCreate).not.toBeUndefined();
+    expect(response.walletId).not.toBeUndefined();
+    expect(response.tags).toBeUndefined();
+    expect(response.account).not.toBeUndefined();
+    expect(response.amount).not.toBeUndefined();
+    expect(response.description).not.toBeUndefined();
+    expect(response.recurrence).not.toBeUndefined();
+    expect(response.today).not.toBeUndefined();
+  });
 });
 
 describe('convertToDate', () => {

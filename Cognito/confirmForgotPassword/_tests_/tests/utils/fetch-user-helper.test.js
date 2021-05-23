@@ -5,7 +5,14 @@ const mockRequest = require('../../fixtures/response/login');
 const cognitoidentityserviceprovider = {
   getUser: jest.fn(() => ({
     promise: jest.fn()
-      .mockResolvedValueOnce(Promise.resolve(mockSuccess)),
+      .mockResolvedValueOnce(mockSuccess),
+  })),
+};
+
+const cognitoidentityserviceproviderError = {
+  getUser: jest.fn(() => ({
+    promise: jest.fn()
+      .mockRejectedValueOnce(mockSuccess),
   })),
 };
 
@@ -24,5 +31,13 @@ describe('getUser', () => {
     expect(response.UserAttributes[5].Value).not.toBeUndefined();
     expect(response.UserAttributes[6].Value).not.toBeUndefined();
     expect(response.UserAttributes[7].Value).not.toBeUndefined();
+  });
+
+  test('With Data: Error', async () => {
+    await cognitoFetchUserHelper
+      .fetchUser(event, cognitoidentityserviceproviderError).catch((err) => {
+        expect(err).not.toBeUndefined();
+        expect(err.message).toMatch(/Unable to get user attributes from cognito/);
+      });
   });
 });

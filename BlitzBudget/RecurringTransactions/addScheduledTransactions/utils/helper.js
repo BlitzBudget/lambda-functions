@@ -27,10 +27,10 @@ Helper.prototype.extractVariablesFromRequestForTransaction = (event) => {
   const amount = parseInt(event.Records[0].Sns.MessageAttributes.amount.Value, 10);
   const description = event.Records[0].Sns.MessageAttributes.description.Value;
   const account = event.Records[0].Sns.MessageAttributes.account.Value;
-  let { tags } = event.Records[0].Sns.MessageAttributes;
+  let tags = event.Records[0].Sns.MessageAttributes.tags.Value;
 
   if (util.isNotEmpty(tags)) {
-    tags = JSON.parse(tags.Value);
+    tags = JSON.parse(tags);
     console.log('The tags for the transaction is ', tags);
   }
 
