@@ -5,7 +5,6 @@ exports.handler = async (event) => {
   console.log('adding Budget for ', JSON.stringify(event['body-json']));
   const today = helper.convertToDate(event);
   const { walletId, dateMeantFor } = helper.extractVariablesFromRequest(event);
-  helper.throwErrorIfEmpty(event, walletId);
 
   const { dateId, events } = await addHelper
     .creatDateIfNecessary(dateMeantFor, walletId);

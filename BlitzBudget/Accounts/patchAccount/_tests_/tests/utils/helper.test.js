@@ -29,6 +29,19 @@ describe('unselectSelectedBankAccount', () => {
   });
 });
 
+describe('unselectSelectedBankAccount', () => {
+  test('With Data: Success', async () => {
+    const mockRequestWithEmptyBody = {
+      'body-json': {},
+    };
+    const events = await helper
+      .unselectSelectedBankAccount(mockRequestWithEmptyBody);
+    expect(events).not.toBeUndefined();
+    expect(events.length).not.toBeUndefined();
+    expect(events.length).toBe(0);
+  });
+});
+
 describe('handleUpdateBankAccounts', () => {
   const event = mockRequest;
   test('With Data: Success', async () => {

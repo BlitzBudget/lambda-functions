@@ -10,9 +10,9 @@ async function updateRecurringTransaction(
   recurringTransactionsId,
   futureTransactionCreationDate,
   documentClient,
-  events,
+  datesToCreateTransactions,
 ) {
-  events.push(
+  datesToCreateTransactions.push(
     recurringTransaction.updateRecurringTransactionsData(
       walletId,
       recurringTransactionsId,
@@ -21,7 +21,7 @@ async function updateRecurringTransaction(
     ),
   );
 
-  await Promise.all(events).then(
+  await Promise.all(datesToCreateTransactions).then(
     () => {
       console.log(
         'Successfully updated the recurring transactions field %j',

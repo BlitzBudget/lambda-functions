@@ -1,10 +1,9 @@
 const AWS = require('aws-sdk');
 const deleteHelper = require('./utils/delete-helper');
 const publish = require('./sns/publish');
-const constants = require('./constants/constant');
 
 AWS.config.update({
-  region: constants.AWS_LAMBDA_REGION,
+  region: process.env.AWS_LAMBDA_REGION,
 });
 // Delete User
 const cognitoIdServiceProvider = new AWS.CognitoIdentityServiceProvider();
@@ -24,10 +23,8 @@ exports.handler = async (event) => {
   events.push(publish.resetAccountSubscriberThroughSNS(event, sns));
   const result = await Promise.all(events);
   console.log(
-    `The reset account for ${
-      event['body-json'].walletId
-    } was ${
-      JSON.stringify(result)}`,
+    `The reset account for ${event['body-json'].walletId
+    } was ${JSON.stringify(result)}`,
   );
 
   return { result };

@@ -1,9 +1,10 @@
 function FetchHelper() {}
 
 const util = require('./util');
+const helper = require('./helper');
 const fetchCategory = require('../fetch/category');
 const fetchDate = require('../fetch/date');
-const dateParam = require('../create-parameter/date');
+const dateParameter = require('../create-parameter/date');
 
 function pushAllCategoriesToFetch(
   category,
@@ -11,10 +12,10 @@ function pushAllCategoriesToFetch(
   categoryType,
   categoryName,
   documentClient,
-  createItemsArray,
+  datesToCreateTransactions,
   events,
 ) {
-  createItemsArray.forEach((dateMeantFor) => {
+  datesToCreateTransactions.forEach((dateMeantFor) => {
     /*
      * Check if 2020-03 ===  2020-02
      */
@@ -36,26 +37,25 @@ function pushAllCategoriesToFetch(
 /*
  * Fetch available dates
  */
-function fetchDatesForWallet(walletId, events, documentClient, futureTransactionsToCreate) {
+function fetchDatesForWallet(
+  walletId, fetchDateEvents, documentClient, futureTransactionsToCreate,
+) {
   futureTransactionsToCreate.forEach((dateMeantFor) => {
-    events.push(fetchDate.getDateData(walletId, dateMeantFor, documentClient));
+    fetchDateEvents.push(fetchDate.getDateData(walletId, dateMeantFor, documentClient));
   });
 }
 
-function calculateDates(result, addItemArray, walletId, datesMap, futureTransactionsToCreate) {
-  Object.keys(result).forEach((dateObj) => {
+function calculateDates(fetchDatesResult, futureTransactionsToCreate, walletId, datesMap) {
+  fetchDatesResult.forEach((dateObj) => {
     const dateMap = datesMap;
     const date = dateObj;
     /*
      * If Date is empty then
      */
-    if (util.includesStr(futureTransactionsToCreate, dateObj.dateToCreate)) {
-      const dateToCreate = new Date();
-      dateToCreate.setFullYear(dateObj.dateToCreate.substring(0, 4));
-      const month = parseInt(dateObj.dateToCreate.substring(5, 7), 10) - 1;
-      dateToCreate.setMonth(month);
+    if (util.includesStr(futureTransactionsToCreate, date.dateToCreate)) {
+      const dateToCreate = helper.convertToDate(date);
       const sk = `Date#${dateToCreate.toISOString()}`;
-      addItemArray.push(dateParam.buildParamsForDate(walletId, sk));
+      futureTransactionsToCreate.push(dateParameter.createParameter(walletId, sk));
       /*
        * Build date object to place the date in transactions
        */
@@ -68,8 +68,8 @@ function calculateDates(result, addItemArray, walletId, datesMap, futureTransact
     /*
      * Populate to dates map
      */
-    if (dateObj.Date) {
-      dateMap[dateObj.Date[0].sk.substring(5, 12)] = dateObj.Date[0].sk;
+    if (date.Date) {
+      dateMap[dateObj.Date[0].sk.substring(5, 12)] = date.Date[0].sk;
     }
   });
 }
@@ -81,22 +81,22 @@ async function calculateAndAddAllDates(
   futureTransactionsToCreate,
   walletId,
   datesMap,
-  events,
   documentClient,
 ) {
-  fetchDatesForWallet(walletId, events, documentClient, futureTransactionsToCreate);
+  const fetchDateEvents = [];
+  fetchDatesForWallet(walletId, fetchDateEvents, documentClient, futureTransactionsToCreate);
 
-  await Promise.all(events).then(
-    (result) => {
+  await Promise.all(fetchDateEvents).then(
+    (fetchDatesResult) => {
       console.log(
         'Successfully fetched all the relevant information %j',
-        JSON.stringify(result),
+        JSON.stringify(fetchDatesResult),
       );
 
       /*
        * Calculate Date
        */
-      calculateDates(result, futureTransactionsToCreate, walletId, datesMap);
+      calculateDates(fetchDatesResult, futureTransactionsToCreate, walletId, datesMap);
     },
     (err) => {
       throw new Error(
@@ -104,8 +104,6 @@ async function calculateAndAddAllDates(
       );
     },
   );
-
-  return [];
 }
 
 FetchHelper.prototype.pushAllCategoriesToFetch = pushAllCategoriesToFetch;

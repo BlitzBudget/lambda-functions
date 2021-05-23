@@ -1,4 +1,4 @@
-function Util() {}
+function Util() { }
 
 const isEmpty = (obj) => {
   // Check if objext is a number or a boolean
@@ -27,6 +27,7 @@ const extractVariablesFromRequest = (event) => {
 };
 
 Util.prototype.extractVariablesFromRequest = extractVariablesFromRequest;
+Util.prototype.isNotEmpty = isNotEmpty;
 
 // Export object
 module.exports = new Util();

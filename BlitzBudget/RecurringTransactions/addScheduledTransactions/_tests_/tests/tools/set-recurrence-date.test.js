@@ -19,5 +19,10 @@ describe('setRecurrenceDates: createParameter', () => {
     targetWeeklyDate.setDate(targetWeeklyDate.getDate() + 7);
     setRecurrenceDates.setRecurrenceDates(weeklyDate, constants.WEEKLY);
     expect(weeklyDate.getDate()).toBe(targetWeeklyDate.getDate());
+
+    const invalidDate = new Date();
+    const targetInvalidDate = invalidDate;
+    setRecurrenceDates.setRecurrenceDates(invalidDate, 'week');
+    expect(invalidDate.getDate()).toBe(targetInvalidDate.getDate());
   });
 });

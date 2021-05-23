@@ -7,7 +7,7 @@ module.exports.fetchDateData = async (walletId, today, documentClient) => {
       dateResponse = result;
     },
     (err) => {
-      throw new Error(`Unable to add the Budget ${err}`);
+      throw new Error(`Unable to fetch the Date ${err}`);
     },
   );
   return dateResponse;

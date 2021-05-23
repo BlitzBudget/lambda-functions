@@ -23,7 +23,7 @@ describe('Patch Wallet item', () => {
     expect(response['body-json']).not.toBeUndefined();
     expect(response['body-json'].userId).not.toBeUndefined();
     expect(response['body-json'].walletId).not.toBeUndefined();
-    expect(response['body-json'].name).not.toBeUndefined();
+    expect(response['body-json'].walletName).not.toBeUndefined();
     expect(response['body-json'].currency).not.toBeUndefined();
   });
 });

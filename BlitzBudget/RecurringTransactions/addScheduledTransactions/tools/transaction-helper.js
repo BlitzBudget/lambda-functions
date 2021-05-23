@@ -34,10 +34,10 @@ function calculateDateMeanFor(compareString, sk, datesMap, dateMeantFor) {
 }
 
 function createTransactionPutRequest(
-  createTransactionArray, sk, walletId, recurrence, amount, description,
+  datesToCreateTransactions, sk, walletId, recurrence, amount, description,
   category, account, tags, dateMeantFor, futureDatesToCreate,
 ) {
-  createTransactionArray.push(transactionParameter.createParameter(walletId,
+  datesToCreateTransactions.push(transactionParameter.createParameter(walletId,
     sk,
     recurrence,
     amount,
@@ -56,7 +56,7 @@ function constructTransactions(
   datesMap,
   categoryMap,
   event,
-  createTransactionArray,
+  datesToCreateTransactions,
 ) {
   const {
     futureDateToCreate,
@@ -79,7 +79,7 @@ function constructTransactions(
     dateMeantFor = calculateDateMeanFor(compareString, sk, datesMap, dateMeantFor);
     category = calculateCategory(compareString, sk, categoryMap);
     createTransactionPutRequest(
-      createTransactionArray, sk, walletId, recurrence, amount, description,
+      datesToCreateTransactions, sk, walletId, recurrence, amount, description,
       category, account, tags, dateMeantFor, futureDatesToCreate,
     );
 

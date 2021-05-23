@@ -14,12 +14,11 @@ describe('constructRequestAndCreateItems', () => {
   test('Without User ID Data: Success', async () => {
     await addHelper
       .constructRequestAndCreateItems(
-        [],
+        createTransactionArray,
         datesMap,
         categoryMap,
         mockRequest,
         documentClient,
-        createTransactionArray,
       );
 
     expect(createTransactionArray).not.toBeUndefined();

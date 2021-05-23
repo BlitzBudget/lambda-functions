@@ -17,4 +17,21 @@ describe('Fetch Helper item', () => {
     expect(response[0].Count).toBe(2);
     expect(response[1].Count).toBe(2);
   });
+
+  test('With Data: Error', async () => {
+    const dynamoDBWithError = {
+      query: jest.fn(() => ({
+        promise: jest.fn().mockRejectedValueOnce(fetchTransactionsResponse),
+      })),
+    };
+
+    await fetchHelper
+      .fetchTransactionDataForAccount(
+        fetchTransactionsResponse.Items[0].walletId, dynamoDBWithError,
+      )
+      .catch((err) => {
+        expect(err).not.toBeUndefined();
+        expect(err.message).toMatch(/Unable to delete the account/);
+      });
+  });
 });

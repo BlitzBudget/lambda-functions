@@ -34,9 +34,9 @@ function calculateNextDateToCreates(
   event,
   datesToCreateTransactions,
 ) {
-  let futureCreationDate;
+  let futureCreationDateForRecurringTransaction;
   if (util.isEmpty(event.Records[0])) {
-    return futureCreationDate;
+    return futureCreationDateForRecurringTransaction;
   }
 
   const nextScheduled = event.Records[0].Sns.MessageAttributes.next_scheduled.Value;
@@ -53,8 +53,8 @@ function calculateNextDateToCreates(
   /*
    * Set the next date field for recurring transaction
    */
-  futureCreationDate = nextDateToCreate.toISOString();
-  return futureCreationDate;
+  futureCreationDateForRecurringTransaction = nextDateToCreate.toISOString();
+  return futureCreationDateForRecurringTransaction;
 }
 
 ScheduledDate.prototype.calculateNextDateToCreates = calculateNextDateToCreates;

@@ -1,4 +1,4 @@
-function Helper() {}
+function Helper() { }
 
 const util = require('./util');
 
@@ -10,10 +10,13 @@ Helper.prototype.isFullMonth = (startDate, endDate) => {
   const endsWithDate = new Date(endDate);
   let isAFullMonth = true;
   let percentage = 1;
+  const firstDayOfTheMonth = startsWithDate.getDate();
 
   if (
     util.isNotEqual(startsWithDate.getMonth(), endsWithDate.getMonth())
-    || util.isNotEqual(startsWithDate.getFullYear(), endsWithDate.getFullYear())
+    || util.isNotEqual(startsWithDate.getFullYear(), endsWithDate.getFullYear()
+      || util.isEqual(firstDayOfTheMonth, 1)
+      || util.isLastDayOfTheMonth(endsWithDate))
   ) {
     console.log('The month and the year do not coincide');
     isAFullMonth = false;

@@ -31,4 +31,18 @@ describe('budgetExpression: createExpression', () => {
     expect(parameters.ExpressionAttributeNames['#variable2']).not.toBeUndefined();
     expect(parameters.ExpressionAttributeNames['#variable3']).not.toBeUndefined();
   });
+
+  test('Without Data: Success', () => {
+    event['body-json'] = undefined;
+    const parameters = budgetExpression.createExpression(event);
+    expect(parameters).toBeUndefined();
+  });
+
+  test('Without proper Data: Success', () => {
+    event['body-json'] = {
+      walletId: 'Wallet#2020-04-13',
+    };
+    const parameters = budgetExpression.createExpression(event);
+    expect(parameters).toBeUndefined();
+  });
 });

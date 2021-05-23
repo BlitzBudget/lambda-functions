@@ -1,4 +1,4 @@
-function Helper() {}
+function Helper() { }
 
 const util = require('./util');
 const organizeBudget = require('../organize/budget');
@@ -42,15 +42,19 @@ function calculateDateAndCategoryTotal(fullMonth, response, percentage) {
 function isFullMonth(startDate, endDate) {
   const startsWithDate = new Date(startDate);
   const endsWithDate = new Date(endDate);
-  const isNotAFullMonth = false;
-  const isAFullMonth = true;
+  let isAFullMonth = true;
   let percentage = 1;
+  const firstDayOfTheMonth = startsWithDate.getDate();
 
-  if (util.isNotEqual(startsWithDate.getMonth(), endsWithDate.getMonth())
-    || util.isNotEqual(startsWithDate.getFullYear(), endsWithDate.getFullYear())
+  if (
+    util.isNotEqual(startsWithDate.getMonth(), endsWithDate.getMonth())
+    || util.isNotEqual(startsWithDate.getFullYear(), endsWithDate.getFullYear()
+      || util.isEqual(firstDayOfTheMonth, 1)
+      || util.isLastDayOfTheMonth(endsWithDate))
   ) {
     console.log('The month and the year do not coincide');
-    return { isNotAFullMonth, percentage };
+    isAFullMonth = false;
+    return { isAFullMonth, percentage };
   }
 
   const firstDay = new Date(
@@ -59,7 +63,8 @@ function isFullMonth(startDate, endDate) {
   );
   const lastDay = new Date(firstDay.getFullYear(), firstDay.getMonth() + 1, 0);
 
-  if (util.isEqual(firstDay.getDate(), startsWithDate.getDate())
+  if (
+    util.isEqual(firstDay.getDate(), startsWithDate.getDate())
     && util.isEqual(lastDay.getDate(), endsWithDate.getDate())
   ) {
     return { isAFullMonth, percentage };
@@ -70,7 +75,8 @@ function isFullMonth(startDate, endDate) {
   percentage = (endsWithDate.getDate() - startsWithDate.getDate())
     / (lastDay.getDate() - firstDay.getDate());
   console.log('Percentage of budget total to be calculated is %j', percentage);
-  return { isNotAFullMonth, percentage };
+  isAFullMonth = false;
+  return { isAFullMonth, percentage };
 }
 
 Helper.prototype.isFullMonth = isFullMonth;

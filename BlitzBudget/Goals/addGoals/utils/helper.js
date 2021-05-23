@@ -2,11 +2,10 @@ function Helper() {}
 
 // Load the AWS SDK for Node.js
 const AWS = require('aws-sdk');
-const constants = require('../constants/constant');
 const addGoal = require('../add/goal');
 // Set the region
 AWS.config.update({
-  region: constants.AWS_LAMBDA_REGION,
+  region: process.env.AWS_LAMBDA_REGION,
 });
 
 // Create the DynamoDB service object

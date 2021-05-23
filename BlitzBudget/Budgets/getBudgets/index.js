@@ -3,11 +3,10 @@ const AWS = require('aws-sdk');
 
 const helper = require('./utils/helper');
 const fetchHelper = require('./utils/fetch-helper');
-const constants = require('./constants/constant');
 
 // Set the region
 AWS.config.update({
-  region: constants.AWS_LAMBDA_REGION,
+  region: process.env.AWS_LAMBDA_REGION,
 });
 
 // Create the DynamoDB service object
@@ -19,7 +18,7 @@ exports.handler = async (event) => {
     endsWithDate,
     userId,
   } = helper.extractVariablesFromRequest(event);
-  const { fullMonth, percentage } = helper.isFullMonth(startsWithDate, endsWithDate);
+  const fullMonthResponse = helper.isFullMonth(startsWithDate, endsWithDate);
 
   // Cognito does not store wallet information nor curreny. All are stored in wallet.
   const {
@@ -35,14 +34,16 @@ exports.handler = async (event) => {
     walletPK,
     startsWithDate,
     endsWithDate,
-    fullMonth,
+    fullMonthResponse.isAFullMonth,
     documentClient,
   );
 
   const budgetResponse = otherResponse;
   budgetResponse.Wallet = response;
 
-  helper.modifyTotalOfBudget(percentage, fullMonth, budgetResponse);
+  helper.modifyTotalOfBudget(
+    fullMonthResponse.percentage, fullMonthResponse.isAFullMonth, budgetResponse,
+  );
 
   return budgetResponse;
 };

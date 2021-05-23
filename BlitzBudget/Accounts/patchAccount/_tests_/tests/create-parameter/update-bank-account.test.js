@@ -25,4 +25,18 @@ describe('updateBankParameter: createParameter', () => {
     expect(parameters.ExpressionAttributeNames['#variable1']).not.toBeUndefined();
     expect(parameters.ExpressionAttributeNames['#variable2']).not.toBeUndefined();
   });
+
+  test('Without Data: Success', () => {
+    event['body-json'] = undefined;
+    const parameters = updateBankParameter.createParameter(event);
+    expect(parameters).toBeUndefined();
+  });
+
+  test('Without proper Data: Success', () => {
+    event['body-json'] = {
+      walletId: 'Wallet#2020-04-13',
+    };
+    const parameters = updateBankParameter.createParameter(event);
+    expect(parameters).toBeUndefined();
+  });
 });

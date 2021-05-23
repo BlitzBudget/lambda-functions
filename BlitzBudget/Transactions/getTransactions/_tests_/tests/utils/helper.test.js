@@ -33,9 +33,9 @@ describe('isFullMonth', () => {
     const response = await helper
       .isFullMonth('2021-03-01', '2021-03-20');
 
-    expect(response.isAFullMonth).toBeUndefined();
+    expect(response.isAFullMonth).toBe(false);
     expect(response.percentage).not.toBeUndefined();
-    expect(response.isNotAFullMonth).toBe(false);
+    expect(response.isAFullMonth).toBe(false);
     expect(response.percentage).toBe(0.6333333333333333);
   });
 });

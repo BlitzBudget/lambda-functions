@@ -8,6 +8,7 @@ module.exports.createExpression = (event) => {
   const expAttrNames = {};
 
   if (util.isEmpty(event['body-json'])) {
+    console.log('The event body is empty, Request invalid');
     return undefined;
   }
 
@@ -39,6 +40,7 @@ module.exports.createExpression = (event) => {
   );
 
   if (util.isEmpty(expAttrVal)) {
+    console.log('The event body is does not have a valid parameters to update, Request invalid');
     return undefined;
   }
 

@@ -1,10 +1,9 @@
 const AWS = require('aws-sdk');
 const loginHelper = require('./login-helper');
-const constants = require('../constants/constant');
 const fetchWalletHelper = require('./fetch-wallet-helper');
 const fetchUserHelper = require('./fetch-user-helper');
 
-AWS.config.update({ region: constants.AWS_LAMBDA_REGION });
+AWS.config.update({ region: process.env.AWS_LAMBDA_REGION });
 // Create the DynamoDB service object
 const documentClient = new AWS.DynamoDB.DocumentClient();
 const cognitoidentityserviceprovider = new AWS.CognitoIdentityServiceProvider();

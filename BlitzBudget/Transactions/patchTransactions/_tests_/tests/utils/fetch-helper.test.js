@@ -1,5 +1,6 @@
 const fetchCategory = require('../../../utils/fetch-helper');
 const mockRequest = require('../../fixtures/request/patchTransactionsWithMatchingCategory.json');
+const mockRequestWithCategoryId = require('../../fixtures/request/patchTransactionWithCategoryId.json');
 const mockRequestWithoutCategory = require('../../fixtures/request/patchTransactions.json');
 const mockResponse = require('../../fixtures/response/fetchCategory.json');
 
@@ -13,6 +14,17 @@ const documentClient = {
 };
 
 describe('Fetch Category item', () => {
+  test('With Category Id: Success', async () => {
+    const events = [];
+    const response = await fetchCategory
+      .calculateAndFetchCategory(mockRequestWithCategoryId, events, documentClient);
+    expect(response).toStrictEqual({});
+    expect(events.length).toBe(0);
+    expect(response.Category).toBeUndefined();
+    expect(documentClient.query).toHaveBeenCalledTimes(0);
+    expect(documentClient.update).toHaveBeenCalledTimes(0);
+  });
+
   test('Without Matching Category: Success', async () => {
     const events = [];
     const response = await fetchCategory

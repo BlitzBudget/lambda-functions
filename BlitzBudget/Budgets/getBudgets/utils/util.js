@@ -1,4 +1,4 @@
-function Util() {}
+function Util() { }
 
 function isEmpty(obj) {
   // Check if objext is a number or a boolean
@@ -12,7 +12,7 @@ function isEmpty(obj) {
 
   // check if obj is a custom obj
   if (obj
-  && Object.keys(obj).length !== 0) { return false; }
+    && Object.keys(obj).length !== 0) { return false; }
 
   return true;
 }
@@ -32,10 +32,18 @@ function isNotEqual(obj1, obj2) {
   return !isEqual(obj1, obj2);
 }
 
+function isLastDayOfTheMonth(endsWithDate) {
+  const lastDayOfTheMonth = new Date(endsWithDate);
+  const month = endsWithDate.getMonth();
+  lastDayOfTheMonth.setDate(lastDayOfTheMonth.getDate() + 1);
+  return lastDayOfTheMonth.getMonth() !== month;
+}
+
 Util.prototype.isEmpty = isEmpty;
 Util.prototype.isNotEmpty = isNotEmpty;
 Util.prototype.isEqual = isEqual;
 Util.prototype.isNotEqual = isNotEqual;
+Util.prototype.isLastDayOfTheMonth = isLastDayOfTheMonth;
 
 // Export object
 module.exports = new Util();

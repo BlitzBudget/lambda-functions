@@ -19,3 +19,18 @@ describe('Fetch Category item', () => {
     expect(documentClient.query).toHaveBeenCalledTimes(1);
   });
 });
+
+describe('Fetch Category item: Error', () => {
+  const documentClientWithError = {
+    query: jest.fn(() => ({
+      promise: jest.fn().mockRejectedValueOnce(mockResponse),
+    })),
+  };
+  test('Without Matching Category: Error Scenario', async () => {
+    await fetchCategory
+      .getCategoryData(mockRequest, new Date('2021-03'), documentClientWithError).catch((err) => {
+        expect(err).not.toBeUndefined();
+      });
+    expect(documentClientWithError.query).toHaveBeenCalledTimes(1);
+  });
+});

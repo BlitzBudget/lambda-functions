@@ -3,7 +3,6 @@ function UpdateHelper() { }
 const AWS = require('aws-sdk');
 const util = require('./util');
 
-const constants = require('../constants/constant');
 const addBankAccount = require('../add/bank-account');
 const updateAccountHelper = require('./update-account-helper');
 const updateCategoryHelper = require('./update-category-helper');
@@ -13,7 +12,7 @@ const updateWalletHelper = require('./update-wallet-helper');
 // Load the AWS SDK for Node.js
 // Set the region
 AWS.config.update({
-  region: constants.AWS_LAMBDA_REGION,
+  region: process.env.AWS_LAMBDA_REGION,
 });
 
 // Create the DynamoDB service object

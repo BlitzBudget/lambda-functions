@@ -14,6 +14,15 @@ const documentClientForDate = {
   })),
 };
 
+const documentClientWithoutDate = {
+  query: jest.fn(() => ({
+    promise: jest.fn().mockResolvedValueOnce({
+      Count: 0,
+      Items: [],
+    }),
+  })),
+};
+
 describe('pushAllCategoriesToFetch', () => {
   const futureTransactionsToCreate = [];
   const events = [];
@@ -42,8 +51,7 @@ describe('pushAllCategoriesToFetch', () => {
 });
 
 describe('calculateAndAddAllDates', () => {
-  const futureTransactionsToCreate = []; const
-    events = [];
+  const futureTransactionsToCreate = [];
   const datesMap = {};
   const event = mockRequest;
   const walletId = event.Records[0].Sns.MessageAttributes.walletId.Value;
@@ -56,12 +64,32 @@ describe('calculateAndAddAllDates', () => {
         futureTransactionsToCreate,
         walletId,
         datesMap,
-        events,
         documentClientForDate,
       );
-
-    expect(events).not.toBeUndefined();
-    expect(events.length).toBe(3);
     expect(documentClientForDate.query).toHaveBeenCalledTimes(3);
+  });
+});
+
+describe('calculateAndAddAllDates: Without Dates', () => {
+  const futureTransactionsToCreate = [];
+  const datesMap = {};
+  const event = mockRequest;
+  const walletId = event.Records[0].Sns.MessageAttributes.walletId.Value;
+  futureTransactionsToCreate.push('2021-03');
+  futureTransactionsToCreate.push('2021-02');
+  futureTransactionsToCreate.push('2021-01');
+  test('Without Dates: Success', async () => {
+    await fetchHelper
+      .calculateAndAddAllDates(
+        futureTransactionsToCreate,
+        walletId,
+        datesMap,
+        documentClientWithoutDate,
+      );
+    expect(documentClientWithoutDate.query).toHaveBeenCalledTimes(3);
+    expect(datesMap).not.toBeUndefined();
+    expect(datesMap['2021-01']).not.toBeUndefined();
+    expect(datesMap['2021-02']).not.toBeUndefined();
+    expect(datesMap['2021-03']).not.toBeUndefined();
   });
 });

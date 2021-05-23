@@ -1,5 +1,5 @@
 const snsPublish = require('../../../sns/publish');
-const mockRequest = require('../../fixtures/request/deleteAccount.json');
+const mockRequest = require('../../fixtures/request/deleteOneWallet.json');
 
 const sns = {
   publish: jest.fn(() => ({
@@ -13,5 +13,13 @@ describe('SNS publish', () => {
       .resetAccountSubscriberThroughSNS(mockRequest, sns);
     expect(response).not.toBeUndefined();
     expect(sns.publish).toHaveBeenCalledTimes(1);
+  });
+
+  test('Without Reference number: Success', async () => {
+    mockRequest['body-json'].referenceNumber = undefined;
+    const response = await snsPublish
+      .resetAccountSubscriberThroughSNS(mockRequest, sns);
+    expect(response).not.toBeUndefined();
+    expect(sns.publish).toHaveBeenCalledTimes(2);
   });
 });

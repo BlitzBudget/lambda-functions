@@ -19,3 +19,18 @@ describe('Fetch Budget item', () => {
     expect(documentClient.query).toHaveBeenCalledTimes(1);
   });
 });
+
+describe('Fetch Budget item: Error', () => {
+  const documentClientWithError = {
+    query: jest.fn(() => ({
+      promise: jest.fn().mockRejectedValueOnce(mockResponse),
+    })),
+  };
+  test('Without Matching Budget: Error Scenario', async () => {
+    await fetchBudget
+      .getBudgetsItem(new Date('2021-02'), mockRequest, documentClientWithError).catch((err) => {
+        expect(err).not.toBeUndefined();
+      });
+    expect(documentClientWithError.query).toHaveBeenCalledTimes(1);
+  });
+});

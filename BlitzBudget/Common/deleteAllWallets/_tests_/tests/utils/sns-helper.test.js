@@ -26,3 +26,25 @@ describe('SNS publish with data', () => {
     expect(sns.publish).toHaveBeenCalledTimes(2);
   });
 });
+
+describe('SNS publish without sk', () => {
+  const eventsWithData = [];
+  const mockRequestWithoutSk = {
+    Items: [
+      {
+        pk: 'Category#1234',
+      }],
+  };
+
+  const snsWithoutSk = {
+    publish: jest.fn(() => ({
+      promise: jest.fn().mockResolvedValueOnce({}),
+    })),
+  };
+  test('Success', async () => {
+    await snsHelper
+      .publishToSNS(mockRequestWithoutSk, snsWithoutSk, eventsWithData);
+    expect(eventsWithData.length).toBe(0);
+    expect(snsWithoutSk.publish).toHaveBeenCalledTimes(0);
+  });
+});

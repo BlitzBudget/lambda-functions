@@ -58,3 +58,13 @@ describe('isNotEmpty', () => {
     expect(util.isNotEmpty(null)).toBe(false);
   });
 });
+
+describe('isLastDayOfTheMonth', () => {
+  test('LastDayOfTheMonth: Success', () => {
+    expect(util.isLastDayOfTheMonth(new Date('2021-05-31'))).toBe(true);
+  });
+
+  test('Is Not A LastDayOfTheMonth: Success', () => {
+    expect(util.isLastDayOfTheMonth(new Date('2021-05-30'))).toBe(false);
+  });
+});

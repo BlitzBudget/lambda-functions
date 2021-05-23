@@ -13,5 +13,6 @@ describe('isNotEmpty', () => {
   test('Without Data: Success', () => {
     expect(util.isNotEmpty('')).toBe(false);
     expect(util.isNotEmpty(null)).toBe(false);
+    expect(util.isNotEmpty({})).toBe(false);
   });
 });

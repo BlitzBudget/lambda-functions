@@ -12,6 +12,15 @@ const documentClient = {
   })),
 };
 
+const documentClientWithError = {
+  query: jest.fn(() => ({
+    promise: jest.fn().mockRejectedValueOnce(mockResponse),
+  })),
+  get: jest.fn(() => ({
+    promise: jest.fn().mockRejectedValueOnce(mockResponse),
+  })),
+};
+
 describe('fetchWalletInformation', () => {
   test('Without User ID Data: Success', async () => {
     const response = await fetchHelper
@@ -34,5 +43,33 @@ describe('fetchWalletInformation', () => {
     expect(response).not.toBeUndefined();
     expect(response.response).not.toBeUndefined();
     expect(documentClient.query).toHaveBeenCalledTimes(1);
+    expect(documentClient.get).toHaveBeenCalledTimes(1);
+  });
+
+  test('With User ID Data: Error', async () => {
+    await fetchHelper
+      .fetchWalletInformation(
+        mockRequest['body-json'].walletId,
+        mockRequestByUser['body-json'].userId,
+        documentClientWithError,
+      ).catch((err) => {
+        expect(err).not.toBeUndefined();
+      });
+
+    expect(documentClientWithError.query).toHaveBeenCalledTimes(0);
+    expect(documentClientWithError.get).toHaveBeenCalledTimes(1);
+  });
+
+  test('With User ID Data: Error', async () => {
+    await fetchHelper
+      .fetchWalletInformation(
+        '',
+        mockRequestByUser['body-json'].userId,
+        documentClientWithError,
+      ).catch((err) => {
+        expect(err).not.toBeUndefined();
+      });
+
+    expect(documentClientWithError.query).toHaveBeenCalledTimes(1);
   });
 });

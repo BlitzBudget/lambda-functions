@@ -1,9 +1,8 @@
-function FetchHelper() {}
+function FetchHelper() { }
 
 // Load the AWS SDK for Node.js
 const AWS = require('aws-sdk');
 const util = require('./util');
-const constants = require('../constants/constant');
 const transaction = require('../fetch/transaction');
 const wallet = require('../fetch/wallet');
 const date = require('../fetch/date');
@@ -14,7 +13,7 @@ const recurringTransaction = require('../fetch/recurring-transaction');
 
 // Set the region
 AWS.config.update({
-  region: constants.AWS_LAMBDA_REGION,
+  region: process.env.AWS_LAMBDA_REGION,
 });
 
 // Create the DynamoDB service object
