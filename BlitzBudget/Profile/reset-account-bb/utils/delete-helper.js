@@ -17,6 +17,7 @@ function handleDeleteAccount(event, cognitoIdServiceProvider) {
   paramsDelete.Username = event['body-json'].userName;
 
   if (isDeleteAccount(event)) {
+    console.log(`Deleting account : ${event['body-json'].userName}`);
     events.push(globalSignout.globalSignoutFromAllDevices(event, cognitoIdServiceProvider));
     events.push(deleteUser.deleteCognitoAccount(paramsDelete, cognitoIdServiceProvider));
   }

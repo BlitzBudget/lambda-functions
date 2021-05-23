@@ -1,15 +1,13 @@
 function Signup() {}
 
 const AWS = require('aws-sdk');
-const signupParameter = require('../create-parameter/signup');
 
 AWS.config.update({
   region: process.env.AWS_LAMBDA_REGION,
 });
 const cognitoidentityserviceprovider = new AWS.CognitoIdentityServiceProvider();
 
-Signup.prototype.signup = async (event) => {
-  const parameter = signupParameter.createParameter(event);
+Signup.prototype.signup = async (parameter) => {
   const response = await cognitoidentityserviceprovider.signUp(parameter).promise();
   return response;
 };
