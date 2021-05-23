@@ -1,5 +1,5 @@
 const snsPublish = require('../../../sns/publish');
-const mockRequest = require('../../fixtures/request/deleteAccount.json');
+const mockRequest = require('../../fixtures/request/deleteOneWallet.json');
 
 const sns = {
   publish: jest.fn(() => ({

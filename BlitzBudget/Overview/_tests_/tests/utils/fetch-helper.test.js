@@ -35,4 +35,18 @@ describe('fetchAllWallets', () => {
     expect(response.response).not.toBeUndefined();
     expect(documentClient.get).toHaveBeenCalledTimes(1);
   });
+
+  test('Without User ID Data: Success', async () => {
+    const responseWithoutEvents = await fetchHelper
+      .fetchAllWallets(
+        mockRequest['body-json'].walletId,
+        '',
+        documentClient,
+      );
+
+    expect(responseWithoutEvents).not.toBeUndefined();
+    expect(responseWithoutEvents.walletPK).toBe(mockRequest['body-json'].walletId);
+    expect(responseWithoutEvents.response).toStrictEqual({});
+    expect(documentClient.query).toHaveBeenCalledTimes(1);
+  });
 });
