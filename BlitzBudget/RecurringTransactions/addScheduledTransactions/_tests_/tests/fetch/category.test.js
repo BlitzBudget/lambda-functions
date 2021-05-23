@@ -40,4 +40,24 @@ describe('Fetch Category item', () => {
     expect(response.dateMeantFor).not.toBeUndefined();
     expect(documentClient.query).toHaveBeenCalledTimes(1);
   });
+
+  test('Without Matching Category: Empty Response', async () => {
+    const documentClientEmptyResponse = {
+      query: jest.fn(() => ({
+        promise: jest.fn().mockResolvedValueOnce({
+          Items: [],
+          Count: 0,
+        }),
+      })),
+    };
+
+    const response = await fetchCategory
+      .getCategoryData(
+        walletId, '2021-03-15', categoryType, categoryName, category, documentClientEmptyResponse,
+      );
+    expect(response).not.toBeUndefined();
+    expect(response.sortKey).not.toBeUndefined();
+    expect(response.dateMeantFor).not.toBeUndefined();
+    expect(documentClientEmptyResponse.query).toHaveBeenCalledTimes(1);
+  });
 });

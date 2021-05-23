@@ -10,7 +10,7 @@ exports.handler = async (event) => {
     endsWithDate,
     userId,
   } = helper.extractVariablesFromRequest(event);
-  const { fullMonth, percentage } = helper.isFullMonth(startsWithDate, endsWithDate);
+  const fullMonthResponse = helper.isFullMonth(startsWithDate, endsWithDate);
 
   // Cognito does not store wallet information nor curreny. All are stored in wallet.
   const walletId = await fetchHelper.fetchWalletItem(event['body-json'].walletId, userId);
@@ -23,7 +23,7 @@ exports.handler = async (event) => {
   );
 
   const formatedResponses = helper.calculateDateAndCategoryTotal(
-    fullMonth, allResponses, percentage,
+    fullMonthResponse.isAFullMonth, allResponses, fullMonthResponse.percentage,
   );
 
   await snsHelper.sendSNSToCreateNewTransactions(snsEvents);

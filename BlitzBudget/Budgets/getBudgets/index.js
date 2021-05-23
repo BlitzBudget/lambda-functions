@@ -18,7 +18,7 @@ exports.handler = async (event) => {
     endsWithDate,
     userId,
   } = helper.extractVariablesFromRequest(event);
-  const { fullMonth, percentage } = helper.isFullMonth(startsWithDate, endsWithDate);
+  const fullMonthResponse = helper.isFullMonth(startsWithDate, endsWithDate);
 
   // Cognito does not store wallet information nor curreny. All are stored in wallet.
   const {
@@ -34,14 +34,16 @@ exports.handler = async (event) => {
     walletPK,
     startsWithDate,
     endsWithDate,
-    fullMonth,
+    fullMonthResponse.isAFullMonth,
     documentClient,
   );
 
   const budgetResponse = otherResponse;
   budgetResponse.Wallet = response;
 
-  helper.modifyTotalOfBudget(percentage, fullMonth, budgetResponse);
+  helper.modifyTotalOfBudget(
+    fullMonthResponse.percentage, fullMonthResponse.isAFullMonth, budgetResponse,
+  );
 
   return budgetResponse;
 };
