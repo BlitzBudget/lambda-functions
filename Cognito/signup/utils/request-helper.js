@@ -7,7 +7,7 @@ RequestHelper.prototype.extractVariablesFromRequest = (event) => {
   let { surname } = event['body-json'];
   const { password } = event['body-json'];
   const email = helper.emailToLowerCase(event['body-json'].username);
-  const acceptLanguage = event.params.header['Accept-Language'];
+  const acceptLanguage = event.params.header['CloudFront-Viewer-Country'];
 
   ({ username, surname } = helper.extractFirstAndLastName(
     username,
