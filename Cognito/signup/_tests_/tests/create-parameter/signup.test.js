@@ -10,7 +10,7 @@ describe('buildParamForSignup', () => {
   event['body-json'].username = 'nagarjun_nagesh@outlook.com';
   event.params = {};
   event.params.header = {};
-  event.params.header['Accept-Language'] = 'en';
+  event.params.header['CloudFront-Viewer-Country'] = 'en';
   test('Build Param for signup', () => {
     const parameters = signupParameter.createParameter(event);
     expect(parameters.ClientId).toBe(process.env.USER_POOL_ID);

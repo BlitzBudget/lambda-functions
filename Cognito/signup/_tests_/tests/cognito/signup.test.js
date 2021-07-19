@@ -22,7 +22,7 @@ describe('signup', () => {
   event['body-json'].username = 'nagarjun_nagesh@outlook.com';
   event.params = {};
   event.params.header = {};
-  event.params.header['Accept-Language'] = 'en';
+  event.params.header['CloudFront-Viewer-Country'] = 'en';
   test('With Data: Success', async () => {
     const response = await cognitoSignup.signup(event);
     expect(response).not.toBeUndefined();
