@@ -1,5 +1,5 @@
 const organizeCategory = require('../../../organize/category');
-const mockResponse = require('../../fixtures/response/successWithoutOrganization.json');
+const mockResponse = require('../../fixtures/response/success-without-organization.json');
 
 describe('organizeCategory: createParameter', () => {
   test('With Data: Success', () => {

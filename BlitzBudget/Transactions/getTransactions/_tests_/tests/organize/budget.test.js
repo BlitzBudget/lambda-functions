@@ -1,5 +1,5 @@
 const organizeBudget = require('../../../organize/budget');
-const mockResponse = require('../../fixtures/response/successWithoutOrganization.json');
+const mockResponse = require('../../fixtures/response/success-without-organization.json');
 
 describe('organizeBudget: createParameter', () => {
   test('With Data: Success', () => {

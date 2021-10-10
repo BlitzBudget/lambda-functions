@@ -1,6 +1,6 @@
 const fetchHelper = require('../../../utils/fetch-helper');
 const mockRequest = require('../../fixtures/request/getTransactions.json');
-const mockResponse = require('../../fixtures/response/fetchRecurringTransaction.json');
+const mockResponse = require('../../fixtures/response/fetch-recurring-transaction.json');
 
 jest.mock('aws-sdk', () => ({
   DynamoDB: {

@@ -1,5 +1,5 @@
 const organizeTransaction = require('../../../organize/transaction');
-const mockResponse = require('../../fixtures/response/successWithoutOrganization.json');
+const mockResponse = require('../../fixtures/response/success-without-organization.json');
 
 describe('organizeTransaction: createParameter', () => {
   test('With Data: Success', () => {
