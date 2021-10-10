@@ -97,7 +97,7 @@ async function handleWalletItem(userId, walletId) {
     },
     (err) => {
       throw new Error(
-        `Unable error occured while fetching the transaction ${err}`,
+        `Error occured while fetching the transaction ${err}`,
       );
     },
   );

@@ -1,6 +1,6 @@
 const fetchWallet = require('../../../fetch/wallet');
 const mockRequest = require('../../fixtures/request/getTransactions.json');
-const mockResponse = require('../../fixtures/response/fetchWallet.json');
+const mockResponse = require('../../fixtures/response/fetch-wallet.json');
 
 const documentClient = {
   query: jest.fn(() => ({

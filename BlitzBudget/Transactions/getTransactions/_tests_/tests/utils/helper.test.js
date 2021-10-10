@@ -1,6 +1,6 @@
 const helper = require('../../../utils/helper');
 const mockRequest = require('../../fixtures/request/getTransactions.json');
-const mockResponse = require('../../fixtures/response/successWithoutOrganization.json');
+const mockResponse = require('../../fixtures/response/success-without-organization.json');
 
 describe('extractVariablesFromRequest', () => {
   const events = mockRequest;
