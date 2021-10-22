@@ -1,5 +1,5 @@
 # This workflow will do a Deployment to AWS LAMBDA
-name: Node.js CI
+name: Deploy to AWS
 
 on:
   push:
