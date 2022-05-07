@@ -3,7 +3,8 @@
  */
 
 const config = {
-  suffix: '.html',
+  indexSuffix: 'index.html',
+  trailingSlash: '/',
   removeHTMLExtenstion: true,
   removeTrailingSlash: true,
 };
@@ -11,20 +12,20 @@ const config = {
 const regexSuffixless = /\/[^/.]+$/; // e.g. "/some/page" but not "/", "/some/" or "/some.jpg"
 const regexTrailingSlash = /.+\/$/; // e.g. "/some/" or "/some/page/" but not root "/"
 
-exports.handler = async (event) => {
+exports.handler = async function (event) {
   const { request } = event.Records[0].cf;
   const { uri } = request;
-  const { suffix, removeTrailingSlash } = config;
+  const { removeTrailingSlash, indexSuffix, trailingSlash } = config;
 
   // Append ".html" to origin request
-  if (suffix && uri.match(regexSuffixless)) {
-    request.uri = uri + suffix;
+  if (indexSuffix && uri.match(regexSuffixless)) {
+    request.uri = uri + trailingSlash + indexSuffix;
     return request;
   }
 
   // Append ".html" to origin request with trailing slash
   if (removeTrailingSlash && uri.match(regexTrailingSlash)) {
-    request.uri = uri.slice(0, -1) + suffix;
+    request.uri = uri + indexSuffix;
     return request;
   }
 
