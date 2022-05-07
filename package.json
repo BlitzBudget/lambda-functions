@@ -6,6 +6,7 @@
   "scripts": {
     "test": "jest",
     "lint": "eslint ./ --cache --ignore-pattern .gitignore",
+    "lint-fix": "eslint ./ --cache --ignore-pattern .gitignore --fix",
     "pretest": "eslint ./ --cache --ignore-path .gitignore ."
   },
   "repository": {
