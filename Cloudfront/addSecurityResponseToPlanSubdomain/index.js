@@ -28,7 +28,7 @@ exports.handler = async function (event) {
   // WWW.BLITZBUDGET.COM
   headers['content-security-policy'] = [{
     key: 'Content-Security-Policy',
-    value: "default-src https://www.blitzbudget.com/ https://blitzbudget.com/; img-src 'unsafe-inline' 'self' data:; script-src https://cdn.jsdelivr.net 'unsafe-inline' 'self'; style-src https://use.fontawesome.com/ https://cdnjs.cloudflare.com/ https://www.blitzbudget.com/ https://blitzbudget.com/ https://fonts.googleapis.com 'self' 'unsafe-inline'; object-src 'none'; connect-src 'self'; font-src https://use.fontawesome.com 'self' https://fonts.gstatic.com; style-src-elem https://use.fontawesome.com/ https://cdnjs.cloudflare.com/ https://fonts.googleapis.com/ 'self' 'unsafe-inline';",
+    value: "default-src https://plan.blitzbudget.com/; img-src 'unsafe-inline' 'self' data:; script-src https://cdn.jsdelivr.net 'unsafe-inline' 'self'; style-src https://use.fontawesome.com/ https://cdnjs.cloudflare.com/ https://plan.blitzbudget.com/ https://fonts.googleapis.com 'self' 'unsafe-inline'; object-src 'none'; connect-src 'self'; font-src https://cdnjs.cloudflare.com/ https://use.fontawesome.com 'self' https://fonts.gstatic.com; style-src-elem https://use.fontawesome.com/ https://cdnjs.cloudflare.com/ https://fonts.googleapis.com/ 'self' 'unsafe-inline';",
   }];
 
   // Prevents MIME types security risk
