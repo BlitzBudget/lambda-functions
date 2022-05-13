@@ -76,39 +76,6 @@ jobs:
         aws_region: ${{ secrets.AWS_REGION }}
         function_name: patchAccounts
         zip_file: patchAccount.zip
-    # addBudget (6)
-    - name: addBudget zip
-      run: cd BlitzBudget/Budgets/addBudgets/; zip -qq -r ../../../addBudget.zip ./; cd ../../..;
-    - name: addBudget deploy
-      uses: appleboy/lambda-action@master
-      with:
-        aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws_region: ${{ secrets.AWS_REGION }}
-        function_name: addBudget
-        zip_file: addBudget.zip
-    # getBudget (7)
-    - name: getBudget zip
-      run: cd BlitzBudget/Budgets/getBudgets/; zip -qq -r ../../../getBudget.zip ./; cd ../../..;
-    - name: getBudget deploy
-      uses: appleboy/lambda-action@master
-      with:
-        aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws_region: ${{ secrets.AWS_REGION }}
-        function_name: getBudget
-        zip_file: getBudget.zip
-    # patchBudget (8)
-    - name: patchBudgets zip
-      run: cd BlitzBudget/Budgets/patchBudgets/; zip -qq -r ../../../patchBudget.zip ./; cd ../../..;
-    - name: patchBudget deploy
-      uses: appleboy/lambda-action@master
-      with:
-        aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws_region: ${{ secrets.AWS_REGION }}
-        function_name: patchBudget
-        zip_file: patchBudget.zip
     # deleteCategory (9)
     - name: deleteCategory zip
       run: cd BlitzBudget/Category/deleteCategories/; zip -qq -r ../../../deleteCategory.zip ./; cd ../../..;
@@ -164,50 +131,6 @@ jobs:
         aws_region: ${{ secrets.AWS_REGION }}
         function_name: deleteOneItem
         zip_file: deleteOneItem.zip
-    # addGoals (14)
-    - name: addGoals zip
-      run: cd BlitzBudget/Goals/addGoals/; zip -qq -r ../../../addGoals.zip ./; cd ../../..;
-    - name: addGoals deploy
-      uses: appleboy/lambda-action@master
-      with:
-        aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws_region: ${{ secrets.AWS_REGION }}
-        function_name: addGoals
-        zip_file: addGoals.zip
-    # getGoals (15)
-    - name: getGoals zip
-      run: cd BlitzBudget/Goals/getGoals/; zip -qq -r ../../../getGoals.zip ./; cd ../../..;
-    - name: getGoals deploy
-      uses: appleboy/lambda-action@master
-      with:
-        aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws_region: ${{ secrets.AWS_REGION }}
-        function_name: getGoals
-        zip_file: getGoals.zip
-    # patchGoal (16)
-    - name: patchGoal zip
-      run: cd BlitzBudget/Goals/patchGoal/; zip -qq -r ../../../patchGoal.zip ./; cd ../../..;
-    - name: patchGoal deploy
-      uses: appleboy/lambda-action@master
-      with:
-        aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws_region: ${{ secrets.AWS_REGION }}
-        function_name: patchGoal
-        zip_file: patchGoal.zip
-    # getOverview (17)
-    - name: getOverview zip
-      run: cd BlitzBudget/Overview/; zip -qq -r ../../getOverview.zip ./; cd ../../;
-    - name: getOverview deploy
-      uses: appleboy/lambda-action@master
-      with:
-        aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws_region: ${{ secrets.AWS_REGION }}
-        function_name: getOverview
-        zip_file: getOverview.zip
     # resetAccountBB (18)
     - name: resetAccountBB zip
       run: cd BlitzBudget/Profile/reset-account-bb/; zip -qq -r ../../../resetAccountBB.zip ./; cd ../../..;
@@ -252,72 +175,6 @@ jobs:
         aws_region: ${{ secrets.AWS_REGION }}
         function_name: patchRecurringTransaction
         zip_file: patchRecurringTransaction.zip
-    # addTransactions (22)
-    - name: addTransactions zip
-      run: cd BlitzBudget/Transactions/addTransactions/; zip -qq -r ../../../addTransactions.zip ./; cd ../../..;
-    - name: addTransactions deploy
-      uses: appleboy/lambda-action@master
-      with:
-        aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws_region: ${{ secrets.AWS_REGION }}
-        function_name: addTransactions
-        zip_file: addTransactions.zip
-    # getTransactions (23)
-    - name: getTransactions zip
-      run: cd BlitzBudget/Transactions/getTransactions/; zip -qq -r ../../../getTransactions.zip ./; cd ../../..;
-    - name: getTransactions deploy
-      uses: appleboy/lambda-action@master
-      with:
-        aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws_region: ${{ secrets.AWS_REGION }}
-        function_name: getTransactions
-        zip_file: getTransactions.zip
-    # patchTransactions (24)
-    - name: patchTransactions zip
-      run: cd BlitzBudget/Transactions/patchTransactions/; zip -qq -r ../../../patchTransactions.zip ./; cd ../../..;
-    - name: patchTransactions deploy
-      uses: appleboy/lambda-action@master
-      with:
-        aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws_region: ${{ secrets.AWS_REGION }}
-        function_name: patchTransactions
-        zip_file: patchTransactions.zip
-    # addWallet (25)
-    - name: addWallet zip
-      run: cd BlitzBudget/Wallets/addWallet/; zip -qq -r ../../../addWallet.zip ./; cd ../../..;
-    - name: addWallet deploy
-      uses: appleboy/lambda-action@master
-      with:
-        aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws_region: ${{ secrets.AWS_REGION }}
-        function_name: addWallet
-        zip_file: addWallet.zip
-    # getWallet (26)
-    - name: getWallet zip
-      run: cd BlitzBudget/Wallets/getWallet/; zip -qq -r ../../../getWallet.zip ./; cd ../../..;
-    - name: getWallet deploy
-      uses: appleboy/lambda-action@master
-      with:
-        aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws_region: ${{ secrets.AWS_REGION }}
-        function_name: getWallet
-        zip_file: getWallet.zip
-    # patchWallet (27)
-    - name: patchWallet zip
-      run: cd BlitzBudget/Wallets/patchWallet/; zip -qq -r ../../../patchWallet.zip ./; cd ../../..;
-    - name: patchWallet deploy
-      uses: appleboy/lambda-action@master
-      with:
-        aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws_region: ${{ secrets.AWS_REGION }}
-        function_name: patchWallet
-        zip_file: patchWallet.zip
     # adminGetUserAttributes (28)
     - name: adminGetUserAttributes zip
       run: cd Cognito/adminGetUserAttributes/; zip -qq -r ../../adminGetUserAttributes.zip ./; cd ../..;
