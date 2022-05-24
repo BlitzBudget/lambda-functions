@@ -26,6 +26,8 @@ const includesStr = (arr, val) => (isEmpty(arr) ? false : arr.includes(val));
 
 Util.prototype.includesStr = includesStr;
 
+Util.prototype.isEmpty = isEmpty;
+
 Util.prototype.fetchUserId = (response) => {
   let userID;
   if (isNotEmpty(response) && isNotEmpty(response.UserAttributes)) {
@@ -38,19 +40,6 @@ Util.prototype.fetchUserId = (response) => {
     });
   }
   return userID;
-};
-
-Util.prototype.nameKeysAppropriately = (data) => {
-  if (isNotEmpty(data) && isNotEmpty(data.Items)) {
-    data.Items.forEach((wallet) => {
-      const singleWallet = wallet;
-      singleWallet.walletId = wallet.sk;
-      singleWallet.userId = wallet.pk;
-      delete singleWallet.sk;
-      delete singleWallet.pk;
-    });
-  }
-  return data.Items;
 };
 
 // Export object

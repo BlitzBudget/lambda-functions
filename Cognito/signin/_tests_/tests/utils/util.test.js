@@ -1,6 +1,5 @@
 const util = require('../../../utils/util');
 const mockUser = require('../../fixtures/response/get-user');
-const mockWalletResponse = require('../../fixtures/response/wallet');
 
 describe('includesStr', () => {
   test('With Data: Success', () => {
@@ -39,24 +38,19 @@ describe('fetchUserId', () => {
   });
 });
 
-describe('nameKeysAppropriately', () => {
+describe('isEmpty', () => {
   test('With Data: Success', () => {
-    const response = util.nameKeysAppropriately(mockWalletResponse);
-    expect(response).not.toBeUndefined();
-    expect(response[0].walletId).not.toBeUndefined();
-    expect(response[0].userId).not.toBeUndefined();
-    expect(response[0].pk).toBeUndefined();
-    expect(response[0].sk).toBeUndefined();
-  });
-
-  test('With False Data: Success', () => {
-    const response = util.nameKeysAppropriately({});
-    expect(response).toBeUndefined();
+    expect(util.isEmpty('en')).toBe(false);
+    expect(util.isEmpty(1)).toBe(false);
+    expect(util.isEmpty(true)).toBe(false);
+    expect(util.isEmpty({
+      notempty: true,
+    })).toBe(false);
   });
 
   test('Without Data: Success', () => {
-    const response = util.nameKeysAppropriately({ Items: [] });
-    expect(response).not.toBeUndefined();
-    expect(response.length).toBe(0);
+    expect(util.isEmpty('')).toBe(true);
+    expect(util.isEmpty(null)).toBe(true);
+    expect(util.isEmpty({})).toBe(true);
   });
 });
