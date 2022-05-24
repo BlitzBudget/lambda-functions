@@ -21,61 +21,6 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    # processBlitzBudgetRecords (1)
-    - name: processBlitzBudgetRecords zip
-      run: cd DynamoDb-Stream/processBlitzBudgetTable/; zip -qq -r ../../processBlitzBudgetTable.zip ./; cd ../..;
-    - name: processBlitzBudgetRecords deploy
-      uses: appleboy/lambda-action@master
-      with:
-        aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws_region: ${{ secrets.AWS_REGION }}
-        function_name: processBlitzBudgetRecords
-        zip_file: processBlitzBudgetTable.zip
-    # addAccounts (2)
-    - name: addAccounts zip
-      run: cd BlitzBudget/Accounts/addAccounts/; zip -qq -r ../../../addAccounts.zip ./; cd ../../..;
-    - name: addAccounts deploy
-      uses: appleboy/lambda-action@master
-      with:
-        aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws_region: ${{ secrets.AWS_REGION }}
-        function_name: addAccounts
-        zip_file: addAccounts.zip
-    # deleteAccounts (3)
-    - name: deleteAccounts zip
-      run: cd BlitzBudget/Accounts/deleteAccount/; zip -qq -r ../../../deleteAccounts.zip ./; cd ../../..;
-    - name: deleteAccounts deploy
-      uses: appleboy/lambda-action@master
-      with:
-        aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws_region: ${{ secrets.AWS_REGION }}
-        function_name: deleteAccounts
-        zip_file: deleteAccounts.zip
-    # getAccounts (4)
-    - name: getAccounts zip
-      run: cd BlitzBudget/Accounts/getAccounts/; zip -qq -r ../../../getAccounts.zip ./; cd ../../..;
-    - name: getAccounts deploy
-      uses: appleboy/lambda-action@master
-      with:
-        aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws_region: ${{ secrets.AWS_REGION }}
-        function_name: getAccounts
-        zip_file: getAccounts.zip
-    # patchAccounts (5)
-    - name: getAccounts zip
-      run: cd BlitzBudget/Accounts/patchAccount/; zip -qq -r ../../../patchAccount.zip ./; cd ../../..;
-    - name: patchAccount deploy
-      uses: appleboy/lambda-action@master
-      with:
-        aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws_region: ${{ secrets.AWS_REGION }}
-        function_name: patchAccounts
-        zip_file: patchAccount.zip
     # deleteCategory (9)
     - name: deleteCategory zip
       run: cd BlitzBudget/Category/deleteCategories/; zip -qq -r ../../../deleteCategory.zip ./; cd ../../..;
@@ -153,28 +98,6 @@ jobs:
         aws_region: ${{ secrets.AWS_REGION }}
         function_name: sendEmailToSupport
         zip_file: sendEmailToSupport.zip
-    # addScheduledTransactions (20)
-    - name: addScheduledTransactions zip
-      run: cd BlitzBudget/RecurringTransactions/addScheduledTransactions/; zip -qq -r ../../../addScheduledTransactions.zip ./; cd ../../..;
-    - name: addScheduledTransactions deploy
-      uses: appleboy/lambda-action@master
-      with:
-        aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws_region: ${{ secrets.AWS_REGION }}
-        function_name: addScheduledTransactions
-        zip_file: addScheduledTransactions.zip
-    # patchRecurringTransaction (21)
-    - name: patchRecurringTransaction zip
-      run: cd BlitzBudget/RecurringTransactions/patchRecurringTransactions/; zip -qq -r ../../../patchRecurringTransaction.zip ./; cd ../../..;
-    - name: patchRecurringTransaction deploy
-      uses: appleboy/lambda-action@master
-      with:
-        aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws_region: ${{ secrets.AWS_REGION }}
-        function_name: patchRecurringTransaction
-        zip_file: patchRecurringTransaction.zip
     # adminGetUserAttributes (28)
     - name: adminGetUserAttributes zip
       run: cd Cognito/adminGetUserAttributes/; zip -qq -r ../../adminGetUserAttributes.zip ./; cd ../..;
