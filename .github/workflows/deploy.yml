@@ -65,17 +65,6 @@ jobs:
         aws_region: ${{ secrets.AWS_REGION }}
         function_name: deleteMultipleItems
         zip_file: deleteMultipleItems.zip
-    # deleteOneItem (13)
-    - name: deleteOneItem zip
-      run: cd BlitzBudget/Common/deleteOneItem/; zip -qq -r ../../../deleteOneItem.zip ./; cd ../../..;
-    - name: deleteOneItem deploy
-      uses: appleboy/lambda-action@master
-      with:
-        aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws_region: ${{ secrets.AWS_REGION }}
-        function_name: deleteOneItem
-        zip_file: deleteOneItem.zip
     # resetAccountBB (18)
     - name: resetAccountBB zip
       run: cd BlitzBudget/Profile/reset-account-bb/; zip -qq -r ../../../resetAccountBB.zip ./; cd ../../..;
