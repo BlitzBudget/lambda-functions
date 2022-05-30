@@ -27,8 +27,8 @@ describe('extractVariablesFromRequest', () => {
     const response = await util
       .extractVariablesFromRequest({
         'body-json': {
-          walletId: 'Wallet#123',
-          itemId: 'Category#123',
+          pk: 'Wallet#123',
+          sk: 'Category#123',
         },
       });
 

@@ -20,8 +20,8 @@ const isNotEmpty = (obj) => !isEmpty(obj);
 
 const extractVariablesFromRequest = (event) => {
   const fromSns = isNotEmpty(event.Records);
-  const pk = fromSns ? event.Records[0].Sns.Subject : event['body-json'].walletId;
-  const sk = fromSns ? event.Records[0].Sns.Message : event['body-json'].itemId;
+  const pk = fromSns ? event.Records[0].Sns.Subject : event['body-json'].pk;
+  const sk = fromSns ? event.Records[0].Sns.Message : event['body-json'].sk;
   console.log('pk ', pk, ' sk ', sk);
   return { pk, sk, fromSns };
 };
