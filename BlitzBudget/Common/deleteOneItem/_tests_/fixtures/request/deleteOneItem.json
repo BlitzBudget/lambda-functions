@@ -1,7 +1,7 @@
 {
   "body-json": {
-    "walletId": "Wallet#93202082911265",
-    "itemId": "Transaction#2019-04-26T00:00:00.000Z"
+    "pk": "Wallet#93202082911265",
+    "sk": "Transaction#2019-04-26T00:00:00.000Z"
   },
   "params": {
     "path": {},
