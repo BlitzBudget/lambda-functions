@@ -1,6 +1,6 @@
 const cognitoLogin = require('../../../cognito/login');
-const mockSuccess = require('../../fixtures/response/login');
-const mockRequest = require('../../fixtures/request/confirmSignup');
+const mockSuccess = require('../../fixtures/response/login.json');
+const mockRequest = require('../../fixtures/request/confirmSignup.json');
 
 const cognitoidentityserviceprovider = {
   initiateAuth: jest.fn(() => ({

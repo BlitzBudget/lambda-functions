@@ -1,6 +1,6 @@
 const walletHelper = require('../../../utils/wallet-helper');
-const mockSuccess = require('../../fixtures/response/confirmSignup');
-const mockRequest = require('../../fixtures/response/fetchUser');
+const mockSuccess = require('../../fixtures/response/confirmSignup.json');
+const mockRequest = require('../../fixtures/response/fetchUser.json');
 
 const dynamoDB = {
   put: jest.fn(() => ({

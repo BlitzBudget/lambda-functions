@@ -1,5 +1,5 @@
+const mockUserCurrencyRequest = require('.../../../fixtures/request/updateUserCurrency.json');
 const emailParameter = require('../../../create-parameter/email');
-const mockUserCurrencyRequest = require('.../../../fixtures/request/updateUserCurrency');
 
 describe('mockEmail', () => {
   beforeEach(() => {

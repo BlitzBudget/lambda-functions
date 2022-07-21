@@ -1,8 +1,8 @@
 const cognitoLogin = require('../../index');
-const mockLoginError = require('../fixtures/response/userNotFoundException');
-const mockConfirmSignupSuccess = require('../fixtures/response/confirmForgotPassword');
-const mockFetchUserSuccess = require('../fixtures/response/fetchUser');
-const mockRequest = require('../fixtures/request/confirmForgotPassword');
+const mockLoginError = require('../fixtures/response/userNotFoundException.json');
+const mockConfirmSignupSuccess = require('../fixtures/response/confirmForgotPassword.json');
+const mockFetchUserSuccess = require('../fixtures/response/fetchUser.json');
+const mockRequest = require('../fixtures/request/confirmForgotPassword.json');
 
 jest.mock('aws-sdk', () => ({
   CognitoIdentityServiceProvider: jest.fn(() => ({

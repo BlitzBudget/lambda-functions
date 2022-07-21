@@ -1,5 +1,5 @@
+const mockRequest = require('.../../../fixtures/request/updateExportFileFormat.json');
 const adminUpdateUser = require('../../../utils/update-helper');
-const mockRequest = require('.../../../fixtures/request/updateExportFileFormat');
 
 jest.mock('aws-sdk', () => ({
   CognitoIdentityServiceProvider: jest.fn(() => ({

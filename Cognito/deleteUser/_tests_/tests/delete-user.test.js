@@ -1,6 +1,6 @@
 const cognitoDeleteUser = require('../../index');
-const mockSuccess = require('../fixtures/response/success');
-const mockRequest = require('../fixtures/request/deleteUser');
+const mockSuccess = require('../fixtures/response/success.json');
+const mockRequest = require('../fixtures/request/deleteUser.json');
 
 jest.mock('aws-sdk', () => ({
   CognitoIdentityServiceProvider: jest.fn(() => ({

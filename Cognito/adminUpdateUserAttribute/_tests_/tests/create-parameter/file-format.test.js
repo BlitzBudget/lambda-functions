@@ -1,6 +1,6 @@
+const mockUserAttributeRequest = require('.../../../fixtures/request/updateExportFileFormat.json');
+const mockUserCurrencyRequest = require('.../../../fixtures/request/updateUserCurrency.json');
 const fileFormatParameter = require('../../../create-parameter/file-format');
-const mockUserAttributeRequest = require('.../../../fixtures/request/updateExportFileFormat');
-const mockUserCurrencyRequest = require('.../../../fixtures/request/updateUserCurrency');
 
 describe('mockExportFileFormatRequest', () => {
   const event = mockUserAttributeRequest;

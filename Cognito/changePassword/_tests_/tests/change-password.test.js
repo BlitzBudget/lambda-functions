@@ -1,6 +1,6 @@
 const changePassword = require('../../index');
-const mockSuccess = require('../fixtures/response/success');
-const mockRequest = require('../fixtures/request/changePassword');
+const mockSuccess = require('../fixtures/response/success.json');
+const mockRequest = require('../fixtures/request/changePassword.json');
 
 jest.mock('aws-sdk', () => ({
   CognitoIdentityServiceProvider: jest.fn(() => ({

@@ -1,8 +1,8 @@
+const mockExportFileFormatRequest = require('.../../../fixtures/request/updateExportFileFormat.json');
+const mockUserAttributeRequest = require('.../../../fixtures/request/updateUserAttributes.json');
+const mockUserCurrencyRequest = require('.../../../fixtures/request/updateUserCurrency.json');
+const mockUserLocaleRequest = require('.../../../fixtures/request/updateUserLocale.json');
 const userAttributeParameter = require('../../../create-parameter/user-attribute');
-const mockExportFileFormatRequest = require('.../../../fixtures/request/updateExportFileFormat');
-const mockUserAttributeRequest = require('.../../../fixtures/request/updateUserAttributes');
-const mockUserCurrencyRequest = require('.../../../fixtures/request/updateUserCurrency');
-const mockUserLocaleRequest = require('.../../../fixtures/request/updateUserLocale');
 
 describe('mockExportFileFormatRequest', () => {
   beforeEach(() => {

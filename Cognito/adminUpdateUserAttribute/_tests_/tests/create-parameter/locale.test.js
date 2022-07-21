@@ -1,6 +1,6 @@
+const mockUserLocaleRequest = require('.../../../fixtures/request/updateUserLocale.json');
+const mockUserCurrencyRequest = require('.../../../fixtures/request/updateUserCurrency.json');
 const localeParameter = require('../../../create-parameter/locale');
-const mockUserLocaleRequest = require('.../../../fixtures/request/updateUserLocale');
-const mockUserCurrencyRequest = require('.../../../fixtures/request/updateUserCurrency');
 
 describe('mockLocaleRequest', () => {
   const event = mockUserLocaleRequest;

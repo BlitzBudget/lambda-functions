@@ -1,6 +1,6 @@
+const mockUserAttributeRequest = require('.../../../fixtures/request/updateUserAttributes.json');
+const mockUserCurrencyRequest = require('.../../../fixtures/request/updateUserCurrency.json');
 const nameParameter = require('../../../create-parameter/name');
-const mockUserAttributeRequest = require('.../../../fixtures/request/updateUserAttributes');
-const mockUserCurrencyRequest = require('.../../../fixtures/request/updateUserCurrency');
 
 describe('mockNameRequest', () => {
   const event = mockUserAttributeRequest;

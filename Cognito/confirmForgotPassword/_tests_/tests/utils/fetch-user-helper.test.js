@@ -1,6 +1,6 @@
 const cognitoFetchUserHelper = require('../../../utils/fetch-user-helper');
-const mockSuccess = require('../../fixtures/response/fetchUser');
-const mockRequest = require('../../fixtures/response/login');
+const mockSuccess = require('../../fixtures/response/fetchUser.json');
+const mockRequest = require('../../fixtures/response/login.json');
 
 const cognitoidentityserviceprovider = {
   getUser: jest.fn(() => ({
