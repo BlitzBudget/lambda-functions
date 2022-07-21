@@ -1,5 +1,5 @@
 const userAttribute = require('../../../create-parameter/user-attribute');
-const mockUserAttributes = require('../../fixtures/request/getUserAttributes');
+const mockUserAttributes = require('../../fixtures/request/getUserAttributes.json');
 
 describe('changePasswordParameters', () => {
   beforeEach(() => {

@@ -1,7 +1,7 @@
 const handle = require('../../index');
 const mockSuccess = require('../fixtures/response/success');
-const mockRequest = require('../fixtures/request/signup');
-const mockRequestWithoutNames = require('../fixtures/request/signup_withoutnames');
+const mockRequest = require('../fixtures/request/signup.json');
+const mockRequestWithoutNames = require('../fixtures/request/signup_withoutnames.json');
 
 jest.mock('../../cognito/signup', () => ({
   signup: (parameters) => Promise.resolve(mockSuccess(parameters)),

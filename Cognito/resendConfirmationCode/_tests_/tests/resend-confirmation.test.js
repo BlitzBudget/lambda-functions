@@ -1,6 +1,6 @@
 const resendConfirmation = require('../../index');
-const mockSuccess = require('../fixtures/response/success');
-const mockRequest = require('../fixtures/request/resendConfirmationCode');
+const mockSuccess = require('../fixtures/response/success.json');
+const mockRequest = require('../fixtures/request/resendConfirmationCode.json');
 
 jest.mock('aws-sdk', () => ({
   CognitoIdentityServiceProvider: jest.fn(() => ({

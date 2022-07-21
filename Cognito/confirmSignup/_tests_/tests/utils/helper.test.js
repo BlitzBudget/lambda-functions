@@ -1,5 +1,5 @@
 const helper = require('../../../utils/helper');
-const mockFetchUser = require('../../fixtures/response/fetchUser');
+const mockFetchUser = require('../../fixtures/response/fetchUser.json');
 
 describe('fetchCurrencyInformation', () => {
   const event = {};

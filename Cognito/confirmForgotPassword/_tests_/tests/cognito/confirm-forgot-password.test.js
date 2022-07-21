@@ -1,6 +1,6 @@
 const confirmForgotPassword = require('../../../cognito/confirm-forgot-password');
-const mockSuccess = require('../../fixtures/response/confirmForgotPassword');
-const mockRequest = require('../../fixtures/request/confirmForgotPassword');
+const mockSuccess = require('../../fixtures/response/confirmForgotPassword.json');
+const mockRequest = require('../../fixtures/request/confirmForgotPassword.json');
 
 const cognitoidentityserviceprovider = {
   confirmForgotPassword: jest.fn(() => ({

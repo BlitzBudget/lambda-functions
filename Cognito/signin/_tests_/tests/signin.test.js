@@ -1,7 +1,7 @@
 const handle = require('../../index');
 const mockLogin = require('../fixtures/response/login');
 const mockGetUser = require('../fixtures/response/get-user');
-const mockRequest = require('../fixtures/request/signin');
+const mockRequest = require('../fixtures/request/signin.json');
 const mockWalletResponse = require('../fixtures/response/wallet');
 
 jest.mock('aws-sdk', () => ({

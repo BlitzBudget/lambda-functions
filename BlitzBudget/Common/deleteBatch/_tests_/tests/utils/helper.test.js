@@ -1,5 +1,5 @@
 const util = require('../../../utils/helper');
-const mockRequest = require('../../fixtures/request/deleteBatch');
+const mockRequest = require('../../fixtures/request/deleteBatch.json');
 
 describe('chunkArrayInGroups', () => {
   const array = [0, 1, 2, 3, 4, 5, 6, 7, 7, 8, 9, 0];

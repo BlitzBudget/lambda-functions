@@ -1,5 +1,5 @@
-const mockUserNotFound = require('../../fixtures/response/userNotFoundException');
-const mockRequest = require('../../fixtures/request/deleteUser');
+const mockUserNotFound = require('../../fixtures/response/userNotFoundException.json');
+const mockRequest = require('../../fixtures/request/deleteUser.json');
 const cognitoDeleteUser = require('../../../cognito/delete-user');
 
 jest.mock('aws-sdk', () => ({

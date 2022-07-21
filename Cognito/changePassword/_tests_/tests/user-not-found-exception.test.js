@@ -1,6 +1,6 @@
 const changePassword = require('../../index');
-const mockError = require('../fixtures/response/userNotFoundException');
-const mockRequest = require('../fixtures/request/changePassword');
+const mockError = require('../fixtures/response/userNotFoundException.json');
+const mockRequest = require('../fixtures/request/changePassword.json');
 
 jest.mock('aws-sdk', () => ({
   CognitoIdentityServiceProvider: jest.fn(() => ({

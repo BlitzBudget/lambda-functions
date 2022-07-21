@@ -1,6 +1,6 @@
 const cognitoRefreshToken = require('../../../cognito/refresh-token');
-const mockSuccess = require('../../fixtures/response/success');
-const mockRequest = require('../../fixtures/request/refreshToken');
+const mockSuccess = require('../../fixtures/response/success.json');
+const mockRequest = require('../../fixtures/request/refreshToken.json');
 
 jest.mock('aws-sdk', () => ({
   CognitoIdentityServiceProvider: jest.fn(() => ({

@@ -1,7 +1,7 @@
 function DeleteHelper() {}
 
 const util = require('./util');
-const deleteItems = require('../delete/items.js');
+const deleteItems = require('../delete/items');
 const deleteParameter = require('../create-parameter/delete');
 const deleteRequestParameter = require('../create-parameter/delete-request');
 

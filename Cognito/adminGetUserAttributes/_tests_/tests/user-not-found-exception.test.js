@@ -1,6 +1,6 @@
 const adminGetUser = require('../../index');
-const mockError = require('../fixtures/response/userNotFoundException');
-const mockUserAttributes = require('../fixtures/request/getUserAttributes');
+const mockError = require('../fixtures/response/userNotFoundException.json');
+const mockUserAttributes = require('../fixtures/request/getUserAttributes.json');
 
 jest.mock('aws-sdk', () => ({
   CognitoIdentityServiceProvider: jest.fn(() => ({
