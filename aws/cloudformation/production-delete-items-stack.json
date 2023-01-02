@@ -1,0 +1,552 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "[Production] Delete Items Stack Resources",
+    "Metadata": {
+        "AWS::CloudFormation::Designer": {
+            "20139658-cb87-42e6-b586-3500b806ffd0": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 540,
+                    "y": 180
+                },
+                "z": 1,
+                "embeds": []
+            },
+            "5b6e0476-c553-49d0-8953-046b5d9be950": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 830,
+                    "y": 180
+                },
+                "z": 1,
+                "embeds": []
+            },
+            "d7d9699b-491c-4fa7-a8ec-d4ce37a06cf6": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 540,
+                    "y": 420
+                },
+                "z": 1,
+                "embeds": []
+            },
+            "93800b6e-4aa6-4d87-844e-7554dc00a8b0": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 854,
+                    "y": 348
+                },
+                "z": 0,
+                "embeds": []
+            },
+            "92803fc4-a82a-457d-be5b-31ec4dd17246": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 680,
+                    "y": 180
+                },
+                "z": 1,
+                "embeds": []
+            },
+            "af861a30-291f-46b2-bb99-6bca82c78ff1": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 970,
+                    "y": 180
+                },
+                "z": 1,
+                "embeds": []
+            },
+            "0b20ff83-4dd7-4954-a28e-75e3b26b8c1b": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 1110,
+                    "y": 180
+                },
+                "z": 1,
+                "embeds": []
+            },
+            "7eeb7a1f-58bc-4417-b17c-cc35e1cb9e91": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 1260,
+                    "y": 180
+                },
+                "z": 1,
+                "embeds": []
+            }
+        }
+    },
+    "Resources": {
+        "deleteCategory": {
+            "Type": "AWS::Lambda::Function",
+            "DeletionPolicy" : "Retain",
+            "Properties": {
+                "Description": "[Production] Delete Category for BlitzBudget",
+                "FunctionName": "deleteCategory",
+                "MemorySize": 512,
+                "Handler": "index.handler",
+                "Runtime": "Node.js 18.x",
+                "DeadLetterConfig": {
+                    "TargetArn": "arn:aws:sns:eu-west-1:064559090307:DeadLetterNotification"
+                },
+                "Environment": {
+                    "Variables": {
+                        "CLIENT_ID": "{{resolve:secretsmanager:prod/Cognito/AppClient:SecretString:BlitzBudgetLoginClientID}}",
+                        "USERPOOL_ID": "{{resolve:secretsmanager:prod/Cognito/AppClient:SecretString:UserPoolID}}",
+                        "TABLE_NAME": "{{resolve:secretsmanager:prod/DynamoDB:SecretString:TableName}}",
+                        "AWS_LAMBDA_REGION": "eu-west-1"
+                    }
+                },
+                "Code": {
+                    "S3Bucket": "sample-project-for-cf",
+                    "S3Key": "golang-sample.zip"
+                },
+                "Tags": [
+                    {
+                        "Key": "author",
+                        "Value": "Nagarjun"
+                    },
+                    {
+                        "Key": "stage",
+                        "Value": "Production"
+                    },
+                    {
+                        "Key": "site",
+                        "Value": "BlitzBudget"
+                    }
+                ],
+                "Role": "arn:aws:iam::064559090307:role/deleteFromBlitzBudgetTable"
+            },
+            "Metadata": {
+                "AWS::CloudFormation::Designer": {
+                    "id": "20139658-cb87-42e6-b586-3500b806ffd0"
+                }
+            }
+        },
+        "deleteAllItemsFromWallet": {
+            "Type": "AWS::Lambda::Function",
+            "DeletionPolicy" : "Retain",
+            "Properties": {
+                "Description": "[Production] Delete All Items From Wallet for BlitzBudget",
+                "FunctionName": "deleteAllItemsFromWallet",
+                "MemorySize": 512,
+                "Handler": "index.handler",
+                "Runtime": "Node.js 18.x",
+                "DeadLetterConfig": {
+                    "TargetArn": "arn:aws:sns:eu-west-1:064559090307:DeadLetterNotification"
+                },
+                "Environment": {
+                    "Variables": {
+                        "CLIENT_ID": "{{resolve:secretsmanager:prod/Cognito/AppClient:SecretString:BlitzBudgetLoginClientID}}",
+                        "USERPOOL_ID": "{{resolve:secretsmanager:prod/Cognito/AppClient:SecretString:UserPoolID}}",
+                        "TABLE_NAME": "{{resolve:secretsmanager:prod/DynamoDB:SecretString:TableName}}",
+                        "AWS_LAMBDA_REGION": "eu-west-1"
+                    }
+                },
+                "Code": {
+                    "S3Bucket": "sample-project-for-cf",
+                    "S3Key": "golang-sample.zip"
+                },
+                "Tags": [
+                    {
+                        "Key": "author",
+                        "Value": "Nagarjun"
+                    },
+                    {
+                        "Key": "stage",
+                        "Value": "Production"
+                    },
+                    {
+                        "Key": "site",
+                        "Value": "BlitzBudget"
+                    }
+                ],
+                "Role": "arn:aws:iam::064559090307:role/deleteFromBlitzBudgetTable"
+            },
+            "Metadata": {
+                "AWS::CloudFormation::Designer": {
+                    "id": "5b6e0476-c553-49d0-8953-046b5d9be950"
+                }
+            }
+        },
+        "deleteAllWallets": {
+            "Type": "AWS::Lambda::Function",
+            "DeletionPolicy" : "Retain",
+            "Properties": {
+                "Description": "[Production] Delete All Wallets for BlitzBudget",
+                "FunctionName": "deleteAllWallets",
+                "MemorySize": 512,
+                "Handler": "index.handler",
+                "Runtime": "Node.js 18.x",
+                "DeadLetterConfig": {
+                    "TargetArn": "arn:aws:sns:eu-west-1:064559090307:DeadLetterNotification"
+                },
+                "Environment": {
+                    "Variables": {
+                        "CLIENT_ID": "{{resolve:secretsmanager:prod/Cognito/AppClient:SecretString:BlitzBudgetLoginClientID}}",
+                        "USERPOOL_ID": "{{resolve:secretsmanager:prod/Cognito/AppClient:SecretString:UserPoolID}}",
+                        "TABLE_NAME": "{{resolve:secretsmanager:prod/DynamoDB:SecretString:TableName}}",
+                        "AWS_LAMBDA_REGION": "eu-west-1"
+                    }
+                },
+                "Code": {
+                    "S3Bucket": "sample-project-for-cf",
+                    "S3Key": "golang-sample.zip"
+                },
+                "Tags": [
+                    {
+                        "Key": "author",
+                        "Value": "Nagarjun"
+                    },
+                    {
+                        "Key": "stage",
+                        "Value": "Production"
+                    },
+                    {
+                        "Key": "site",
+                        "Value": "BlitzBudget"
+                    }
+                ],
+                "Role": {
+                    "Fn::GetAtt": [
+                        "deleteAllWalletsRole",
+                        "Arn"
+                    ]
+                }
+            },
+            "Metadata": {
+                "AWS::CloudFormation::Designer": {
+                    "id": "d7d9699b-491c-4fa7-a8ec-d4ce37a06cf6"
+                }
+            }
+        },
+        "deleteAllWalletsRole": {
+            "Type": "AWS::IAM::Role",
+            "DeletionPolicy" : "Retain",
+            "Properties": {
+                "RoleName": "deleteAllWallets",
+                "Description": "[Production] Delete All wallets and publish to reset accounts SNS",
+                "AssumeRolePolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Principal": {
+                                "Service": "lambda.amazonaws.com"
+                            },
+                            "Action": "sts:AssumeRole"
+                        }
+                    ]
+                },
+                "Policies": [
+                    {
+                        "PolicyDocument": {
+                            "Version": "2012-10-17",
+                            "Statement": [
+                                {
+                                    "Sid": "VisualEditor0",
+                                    "Effect": "Allow",
+                                    "Action": "sns:Publish",
+                                    "Resource": "arn:aws:sns:eu-west-1:064559090307:DeadLetterNotification"
+                                }
+                            ]
+                        },
+                        "PolicyName": "publishToDeadLetterQueue"
+                    },
+                    {
+                        "PolicyDocument": {
+                            "Version": "2012-10-17",
+                            "Statement": [
+                                {
+                                    "Effect": "Allow",
+                                    "Action": "logs:CreateLogGroup",
+                                    "Resource": "arn:aws:logs:eu-west-1:064559090307:*"
+                                },
+                                {
+                                    "Effect": "Allow",
+                                    "Action": [
+                                        "logs:CreateLogStream",
+                                        "logs:PutLogEvents"
+                                    ],
+                                    "Resource": "*"
+                                }
+                            ]
+                        },
+                        "PolicyName": "awsLambdaBasicExecutionPolicy"
+                    },
+                    {
+                        "PolicyDocument": {
+                            "Version": "2012-10-17",
+                            "Statement": [
+                                {
+                                    "Effect": "Allow",
+                                    "Action": [
+                                        "dynamodb:batchWriteItem"
+                                    ],
+                                    "Resource": "arn:aws:dynamodb:eu-west-1:064559090307:table/blitzbudget"
+                                }
+                            ]
+                        },
+                        "PolicyName": "dynamodb_batchwrite_blitzbudget"
+                    },
+                    {
+                        "PolicyDocument": {
+                            "Version": "2012-10-17",
+                            "Statement": [
+                                {
+                                    "Effect": "Allow",
+                                    "Action": [
+                                        "dynamodb:Query"
+                                    ],
+                                    "Resource": "arn:aws:dynamodb:eu-west-1:064559090307:table/blitzbudget"
+                                }
+                            ]
+                        },
+                        "PolicyName": "dynamodb_query_blitzbudget"
+                    },
+                    {
+                        "PolicyDocument": {
+                            "Version": "2012-10-17",
+                            "Statement": [
+                                {
+                                    "Effect": "Allow",
+                                    "Action": [
+                                        "SNS:Publish"
+                                    ],
+                                    "Resource": "arn:aws:sns:eu-west-1:064559090307:ResetAccountSubscriber"
+                                }
+                            ]
+                        },
+                        "PolicyName": "reset_accounts_sns"
+                    }
+                ],
+                "Tags": [
+                    {
+                        "Key": "author",
+                        "Value": "Nagarjun"
+                    },
+                    {
+                        "Key": "stage",
+                        "Value": "Production"
+                    },
+                    {
+                        "Key": "site",
+                        "Value": "BlitzBudget"
+                    }
+                ]
+            },
+            "Metadata": {
+                "AWS::CloudFormation::Designer": {
+                    "id": "93800b6e-4aa6-4d87-844e-7554dc00a8b0"
+                }
+            }
+        },
+        "deleteMultipleItems": {
+            "Type": "AWS::Lambda::Function",
+            "DeletionPolicy" : "Retain",
+            "Properties": {
+                "Description": "[Production] Delete Multiple Items for BlitzBudget",
+                "FunctionName": "deleteMultipleItems",
+                "MemorySize": 512,
+                "Handler": "index.handler",
+                "Runtime": "Node.js 18.x",
+                "DeadLetterConfig": {
+                    "TargetArn": "arn:aws:sns:eu-west-1:064559090307:DeadLetterNotification"
+                },
+                "Environment": {
+                    "Variables": {
+                        "CLIENT_ID": "{{resolve:secretsmanager:prod/Cognito/AppClient:SecretString:BlitzBudgetLoginClientID}}",
+                        "USERPOOL_ID": "{{resolve:secretsmanager:prod/Cognito/AppClient:SecretString:UserPoolID}}",
+                        "TABLE_NAME": "{{resolve:secretsmanager:prod/DynamoDB:SecretString:TableName}}",
+                        "AWS_LAMBDA_REGION": "eu-west-1"
+                    }
+                },
+                "Code": {
+                    "S3Bucket": "sample-project-for-cf",
+                    "S3Key": "golang-sample.zip"
+                },
+                "Tags": [
+                    {
+                        "Key": "author",
+                        "Value": "Nagarjun"
+                    },
+                    {
+                        "Key": "stage",
+                        "Value": "Production"
+                    },
+                    {
+                        "Key": "site",
+                        "Value": "BlitzBudget"
+                    }
+                ],
+                "Role": "arn:aws:iam::064559090307:role/deleteFromBlitzBudgetTable"
+            },
+            "Metadata": {
+                "AWS::CloudFormation::Designer": {
+                    "id": "92803fc4-a82a-457d-be5b-31ec4dd17246"
+                }
+            }
+        },
+        "deleteOneItem": {
+            "Type": "AWS::Lambda::Function",
+            "DeletionPolicy" : "Retain",
+            "Properties": {
+                "Description": "[Production] Delete One Item From Wallet for BlitzBudget",
+                "FunctionName": "deleteOneItem",
+                "MemorySize": 512,
+                "Handler": "index.handler",
+                "Runtime": "Node.js 18.x",
+                "DeadLetterConfig": {
+                    "TargetArn": "arn:aws:sns:eu-west-1:064559090307:DeadLetterNotification"
+                },
+                "Environment": {
+                    "Variables": {
+                        "CLIENT_ID": "{{resolve:secretsmanager:prod/Cognito/AppClient:SecretString:BlitzBudgetLoginClientID}}",
+                        "USERPOOL_ID": "{{resolve:secretsmanager:prod/Cognito/AppClient:SecretString:UserPoolID}}",
+                        "TABLE_NAME": "{{resolve:secretsmanager:prod/DynamoDB:SecretString:TableName}}",
+                        "AWS_LAMBDA_REGION": "eu-west-1"
+                    }
+                },
+                "Code": {
+                    "S3Bucket": "sample-project-for-cf",
+                    "S3Key": "golang-sample.zip"
+                },
+                "Tags": [
+                    {
+                        "Key": "author",
+                        "Value": "Nagarjun"
+                    },
+                    {
+                        "Key": "stage",
+                        "Value": "Production"
+                    },
+                    {
+                        "Key": "site",
+                        "Value": "BlitzBudget"
+                    }
+                ],
+                "Role": "arn:aws:iam::064559090307:role/deleteOneItemFromBlitzBudget"
+            },
+            "Metadata": {
+                "AWS::CloudFormation::Designer": {
+                    "id": "af861a30-291f-46b2-bb99-6bca82c78ff1"
+                }
+            }
+        },
+        "resetAccount": {
+            "Type": "AWS::Lambda::Function",
+            "DeletionPolicy" : "Retain",
+            "Properties": {
+                "Description": "[Production] Reset Account, Remove all the data except the user",
+                "FunctionName": "resetAccount",
+                "MemorySize": 512,
+                "Handler": "index.handler",
+                "Runtime": "Node.js 18.x",
+                "DeadLetterConfig": {
+                    "TargetArn": "arn:aws:sns:eu-west-1:064559090307:DeadLetterNotification"
+                },
+                "Environment": {
+                    "Variables": {
+                        "USERPOOL_ID": "{{resolve:secretsmanager:prod/Cognito/AppClient:SecretString:UserPoolID}}",
+                        "AWS_LAMBDA_REGION": "eu-west-1"
+                    }
+                },
+                "Code": {
+                    "S3Bucket": "sample-project-for-cf",
+                    "S3Key": "golang-sample.zip"
+                },
+                "Tags": [
+                    {
+                        "Key": "author",
+                        "Value": "Nagarjun"
+                    },
+                    {
+                        "Key": "stage",
+                        "Value": "Production"
+                    },
+                    {
+                        "Key": "site",
+                        "Value": "BlitzBudget"
+                    }
+                ],
+                "Role": "arn:aws:iam::064559090307:role/service-role/resetAccountBB-role-r9xiylq5"
+            },
+            "Metadata": {
+                "AWS::CloudFormation::Designer": {
+                    "id": "0b20ff83-4dd7-4954-a28e-75e3b26b8c1b"
+                }
+            }
+        },
+        "deleteUser": {
+            "Type": "AWS::Lambda::Function",
+            "DeletionPolicy" : "Retain",
+            "Properties": {
+                "Description": "[Production] Delete users for cognito",
+                "FunctionName": "deleteUser",
+                "MemorySize": 512,
+                "Handler": "index.handler",
+                "Runtime": "Node.js 18.x",
+                "DeadLetterConfig": {
+                    "TargetArn": "arn:aws:sns:eu-west-1:064559090307:DeadLetterNotification"
+                },
+                "Environment": {
+                    "Variables": {
+                        "CLIENT_ID": "{{resolve:secretsmanager:prod/Cognito/AppClient:SecretString:BlitzBudgetLoginClientID}}",
+                        "USERPOOL_ID": "{{resolve:secretsmanager:prod/Cognito/AppClient:SecretString:UserPoolID}}",
+                        "TABLE_NAME": "{{resolve:secretsmanager:prod/DynamoDB:SecretString:TableName}}",
+                        "AWS_LAMBDA_REGION": "eu-west-1"
+                    }
+                },
+                "Code": {
+                    "S3Bucket": "sample-project-for-cf",
+                    "S3Key": "golang-sample.zip"
+                },
+                "Tags": [
+                    {
+                        "Key": "author",
+                        "Value": "Nagarjun"
+                    },
+                    {
+                        "Key": "stage",
+                        "Value": "Production"
+                    },
+                    {
+                        "Key": "site",
+                        "Value": "BlitzBudget"
+                    }
+                ],
+                "Role": "arn:aws:iam::064559090307:role/service-role/deleteUser-role-ynhthixe"
+            },
+            "Metadata": {
+                "AWS::CloudFormation::Designer": {
+                    "id": "7eeb7a1f-58bc-4417-b17c-cc35e1cb9e91"
+                }
+            }
+        }
+    }
+}
