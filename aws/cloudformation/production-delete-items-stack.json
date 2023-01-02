@@ -33,8 +33,8 @@
                     "height": 60
                 },
                 "position": {
-                    "x": 540,
-                    "y": 420
+                    "x": 1390,
+                    "y": 180
                 },
                 "z": 1,
                 "embeds": []
@@ -45,8 +45,8 @@
                     "height": 60
                 },
                 "position": {
-                    "x": 854,
-                    "y": 348
+                    "x": 1390,
+                    "y": 350
                 },
                 "z": 0,
                 "embeds": []
@@ -98,13 +98,49 @@
                 },
                 "z": 1,
                 "embeds": []
+            },
+            "c53c722a-9a17-427d-8822-af564c6acc19": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 1110,
+                    "y": 350
+                },
+                "z": 0,
+                "embeds": []
+            },
+            "777ab93d-5340-4049-af42-b72f4d504eaa": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 1260,
+                    "y": 350
+                },
+                "z": 0,
+                "embeds": []
+            },
+            "69647195-2fa0-4e4d-93b2-e85671676f2f": {
+                "size": {
+                    "width": 60,
+                    "height": 60
+                },
+                "position": {
+                    "x": 970,
+                    "y": 350
+                },
+                "z": 0,
+                "embeds": []
             }
         }
     },
     "Resources": {
         "deleteCategory": {
             "Type": "AWS::Lambda::Function",
-            "DeletionPolicy" : "Retain",
+            "DeletionPolicy": "Retain",
             "Properties": {
                 "Description": "[Production] Delete Category for BlitzBudget",
                 "FunctionName": "deleteCategory",
@@ -150,7 +186,7 @@
         },
         "deleteAllItemsFromWallet": {
             "Type": "AWS::Lambda::Function",
-            "DeletionPolicy" : "Retain",
+            "DeletionPolicy": "Retain",
             "Properties": {
                 "Description": "[Production] Delete All Items From Wallet for BlitzBudget",
                 "FunctionName": "deleteAllItemsFromWallet",
@@ -196,7 +232,7 @@
         },
         "deleteAllWallets": {
             "Type": "AWS::Lambda::Function",
-            "DeletionPolicy" : "Retain",
+            "DeletionPolicy": "Retain",
             "Properties": {
                 "Description": "[Production] Delete All Wallets for BlitzBudget",
                 "FunctionName": "deleteAllWallets",
@@ -247,7 +283,7 @@
         },
         "deleteAllWalletsRole": {
             "Type": "AWS::IAM::Role",
-            "DeletionPolicy" : "Retain",
+            "DeletionPolicy": "Retain",
             "Properties": {
                 "RoleName": "deleteAllWallets",
                 "Description": "[Production] Delete All wallets and publish to reset accounts SNS",
@@ -368,7 +404,7 @@
         },
         "deleteMultipleItems": {
             "Type": "AWS::Lambda::Function",
-            "DeletionPolicy" : "Retain",
+            "DeletionPolicy": "Retain",
             "Properties": {
                 "Description": "[Production] Delete Multiple Items for BlitzBudget",
                 "FunctionName": "deleteMultipleItems",
@@ -414,7 +450,7 @@
         },
         "deleteOneItem": {
             "Type": "AWS::Lambda::Function",
-            "DeletionPolicy" : "Retain",
+            "DeletionPolicy": "Retain",
             "Properties": {
                 "Description": "[Production] Delete One Item From Wallet for BlitzBudget",
                 "FunctionName": "deleteOneItem",
@@ -450,7 +486,12 @@
                         "Value": "BlitzBudget"
                     }
                 ],
-                "Role": "arn:aws:iam::064559090307:role/deleteOneItemFromBlitzBudget"
+                "Role": {
+                    "Fn::GetAtt": [
+                        "deleteOneItemFromBlitzBudgetRole",
+                        "Arn"
+                    ]
+                }
             },
             "Metadata": {
                 "AWS::CloudFormation::Designer": {
@@ -460,7 +501,7 @@
         },
         "resetAccount": {
             "Type": "AWS::Lambda::Function",
-            "DeletionPolicy" : "Retain",
+            "DeletionPolicy": "Retain",
             "Properties": {
                 "Description": "[Production] Reset Account, Remove all the data except the user",
                 "FunctionName": "resetAccount",
@@ -494,7 +535,12 @@
                         "Value": "BlitzBudget"
                     }
                 ],
-                "Role": "arn:aws:iam::064559090307:role/service-role/resetAccountBB-role-r9xiylq5"
+                "Role": {
+                    "Fn::GetAtt": [
+                        "resetAccountBBRole",
+                        "Arn"
+                    ]
+                }
             },
             "Metadata": {
                 "AWS::CloudFormation::Designer": {
@@ -504,7 +550,7 @@
         },
         "deleteUser": {
             "Type": "AWS::Lambda::Function",
-            "DeletionPolicy" : "Retain",
+            "DeletionPolicy": "Retain",
             "Properties": {
                 "Description": "[Production] Delete users for cognito",
                 "FunctionName": "deleteUser",
@@ -540,11 +586,308 @@
                         "Value": "BlitzBudget"
                     }
                 ],
-                "Role": "arn:aws:iam::064559090307:role/service-role/deleteUser-role-ynhthixe"
+                "Role": {
+                    "Fn::GetAtt": [
+                        "deleteUserRole",
+                        "Arn"
+                    ]
+                }
             },
             "Metadata": {
                 "AWS::CloudFormation::Designer": {
                     "id": "7eeb7a1f-58bc-4417-b17c-cc35e1cb9e91"
+                }
+            }
+        },
+        "resetAccountBBRole": {
+            "Type": "AWS::IAM::Role",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+                "RoleName": "resetAccountBB-role-r9xiylq5",
+                "Description": "[Production] Reset accounts and remove all data from the User",
+                "AssumeRolePolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Principal": {
+                                "Service": "lambda.amazonaws.com"
+                            },
+                            "Action": "sts:AssumeRole"
+                        }
+                    ]
+                },
+                "Policies": [
+                    {
+                        "PolicyDocument": {
+                            "Version": "2012-10-17",
+                            "Statement": [
+                                {
+                                    "Sid": "VisualEditor0",
+                                    "Effect": "Allow",
+                                    "Action": "sns:Publish",
+                                    "Resource": "arn:aws:sns:eu-west-1:064559090307:DeadLetterNotification"
+                                }
+                            ]
+                        },
+                        "PolicyName": "publishToDeadLetterQueue"
+                    },
+                    {
+                        "PolicyDocument": {
+                            "Version": "2012-10-17",
+                            "Statement": [
+                                {
+                                    "Effect": "Allow",
+                                    "Action": "logs:CreateLogGroup",
+                                    "Resource": "arn:aws:logs:eu-west-1:064559090307:*"
+                                },
+                                {
+                                    "Effect": "Allow",
+                                    "Action": [
+                                        "logs:CreateLogStream",
+                                        "logs:PutLogEvents"
+                                    ],
+                                    "Resource": [
+                                        "arn:aws:logs:eu-west-1:064559090307:log-group:/aws/lambda/resetAccountBB:*"
+                                    ]
+                                }
+                            ]
+                        },
+                        "PolicyName": "awsLambdaBasicExecutionPolicy"
+                    },
+                    {
+                        "PolicyDocument": {
+                            "Version": "2012-10-17",
+                            "Statement": [
+                                {
+                                    "Effect": "Allow",
+                                    "Action": [
+                                        "cognito-idp:AdminDeleteUser"
+                                    ],
+                                    "Resource": "arn:aws:cognito-idp:eu-west-1:064559090307:userpool/eu-west-1_cjfC8qNiB"
+                                }
+                            ]
+                        },
+                        "PolicyName": "cognitoAdminDeleteUser"
+                    },
+                    {
+                        "PolicyDocument": {
+                            "Version": "2012-10-17",
+                            "Statement": [
+                                {
+                                    "Effect": "Allow",
+                                    "Action": [
+                                        "SNS:Publish"
+                                    ],
+                                    "Resource": "arn:aws:sns:eu-west-1:064559090307:ResetAccountSubscriber"
+                                }
+                            ]
+                        },
+                        "PolicyName": "reset_account_subscriber_sns"
+                    }
+                ],
+                "Tags": [
+                    {
+                        "Key": "author",
+                        "Value": "Nagarjun"
+                    },
+                    {
+                        "Key": "stage",
+                        "Value": "Production"
+                    },
+                    {
+                        "Key": "site",
+                        "Value": "BlitzBudget"
+                    }
+                ]
+            },
+            "Metadata": {
+                "AWS::CloudFormation::Designer": {
+                    "id": "c53c722a-9a17-427d-8822-af564c6acc19"
+                }
+            }
+        },
+        "deleteUserRole": {
+            "Type": "AWS::IAM::Role",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+                "RoleName": "deleteUser-role-ynhthixe",
+                "Description": "[Production] Delete User from Cognito",
+                "AssumeRolePolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Principal": {
+                                "Service": "lambda.amazonaws.com"
+                            },
+                            "Action": "sts:AssumeRole"
+                        }
+                    ]
+                },
+                "Policies": [
+                    {
+                        "PolicyDocument": {
+                            "Version": "2012-10-17",
+                            "Statement": [
+                                {
+                                    "Sid": "VisualEditor0",
+                                    "Effect": "Allow",
+                                    "Action": "sns:Publish",
+                                    "Resource": "arn:aws:sns:eu-west-1:064559090307:DeadLetterNotification"
+                                }
+                            ]
+                        },
+                        "PolicyName": "publishToDeadLetterQueue"
+                    },
+                    {
+                        "PolicyDocument": {
+                            "Version": "2012-10-17",
+                            "Statement": [
+                                {
+                                    "Effect": "Allow",
+                                    "Action": "logs:CreateLogGroup",
+                                    "Resource": "arn:aws:logs:eu-west-1:064559090307:*"
+                                },
+                                {
+                                    "Effect": "Allow",
+                                    "Action": [
+                                        "logs:CreateLogStream",
+                                        "logs:PutLogEvents"
+                                    ],
+                                    "Resource": [
+                                        "arn:aws:logs:eu-west-1:064559090307:log-group:/aws/lambda/deleteUser:*"
+                                    ]
+                                }
+                            ]
+                        },
+                        "PolicyName": "awsLambdaBasicExecutionPolicy"
+                    }
+                ],
+                "Tags": [
+                    {
+                        "Key": "author",
+                        "Value": "Nagarjun"
+                    },
+                    {
+                        "Key": "stage",
+                        "Value": "Production"
+                    },
+                    {
+                        "Key": "site",
+                        "Value": "BlitzBudget"
+                    }
+                ]
+            },
+            "Metadata": {
+                "AWS::CloudFormation::Designer": {
+                    "id": "777ab93d-5340-4049-af42-b72f4d504eaa"
+                }
+            }
+        },
+        "deleteOneItemFromBlitzBudgetRole": {
+            "Type": "AWS::IAM::Role",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+                "RoleName": "deleteOneItemFromBlitzBudget",
+                "Description": "[Production] Delete an Item from BlitzBudget Application",
+                "AssumeRolePolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Principal": {
+                                "Service": "lambda.amazonaws.com"
+                            },
+                            "Action": "sts:AssumeRole"
+                        }
+                    ]
+                },
+                "Policies": [
+                    {
+                        "PolicyDocument": {
+                            "Version": "2012-10-17",
+                            "Statement": [
+                                {
+                                    "Sid": "VisualEditor0",
+                                    "Effect": "Allow",
+                                    "Action": "sns:Publish",
+                                    "Resource": "arn:aws:sns:eu-west-1:064559090307:DeadLetterNotification"
+                                }
+                            ]
+                        },
+                        "PolicyName": "publishToDeadLetterQueue"
+                    },
+                    {
+                        "PolicyDocument": {
+                            "Version": "2012-10-17",
+                            "Statement": [
+                                {
+                                    "Effect": "Allow",
+                                    "Action": "logs:CreateLogGroup",
+                                    "Resource": "arn:aws:logs:eu-west-1:064559090307:*"
+                                },
+                                {
+                                    "Effect": "Allow",
+                                    "Action": [
+                                        "logs:CreateLogStream",
+                                        "logs:PutLogEvents"
+                                    ],
+                                    "Resource": "*"
+                                }
+                            ]
+                        },
+                        "PolicyName": "awsLambdaBasicExecutionPolicy"
+                    },
+                    {
+                        "PolicyDocument": {
+                            "Version": "2012-10-17",
+                            "Statement": [
+                                {
+                                    "Effect": "Allow",
+                                    "Action": [
+                                        "dynamodb:DeleteItem"
+                                    ],
+                                    "Resource": "arn:aws:dynamodb:eu-west-1:064559090307:table/blitzbudget"
+                                }
+                            ]
+                        },
+                        "PolicyName": "dynamodb_delete_blitzbudget"
+                    },
+                    {
+                        "PolicyDocument": {
+                            "Version": "2012-10-17",
+                            "Statement": [
+                                {
+                                    "Effect": "Allow",
+                                    "Action": [
+                                        "SNS:Publish"
+                                    ],
+                                    "Resource": "arn:aws:sns:eu-west-1:064559090307:ResetAccountSubscriber"
+                                }
+                            ]
+                        },
+                        "PolicyName": "delete_all_items_through_SNS"
+                    }
+                ],
+                "Tags": [
+                    {
+                        "Key": "author",
+                        "Value": "Nagarjun"
+                    },
+                    {
+                        "Key": "stage",
+                        "Value": "Production"
+                    },
+                    {
+                        "Key": "site",
+                        "Value": "BlitzBudget"
+                    }
+                ]
+            },
+            "Metadata": {
+                "AWS::CloudFormation::Designer": {
+                    "id": "69647195-2fa0-4e4d-93b2-e85671676f2f"
                 }
             }
         }
